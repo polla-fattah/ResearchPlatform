@@ -1,0 +1,9 @@
+{
+    "version": "1",
+    "name": "Open Hadith Research Platform",
+    "type": "collection",
+    "ignore": [
+        "node_modules",
+        ".git"
+    ]
+}
