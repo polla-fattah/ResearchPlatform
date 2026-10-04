@@ -17,6 +17,7 @@ CREATE TABLE users (
     display_name VARCHAR(255) NOT NULL,
     preferred_language VARCHAR(10) DEFAULT 'ar',
     status VARCHAR(50) NOT NULL DEFAULT 'unverified', -- unverified, pending, approved, suspended
+    is_admin BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -26,7 +27,7 @@ CREATE TABLE researcher_profiles (
     user_id BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     affiliation VARCHAR(500),
     biography TEXT,
-    research_interests TEXT[],
+    research_interests JSONB DEFAULT '[]'::jsonb,
     is_public BOOLEAN DEFAULT FALSE,
     public_fields JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -143,7 +144,7 @@ CREATE TABLE project_resources (
     resource_id BIGINT NOT NULL REFERENCES resources(id) ON DELETE CASCADE,
     added_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
     inclusion_rationale TEXT,
-    tags TEXT[],
+    tags JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uq_project_resource UNIQUE (project_id, resource_id)
@@ -356,7 +357,7 @@ CREATE TABLE announcements (
     title VARCHAR(500) NOT NULL,
     summary TEXT NOT NULL,
     research_stage VARCHAR(50) NOT NULL,
-    keywords TEXT[],
+    keywords JSONB DEFAULT '[]'::jsonb,
     status VARCHAR(50) NOT NULL DEFAULT 'draft', -- draft, published, unpublished, hidden
     published_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
