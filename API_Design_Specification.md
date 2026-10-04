@@ -254,6 +254,44 @@ Every API response returns a predictable envelope format:
 
 ---
 
+## 🤝 Module 13: Project Collaboration, Tasks & Discussions (R1b)
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/projects/{id}/invitations` | List pending and historical project invitations | Owner | `COL-01` |
+| `POST` | `/projects/{id}/invitations` | Invite an approved researcher by email with role | Owner | `COL-01` |
+| `POST` | `/invitations/{token}/accept` | Accept project invitation | Bearer | `COL-01` |
+| `POST` | `/invitations/{token}/decline` | Decline project invitation | Bearer | `COL-01` |
+| `PUT` | `/projects/{id}/members/{userId}` | Update member role (`co_investigator`, `contributor`, `observer`) | Owner | `COL-02` |
+| `DELETE` | `/projects/{id}/members/{userId}` | Revoke project membership immediately | Owner | `COL-02` |
+| `GET` | `/projects/{id}/discussions` | List discussion & dispute review threads (filter by target) | Project Role | `COL-03`, `COL-07` |
+| `POST` | `/projects/{id}/discussions` | Start discussion thread pinned to evidence, finding, or text | Contributor+ | `COL-03` |
+| `GET` | `/discussions/{threadId}/comments` | List comments within a discussion thread | Project Role | `COL-03` |
+| `POST` | `/discussions/{threadId}/comments` | Post comment or rebuttal in discussion thread | Contributor+ | `COL-03` |
+| `POST` | `/discussions/{threadId}/resolve` | Resolve dispute thread with rationale & alternative views | Co-Investigator+ | `COL-07` |
+| `GET` | `/projects/{id}/tasks` | List research tasks (filter by status, assignee) | Project Role | `COL-04` |
+| `POST` | `/projects/{id}/tasks` | Create assignable research task | Contributor+ | `COL-04` |
+| `PUT` | `/projects/{id}/tasks/{taskId}` | Update task details, assignee, or due date | Contributor+ | `COL-04` |
+| `POST` | `/projects/{id}/tasks/{taskId}/complete`| Mark task as completed | Assignee / Owner | `COL-04` |
+| `POST` | `/projects/{id}/tasks/{taskId}/block` | Mark task as blocked with recorded blocking reason | Assignee / Owner | `COL-04` |
+| `GET` | `/projects/{id}/activity` | Query project activity feed (actor, action, date) | Project Role | `COL-08` |
+| `POST` | `/projects/{id}/documents/{docId}/lock` | Acquire exclusive edit lock on document | Contributor+ | `COL-06` |
+| `POST` | `/projects/{id}/documents/{docId}/unlock` | Release document edit lock | Lock Holder / Owner| `COL-06` |
+
+---
+
+## 🔔 Module 14: Notification Center & Preferences (R1b)
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/notifications` | List user notifications (unread first) | Bearer | `COL-05` |
+| `PATCH` | `/notifications/{id}/read` | Mark individual notification as read | Bearer | `COL-05` |
+| `POST` | `/notifications/mark-all-read` | Mark all notifications as read | Bearer | `COL-05` |
+| `GET` | `/notifications/preferences` | Retrieve scholar notification preferences | Bearer | `COL-05` |
+| `PUT` | `/notifications/preferences` | Update email digest and category notification preferences | Bearer | `COL-05` |
+
+---
+
 ## 💻 Sample Payload Specifications
 
 ### 1. Capture Evidence (`POST /api/v1/projects/{id}/evidence`)

@@ -3731,6 +3731,784 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Collaboration & Workflows",
+            "item": [
+                {
+                    "name": "Send project collaboration invitation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/invitations",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "invitations"
+                            ]
+                        },
+                        "description": "Send project collaboration invitation",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"colleague@hadith.ac.krd\",\n    \"role\": \"co_investigator\",\n    \"expires_days\": 7\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List pending invitations for a project",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/invitations",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "invitations"
+                            ]
+                        },
+                        "description": "List pending invitations for a project",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Accept collaboration invitation and join workspace",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/invitations/{token}/accept",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "invitations",
+                                "{token}",
+                                "accept"
+                            ]
+                        },
+                        "description": "Accept collaboration invitation and join workspace",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Decline collaboration invitation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/invitations/{token}/decline",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "invitations",
+                                "{token}",
+                                "decline"
+                            ]
+                        },
+                        "description": "Decline collaboration invitation",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update collaborator role or responsibilities",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/members/{userId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "members",
+                                "{userId}"
+                            ]
+                        },
+                        "description": "Update collaborator role or responsibilities",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"role\": \"reviewer\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Revoke collaborator access with immediate termination",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/members/{userId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "members",
+                                "{userId}"
+                            ]
+                        },
+                        "description": "Revoke collaborator access with immediate termination",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List contextual discussion & dispute threads",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/discussions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "discussions"
+                            ]
+                        },
+                        "description": "List contextual discussion & dispute threads",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create contextual discussion or scholarly dispute thread",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/discussions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "discussions"
+                            ]
+                        },
+                        "description": "Create contextual discussion or scholarly dispute thread",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Dispute on Yahya ibn Sa'id Madar attribution\",\n    \"thread_type\": \"dispute_review\",\n    \"target_type\": \"evidence\",\n    \"target_id\": 1,\n    \"context_quote\": \"Yahya ibn Sa'id transmits from Muhammad ibn Ibrahim\",\n    \"context_locator\": \"Sahih al-Bukhari #1\",\n    \"initial_comment\": \"Is there any secondary Basran path bypassing Yahya?\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List discussion thread comments chronologically",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/discussions/{threadId}/comments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "discussions",
+                                "{threadId}",
+                                "comments"
+                            ]
+                        },
+                        "description": "List discussion thread comments chronologically",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add scholarly comment or citation to thread",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/discussions/{threadId}/comments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "discussions",
+                                "{threadId}",
+                                "comments"
+                            ]
+                        },
+                        "description": "Add scholarly comment or citation to thread",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"All classical routes converge upon Yahya; no sound mutaba'ah bypasses him.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Resolve dispute thread with scholarly consensus rationale",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/discussions/{threadId}/resolve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "discussions",
+                                "{threadId}",
+                                "resolve"
+                            ]
+                        },
+                        "description": "Resolve dispute thread with scholarly consensus rationale",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"resolution_notes\": \"Consensus reached: Yahya is the unquestioned Madar al-Isnad.\",\n    \"alternative_interpretation\": \"Minor anomalous claims in al-Daraqutni classified as shadh.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Mark project task as completed",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/tasks/{taskId}/complete",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "tasks",
+                                "{taskId}",
+                                "complete"
+                            ]
+                        },
+                        "description": "Mark project task as completed",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Flag project task as blocked with explicit scholarly rationale",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/tasks/{taskId}/block",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "tasks",
+                                "{taskId}",
+                                "block"
+                            ]
+                        },
+                        "description": "Flag project task as blocked with explicit scholarly rationale",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"blocking_reason\": \"Awaiting high-res manuscript scan from Istanbul library.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Acquire 15-minute exclusive document edit lock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/documents/{docId}/lock",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "documents",
+                                "{docId}",
+                                "lock"
+                            ]
+                        },
+                        "description": "Acquire 15-minute exclusive document edit lock",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Voluntarily release document edit lock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/documents/{docId}/unlock",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "documents",
+                                "{docId}",
+                                "unlock"
+                            ]
+                        },
+                        "description": "Voluntarily release document edit lock",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Notification Center",
+            "item": [
+                {
+                    "name": "Retrieve notifications and unread alert count",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/notifications",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "notifications"
+                            ]
+                        },
+                        "description": "Retrieve notifications and unread alert count",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark specific notification as read",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/notifications/{id}/read",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "{id}",
+                                "read"
+                            ]
+                        },
+                        "description": "Mark specific notification as read",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark all user notifications as read",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/notifications/mark-all-read",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "mark-all-read"
+                            ]
+                        },
+                        "description": "Mark all user notifications as read",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Retrieve user notification digest preferences",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/notifications/preferences",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "preferences"
+                            ]
+                        },
+                        "description": "Retrieve user notification digest preferences",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update notification frequency and channel preferences",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/notifications/preferences",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "notifications",
+                                "preferences"
+                            ]
+                        },
+                        "description": "Update notification frequency and channel preferences",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"notify_invitations\": true,\n    \"notify_discussions\": true,\n    \"notify_tasks\": true,\n    \"notify_mentions\": true,\n    \"notify_exports\": false,\n    \"notify_reviews\": true,\n    \"email_digest\": \"daily\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
         }
     ]
 }

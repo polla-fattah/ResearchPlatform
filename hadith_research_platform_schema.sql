@@ -282,6 +282,9 @@ CREATE TABLE documents (
     title VARCHAR(500) NOT NULL,
     document_type VARCHAR(50) DEFAULT 'article', -- article, dossier, dataset_note
     language VARCHAR(10) DEFAULT 'ar',
+    lock_version INTEGER DEFAULT 1,
+    locked_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    locked_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -309,15 +312,34 @@ CREATE TABLE citations (
 );
 
 -- ----------------------------------------------------------------------------
--- 7. COLLABORATION, DISCUSSIONS & TASKS
+-- 7. COLLABORATION, DISCUSSIONS, TASKS & NOTIFICATIONS (R1b)
 -- ----------------------------------------------------------------------------
+CREATE TABLE project_invitations (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    email VARCHAR(255) NOT NULL,
+    invited_user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(50) NOT NULL, -- co_investigator, contributor, reviewer, observer
+    token VARCHAR(64) NOT NULL UNIQUE,
+    status VARCHAR(50) NOT NULL DEFAULT 'pending', -- pending, accepted, declined, expired, revoked
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    invited_by BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    accepted_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE discussion_threads (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
-    target_type VARCHAR(50) NOT NULL,    -- project, evidence, analysis, finding, document
+    thread_type VARCHAR(50) NOT NULL DEFAULT 'discussion', -- discussion, dispute_review
+    target_type VARCHAR(50) NOT NULL,    -- project, evidence, analysis, finding, document, passage
     target_id BIGINT NOT NULL,
     title VARCHAR(500) NOT NULL,
+    context_quote TEXT,
+    context_locator VARCHAR(255),
+    alternative_interpretation TEXT,
     is_resolved BOOLEAN DEFAULT FALSE,
+    resolution_notes TEXT,
     resolved_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
     resolved_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -345,6 +367,43 @@ CREATE TABLE tasks (
     completed_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE notifications (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL, -- invitation, mention, assignment, review_decision, export_ready
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    target_type VARCHAR(50),
+    target_id BIGINT,
+    is_read BOOLEAN DEFAULT FALSE,
+    read_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_notification_preferences (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    notify_invitations BOOLEAN DEFAULT TRUE,
+    notify_mentions BOOLEAN DEFAULT TRUE,
+    notify_assignments BOOLEAN DEFAULT TRUE,
+    notify_reviews BOOLEAN DEFAULT TRUE,
+    notify_exports BOOLEAN DEFAULT TRUE,
+    email_digest VARCHAR(20) DEFAULT 'instant', -- instant, daily, weekly, never
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE project_activities (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    actor_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    action VARCHAR(100) NOT NULL, -- member_joined, role_changed, member_removed, evidence_added, discussion_opened, task_completed
+    object_type VARCHAR(50) NOT NULL,
+    object_id BIGINT,
+    summary TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ----------------------------------------------------------------------------
