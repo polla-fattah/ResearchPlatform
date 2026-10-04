@@ -28,9 +28,9 @@ class GenerateApiDocs extends Command
             require $scriptPath;
         }
 
-        $this->info("✓ OpenAPI 3.1 JSON: public/docs/openapi.json");
-        $this->info("✓ Postman Collection: public/docs/postman_collection.json");
-        $this->info("✓ Bruno Collection: ResearchPlatform/bruno/");
+        $this->info("✓ OpenAPI 3.1 JSON: docs/api/openapi.json & public/docs/openapi.json");
+        $this->info("✓ Postman Collection: docs/api/OpenHadith_Platform.postman_collection.json");
+        $this->info("✓ Bruno Collection: docs/api/bruno/");
         $this->info("✓ Interactive Browser Docs: http://127.0.0.1:8000/docs");
 
         return Command::SUCCESS;
