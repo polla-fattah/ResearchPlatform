@@ -426,9 +426,14 @@ CREATE TABLE announcements (
 CREATE TABLE submissions (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    parent_submission_id BIGINT REFERENCES submissions(id) ON DELETE SET NULL,
     version_number INTEGER NOT NULL DEFAULT 1,
     title VARCHAR(500) NOT NULL,
     abstract TEXT NOT NULL,
+    keywords JSONB DEFAULT '[]'::jsonb,
+    rights_declaration VARCHAR(100) DEFAULT 'CC-BY-4.0',
+    coi_declared BOOLEAN DEFAULT TRUE,
+    author_response_notes TEXT,
     frozen_package JSONB NOT NULL,
     package_checksum VARCHAR(64) NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'submitted', -- submitted, in_review, revision_requested, approved, rejected
@@ -443,7 +448,10 @@ CREATE TABLE review_assignments (
     submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
     reviewer_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     recommendation VARCHAR(50),          -- approve, request_revisions, reject
+    score INTEGER,                       -- 1-10 scholarly assessment score
     reviewer_notes TEXT,
+    coi_confirmed BOOLEAN DEFAULT FALSE,
+    due_date TIMESTAMP WITH TIME ZONE,
     completed_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uq_submission_reviewer UNIQUE (submission_id, reviewer_id)
@@ -455,6 +463,7 @@ CREATE TABLE editorial_decisions (
     editor_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     decision VARCHAR(50) NOT NULL,       -- approve, request_revisions, reject
     decision_notes TEXT NOT NULL,
+    coi_confirmed BOOLEAN DEFAULT FALSE,
     decided_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -463,11 +472,16 @@ CREATE TABLE publications (
     project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE RESTRICT,
     submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE RESTRICT,
     public_slug VARCHAR(255) NOT NULL UNIQUE,
+    doi VARCHAR(100) UNIQUE,
     title VARCHAR(500) NOT NULL,
     abstract TEXT NOT NULL,
     published_content JSONB NOT NULL,
     version_string VARCHAR(50) NOT NULL DEFAULT '1.0.0',
-    status VARCHAR(50) NOT NULL DEFAULT 'published', -- published, withdrawn
+    license VARCHAR(100) NOT NULL DEFAULT 'CC-BY-4.0',
+    status VARCHAR(50) NOT NULL DEFAULT 'published', -- published, retracted, under_errata_review
+    retraction_reason TEXT,
+    retracted_at TIMESTAMP WITH TIME ZONE,
+    corrigenda JSONB DEFAULT '[]'::jsonb,
     released_by BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     released_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

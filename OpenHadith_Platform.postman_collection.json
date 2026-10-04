@@ -2585,6 +2585,41 @@
                     }
                 },
                 {
+                    "name": "Run pre-publication checks for unresolved evidence, private links, and suspended co-authors",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/validate-pre-publication",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "validate-pre-publication"
+                            ]
+                        },
+                        "description": "Run pre-publication checks for unresolved evidence, private links, and suspended co-authors",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Freeze package and submit for editorial peer review",
                     "request": {
                         "method": "POST",
@@ -2619,7 +2654,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"title\": \"The Anatomy of a Gharīb Bottleneck\",\n    \"abstract\": \"This study examines the transmission bottleneck...\"\n}",
+                            "raw": "{\n    \"title\": \"The Anatomy of a Gharīb Bottleneck\",\n    \"abstract\": \"This study examines the transmission bottleneck...\",\n    \"keywords\": [\n        \"isnād\",\n        \"gharīb\",\n        \"bottleneck\"\n    ],\n    \"rights_declaration\": true,\n    \"coi_declared\": false,\n    \"parent_submission_id\": 1,\n    \"author_response_notes\": \"Addressed reviewer remarks regarding Basran chains.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2738,7 +2773,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"reviewer_id\": 3\n}",
+                            "raw": "{\n    \"reviewer_id\": 3,\n    \"due_date\": \"2026-11-01\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2783,7 +2818,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"recommendation\": \"approve\",\n    \"reviewer_notes\": \"Exemplary methodological contribution.\"\n}",
+                            "raw": "{\n    \"recommendation\": \"approve\",\n    \"reviewer_notes\": \"Exemplary methodological contribution.\",\n    \"score\": 92,\n    \"coi_confirmed\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2828,7 +2863,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"decision\": \"approve\",\n    \"decision_notes\": \"Accepted based on unanimous reviewer consensus.\"\n}",
+                            "raw": "{\n    \"decision\": \"approve\",\n    \"decision_notes\": \"Accepted based on unanimous reviewer consensus.\",\n    \"coi_confirmed\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2873,7 +2908,97 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"public_slug\": \"the-niyyah-tradition-critical-monograph\",\n    \"version_string\": \"1.0.0\"\n}",
+                            "raw": "{\n    \"public_slug\": \"the-niyyah-tradition-critical-monograph\",\n    \"version_string\": \"1.0.0\",\n    \"doi\": \"10.5555\\/hadith.2026.0001\",\n    \"license\": \"CC-BY-4.0\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Publish formal corrigenda / errata amendment",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/editor/publications/{id}/corrigenda",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "editor",
+                                "publications",
+                                "{id}",
+                                "corrigenda"
+                            ]
+                        },
+                        "description": "Publish formal corrigenda / errata amendment",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Correction in Basran chain attribution\",\n    \"content\": \"Amended narrator identity in section 3.2.\",\n    \"affected_section\": \"Section 3.2 - Basran Isnād Analysis\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Retract publication with formal public rationale",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/editor/publications/{id}/retract",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "editor",
+                                "publications",
+                                "{id}",
+                                "retract"
+                            ]
+                        },
+                        "description": "Retract publication with formal public rationale",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"reason\": \"Irreproducible textual collation due to contaminated primary source manuscript.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2929,6 +3054,32 @@
                             ]
                         },
                         "description": "View published peer-reviewed monograph with citations & reviews"
+                    }
+                },
+                {
+                    "name": "Export formatted academic citations (bibtex, ris, apa)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/public/research/{slug}/cite",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "research",
+                                "{slug}",
+                                "cite"
+                            ]
+                        },
+                        "description": "Export formatted academic citations (bibtex, ris, apa)"
                     }
                 }
             ]

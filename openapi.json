@@ -4637,6 +4637,58 @@
                 ]
             }
         },
+        "/projects/{projectId}/validate-pre-publication": {
+            "post": {
+                "summary": "Run pre-publication checks for unresolved evidence, private links, and suspended co-authors",
+                "tags": [
+                    "Announcements & Submissions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
         "/projects/{projectId}/submissions": {
             "post": {
                 "summary": "Freeze package and submit for editorial peer review",
@@ -4705,6 +4757,33 @@
                                     "abstract": {
                                         "type": "string",
                                         "example": "This study examines the transmission bottleneck..."
+                                    },
+                                    "keywords": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "isnād",
+                                            "gharīb",
+                                            "bottleneck"
+                                        ]
+                                    },
+                                    "rights_declaration": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "coi_declared": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "parent_submission_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "author_response_notes": {
+                                        "type": "string",
+                                        "example": "Addressed reviewer remarks regarding Basran chains."
                                     }
                                 }
                             }
@@ -4890,6 +4969,11 @@
                                     "reviewer_id": {
                                         "type": "integer",
                                         "example": 3
+                                    },
+                                    "due_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-11-01"
                                     }
                                 }
                             }
@@ -4971,6 +5055,16 @@
                                     "reviewer_notes": {
                                         "type": "string",
                                         "example": "Exemplary methodological contribution."
+                                    },
+                                    "score": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 100,
+                                        "example": 92
+                                    },
+                                    "coi_confirmed": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }
@@ -5052,6 +5146,10 @@
                                     "decision_notes": {
                                         "type": "string",
                                         "example": "Accepted based on unanimous reviewer consensus."
+                                    },
+                                    "coi_confirmed": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }
@@ -5127,6 +5225,166 @@
                                     "version_string": {
                                         "type": "string",
                                         "default": "1.0.0"
+                                    },
+                                    "doi": {
+                                        "type": "string",
+                                        "example": "10.5555/hadith.2026.0001"
+                                    },
+                                    "license": {
+                                        "type": "string",
+                                        "example": "CC-BY-4.0"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/editor/publications/{id}/corrigenda": {
+            "post": {
+                "summary": "Publish formal corrigenda / errata amendment",
+                "tags": [
+                    "Editorial Review & Publications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "title",
+                                    "content",
+                                    "affected_section"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Correction in Basran chain attribution"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Amended narrator identity in section 3.2."
+                                    },
+                                    "affected_section": {
+                                        "type": "string",
+                                        "example": "Section 3.2 - Basran Isnād Analysis"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/editor/publications/{id}/retract": {
+            "post": {
+                "summary": "Retract publication with formal public rationale",
+                "tags": [
+                    "Editorial Review & Publications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Irreproducible textual collation due to contaminated primary source manuscript."
                                     }
                                 }
                             }
@@ -5223,6 +5481,66 @@
                         "schema": {
                             "type": "string",
                             "example": "the-niyyah-tradition-critical-monograph"
+                        }
+                    }
+                ]
+            }
+        },
+        "/public/research/{slug}/cite": {
+            "get": {
+                "summary": "Export formatted academic citations (bibtex, ris, apa)",
+                "tags": [
+                    "Editorial Review & Publications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "the-niyyah-tradition-critical-monograph"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "bibtex",
+                                "ris",
+                                "apa"
+                            ],
+                            "default": "bibtex"
                         }
                     }
                 ]

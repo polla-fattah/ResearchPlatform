@@ -219,14 +219,19 @@ Every API response returns a predictable envelope format:
 
 | Method | Endpoint | Description | Auth | Requirement |
 | :--- | :--- | :--- | :---: | :--- |
-| `POST` | `/projects/{id}/submissions` | Freeze package & submit for editorial review | Owner | `PUB-01`, `PUB-02` |
-| `GET` | `/editor/submissions` | Editorial review queue (by stage, age) | Editor | `ADM-02` |
-| `POST` | `/editor/submissions/{id}/assign` | Assign nonconflicted peer reviewer | Editor | `PUB-04`, `PUB-05` |
-| `POST` | `/editor/submissions/{id}/review` | Submit review recommendation & comments | Assigned Reviewer | `PUB-04` |
-| `POST` | `/editor/submissions/{id}/decision` | Issue editorial verdict (approve, revise, reject)| Editor | `PUB-03` |
-| `POST` | `/editor/submissions/{id}/release` | Release approved package to public website | Editor | `PUB-07` |
-| `GET` | `/public/research` | Search & browse peer-reviewed research outputs | Public | `PUB-08`, `PUB-09` |
-| `GET` | `/public/research/{slug}` | View published research article, citations, DOI | Public | `PUB-08` |
+| `POST` | `/projects/{id}/validate-pre-publication` | Pre-submission validation (unresolved evidence, private links, co-author checks) | Project Role | `WRT-07`, `PUB-12` |
+| `POST` | `/projects/{id}/submissions` | Freeze package & submit for editorial review (checksum, COI, rights) | Owner | `PUB-01`, `PUB-02` |
+| `GET` | `/projects/{id}/submissions` | List submission and revision history for project | Project Role | `PUB-06` |
+| `GET` | `/editor/submissions` | Editorial review queue (filter by stage, age, action required) | Editor | `ADM-02`, `PUB-03` |
+| `POST` | `/editor/submissions/{id}/assign` | Assign nonconflicted peer reviewer (enforces COI checks) | Editor | `PUB-04`, `PUB-05` |
+| `POST` | `/editor/submissions/{id}/review` | Submit review recommendation, score, comments & COI declaration | Assigned Reviewer | `PUB-04`, `PUB-06` |
+| `POST` | `/editor/submissions/{id}/decision` | Issue editorial verdict (accept, revise, reject; enforces COI) | Editor | `PUB-03`, `PUB-05` |
+| `POST` | `/editor/submissions/{id}/release` | Atomic publication release to catalog with DOI & license | Editor | `PUB-07` |
+| `POST` | `/editor/publications/{id}/corrigenda` | Publish formal corrigenda / errata amendment with audit trail | Editor | `PUB-10` |
+| `POST` | `/editor/publications/{id}/retract` | Retract publication with public notice & reason | Editor | `PUB-11` |
+| `GET` | `/public/research` | Search & browse peer-reviewed research catalog | Public | `PUB-08`, `PUB-09` |
+| `GET` | `/public/research/{slug}` | View published research article, citations, DOI, corrigenda | Public | `PUB-08`, `PUB-10` |
+| `GET` | `/public/research/{slug}/cite` | Export formal citation formats (bibtex, ris, apa) | Public | `PUB-08` |
 
 ---
 
@@ -333,3 +338,55 @@ Response:
   }
 }
 ```
+
+### 4. Pre-Publication Validation (`POST /api/v1/projects/{id}/validate-pre-publication`)
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "can_submit": true,
+    "blocker_count": 0,
+    "warning_count": 0,
+    "issues": []
+  }
+}
+```
+
+### 5. Peer-Reviewed Submission Package Freeze (`POST /api/v1/projects/{id}/submissions`)
+```json
+{
+  "title": "A Collation and Critical Isnad Analysis of Hadith al-Niyyat",
+  "abstract": "This study provides a multi-witness comparison across Hijazi and Iraqi transmission lines...",
+  "keywords": ["isnād", "hadith al-niyyat", "madār", "rijāl"],
+  "rights_declaration": true,
+  "coi_declared": false
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "submission_id": 14,
+    "project_id": 1,
+    "status": "submitted",
+    "version": 1,
+    "package_checksum": "5d41402abc4b2a76b9719d911017c592...",
+    "frozen_at": "2026-10-05T02:00:00Z"
+  }
+}
+```
+
+### 6. Citation Export Formats (`GET /api/v1/public/research/{slug}/cite?format=bibtex`)
+Response:
+```
+@article{fattah2026_hadith_al_niyyat,
+  title = {A Collation and Critical Isnad Analysis of Hadith al-Niyyat},
+  author = {Fattah, Polla},
+  year = {2026},
+  doi = {10.5555/hadith.2026.0001},
+  url = {http://localhost:8000/api/v1/public/research/hadith-al-niyyat-analysis}
+}
+```
+
