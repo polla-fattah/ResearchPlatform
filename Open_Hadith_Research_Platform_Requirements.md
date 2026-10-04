@@ -1,7 +1,7 @@
 # Open Hadith Research Platform — Detailed Development Requirements
 
-**Version:** 0.1 — proposed development baseline  
-**Prepared:** 4 October 2026  
+**Version:** 0.2 — revised development baseline (supersedes v0.1, kept unchanged as `Open_Hadith_Research_Platform_Requirements_v0.1.md`)  
+**Prepared:** 4 October 2026 (v0.1); revised 4 October 2026 (v0.2)  
 **Product:** Research workspace and public research publishing within Open Hadith  
 **Audience:** Product owner, Hadith scholars, designers, software engineers, database engineers, editors, and QA  
 **Status:** Confirmed product decisions plus explicitly identified proposed implementation defaults. This document specifies future behaviour; it does not assert that the prototype already implements it.
@@ -29,6 +29,19 @@
 - [19. Terminology](#19-terminology)
 
 **How to use this document:** Begin with confirmed decisions and proposed defaults, then use requirement IDs in tickets, designs, commits, and QA evidence. Each functional row states a mandatory capability for its assigned release and a minimum acceptance criterion. Quantitative targets and policy defaults remain proposed until the responsible owner accepts them.
+
+## Change log — v0.1 to v0.2
+
+| # | Change | Where |
+|---|---|---|
+| 1 | Release R1 split into **R1a** (personal research), **R1b** (collaboration and announcements), **R1c** (formal publication); each has its own gate | §2.3, §14.4, §15.2, release column of §6 |
+| 2 | Formal publication is gated on a staffed editorial process; announcements are the only public output until then | A12, §15.2, §17 |
+| 3 | R1 editor reduced to structured Markdown with preview; WYSIWYG moved to R2 (new WRT-10) | WRT-03, WRT-10, A13 |
+| 4 | File uploads (LIB-04) and full-book downloads deferred until the rights policy exists; rights (DATA-06) and hosting became R0 exit criteria | A11, LIB-04, §12.3, §15.1, §17 |
+| 5 | Performance and availability numbers marked provisional until the R0 benchmark and hosting decision | §13, NFR-02/04/06/07 |
+| 6 | Single policy module for authorization, delivered in R0/R1a (new SEC-01, SEC-02, AT-25) | §6.13, §14.2, §15.1 |
+| 7 | Small gaps closed: one announcement page per project, TOTP for MFA, split audit retention, abuse and rate limits, input files folder | §7.4, ACC-08, §12.2, ADM-03, §1.2 |
+| 8 | Release gate assignment of acceptance tests; backlog gains a release column; R1a MVP extract and CSV backlog added | §14.4, §15.5, `R1a_MVP.md`, `Backlog.csv` |
 
 ## 1. Purpose and product outcome
 
@@ -61,6 +74,7 @@ C01–C06 were agreed in the preceding discussion. C07–C09 were selected in th
 - The preceding research catalogue supplies examples of investigations. This document does not require every proposed research paper to become a separate feature.
 - Reported volumes of approximately 1.13 million records and 4.9 million transmission edges are planning inputs. Release 0 shall establish actual units, counts, coverage, and data quality.
 - No database credentials or connection secrets belong in this document or implementation fixtures.
+- Source inputs (the `hadiths_v2` ER diagram, table descriptions, and prototype captures) are to be stored in the `inputs/` folder next to this document and cited by filename, so statements here can be checked against them.
 
 ### 1.3 Proposed defaults and matters to validate
 
@@ -75,7 +89,10 @@ C01–C06 were agreed in the preceding discussion. C07–C09 were selected in th
 | A07 | One Open Hadith organization, responsive web application, background workers, and managed file storage | Technical lead |
 | A08 | No billing, marketplace, institution tenancy, or public project-discussion forum in the baseline | Product owner |
 | A09 | No external AI provider receives private content without a separate explicit product consent design | Product/technical leads |
-| A10 | Soft-deletion recovery 30 days; temporary exports expire after 7 days; operational targets in Section 13 | Operations/product leads |
+| A10 | Soft-deletion recovery 30 days; temporary exports expire after 7 days; operational targets in Section 13 are provisional until the R0 benchmark and hosting decision | Operations/product leads |
+| A11 | No file uploads and no full-book downloads in R1a–R1c: metadata, citations, and permitted excerpts only, until the DATA-06 rights policy is approved (uploads then enter at R2) | Product owner / rights lead |
+| A12 | Formal publication (R1c) stays disabled until at least two eligible editors exist and the editorial policy is approved; announcements (R1b) are the only public output until then | Editorial lead |
+| A13 | The R1a writing editor is structured Markdown with live preview and per-block text direction; WYSIWYG editing enters at R2 | Technical lead |
 
 These defaults allow design and backlog preparation to proceed. Items affecting data fidelity and permissions are release gates, not details to infer silently during implementation.
 
@@ -94,11 +111,13 @@ Later integration may extend these areas through separately approved requirement
 ### 2.3 Release notation
 
 - **R0 — Foundation gate:** schema validation, corpus semantics, authorization design, source identity, and migration planning.
-- **R1 — Complete core journey:** accounts, library, projects, collection, repeatable searches, evidence, basic comparisons, collaboration, writing, announcements, reviewed findings, and downloads.
+- **R1a — Personal research core:** accounts and approval, library, multiple private projects, repeatable searches and result sets, evidence, annotations, basic comparisons, structured writing, and personal/project downloads. Single-owner projects.
+- **R1b — Collaboration and public announcements:** project membership and roles, scoped discussion, tasks, notifications, and direct project announcements.
+- **R1c — Formal publication:** submission packages, editorial review, approved immutable releases, public findings pages, and corrections/withdrawal. Starts only when A12 is satisfied.
 - **R2 — Advanced research:** richer isnād/matn analysis, investigation templates, enhanced criticism analysis, reproducible datasets, and additional publication formats.
 - **R3 — Assisted discovery:** evaluated automation, optional AI, advanced visualizations, and documented interoperability.
 
-Numbered functional requirements use **shall** and are mandatory for their assigned release. An R2/R3 requirement must not be implied to exist in R1. Algorithms and physical database designs remain implementation deliverables.
+Numbered functional requirements use **shall** and are mandatory for their assigned release. An R2/R3 requirement must not be implied to exist in R1a–R1c. Algorithms and physical database designs remain implementation deliverables.
 
 ## 3. Users, ownership, and permissions
 
@@ -120,7 +139,7 @@ Numbered functional requirements use **shall** and are mandatory for their assig
 
 A person can hold several roles. Project/publication roles are scoped to their objects. Administrator status alone shall not expose every private workspace during ordinary operation; exceptional support access must be authorized, time-bounded, and audited.
 
-### 3.2 Project permission matrix — R1 defaults
+### 3.2 Project permission matrix — R1b defaults (R1a projects have a single owner)
 
 | Action | Owner | Researcher | Project reviewer | Viewer |
 |---|---|---|---|---|
@@ -138,7 +157,7 @@ A person can hold several roles. Project/publication roles are scoped to their o
 | Archive/trash/restore project | Yes | No | No | No |
 | Approve formal publication | Separate editor role required | Separate editor role required | No | No |
 
-R1 uses fixed roles. Restricted attachments have explicit download rules independent of project role. Custom per-item roles are not required for R1.
+R1b uses fixed roles. Restricted attachments have explicit download rules independent of project role. Custom per-item roles are not required for R1.
 
 ### 3.3 Ownership rules
 
@@ -188,6 +207,8 @@ A public announcement/project page and a publication page expose selected conten
 | Public page | Type/status, authors, approved content, references, versions, downloads |
 | Downloads | Scope, format, job progress, exclusions, manifest, retry/expiry |
 | Administration | Applications, suspension, roles, moderation, audits, quotas/jobs |
+
+Screens appear in the release that delivers their requirements: Collaboration and public announcement pages in R1b; publication preparation, editorial console, and public publication pages in R1c; all others in R1a.
 
 ### 4.5 Interaction rules
 
@@ -242,55 +263,55 @@ Each row is a testable requirement. Acceptance criteria describe minimum observa
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| ACC-01 | R1 | The system shall accept applications with display name, email, research interests, preferred language, and optional affiliation/biography. | Required fields validate; optional academic affiliation is not a mandatory credential; applicant receives a reference/status page. |
-| ACC-02 | R1 | The system shall verify email ownership before an application enters the approval queue. | Expired/used verification links fail safely; repeated requests are rate-limited; an unverified applicant cannot create projects. |
-| ACC-03 | R1 | Administrators shall approve, reject with a reason, or request more information; every decision is attributed and dated. | Pending/rejected accounts cannot call researcher APIs; approval enables the same account without recreating it. |
-| ACC-04 | R1 | The system shall support secure login, logout, session expiry, password recovery, and session revocation. | Recovery does not reveal whether an email is registered; revoked sessions fail on the next protected request. |
-| ACC-05 | R1 | Approved accounts shall have personal home, library, owned/shared projects, notification preferences, and downloads. | Two accounts see their own data; owning one project imposes no one-project limitation. |
-| ACC-06 | R1 | Researchers shall control public profile fields independently of private account data. | Email is private by default; opting into a public profile exposes only selected fields and public research. |
-| ACC-07 | R1 | Administrators shall suspend/reactivate access with an audit reason; researchers may request account closure. | Suspension blocks new writes/shares/downloads; data is retained for resolution; closure handles owned projects and existing publications explicitly. |
-| ACC-08 | R1 | Administrative and editorial accounts shall use multi-factor authentication; researchers shall be offered it. | A privileged action requires a fully authenticated session; recovery events are audited. |
+| ACC-01 | R1a | The system shall accept applications with display name, email, research interests, preferred language, and optional affiliation/biography. | Required fields validate; optional academic affiliation is not a mandatory credential; applicant receives a reference/status page. |
+| ACC-02 | R1a | The system shall verify email ownership before an application enters the approval queue. | Expired/used verification links fail safely; repeated requests are rate-limited; an unverified applicant cannot create projects. |
+| ACC-03 | R1a | Administrators shall approve, reject with a reason, or request more information; every decision is attributed and dated. | Pending/rejected accounts cannot call researcher APIs; approval enables the same account without recreating it. |
+| ACC-04 | R1a | The system shall support secure login, logout, session expiry, password recovery, and session revocation. | Recovery does not reveal whether an email is registered; revoked sessions fail on the next protected request. |
+| ACC-05 | R1a | Approved accounts shall have personal home, library, owned/shared projects, notification preferences, and downloads. | Two accounts see their own data; owning one project imposes no one-project limitation. |
+| ACC-06 | R1a | Researchers shall control public profile fields independently of private account data. | Email is private by default; opting into a public profile exposes only selected fields and public research. |
+| ACC-07 | R1a | Administrators shall suspend/reactivate access with an audit reason; researchers may request account closure. | Suspension blocks new writes/shares/downloads; data is retained for resolution; closure handles owned projects and existing publications explicitly. |
+| ACC-08 | R1a | Administrative and editorial accounts shall use multi-factor authentication (TOTP with single-use recovery codes in R1a; other methods later); researchers shall be offered it. | A privileged action requires a fully authenticated session; recovery events are audited. |
 
 ### 6.2 Personal library and resource management
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| LIB-01 | R1 | Researchers shall save books, chapters, sections, reports, occurrences, chains, narrators, judgments, and source passages from the corpus. | Save/open preserves exact object type and ID; a report occurrence is distinguishable from a report-level record. |
-| LIB-02 | R1 | My Library shall support named collections, tags, favourites, personal notes, search, and filtering by type/source/date. | An item may appear in multiple collections without duplicating the canonical record. |
-| LIB-03 | R1 | Researchers shall add an external bibliographical reference with URL or identifiers, author, title, date where known, and access date. | An incomplete citation is permitted and visibly flagged; unknown metadata is not fabricated. |
-| LIB-04 | R1 | Researchers shall upload permitted supporting files with type, size, ownership/rights statement, and description. | Pending scans are inaccessible; unsupported files are rejected clearly; attachment metadata remains available after a failed upload for retry. |
-| LIB-05 | R1 | Researchers shall add a personal item to one or more projects with an explicit preview of shared content. | Private notes are unchecked by default; a collaborator sees only the selected shared content. |
-| LIB-06 | R1 | Project resources shall have project-local tags, inclusion rationale, and collection membership independent of My Library. | Changing a project tag does not rename a personal tag or modify another project's association. |
-| LIB-07 | R1 | Duplicate additions shall identify an existing association while allowing distinct excerpts from the same source. | Saving the same book twice prompts reuse; saving two different page passages produces two identifiable excerpts. |
-| LIB-08 | R1 | Source unavailability or changes shall not silently destroy saved research references. | A deleted/merged/changed corpus target shows a status and preserved permitted snapshot; the original saved locator remains visible. |
-| LIB-09 | R1 | Removing a library association shall not delete its source or another project's resource. | Removing a personal favourite leaves previously shared project evidence intact. |
+| LIB-01 | R1a | Researchers shall save books, chapters, sections, reports, occurrences, chains, narrators, judgments, and source passages from the corpus. | Save/open preserves exact object type and ID; a report occurrence is distinguishable from a report-level record. |
+| LIB-02 | R1a | My Library shall support named collections, tags, favourites, personal notes, search, and filtering by type/source/date. | An item may appear in multiple collections without duplicating the canonical record. |
+| LIB-03 | R1a | Researchers shall add an external bibliographical reference with URL or identifiers, author, title, date where known, and access date. | An incomplete citation is permitted and visibly flagged; unknown metadata is not fabricated. |
+| LIB-04 | R2 | Once the DATA-06 rights policy is approved, researchers shall upload permitted supporting files with type, size, ownership/rights statement, and description. | Pending scans are inaccessible; unsupported files are rejected clearly; attachment metadata remains available after a failed upload for retry. |
+| LIB-05 | R1a | Researchers shall add a personal item to one or more projects with an explicit preview of shared content. | Private notes are unchecked by default; a collaborator sees only the selected shared content. |
+| LIB-06 | R1a | Project resources shall have project-local tags, inclusion rationale, and collection membership independent of My Library. | Changing a project tag does not rename a personal tag or modify another project's association. |
+| LIB-07 | R1a | Duplicate additions shall identify an existing association while allowing distinct excerpts from the same source. | Saving the same book twice prompts reuse; saving two different page passages produces two identifiable excerpts. |
+| LIB-08 | R1a | Source unavailability or changes shall not silently destroy saved research references. | A deleted/merged/changed corpus target shows a status and preserved permitted snapshot; the original saved locator remains visible. |
+| LIB-09 | R1a | Removing a library association shall not delete its source or another project's resource. | Removing a personal favourite leaves previously shared project evidence intact. |
 | LIB-10 | R2 | Researchers shall import references from documented BibTeX/RIS formats with preview and duplicate handling. | Invalid entries are reported individually; valid entries can be imported without silently overwriting existing references. |
 
 ### 6.3 Multiple projects and project lifecycle
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| PRJ-01 | R1 | Approved researchers shall create multiple projects, each with a unique ID, title, question, scope, language, owner, and private workspace. | Creating Project B neither changes Project A nor shares its resources or members. |
-| PRJ-02 | R1 | The project index shall distinguish owned/shared projects and filter by stage, tag, title, archived state, and recent activity. | A membership invitation does not show the workspace until accepted; a removed project disappears from the former member's list. |
-| PRJ-03 | R1 | Every project shall contain independently scoped resources, queries, evidence, analyses, tasks, discussions, findings, documents, and publication records. | Direct API requests cannot use an authorized project ID to retrieve an item belonging to a different project. |
-| PRJ-04 | R1 | Projects shall use explicit stages: scoping, collecting, analysing, writing, reviewing, completed. Archived state shall be separate. | Owners can move backwards with an activity entry; archiving an unfinished project does not mark it completed. |
-| PRJ-05 | R1 | Project overview shall expose scope, milestones, evidence counts by state, open questions, and next actions. | Numerical progress identifies its denominator or manual-estimate basis. |
-| PRJ-06 | R1 | Authorized researchers shall copy selected resources, queries, and analyses into another project with provenance and a visibility preview. | Membership, private comments, and publication authority are not copied; changes in the destination do not mutate the source project. |
-| PRJ-07 | R1 | Owners shall transfer ownership, archive/unarchive, or soft-delete/restore a project. | Transfer requires acceptance; a trashed project is read-only during recovery and does not silently remove a public publication. |
+| PRJ-01 | R1a | Approved researchers shall create multiple projects, each with a unique ID, title, question, scope, language, owner, and private workspace. | Creating Project B neither changes Project A nor shares its resources or members. |
+| PRJ-02 | R1a | The project index shall distinguish owned/shared projects and filter by stage, tag, title, archived state, and recent activity. | A membership invitation does not show the workspace until accepted; a removed project disappears from the former member's list. |
+| PRJ-03 | R1a | Every project shall contain independently scoped resources, queries, evidence, analyses, tasks, discussions, findings, documents, and publication records. | Direct API requests cannot use an authorized project ID to retrieve an item belonging to a different project. |
+| PRJ-04 | R1a | Projects shall use explicit stages: scoping, collecting, analysing, writing, reviewing, completed. Archived state shall be separate. | Owners can move backwards with an activity entry; archiving an unfinished project does not mark it completed. |
+| PRJ-05 | R1a | Project overview shall expose scope, milestones, evidence counts by state, open questions, and next actions. | Numerical progress identifies its denominator or manual-estimate basis. |
+| PRJ-06 | R1a | Authorized researchers shall copy selected resources, queries, and analyses into another project with provenance and a visibility preview. | Membership, private comments, and publication authority are not copied; changes in the destination do not mutate the source project. |
+| PRJ-07 | R1a | Owners shall transfer ownership (available from R1b, when memberships exist), archive/unarchive, or soft-delete/restore a project. | Transfer requires acceptance; a trashed project is read-only during recovery and does not silently remove a public publication. |
 | PRJ-08 | R2 | Project creation shall offer takhrīj, narrator study, grading comparison, and ʿilal investigation templates. | Each template provides editable questions, fields, and milestones; blank projects remain available. |
 
 ### 6.4 Corpus search, saved queries, and result sets
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| SEA-01 | R1 | Search shall support original-text exact phrase and normalized lexical modes with mode visibly identified. | Exact and normalized results can differ; highlights point to the original text; original Arabic/Sorani wording is never overwritten. |
-| SEA-02 | R1 | Search shall support typed filters for book/author/chapter/section, report type, narrator, known chain relationship, critic, recorded hukm, and available dates. | Unsupported or incomplete fields are labelled; unknown dates can be included explicitly rather than silently excluded. |
-| SEA-03 | R1 | Results shall show type, source locator, relevant passage, available chain information, and why the item matched. | Counts state whether they represent reports or occurrences; grouped results can expand to source occurrences. |
-| SEA-04 | R1 | Researchers shall save a named query with text, filter structure, mode, sort, and personal/project scope. | Reopening reconstructs the query; sharing a project query does not expose unrelated personal searches. |
-| SEA-05 | R1 | Every saved-query execution shall record execution time, query-definition version, corpus/index identity, result count, and completion status. | A partial/cancelled search is not labelled complete; rerunning creates a separate run record. |
-| SEA-06 | R1 | Researchers shall preserve selected results or all results from a completed run as a result set with immutable membership. | “All results” includes all matched pages at that run; limits/truncation are explicit and require a deliberate reduced selection. |
-| SEA-07 | R1 | Result-set membership and saved evidence shall remain stable when the live corpus changes. | A subsequent run can differ without silently adding/removing members of the earlier set. |
-| SEA-08 | R1 | Researchers shall review selected results individually or in bulk and add them to project resources/evidence. | Bulk operations return per-item outcomes, preserve provenance, and do not create unnoticed duplicates. |
+| SEA-01 | R1a | Search shall support original-text exact phrase and normalized lexical modes with mode visibly identified. | Exact and normalized results can differ; highlights point to the original text; original Arabic/Sorani wording is never overwritten. |
+| SEA-02 | R1a | Search shall support typed filters for book/author/chapter/section, report type, narrator, known chain relationship, critic, recorded hukm, and available dates. | Unsupported or incomplete fields are labelled; unknown dates can be included explicitly rather than silently excluded. |
+| SEA-03 | R1a | Results shall show type, source locator, relevant passage, available chain information, and why the item matched. | Counts state whether they represent reports or occurrences; grouped results can expand to source occurrences. |
+| SEA-04 | R1a | Researchers shall save a named query with text, filter structure, mode, sort, and personal/project scope. | Reopening reconstructs the query; sharing a project query does not expose unrelated personal searches. |
+| SEA-05 | R1a | Every saved-query execution shall record execution time, query-definition version, corpus/index identity, result count, and completion status. | A partial/cancelled search is not labelled complete; rerunning creates a separate run record. |
+| SEA-06 | R1a | Researchers shall preserve selected results or all results from a completed run as a result set with immutable membership. | “All results” includes all matched pages at that run; limits/truncation are explicit and require a deliberate reduced selection. |
+| SEA-07 | R1a | Result-set membership and saved evidence shall remain stable when the live corpus changes. | A subsequent run can differ without silently adding/removing members of the earlier set. |
+| SEA-08 | R1a | Researchers shall review selected results individually or in bulk and add them to project resources/evidence. | Bulk operations return per-item outcomes, preserve provenance, and do not create unnoticed duplicates. |
 | SEA-09 | R2 | The system shall compare runs and show added/removed/changed results when stable identities permit. | Changed records are distinguished from new records; missing historical coverage is reported. |
 | SEA-10 | R2 | Researchers shall opt into scheduled reruns and notifications of relevant changes. | Disabled schedules stop; notification recipients must still have access; repeated unchanged runs do not generate duplicate alerts. |
 | SEA-11 | R3 | Optional semantic retrieval shall label algorithm/model version and separate suggested relevance from confirmed report-family membership. | Suggestions can be accepted/rejected; lexical search remains available independently. |
@@ -299,24 +320,24 @@ Each row is a testable requirement. Acceptance criteria describe minimum observa
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| EVI-01 | R1 | Researchers shall create evidence from an exact source span or record, retaining original text, locator, source version/snapshot, collector, and timestamp. | A citation opens the precise selected source where available; missing volume/page is labelled incomplete. |
-| EVI-02 | R1 | Evidence shall support candidate, included, reviewed, excluded, and unresolved states, with reasons for exclusion and unresolved status. | State changes are attributed; reviewed does not imply authentic, correct, or agreed. |
-| EVI-03 | R1 | Annotations shall distinguish source quotation, personal interpretation, attributed scholarly judgment, and machine suggestion. | Export and public preview preserve these labels; unaccepted machine text cannot appear as an attributed scholar statement. |
-| EVI-04 | R1 | Annotations shall support private-to-author or project-shared visibility, with explicit promotion from private to shared. | Owners and publication reviewers cannot read another author's private annotations through exports, search, or document links. |
-| EVI-05 | R1 | Evidence shall link to findings as supporting, opposing, contextual, or unresolved evidence. | One item can support several findings without duplicating its source; opposite interpretations remain possible. |
-| EVI-06 | R1 | Deleting or changing referenced evidence shall report dependencies and preserve prior document/submission versions. | A user is warned before removing a used link; a published citation does not silently change its quoted content. |
-| EVI-07 | R1 | Researchers shall propose corpus corrections with the current value, proposed value, evidence, and explanation. | Proposal enters a separate corpus-editor queue; acceptance in a research project does not update canonical data. |
+| EVI-01 | R1a | Researchers shall create evidence from an exact source span or record, retaining original text, locator, source version/snapshot, collector, and timestamp. | A citation opens the precise selected source where available; missing volume/page is labelled incomplete. |
+| EVI-02 | R1a | Evidence shall support candidate, included, reviewed, excluded, and unresolved states, with reasons for exclusion and unresolved status. | State changes are attributed; reviewed does not imply authentic, correct, or agreed. |
+| EVI-03 | R1a | Annotations shall distinguish source quotation, personal interpretation, attributed scholarly judgment, and machine suggestion. | Export and public preview preserve these labels; unaccepted machine text cannot appear as an attributed scholar statement. |
+| EVI-04 | R1a | Annotations shall support private-to-author or project-shared visibility, with explicit promotion from private to shared. | Owners and publication reviewers cannot read another author's private annotations through exports, search, or document links. |
+| EVI-05 | R1a | Evidence shall link to findings as supporting, opposing, contextual, or unresolved evidence. | One item can support several findings without duplicating its source; opposite interpretations remain possible. |
+| EVI-06 | R1a | Deleting or changing referenced evidence shall report dependencies and preserve prior document/submission versions. | A user is warned before removing a used link; a published citation does not silently change its quoted content. |
+| EVI-07 | R1a | Researchers shall propose corpus corrections with the current value, proposed value, evidence, and explanation. | Proposal enters a separate corpus-editor queue; acceptance in a research project does not update canonical data. |
 | EVI-08 | R2 | Researchers shall record structured historical assertions with alternatives, uncertainty, source, and adjudication. | Estimated dates/identities remain distinguishable from attested statements and retain competing alternatives. |
 
 ### 6.6 Research analysis workbench
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| ANA-01 | R1 | Researchers shall open a saved side-by-side comparison of selected source occurrences with source headers and annotation links. | Original wording is visible; lacking occurrence-specific wording produces a limitation notice rather than invented variants. |
-| ANA-02 | R1 | Researchers shall compare selected chains as readable ordered lists with narrator and formula inspection. | Unresolved ordering is displayed as uncertain; narrator clicks open the correct identity or ambiguity record. |
-| ANA-03 | R1 | A narrator dossier shall combine identity fields, available teachers/students, related reports, and attributed criticism. | Every assessment links to its available source; missing information is labelled unknown. |
-| ANA-04 | R1 | A criticism comparison shall filter by target narrator, critic, expression, book, and recorded category while preserving exact qawl text. | Different critics' wording is not replaced by a single numerical score; normalized labels remain separate. |
-| ANA-05 | R1 | Analyses shall save their input IDs/versions, settings, creator, time, annotations, and output version. | Reopening restores the selected inputs; rerunning against changed data creates a new analysis version. |
+| ANA-01 | R1a | Researchers shall open a saved side-by-side comparison of selected source occurrences with source headers and annotation links. | Original wording is visible; lacking occurrence-specific wording produces a limitation notice rather than invented variants. |
+| ANA-02 | R1a | Researchers shall compare selected chains as readable ordered lists with narrator and formula inspection. | Unresolved ordering is displayed as uncertain; narrator clicks open the correct identity or ambiguity record. |
+| ANA-03 | R1a | A narrator dossier shall combine identity fields, available teachers/students, related reports, and attributed criticism. | Every assessment links to its available source; missing information is labelled unknown. |
+| ANA-04 | R1a | A criticism comparison shall filter by target narrator, critic, expression, book, and recorded category while preserving exact qawl text. | Different critics' wording is not replaced by a single numerical score; normalized labels remain separate. |
+| ANA-05 | R1a | Analyses shall save their input IDs/versions, settings, creator, time, annotations, and output version. | Reopening restores the selected inputs; rerunning against changed data creates a new analysis version. |
 | ANA-06 | R2 | Matn comparison shall offer alignment and addition/omission/substitution highlighting with adjustable normalization. | Users can see unnormalized text and correct alignment; a difference is not automatically labelled a defect. |
 | ANA-07 | R2 | Isnād analysis shall show shared nodes, branching, convergence, and formulas, with chain-list and graph views. | Traversal is bounded; edge direction and selected sources remain visible; a graphic cannot invent missing intermediaries. |
 | ANA-08 | R2 | The workbench shall support candidate Hadith-family grouping and shawāhid/mutābaʿāt collection with researcher-assigned relationship types. | Algorithmic candidates and scholar-reviewed memberships remain separately labelled. |
@@ -331,72 +352,73 @@ Each row is a testable requirement. Acceptance criteria describe minimum observa
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| COL-01 | R1 | Owners shall invite approved accounts to project roles; invitations expire and require acceptance. | Unapproved invitees complete approval first; an invitation alone reveals no private project evidence. |
-| COL-02 | R1 | Owners shall change/revoke roles; authorization shall apply immediately to subsequent requests and queued jobs. | Removed users cannot read content through old URLs, cached API responses, or newly completed export links. |
-| COL-03 | R1 | Discussions shall attach to a project, evidence item, source span, analysis, finding, or document passage. | Opening a comment reveals its target/context; private targets cannot notify unauthorized recipients. |
-| COL-04 | R1 | Tasks shall have title, assignee, context link, due date when used, and open/in-progress/blocked/done states. | Only eligible members can be assigned; completing a task does not automatically resolve a scholarly disagreement. |
-| COL-05 | R1 | Notifications shall cover invitations, mentions, assignments, review decisions, and export completion with personal preferences. | In-app notifications are available; email links require authorization and avoid including private passages. |
-| COL-06 | R1 | Shared edits shall retain author/time/version and prevent silent overwriting of concurrent changes. | A stale editor is shown a conflict and can compare/recover their text; real-time simultaneous editing is not required for R1. |
-| COL-07 | R1 | Review threads shall allow resolved/unresolved states, reasons, and retained alternative interpretations. | Resolving a thread preserves its history; project decisions identify who made them. |
-| COL-08 | R1 | Research activity shall be filterable by actor, object, and action without exposing private notes. | Project members see relevant shared changes; security audit fields are restricted. |
+| COL-01 | R1b | Owners shall invite approved accounts to project roles; invitations expire and require acceptance. | Unapproved invitees complete approval first; an invitation alone reveals no private project evidence. |
+| COL-02 | R1b | Owners shall change/revoke roles; authorization shall apply immediately to subsequent requests and queued jobs. | Removed users cannot read content through old URLs, cached API responses, or newly completed export links. |
+| COL-03 | R1b | Discussions shall attach to a project, evidence item, source span, analysis, finding, or document passage. | Opening a comment reveals its target/context; private targets cannot notify unauthorized recipients. |
+| COL-04 | R1b | Tasks shall have title, assignee, context link, due date when used, and open/in-progress/blocked/done states. | Only eligible members can be assigned; completing a task does not automatically resolve a scholarly disagreement. |
+| COL-05 | R1b | Notifications shall cover invitations, mentions, assignments, review decisions, and export completion with personal preferences. | In-app notifications are available; email links require authorization and avoid including private passages. |
+| COL-06 | R1b | Shared edits shall retain author/time/version and prevent silent overwriting of concurrent changes. | A stale editor is shown a conflict and can compare/recover their text; real-time simultaneous editing is not required for R1. |
+| COL-07 | R1b | Review threads shall allow resolved/unresolved states, reasons, and retained alternative interpretations. | Resolving a thread preserves its history; project decisions identify who made them. |
+| COL-08 | R1b | Research activity shall be filterable by actor, object, and action without exposing private notes. | Project members see relevant shared changes; security audit fields are restricted. |
 
 ### 6.8 Findings, documents, and citations
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| WRT-01 | R1 | Findings shall contain a title/question, claim or conclusion, reasoning, supporting/opposing evidence, limitations, contributors, and status. | A finding can be provisional or inconclusive; missing required public-submission fields are reported before submission. |
-| WRT-02 | R1 | Projects shall support multiple documents and multiple findings, with many-to-many links between them. | A main article and a chain summary are separate documents; editing one document creates a version, not another unrelated draft. |
-| WRT-03 | R1 | The editor shall support headings, paragraphs, lists, tables, quotations, footnotes/citations, Arabic/Sorani/English text, and autosave. | Mixed-direction text and citations survive save/reload/export; last successful save and unsaved state are visible. |
-| WRT-04 | R1 | Inserting evidence into writing shall create an explicit citation and retain original versus researcher-edited text. | Paraphrase is not presented as an exact quotation; deleting a bibliography entry reports dependent citations. |
-| WRT-05 | R1 | Documents shall support version history, comparison, and restoration without deleting subsequent history. | Restoring an older version creates a new current version; attribution of earlier contributions remains. |
-| WRT-06 | R1 | Citation generation shall use source metadata including work, edition, volume/page or stable alternative locator, and source-specific report number where available. | Missing components are flagged; the system does not confuse source numbering with global report IDs. |
-| WRT-07 | R1 | The writer shall distinguish internal private/project links from publicly resolvable references before publication. | A private evidence link blocks direct public exposure until a permitted public citation/excerpt is selected or the dependency is removed. |
+| WRT-01 | R1a | Findings shall contain a title/question, claim or conclusion, reasoning, supporting/opposing evidence, limitations, contributors, and status. | A finding can be provisional or inconclusive; missing required public-submission fields are reported before submission. |
+| WRT-02 | R1a | Projects shall support multiple documents and multiple findings, with many-to-many links between them. | A main article and a chain summary are separate documents; editing one document creates a version, not another unrelated draft. |
+| WRT-03 | R1a | The R1a editor shall be a structured Markdown editor with live preview supporting headings, paragraphs, lists, tables, quotations, footnotes/citations, per-block text direction for Arabic/Sorani/English, and autosave. | Mixed-direction text and citations survive save/reload/export; last successful save and unsaved state are visible. |
+| WRT-04 | R1a | Inserting evidence into writing shall create an explicit citation and retain original versus researcher-edited text. | Paraphrase is not presented as an exact quotation; deleting a bibliography entry reports dependent citations. |
+| WRT-05 | R1a | Documents shall support version history, comparison, and restoration without deleting subsequent history. | Restoring an older version creates a new current version; attribution of earlier contributions remains. A stale save from a second session of the same user is rejected as a conflict. |
+| WRT-06 | R1a | Citation generation shall use source metadata including work, edition, volume/page or stable alternative locator, and source-specific report number where available. | Missing components are flagged; the system does not confuse source numbering with global report IDs. |
+| WRT-07 | R1c | The writer shall distinguish internal private/project links from publicly resolvable references before publication. | A private evidence link blocks direct public exposure until a permitted public citation/excerpt is selected or the dependency is removed. |
 | WRT-08 | R2 | Findings shall support structured argument relationships, including objection, reply, qualification, and alternative conclusion. | Users can inspect the original source behind a reasoning node and export the argument structure. |
 | WRT-09 | R2 | Reproducible dataset outputs shall record selection rules, exclusions, labels, data dictionary, source snapshot, and version. | A released dataset identifies included records and applicable redistribution conditions. |
+| WRT-10 | R2 | The editor shall offer rich-text (WYSIWYG) editing of the same document model without altering stored citations or text direction. | Documents round-trip between Markdown and rich-text modes without loss of citations, quotations, or direction markers. |
 
 ### 6.9 Project announcements
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| ANN-01 | R1 | Owners shall draft and directly publish an announcement from a project without editorial preapproval. | An approved researcher owning a project can publish a valid announcement; nonowners cannot. |
-| ANN-02 | R1 | Announcements shall contain public title, question/summary, scope, research stage, keywords, credited participants who consent, and optional collaboration contact mechanism. | Public preview excludes private notes, tasks, library items, email addresses, and workspace membership by default. |
-| ANN-03 | R1 | Announcements shall be explicitly labelled as project announcements/ongoing research and not peer-reviewed findings. | Public listings and detail pages show the type; announcement forms do not substitute for formal publication submission. |
-| ANN-04 | R1 | Owners shall update or unpublish announcements, with retained internal history; administrators may moderate them with recorded reasons. | Unpublishing removes public content from feeds/search; the private project survives; public caches are invalidated. |
-| ANN-05 | R1 | Public announcements shall have stable URLs and optional links to later publications from the same project. | A linked publication reveals only its released content; users cannot derive workspace access from the project URL. |
+| ANN-01 | R1b | Owners shall draft and directly publish an announcement from a project without editorial preapproval. | An approved researcher owning a project can publish a valid announcement; nonowners cannot. |
+| ANN-02 | R1b | Announcements shall contain public title, question/summary, scope, research stage, keywords, credited participants who consent, and optional collaboration contact mechanism. | Public preview excludes private notes, tasks, library items, email addresses, and workspace membership by default. |
+| ANN-03 | R1b | Announcements shall be explicitly labelled as project announcements/ongoing research and not peer-reviewed findings. | Public listings and detail pages show the type; announcement forms do not substitute for formal publication submission. |
+| ANN-04 | R1b | Owners shall update or unpublish announcements, with retained internal history; administrators may moderate them with recorded reasons. | Unpublishing removes public content from feeds/search; the private project survives; public caches are invalidated. |
+| ANN-05 | R1b | Public announcements shall have stable URLs and optional links to later publications from the same project. | A linked publication reveals only its released content; users cannot derive workspace access from the project URL. |
 | ANN-06 | R2 | Visitors with verified accounts shall send collaboration-interest requests through a controlled form. | Requests reveal only sender-selected details; acceptance is followed by explicit project invitation and approval checks. |
 
 ### 6.10 Formal review and website publication
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| PUB-01 | R1 | Owners shall assemble a submission from selected findings/documents, authors, abstract, keywords, citations, eligible attachments, and a visibility/rights declaration. | A preview lists every public component and every internal dependency needing resolution. |
-| PUB-02 | R1 | Submission shall freeze an immutable package version while private research may continue separately. | Editing the working document after submission does not change the editor's package. |
-| PUB-03 | R1 | Editors shall triage submissions, request revisions, reject with a reason, or approve an exact package version. | Only editor-authorized transitions succeed; the owner cannot approve their own submission merely through owner permissions. |
-| PUB-04 | R1 | Editors shall assign at least one publication reviewer before approving formal findings under the default workflow. | Reviewers access only the assigned package; a recorded review and editor decision identify the reviewed version. |
-| PUB-05 | R1 | Conflict-of-interest declarations shall prevent authors from acting as the deciding editor/reviewer of their own submission. | A conflicted editor must route the submission to another eligible editor; no eligible editor leaves it pending rather than bypassing review. |
-| PUB-06 | R1 | Revision requests shall generate new submission versions with responses and preserved prior reviews. | Approval of an earlier package cannot publish changed content from a later package. |
-| PUB-07 | R1 | Approved packages shall publish only through an explicit editor release action. | Approval alone leaves the item unpublished; release creates a stable public page, version, timestamp, and audit entry atomically. |
-| PUB-08 | R1 | Public research pages shall show output type, title, abstract, authors, review-status label, content, citations, publication/version dates, limitations, and eligible downloads. | Visitors can inspect permitted evidence without accessing private project discussions. |
-| PUB-09 | R1 | Public research shall be discoverable by title, author, topic, type, language, and date, with separate announcement/results filters. | Private or review-only material never appears in public search, suggestions, feeds, or metadata. |
-| PUB-10 | R1 | Corrections and substantive revisions shall retain released versions and pass the relevant review workflow. | Public corrections identify changes; released source quotations cannot be silently overwritten. |
-| PUB-11 | R1 | Withdrawal/retraction shall preserve a public status notice and history except where a justified content-removal process requires removal. | Visitors see current status; a withdrawn item is not displayed as an active approved finding. |
-| PUB-12 | R1 | Author credit, source rights, and public licensing choices shall be confirmed before release. | Unapproved participant names and restricted full-text files are blocked from publication; reference metadata can remain where permitted. |
+| PUB-01 | R1c | Owners shall assemble a submission from selected findings/documents, authors, abstract, keywords, citations, eligible attachments, and a visibility/rights declaration. | A preview lists every public component and every internal dependency needing resolution. |
+| PUB-02 | R1c | Submission shall freeze an immutable package version while private research may continue separately. | Editing the working document after submission does not change the editor's package. |
+| PUB-03 | R1c | Editors shall triage submissions, request revisions, reject with a reason, or approve an exact package version. | Only editor-authorized transitions succeed; the owner cannot approve their own submission merely through owner permissions. |
+| PUB-04 | R1c | Editors shall assign at least one publication reviewer before approving formal findings under the default workflow. | Reviewers access only the assigned package; a recorded review and editor decision identify the reviewed version. |
+| PUB-05 | R1c | Conflict-of-interest declarations shall prevent authors from acting as the deciding editor/reviewer of their own submission. | A conflicted editor must route the submission to another eligible editor; no eligible editor leaves it pending rather than bypassing review. |
+| PUB-06 | R1c | Revision requests shall generate new submission versions with responses and preserved prior reviews. | Approval of an earlier package cannot publish changed content from a later package. |
+| PUB-07 | R1c | Approved packages shall publish only through an explicit editor release action. | Approval alone leaves the item unpublished; release creates a stable public page, version, timestamp, and audit entry atomically. |
+| PUB-08 | R1c | Public research pages shall show output type, title, abstract, authors, review-status label, content, citations, publication/version dates, limitations, and eligible downloads. | Visitors can inspect permitted evidence without accessing private project discussions. |
+| PUB-09 | R1c | Public research shall be discoverable by title, author, topic, type, language, and date, with separate announcement/results filters. | Private or review-only material never appears in public search, suggestions, feeds, or metadata. |
+| PUB-10 | R1c | Corrections and substantive revisions shall retain released versions and pass the relevant review workflow. | Public corrections identify changes; released source quotations cannot be silently overwritten. |
+| PUB-11 | R1c | Withdrawal/retraction shall preserve a public status notice and history except where a justified content-removal process requires removal. | Visitors see current status; a withdrawn item is not displayed as an active approved finding. |
+| PUB-12 | R1c | Author credit, source rights, and public licensing choices shall be confirmed before release. | Unapproved participant names and restricted full-text files are blocked from publication; reference metadata can remain where permitted. |
 | PUB-13 | R2 | Approved datasets, annotated collections, and structured dossiers shall have type-specific public presentations and versioned downloads. | A dataset identifies schema/version; a dossier retains source-linked evidence; neither is forced into an article-only layout. |
 
 ### 6.11 Downloads, portability, and offline access
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| EXP-01 | R1 | Researchers shall download a document, selected resources, an entire project, or all currently authorized research across their account. | Account-wide export supports multiple projects; scope preview shows personal and shared material separately. |
-| EXP-02 | R1 | Complete project exports shall include metadata, resources, saved queries/runs/result sets, evidence, analyses, tasks/discussions, findings/documents, citations, eligible revision histories, research activity, and permitted attachments. | Private-to-other-user content is excluded; the manifest enumerates included objects and explains unavailable/omitted files. |
-| EXP-03 | R1 | Account-wide export shall include personal library/notes and each selected authorized project's shared research plus the requester's applicable private annotations. | It does not include other members' personal libraries, private notes, credentials, or operational security logs. |
-| EXP-04 | R1 | Exports shall offer human-readable HTML/Markdown, Unicode JSON, CSV for tabular data, BibTeX/RIS references, PDF for selected documents, and ZIP packages. | A package opens offline with a local index; Arabic/Sorani render in PDF; references retain stable IDs. |
+| EXP-01 | R1a | Researchers shall download a document, selected resources, an entire project, or all currently authorized research across their account. | Account-wide export supports multiple projects; scope preview shows personal and shared material separately. |
+| EXP-02 | R1a | Complete project exports shall include metadata, resources, saved queries/runs/result sets, evidence, analyses, tasks/discussions, findings/documents, citations, eligible revision histories, research activity, and permitted attachments. | Private-to-other-user content is excluded; the manifest enumerates included objects and explains unavailable/omitted files. |
+| EXP-03 | R1a | Account-wide export shall include personal library/notes and each selected authorized project's shared research plus the requester's applicable private annotations. | It does not include other members' personal libraries, private notes, credentials, or operational security logs. |
+| EXP-04 | R1a | Exports shall offer human-readable HTML/Markdown, Unicode JSON, CSV for tabular data, BibTeX/RIS references, PDF for selected documents, and ZIP packages. | A package opens offline with a local index; Arabic/Sorani render in PDF; references retain stable IDs. |
 | EXP-05 | R2 | Document exports shall additionally support editable DOCX, and structured analysis exports shall support documented graph/dataset formats. | Citations and RTL paragraphs survive DOCX conversion; graph edges retain direction and provenance. |
-| EXP-06 | R1 | Large exports shall be resumable background jobs with queued/running/complete/partial/failed/cancelled/expired states. | Closing the browser does not cancel a job; retries do not create conflicting duplicate packages; partial output is never labelled complete. |
-| EXP-07 | R1 | Every export shall record requester, scope, content versions, corpus identity where available, generation time, format/schema version, counts, exclusions, and checksums for files. | Users can verify package contents and distinguish a missing eligible file from an intentionally excluded restricted item. |
-| EXP-08 | R1 | Authorization and rights shall be checked at request, generation, and download; download links shall be authenticated and expire. | Revocation before retrieval prevents download of affected private material; jobs are rebuilt or cancelled when their authorized scope changes. |
-| EXP-09 | R1 | Export limits shall partition eligible material into linked packages rather than silently truncating “all research.” | A large export yields a complete manifest across numbered parts or an explicit failure with retry options. |
-| EXP-10 | R1 | Researchers shall be able to regenerate expired downloads, see storage/quota limits, and retry failures. | Seven-day expiry applies to generated packages, not the underlying research; regeneration rechecks current access. |
+| EXP-06 | R1a | Large exports shall be resumable background jobs with queued/running/complete/partial/failed/cancelled/expired states. | Closing the browser does not cancel a job; retries do not create conflicting duplicate packages; partial output is never labelled complete. |
+| EXP-07 | R1a | Every export shall record requester, scope, content versions, corpus identity where available, generation time, format/schema version, counts, exclusions, and checksums for files. | Users can verify package contents and distinguish a missing eligible file from an intentionally excluded restricted item. |
+| EXP-08 | R1a | Authorization and rights shall be checked at request, generation, and download; download links shall be authenticated and expire. | Revocation before retrieval prevents download of affected private material; jobs are rebuilt or cancelled when their authorized scope changes. |
+| EXP-09 | R1a | Export limits shall partition eligible material into linked packages rather than silently truncating “all research.” | A large export yields a complete manifest across numbered parts or an explicit failure with retry options. |
+| EXP-10 | R1a | Researchers shall be able to regenerate expired downloads, see storage/quota limits, and retry failures. | Seven-day expiry applies to generated packages, not the underlying research; regeneration rechecks current access. |
 | EXP-11 | R2 | The system shall support importing its documented research-package format into a new private project with preview. | IDs are remapped, citations/provenance retained, and ownership, collaborators, public status, and approval decisions are not automatically recreated. |
 
 The complete-package option includes eligible retained historical versions as well as current content; a separate current-only option may reduce size when deliberately selected. Confidential editorial deliberations and other users' private content are excluded even if they concern the same project.
@@ -407,12 +429,19 @@ Download entitlement means the user's own and currently authorized research cont
 
 | ID | Release | Requirement | Minimum acceptance criterion |
 |---|---|---|---|
-| ADM-01 | R1 | Administration shall manage application queues, approval reasons, suspensions, platform roles, and appeal/contact requests. | Role changes are audited; editors cannot grant themselves administrator powers. |
-| ADM-02 | R1 | Editors shall have queues by submission stage, assignee, age, and required action. | A submission awaiting author revision is distinguishable from one awaiting a reviewer. |
-| ADM-03 | R1 | Authorized staff shall manage upload/export quotas, allowed file types, job failures, rights flags, and public-content reports. | Policy changes do not silently destroy research; affected users receive an actionable explanation. |
-| ADM-04 | R1 | Support access to private content shall be explicitly granted for a scope and duration, with reason and audit. | Ordinary admin searches do not reveal private evidence; expired support grants fail. |
-| ADM-05 | R1 | Deletions, transfers, submissions, decisions, releases, rights changes, exports, and privileged actions shall be audited. | Audit entries identify actor/action/object/time/outcome and cannot be edited through normal research UI. |
-| ADM-06 | R1 | Operational dashboards shall monitor indexing, queue latency, errors, storage, backup results, and export completeness. | Operators can detect failed jobs without reading private research content unnecessarily. |
+| ADM-01 | R1a | Administration shall manage application queues, approval reasons, suspensions, platform roles, and appeal/contact requests. | Role changes are audited; editors cannot grant themselves administrator powers. |
+| ADM-02 | R1c | Editors shall have queues by submission stage, assignee, age, and required action. | A submission awaiting author revision is distinguishable from one awaiting a reviewer. |
+| ADM-03 | R1a | Authorized staff shall manage application and invitation rate limits, abuse reports, upload/export quotas, allowed file types, job failures, rights flags, and public-content reports. | Policy changes do not silently destroy research; affected users receive an actionable explanation. |
+| ADM-04 | R1a | Support access to private content shall be explicitly granted for a scope and duration, with reason and audit. | Ordinary admin searches do not reveal private evidence; expired support grants fail. |
+| ADM-05 | R1a | Deletions, transfers, submissions, decisions, releases, rights changes, exports, and privileged actions shall be audited. | Audit entries identify actor/action/object/time/outcome and cannot be edited through normal research UI. |
+| ADM-06 | R1a | Operational dashboards shall monitor indexing, queue latency, errors, storage, backup results, and export completeness. | Operators can detect failed jobs without reading private research content unnecessarily. |
+
+### 6.13 Security and authorization
+
+| ID | Release | Requirement | Minimum acceptance criterion |
+|---|---|---|---|
+| SEC-01 | R1a | All protected object access (read, write, search, preview, export, file retrieval, background job) shall pass through one policy module that evaluates the requester, project role, object visibility, and the object's actual project. | A permission matrix generated from §3.2 and §12.1 runs as an automated test suite; no endpoint performs its own ad hoc role check. |
+| SEC-02 | R1b | Background jobs shall evaluate the requester's current permissions at execution and again before output release, not the permissions at enqueue time and not service credentials. | AT-25 passes. |
 
 ## 7. Workflow specifications and business rules
 
@@ -451,7 +480,7 @@ If a project owner leaves the platform, ownership must be transferred or the pro
 
 Owner drafts public metadata, previews it, and publishes directly. Public state is `draft → published → unpublished`; published announcements may be revised with history. Moderation may set `hidden` with an internal reason and an appropriate public notice when needed.
 
-The announcement does not expose resources or members not selected for public credit. It may identify an ongoing topic and research stage, but results requiring a formal findings label follow the editorial route. Reported misuse can be moderated after announcement publication.
+The announcement does not expose resources or members not selected for public credit. It may identify an ongoing topic and research stage, but results requiring a formal findings label follow the editorial route. Reported misuse can be moderated after announcement publication. Each project has at most one current announcement page with retained update history; publications are separate records that the page links to.
 
 ### 7.5 Formal publication workflow
 
@@ -474,7 +503,7 @@ stateDiagram-v2
 - Authors, conflicts, rights, citations, and reviewed package version must be resolved before approval.
 - Edits after approval require a new reviewed version; release never reads mutable working-project content.
 - A withdrawn public release retains its stable identifier and status notice. Republishing substantive changes requires a new reviewed release.
-- Completion/archiving of a project and publication of one output are independent. A project may produce many announcements, findings, articles, and datasets over time; R1 supports one current announcement page with update history and multiple publications.
+- Completion/archiving of a project and publication of one output are independent. A project may produce many announcements, findings, articles, and datasets over time; R1b supports one current announcement page with update history and multiple publications.
 
 ### 7.6 Export workflow
 
@@ -542,7 +571,7 @@ The diagram's description of 32 active foreign keys is not itself verification o
 | DATA-07 | Define captured-version strategy when corpus rows lack history | Stable snapshot/hash/locator mechanism for saved evidence and released findings |
 | DATA-08 | Establish corpus-editor versus project/editorial permissions | Reviewed permission boundary and unauthorized-access fixtures |
 
-If occurrence wording is unavailable, R1 may offer side-by-side canonical records with a conspicuous limitation, but shall not claim exact textual collation. Advanced variant features remain gated on DATA-02. No schema migration may destroy the original source text to satisfy search normalization.
+If occurrence wording is unavailable, R1a may offer side-by-side canonical records with a conspicuous limitation, but shall not claim exact textual collation. Advanced variant features remain gated on DATA-02. No schema migration may destroy the original source text to satisfy search normalization.
 
 ### 8.3 Important semantic corrections
 
@@ -601,7 +630,7 @@ Tags and collection memberships shall be scope-aware. A polymorphic target refer
 - Findings and evidence have many-to-many relationships with typed argumentative roles.
 - One document has many immutable revisions; one submitted package references precise revisions.
 - One project may produce multiple publications. Each publication has one stable identity and many released versions.
-- A current R1 announcement page belongs to one project and has a version history.
+- A current R1b announcement page belongs to one project and has a version history.
 - A publication/review record cannot reference an editable working-document pointer as its only content source.
 - Source snapshots store only permitted content needed for the selected evidence. Full corpus archival is not required to preserve one excerpt's provenance.
 
@@ -700,7 +729,7 @@ The owner invites colleagues. One gathers teacher/student relations and another 
 
 ### UC-04 — Investigate an ʿilal case
 
-**Actors:** Researcher and specialist. **Release:** R2, using R1 foundations.
+**Actors:** Researcher and specialist. **Release:** R2, using R1a foundations.
 
 The team collects competing marfūʿ/mawqūf or other variants, groups related chains, identifies where disagreement appears, inspects narrator evidence, records critics' actual reasons, and represents alternatives before writing a conclusion. The result can remain inconclusive.
 
@@ -760,7 +789,7 @@ Private content shall be excluded from public sitemaps, previews, search indexes
 - Export files: temporary for 7 days; source content remains. Expired links cannot be reused.
 - Submitted/released packages: immutable retained history. A project deletion request shall explain that published scholarly records follow a separate withdrawal/removal policy.
 - Account closure: offer authorized export; resolve project ownership; revoke access; remove optional public profile fields; preserve necessary publication attribution and audit under the platform's adopted policy.
-- Proposed operational audit retention: 12 months, subject to final policy. Research revision history remains for the retained lifetime of its object unless an explicit retention rule says otherwise.
+- Proposed security/operational log retention: 12 months, subject to final policy. Submission, editorial-decision, and release audit records are retained for the lifetime of the publication they concern. Research revision history remains for the retained lifetime of its object unless an explicit retention rule says otherwise.
 - Backup copies age out according to backup policy; recovery processes must reapply recorded deletions and access revocations.
 
 Private notes authored by a removed member remain theirs, but retained notes must not serve as a backdoor to subsequently inaccessible shared attachments or source snapshots. The export may retain the author's note and permitted citation metadata, not newly disclose revoked content.
@@ -769,7 +798,7 @@ Private notes authored by a removed member remain theirs, but retained notes mus
 
 A resource shall record separate permissions for in-platform reading, evidence quotation, personal/project download, and public redistribution when these differ. Unknown redistribution rights shall block public full-file release while allowing permitted citation metadata. File ownership statements are recorded for review rather than treated as conclusive proof.
 
-Proposed R1 uploads: PDF, DOCX, TXT, MD, CSV, JSON, PNG, and JPEG; maximum 50 MiB per attachment. Initial quota proposal: 1 GiB per account and 5 GiB per project, configurable without schema changes. Quota counts and ownership of shared-file storage must be visible. ZIP uploads and executable content are excluded from R1; generated research packages can still be downloaded as ZIP.
+Uploads are disabled until the DATA-06 rights policy is approved (A11; LIB-04 at R2). Proposed policy when enabled: PDF, DOCX, TXT, MD, CSV, JSON, PNG, and JPEG; maximum 50 MiB per attachment. Initial quota proposal: 1 GiB per account and 5 GiB per project, configurable without schema changes. Quota counts and ownership of shared-file storage must be visible. ZIP uploads and executable content are excluded from R1; generated research packages can still be downloaded as ZIP.
 
 Uploads shall be scanned, served safely, and prevented from executing active content in the application origin. External resource URLs shall not trigger unrestricted server-side fetching of private/internal addresses. Importers and document previews must treat all embedded content as untrusted.
 
@@ -795,22 +824,22 @@ The numerical targets below are proposed engineering targets, not measured claim
 
 ### 13.1 Workload profile for performance acceptance
 
-Initial proposed benchmark: approximately 1.2 million report records, 5 million chain edges, 200,000 criticism statements, 2,000 approved accounts, and 100 concurrent active sessions. Test data shall include 10,000 projects overall, a large project with 10,000 evidence/resource associations and 20 members, and account-wide exports spanning 20 projects. These are engineering fixtures, not limits on research scope.
+Initial proposed benchmark: approximately 1.2 million report records, 5 million chain edges, 200,000 criticism statements, 2,000 approved accounts, and 100 concurrent active sessions. Test data shall include 10,000 projects overall, a large project with 10,000 evidence/resource associations and 20 members, and account-wide exports spanning 20 projects. These are engineering fixtures, not limits on research scope. Targets marked provisional below are set from the measured R0 baseline (no more than 1.5× the measured value) or after the hosting decision, and are not release gates until then.
 
 The database/index/worker deployment and cold/warm cache conditions shall be recorded with results. Latency is measured at the service boundary unless stated otherwise; user-device download bandwidth is excluded from generation targets.
 
 | ID | Requirement and acceptance target |
 |---|---|
 | NFR-01 | At the agreed workload, p95 ordinary project/library/detail API responses shall complete within 2 seconds, excluding first-time heavy analyses. |
-| NFR-02 | p95 indexed lexical search first-page responses shall complete within 3 seconds for agreed bounded query fixtures. Expensive relationship queries shall return a job acknowledgment within 2 seconds. |
+| NFR-02 | p95 indexed lexical search first-page responses shall complete within the R0-baselined target (provisional 3 seconds) for agreed bounded query fixtures. Expensive relationship queries shall return a job acknowledgment within 2 seconds. |
 | NFR-03 | Accepted document changes shall autosave within 5 seconds after the editing debounce under normal connectivity; the UI shall show failure or pending status. |
-| NFR-04 | A 100 MiB package with 1,000 research items shall generate within 5 minutes at the agreed export concurrency; larger jobs shall show progress and no request-time timeout dependency. |
+| NFR-04 | A 100 MiB package with 1,000 research items shall generate within the R0-baselined target (provisional 5 minutes) at the agreed export concurrency; larger jobs shall show progress and no request-time timeout dependency. |
 | NFR-05 | An approved public release shall appear in the internal public index within 60 seconds; unpublishing/moderation shall invalidate public access/caches within 60 seconds. External search-engine removal cannot be guaranteed. |
-| NFR-06 | Monthly production availability target shall be 99.5%, with planned maintenance defined and communicated rather than silently excluded from measurement. |
-| NFR-07 | Proposed recovery objectives shall be RPO no more than 1 hour and RTO no more than 4 hours; backups shall cover database, files, and publication manifests. Quarterly restoration drills shall demonstrate recovery. |
+| NFR-06 | Monthly production availability target shall be set after the hosting decision (provisional 99.5%), with planned maintenance defined and communicated rather than silently excluded from measurement. |
+| NFR-07 | Recovery objectives shall be set after the hosting decision (provisional RPO no more than 1 hour, RTO no more than 4 hours); backups shall cover database, files, and publication manifests. Quarterly restoration drills shall demonstrate recovery. |
 | NFR-08 | Access checks shall run server-side for every protected object operation, including search, previews, exports, background jobs, and file retrieval. Authorization tests shall cover guessed IDs and cross-project associations. |
 | NFR-09 | Transport and stored private files/backups shall be protected; credentials shall use approved secret handling and password-storage mechanisms. Logs shall exclude passwords, tokens, and unnecessary private text. |
-| NFR-10 | Uploaded/rendered text shall be sanitized; injection, cross-site scripting, forged requests, unsafe file rendering, and unauthorized object access shall be addressed in a security review before R1 release. |
+| NFR-10 | Uploaded/rendered text shall be sanitized; injection, cross-site scripting, forged requests, unsafe file rendering, and unauthorized object access shall be addressed in a security review before each R1 release (R1a, R1b, R1c). |
 | NFR-11 | All primary flows shall be keyboard-operable, have meaningful accessible names, visible focus, labelled errors, and non-colour-only status indicators. Normal text contrast target: at least 4.5:1. |
 | NFR-12 | Layouts shall support widths from 360 px through desktop; complex comparisons may use a labelled horizontally scrollable region without forcing the whole page to overflow. |
 | NFR-13 | Sorani/Arabic RTL and mixed-direction content shall render correctly in editors, source quotations, citations, tables, generated HTML, and PDFs. Search normalization shall not corrupt preserved source text. |
@@ -820,7 +849,7 @@ The database/index/worker deployment and cold/warm cache conditions shall be rec
 | NFR-17 | Counts, saved runs, analysis results, and exports shall identify their source versions or capture time; reproducibility limitations must be visible where upstream version history is absent. |
 | NFR-18 | Supported-browser acceptance shall cover the current major desktop browser families and representative mobile browsers at release time, with the tested versions recorded in release evidence. |
 | NFR-19 | A completed export shall pass file-existence/count validation and checksum verification. No eligible requested object may be dropped without an explicit manifest entry. |
-| NFR-20 | R1 core research, collaboration, publication, and export workflows shall remain usable without AI services. Optional assistive failures must not block source access or writing. |
+| NFR-20 | R1a–R1c core research, collaboration, publication, and export workflows shall remain usable without AI services. Optional assistive failures must not block source access or writing. |
 
 Formal accessibility certification, hosting selection, and detailed security standards mapping are implementation-stage activities; this document gives measurable product acceptance requirements without claiming certification.
 
@@ -860,6 +889,7 @@ Technical scale fixtures must be separate from the scholarly truth set. Syntheti
 | AT-22 | Restore backup in an isolated environment | Research, files, permissions, released versions, and manifests recover within agreed targets | NFR-07 |
 | AT-23 | Advanced ʿilal case remains unresolved | System permits alternatives/inconclusive conclusion without fabricated verdict | ANA-09, WRT-08 |
 | AT-24 | Import exported research in R2 | New private project, retained provenance, remapped IDs, no inherited membership/public approval | EXP-11 |
+| AT-25 | Role revoked or downgraded after a background job is queued | Job output reflects permissions at execution and release time, not at enqueue | SEC-02, COL-02, EXP-08 |
 
 ### 14.3 Verification responsibilities
 
@@ -870,35 +900,44 @@ Technical scale fixtures must be separate from the scholarly truth set. Syntheti
 - Operations verifies background jobs, backups, restoration, storage, logging, and access revocation across workers.
 - Product owner accepts scope and proposed defaults; acceptance of the requirements is separate from implementation acceptance.
 
+### 14.4 Release gate assignment
+
+| Release | Acceptance tests that must pass | Notes |
+|---|---|---|
+| R1a | AT-01–03, AT-05–08, AT-13, AT-15, AT-18–22; archive/restore part of AT-16 | AT-13 covers personal library and owned projects; AT-21 covers private IDs and caches |
+| R1b | AT-04, AT-09, AT-10, AT-14, AT-25; transfer/closure part of AT-16; AT-13 re-run with shared projects | Regression of all R1a tests |
+| R1c | AT-11, AT-12, AT-17 | Regression of R1a and R1b; also requires A12 |
+| R2 | AT-23, AT-24 | Regression of R1 critical journeys |
+
 ## 15. Release plan and implementation order
 
 ### 15.1 R0 — Data and architecture readiness
 
-**Deliverables:** DATA-01–DATA-08 evidence; domain glossary; permission model; source/version strategy; service/interface design; technical spike for RTL rendering and exact citations; workload benchmark; prioritized implementation backlog.
+**Deliverables:** DATA-01–DATA-08 evidence; domain glossary; permission model and policy-module design with its generated test matrix (SEC-01, AT-01, AT-21); source/version strategy; service/interface design; technical spike for RTL rendering and exact citations, covering the Markdown editor, HTML, and PDF output; workload benchmark that sets the provisional NFR targets; hosting decision; rights policy (DATA-06); named editorial owner and staffing plan; prioritized implementation backlog.
 
-**Exit:** No unresolved ambiguity that would cause loss of original text, incorrect chain presentation, false attribution, or cross-project data exposure. Less complete corpus coverage can be supported when the limitation is visible and the affected feature is gated.
+**Exit:** Rights policy and hosting decision recorded; permission model reviewed. No unresolved ambiguity that would cause loss of original text, incorrect chain presentation, false attribution, or cross-project data exposure. Less complete corpus coverage can be supported when the limitation is visible and the affected feature is gated.
 
-### 15.2 R1 — Complete usable research cycle
+### 15.2 R1 — Complete usable research cycle, delivered as R1a, R1b, and R1c
 
-**Deliverables:** All R1 functional requirements and applicable NFRs. An approved researcher can create multiple private projects, save and reuse resources, preserve searches/results, compare selected material manually, collaborate, write findings, announce projects, publish reviewed work, and download authorized research.
+R1 is delivered as three releases, each usable on its own and each with its own gate. An incomplete workspace must not be labelled as a later release.
 
-**Recommended internal increments:**
+| Release | Build focus | Demonstration | Depends on |
+|---|---|---|---|
+| R1a | Approval, accounts, library, private projects, corpus adapters, search persistence, result sets, evidence, basic comparisons, citation anchors, Markdown writing, personal and project export, policy module | One takhrīj investigation from saved query to source-linked finding, then a complete offline export | R0 exit |
+| R1b | Membership and roles, scoped discussion and tasks, notifications, concurrent-edit conflicts, direct announcements, public announcement pages | Two researchers collaborate without private-note leakage; owner publishes an announcement | R1a gate |
+| R1c | Submission packages, reviewer and editor workflow, immutable release, public findings pages, corrections and withdrawal | Private project produces a reviewed publication | R1b gate and A12 |
 
-| Increment | Build focus | Demonstration |
-|---|---|---|
-| R1.1 | Approval, accounts, personal library, projects, basic corpus adapters | Researcher creates two isolated projects and reuses a saved source |
-| R1.2 | Search persistence, result sets, evidence, basic comparisons, citation anchors | One takhrīj investigation with saved query and source-linked finding |
-| R1.3 | Membership, scoped discussion/tasks, writing/version conflicts | Two researchers collaborate without private-note leakage |
-| R1.4 | Announcements, submission packages, editor/reviewer workflow, public pages | Private project produces a public announcement and reviewed publication |
-| R1.5 | Account-wide exports, operational hardening, failure/recovery checks | Complete multi-project package and tested revocation/restore |
+Export design begins in R1a, so later portability does not require reconstructing provenance.
 
-These increments are development sequencing, not permission to label an incomplete workspace as the complete R1 release. Export design begins in R1.1 so later portability does not require reconstructing provenance.
+**Release gates:**
 
-**Release gate:** AT-01–AT-22 and R1 requirement acceptance pass, no unresolved high-severity permission/data-loss defects, expert-reviewed scholarly fixtures, successful restore drill, and product/editorial signoff.
+- **R1a:** the R1a tests in §14.4 and all R1a requirement acceptance pass; no unresolved high-severity permission or data-loss defects; expert-reviewed scholarly fixtures; successful restore drill; product signoff.
+- **R1b:** the R1b tests in §14.4, regression of R1a, security review of sharing and public projection, product signoff.
+- **R1c:** the R1c tests in §14.4, regression of R1a and R1b, editorial policy approved and two eligible editors named, product and editorial signoff.
 
 ### 15.3 R2 — Advanced scholarly investigation
 
-**Deliverables:** All R2 requirements: structured project templates; richer collation/chain analysis; family/corroboration curation; ʿilal dossiers; temporal and teacher-specific analysis; advanced terminology/book views; scheduled searches; structured argument/data outputs; citation import; DOCX; package import; English UI under A04.
+**Deliverables:** All R2 requirements: rich-text editor (WRT-10); file uploads once the rights policy allows (LIB-04); structured project templates; richer collation/chain analysis; family/corroboration curation; ʿilal dossiers; temporal and teacher-specific analysis; advanced terminology/book views; scheduled searches; structured argument/data outputs; citation import; DOCX; package import; English UI under A04.
 
 **Dependencies:** Source fidelity, chain semantics, rights, and baseline usage findings from R1. R2 algorithms require task-specific expert annotations and evaluation; a plausible-looking visualization is not acceptance evidence.
 
@@ -912,20 +951,21 @@ These increments are development sequencing, not permission to label an incomple
 
 ### 15.5 Initial engineering backlog
 
-| Epic | First implementable slice | Dependency |
-|---|---|---|
-| E01 Identity/approval | Verified application plus admin decision and protected account home | Permission design |
-| E02 Corpus adapters | Typed resource resolver with exact source citation | DATA-01/02/04 |
-| E03 Personal library | Save/tag/collect corpus resource with private note | E01/E02 |
-| E04 Project isolation | Create/list projects, membership checks, scoped associations | E01/E03 |
-| E05 Search persistence | Save query, run record, paginated immutable selection | Corpus index strategy/E04 |
-| E06 Evidence | Capture quote/locator/version, classify/review, cite | E02/E04/E05 |
-| E07 Research inspection | Source, narrator, criticism, manual chain/matn comparison | DATA-03/05/E06 |
-| E08 Collaboration/writing | Invitations, scoped threads/tasks, revision-safe document editor | E04/E06 |
-| E09 Public announcements | Explicit projection, preview, owner publish/unpublish | E04/visibility rules |
-| E10 Formal publication | Freeze package, review/decision, exact-version release | E06/E08/rights rules |
-| E11 Portability | Export serializer, manifest, workers, authorized downloads | Entity schemas from E03 onward |
-| E12 Operations/QA | Audit, observability, restore, performance and accessibility fixtures | Starts with E01; required throughout |
+| Epic | Release | First implementable slice | Dependency |
+|---|---|---|---|
+| E00 Authorization foundation | R0/R1a | Policy module and generated permission-matrix tests | Permission model |
+| E01 Identity/approval | R1a | Verified application plus admin decision and protected account home | E00 |
+| E02 Corpus adapters | R1a | Typed resource resolver with exact source citation | DATA-01/02/04 |
+| E03 Personal library | R1a | Save/tag/collect corpus resource with private note | E01/E02 |
+| E04 Project isolation | R1a (membership R1b) | Create/list projects, scoped associations; membership checks from R1b | E01/E03 |
+| E05 Search persistence | R1a | Save query, run record, paginated immutable selection | Corpus index strategy/E04 |
+| E06 Evidence | R1a | Capture quote/locator/version, classify/review, cite | E02/E04/E05 |
+| E07 Research inspection | R1a | Source, narrator, criticism, manual chain/matn comparison | DATA-03/05/E06 |
+| E08 Collaboration/writing | R1a writing; R1b collaboration | Markdown document editor with versions; then invitations, scoped threads/tasks | E04/E06 |
+| E09 Public announcements | R1b | Explicit projection, preview, owner publish/unpublish | E04/visibility rules |
+| E10 Formal publication | R1c | Freeze package, review/decision, exact-version release | E06/E08/rights rules/A12 |
+| E11 Portability | R1a | Export serializer, manifest, workers, authorized downloads | Entity schemas from E03 onward |
+| E12 Operations/QA | R1a, ongoing | Audit, observability, restore, performance and accessibility fixtures | Starts with E01; required throughout |
 
 No delivery dates or effort estimates are asserted. Estimation requires the actual codebase, team capacity, corpus audit, hosting budget, and agreed first-release depth.
 
@@ -954,16 +994,18 @@ These questions do not undo confirmed scope. The proposed defaults above remain 
 |---|---|---|
 | Existing schema/corpus semantics | R0 gates; no assumed full fidelity | Before final data model and comparison feature commitments |
 | Who approves applicants and expected service level | Administrator queue; operational owner to be named | Before researcher onboarding |
-| Editorial staffing and review policy | At least one nonconflicted review plus independent editor decision | Before formal publication launch |
-| Languages and terminology review | Sorani/Arabic R1, English R2; specialist language review | Before final UI content and acceptance fixtures |
+| Editorial staffing and review policy | At least one nonconflicted review plus independent editor decision | Blocking for R1c: before any PUB work starts |
+| Languages and terminology review | Sorani/Arabic R1a, English R2; specialist language review | Before final UI content and acceptance fixtures |
 | Public identity/byline conventions | Display name permitted; author consent recorded | Before public profiles/publication |
-| Resource rights and licences | Per-resource eligibility, unknown rights block full-file public redistribution | Before uploads/downloads/publication |
+| Resource rights and licences | Per-resource eligibility, unknown rights block full-file public redistribution | R0 exit (DATA-06) |
 | Publication licensing | Explicit choice within platform-approved policy; no invented licence default | Before first release of research |
 | Exact quotas and upload types | Proposed figures in Section 12 | Before capacity and abuse testing |
-| Hosting/service budget | Single-organization deployment with background jobs and persistent file storage | Before confirming NFR targets |
+| Hosting/service budget | Single-organization deployment with background jobs and persistent file storage | R0 exit; NFR-06 and NFR-07 depend on it |
 | Retention/account closure | Proposed periods and publication-history rules | Before production onboarding |
 | Existing RBAC/editorial integration | Separate scoped research permissions using existing identity where suitable | Before API/auth design freeze |
 | Optional external AI/data sharing | Disabled by default pending feature-specific consent/policy | Before R3 assistance integration |
+| MFA method | TOTP with recovery codes in R1a; WebAuthn later | Before ACC-08 build |
+| Abuse handling | Rate limits on applications and invitations; report-content flow on public pages | Before R1a onboarding (limits) and R1b (reports) |
 
 ## 18. Development handoff and definition of ready
 
