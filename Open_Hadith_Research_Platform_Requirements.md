@@ -1020,7 +1020,7 @@ Before implementation of each epic, the team shall have:
 7. Monitoring, rollback, and failure behaviour for consequential operations.
 8. Named product/scholarly/engineering reviewer for acceptance.
 
-The implementation team should next produce the validated physical ERD, screen-by-screen interaction specifications, API contract, and an estimated release backlog from this document. These are design deliverables, not substitutes for the source-fidelity and authorization requirements already stated.
+The implementation team should next produce the validated physical ERD, screen-by-screen interaction specifications (started in the `design/` folder), API contract, and an estimated release backlog from this document. These are design deliverables, not substitutes for the source-fidelity and authorization requirements already stated.
 
 ## 19. Terminology
 
