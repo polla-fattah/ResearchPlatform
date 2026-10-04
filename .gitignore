@@ -1,0 +1,24 @@
+# Laravel Environment Files
+.env
+.env.*
+backend/.env
+backend/.env.*
+
+# Dependencies
+backend/vendor/
+node_modules/
+
+# Storage & Cache
+backend/storage/*.key
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/bootstrap/cache/*
+
+# IDE & OS
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+.DS_Store
