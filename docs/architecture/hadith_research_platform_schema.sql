@@ -542,3 +542,64 @@ CREATE INDEX idx_annotations_target ON annotations(target_type, target_id);
 CREATE INDEX idx_announcements_slug ON announcements(public_slug);
 CREATE INDEX idx_publications_slug ON publications(public_slug);
 CREATE INDEX idx_resources_corpus ON resources(corpus_table, corpus_id);
+
+-- ----------------------------------------------------------------------------
+-- 13. RELEASE 2: ADVANCED ANALYSIS WORKBENCH, FAMILIES & ILAL INVESTIGATIONS
+-- ----------------------------------------------------------------------------
+CREATE TABLE hadith_families (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    canonical_title TEXT NOT NULL,
+    root_companion VARCHAR(255),
+    core_theme TEXT,
+    created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE hadith_family_members (
+    id BIGSERIAL PRIMARY KEY,
+    family_id BIGINT NOT NULL REFERENCES hadith_families(id) ON DELETE CASCADE,
+    evidence_id BIGINT REFERENCES evidence_items(id) ON DELETE SET NULL,
+    corpus_hadith_id BIGINT,
+    corpus_sanad_id BIGINT,
+    relationship_type VARCHAR(50) NOT NULL, -- mutabaah_tammah, mutabaah_qasirah, shahid, candidate
+    convergence_narrator VARCHAR(255),
+    convergence_depth INTEGER,
+    scholarly_notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE ilal_cases (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    discrepancy_category VARCHAR(100) NOT NULL, -- irsal_vs_ittisal, waqf_vs_raf, ziyadah_thiqah, tashif, qalb, ikhtilaf_sanad, shudhudh
+    competing_variants JSONB DEFAULT '[]'::jsonb,
+    critics_judgments JSONB DEFAULT '[]'::jsonb,
+    preferred_version TEXT,
+    status VARCHAR(50) NOT NULL DEFAULT 'under_investigation', -- under_investigation, resolved_authentic, resolved_defective, inconclusive
+    resolution_notes TEXT,
+    created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE narrator_teacher_assessments (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    narrator_id BIGINT NOT NULL,
+    teacher_id BIGINT NOT NULL,
+    assessment_category VARCHAR(50) NOT NULL, -- sound, weakened_specifically, mudallis_from_him, unsubstantiated
+    critic_name VARCHAR(255),
+    qawl_text TEXT NOT NULL,
+    created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_hadith_families_project ON hadith_families(project_id);
+CREATE INDEX idx_hadith_family_members_family ON hadith_family_members(family_id);
+CREATE INDEX idx_ilal_cases_project ON ilal_cases(project_id);
+CREATE INDEX idx_narrator_teacher_project ON narrator_teacher_assessments(project_id);
+CREATE INDEX idx_narrator_teacher_pair ON narrator_teacher_assessments(narrator_id, teacher_id);
+

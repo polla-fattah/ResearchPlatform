@@ -390,3 +390,243 @@ Response:
 }
 ```
 
+---
+
+## Module 7: Advanced Computational Analysis Workbench (Release 2a)
+
+### 1. Classical Sequence Collation & Critical Apparatus (`POST /api/v1/projects/{id}/analyses/collate`)
+Performs dynamic programming sequence collation (Needleman-Wunsch with affine gap penalty) across Classical Arabic textual witnesses, classifying operations into additions (*ziyādāt*), omissions (*saqṭ*), and substitutions (*badal*), and generating a formal *al-Hāmish al-Naqdī* critical apparatus.
+
+Request:
+```json
+{
+  "baseline_text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+  "variants": [
+    {
+      "id": "rec_hijazi",
+      "label": "Recension of Yahya ibn Sa'id (Hijaz)",
+      "text": "إنما الأعمال بالنيات فمن كانت هجرته إلى الله ورسوله"
+    },
+    {
+      "id": "rec_iraqi",
+      "label": "Recension of Hammad ibn Zayd (Basra)",
+      "text": "الأعمال بالنية"
+    }
+  ],
+  "save_run": true
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "collation": {
+      "baseline_text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+      "comparisons": [
+        {
+          "variant_id": "rec_hijazi",
+          "label": "Recension of Yahya ibn Sa'id (Hijaz)",
+          "collation": {
+            "alignment_score": 12.0,
+            "similarity_percentage": 75.0,
+            "summary": {
+              "total_aligned_slots": 11,
+              "matches": 3,
+              "substitutions": 0,
+              "additions_ziyadah": 8,
+              "omissions_saqt": 4
+            },
+            "apparatus_criticus": [
+              {
+                "slot": 4,
+                "type": "ziyadah",
+                "variant": "فمن كانت هجرته إلى الله ورسوله",
+                "apparatus_entry": "Slot 4: [زيادة]: فمن كانت هجرته إلى الله ورسوله (Recension of Yahya ibn Sa'id (Hijaz))"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "saved_run": {
+      "id": 42,
+      "analysis_type": "sequence_collation",
+      "version_number": 1
+    }
+  }
+}
+```
+
+### 2. Isnād Topological DAG & Madār al-Isnād Detection (`POST /api/v1/projects/{id}/analyses/isnad-topology`)
+Builds a directed acyclic transmission graph from either corpus `sanad_ids` or researcher-supplied `custom_chains`, executes betweenness centrality and out-degree analysis, detects the primary *Madār al-Isnād* (Common Link) and partial common links, exports Cytoscape.js visualization elements, and formulates a mathematical proof certificate.
+
+Request:
+```json
+{
+  "custom_chains": [
+    [
+      {"id": 1, "name": "Al-Bukhari"},
+      {"id": 2, "name": "Al-Humaydi"},
+      {"id": 3, "name": "Sufyan ibn Uyaynah"},
+      {"id": 100, "name": "Yahya ibn Sa'id al-Ansari"},
+      {"id": 200, "name": "Muhammad ibn Ibrahim al-Taymi"},
+      {"id": 300, "name": "Alqamah ibn Waqqas"},
+      {"id": 400, "name": "Umar ibn al-Khattab"}
+    ],
+    [
+      {"id": 10, "name": "Muslim ibn al-Hajjaj"},
+      {"id": 11, "name": "Abdullah ibn Maslamah"},
+      {"id": 12, "name": "Malik ibn Anas"},
+      {"id": 100, "name": "Yahya ibn Sa'id al-Ansari"},
+      {"id": 200, "name": "Muhammad ibn Ibrahim al-Taymi"},
+      {"id": 300, "name": "Alqamah ibn Waqqas"},
+      {"id": 400, "name": "Umar ibn al-Khattab"}
+    ]
+  ],
+  "direction": "author_to_source",
+  "save_run": true
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "topology": {
+      "total_sanads_analyzed": 2,
+      "total_unique_narrators": 10,
+      "total_transmission_edges": 9,
+      "madar_al_isnad": {
+        "narrator_id": 100,
+        "name": "Yahya ibn Sa'id al-Ansari",
+        "out_degree": 2,
+        "in_degree": 1,
+        "branching_ratio": 2.0,
+        "chain_coverage": 100.0,
+        "centrality_score": 7.0
+      },
+      "partial_common_links": [],
+      "graph_topology": {
+        "cytoscape": {
+          "nodes": [
+            {
+              "data": {
+                "id": "100",
+                "label": "Yahya ibn Sa'id al-Ansari",
+                "role": "primary_madar",
+                "frequency": 2,
+                "out_degree": 2,
+                "in_degree": 1
+              }
+            }
+          ],
+          "edges": []
+        }
+      },
+      "formal_proof": {
+        "theorem": "Topological Convergence Theorem (Madār al-Isnād)",
+        "pivot_narrator": "Yahya ibn Sa'id al-Ansari",
+        "evidence": "All 2 transmission lines coalesce upon narrator #100 with 2 independent outgoing transmission arcs (Coverage: 100%).",
+        "status": "verified_common_link"
+      }
+    }
+  }
+}
+```
+
+### 3. Temporal CSP Constraint Satisfaction (`POST /api/v1/projects/{id}/analyses/temporal-check`)
+Applies interval arithmetic constraints over Hijri lifespans ($T_{min}=7$ AH lower bound for *al-Tamyīz*) to mathematically prove *Ittiṣāl* (continuity) or flag *Inqiṭāʿ* (anachronistic lacunae) and pseudo-attributions.
+
+Request:
+```json
+{
+  "teacher_name": "Nafi' Mawla Ibn Umar",
+  "teacher_death": 117,
+  "student_name": "Malik ibn Anas",
+  "student_birth": 93,
+  "student_death": 179,
+  "min_audition_age": 7,
+  "save_run": true
+}
+```
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "temporal_verification": {
+      "status": "feasible_overlap",
+      "verdict": "ITTISAL_CHRONOLOGICALLY_FEASIBLE",
+      "tamyiz_age_used": 7,
+      "proof_certificate": {
+        "teacher": "Nafi' Mawla Ibn Umar",
+        "student": "Malik ibn Anas",
+        "earliest_audition_year": 100,
+        "latest_meeting_year": 117,
+        "overlap_window_years": 17,
+        "audition_possible": true,
+        "is_anachronistic": false,
+        "formal_formula": "overlap = teacher_death (117) - (student_birth (93) + min_age (7)) = 17 years >= 0"
+      }
+    }
+  }
+}
+```
+
+### 4. Hadith Family Clustering & Mutābaʿah Classification
+- `GET /api/v1/projects/{id}/families`: Retrieves all Hadith families with their members and relationships.
+- `POST /api/v1/projects/{id}/families`: Creates a new canonical Hadith family cluster.
+  ```json
+  {
+    "canonical_title": "Hadith al-Niyyat",
+    "root_companion": "Umar ibn al-Khattab",
+    "core_theme": "Sincerity and intentions"
+  }
+  ```
+- `POST /api/v1/projects/{id}/families/{familyId}/members`: Attaches an evidence item or sanad as `mutabaah_tammah`, `mutabaah_qasirah`, `shahid`, or `candidate`.
+  ```json
+  {
+    "evidence_id": 45,
+    "relationship_type": "mutabaah_tammah",
+    "convergence_narrator": "Yahya ibn Sa'id al-Ansari",
+    "convergence_depth": 1,
+    "scholarly_notes": "Parallel recitation confirming transmission integrity"
+  }
+  ```
+- `DELETE /api/v1/projects/{id}/families/{familyId}/members/{memberId}`: Removes a member from the family cluster.
+
+### 5. Structured ʿIlal (Hidden Defect) Investigation Dossiers
+- `GET /api/v1/projects/{id}/ilal-cases`: Lists all ʿIlal investigation cases.
+- `POST /api/v1/projects/{id}/ilal-cases`: Opens an ʿIlal investigation dossier.
+  ```json
+  {
+    "title": "Discrepancy in Basran transmission of Hadith al-Niyyat",
+    "discrepancy_category": "ikhtilaf_sanad",
+    "competing_variants": [
+      {"chain_id": 101, "narrator": "Hammad ibn Zayd", "state": "Muttasil"},
+      {"chain_id": 102, "narrator": "Hammad ibn Salamah", "state": "Mursal"}
+    ],
+    "critics_judgments": [
+      {"critic": "Al-Daraqutni", "verdict": "Prefers Hammad ibn Zayd due to superior memory"}
+    ],
+    "resolution_notes": "Preliminary investigation underway"
+  }
+  ```
+- `GET /api/v1/projects/{id}/ilal-cases/{caseId}`: Returns complete investigation dossier.
+- `PATCH /api/v1/projects/{id}/ilal-cases/{caseId}`: Resolves or updates dossier (`status`: `resolved_authentic`, `resolved_defective`, `inconclusive`).
+
+### 6. Teacher-Specific Narrator Assessment Matrix
+- `GET /api/v1/projects/{id}/narrator-assessments?narrator_id={id}`: Queries critic assessments conditioned on specific teachers.
+- `POST /api/v1/projects/{id}/narrator-assessments`: Records conditioned assessment.
+  ```json
+  {
+    "narrator_id": 501,
+    "teacher_id": 702,
+    "assessment_category": "weakened_specifically",
+    "critic_name": "Ahmad ibn Hanbal",
+    "qawl_text": "His narrations from this specific teacher contain munkarat because his notes were lost in transit."
+  }
+  ```
+
+

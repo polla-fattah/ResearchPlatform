@@ -3756,6 +3756,1075 @@
                 ]
             }
         },
+        "/projects/{projectId}/analyses/collate": {
+            "post": {
+                "summary": "Sequence collation across Classical Arabic witnesses (Needleman-Wunsch with affine gaps)",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "baseline_text",
+                                    "variants"
+                                ],
+                                "properties": {
+                                    "baseline_text": {
+                                        "type": "string",
+                                        "example": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى"
+                                    },
+                                    "variants": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "id",
+                                                "text"
+                                            ],
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "rec_hijazi"
+                                                },
+                                                "label": {
+                                                    "type": "string",
+                                                    "example": "Recension of Yahya ibn Sa'id"
+                                                },
+                                                "text": {
+                                                    "type": "string",
+                                                    "example": "إنما الأعمال بالنيات فمن كانت هجرته إلى الله ورسوله"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "save_run": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/analyses/isnad-topology": {
+            "post": {
+                "summary": "Topological transmission DAG analysis & Madār al-Isnād (Common Link) detection with Cytoscape.js export",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "sanad_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ]
+                                    },
+                                    "custom_chains": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array"
+                                        },
+                                        "example": []
+                                    },
+                                    "direction": {
+                                        "type": "string",
+                                        "enum": [
+                                            "author_to_source",
+                                            "source_to_author"
+                                        ],
+                                        "default": "author_to_source"
+                                    },
+                                    "save_run": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/analyses/temporal-check": {
+            "post": {
+                "summary": "Temporal CSP constraint satisfaction (Hijri lifespans & T_min=7 AH Tamyīz lower bound verification)",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "teacher_name": {
+                                        "type": "string",
+                                        "example": "Nafi' Mawla Ibn Umar"
+                                    },
+                                    "teacher_death": {
+                                        "type": "integer",
+                                        "example": 117
+                                    },
+                                    "student_name": {
+                                        "type": "string",
+                                        "example": "Malik ibn Anas"
+                                    },
+                                    "student_birth": {
+                                        "type": "integer",
+                                        "example": 93
+                                    },
+                                    "student_death": {
+                                        "type": "integer",
+                                        "example": 179
+                                    },
+                                    "min_audition_age": {
+                                        "type": "integer",
+                                        "default": 7
+                                    },
+                                    "save_run": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/families": {
+            "get": {
+                "summary": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Create a new canonical Hadith family cluster",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "canonical_title"
+                                ],
+                                "properties": {
+                                    "canonical_title": {
+                                        "type": "string",
+                                        "example": "Hadith of Actions and Intentions (Innama al-A'mal)"
+                                    },
+                                    "root_companion": {
+                                        "type": "string",
+                                        "example": "Umar ibn al-Khattab"
+                                    },
+                                    "core_theme": {
+                                        "type": "string",
+                                        "example": "Sincerity and intentionality in religious acts"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/families/{familyId}/members": {
+            "post": {
+                "summary": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "familyId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "relationship_type"
+                                ],
+                                "properties": {
+                                    "evidence_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "corpus_hadith_id": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "corpus_sanad_id": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "relationship_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "mutabaah_tammah",
+                                            "mutabaah_qasirah",
+                                            "shahid",
+                                            "candidate"
+                                        ],
+                                        "example": "mutabaah_tammah"
+                                    },
+                                    "convergence_narrator": {
+                                        "type": "string",
+                                        "example": "Yahya ibn Sa'id al-Ansari"
+                                    },
+                                    "convergence_depth": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "scholarly_notes": {
+                                        "type": "string",
+                                        "example": "Parallel transmission through Yahya"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/families/{familyId}/members/{memberId}": {
+            "delete": {
+                "summary": "Remove a member from the Hadith family cluster",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "familyId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "memberId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/ilal-cases": {
+            "get": {
+                "summary": "List structured ʿIlal (hidden defect) investigation dossiers",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "under_investigation",
+                                "resolved_authentic",
+                                "resolved_defective",
+                                "inconclusive"
+                            ]
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Open a structured ʿIlal investigation dossier",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "title",
+                                    "discrepancy_category"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Discrepancy in Basran transmission of Hadith al-Niyyat"
+                                    },
+                                    "discrepancy_category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ikhtilaf_sanad",
+                                            "ikhtilaf_matn",
+                                            "ziyadah_thiqah",
+                                            "idraj",
+                                            "inqita_khafi"
+                                        ],
+                                        "example": "ikhtilaf_sanad"
+                                    },
+                                    "competing_variants": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        },
+                                        "example": []
+                                    },
+                                    "critics_judgments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        },
+                                        "example": []
+                                    },
+                                    "resolution_notes": {
+                                        "type": "string",
+                                        "example": "Preliminary investigation underway"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/ilal-cases/{caseId}": {
+            "get": {
+                "summary": "Retrieve single ʿIlal investigation dossier",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "caseId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "patch": {
+                "summary": "Update or resolve ʿIlal investigation dossier",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "caseId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "under_investigation",
+                                            "resolved_authentic",
+                                            "resolved_defective",
+                                            "inconclusive"
+                                        ],
+                                        "example": "resolved_authentic"
+                                    },
+                                    "preferred_version": {
+                                        "type": "string",
+                                        "example": "Muttasil chain of Hammad ibn Zayd"
+                                    },
+                                    "resolution_notes": {
+                                        "type": "string",
+                                        "example": "Resolved: The mursal transmission is an anomaly by a lesser student."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/narrator-assessments": {
+            "get": {
+                "summary": "List critic assessments conditioned on specific teachers",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "narrator_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 501
+                        }
+                    },
+                    {
+                        "name": "teacher_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 702
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Record critic assessment conditioned on a specific teacher",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "narrator_id",
+                                    "teacher_id",
+                                    "assessment_category"
+                                ],
+                                "properties": {
+                                    "narrator_id": {
+                                        "type": "integer",
+                                        "example": 501
+                                    },
+                                    "teacher_id": {
+                                        "type": "integer",
+                                        "example": 702
+                                    },
+                                    "assessment_category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "reliable_specifically",
+                                            "weakened_specifically",
+                                            "mixed_specifically",
+                                            "confused_after_event"
+                                        ],
+                                        "example": "weakened_specifically"
+                                    },
+                                    "critic_name": {
+                                        "type": "string",
+                                        "example": "Ahmad ibn Hanbal"
+                                    },
+                                    "qawl_text": {
+                                        "type": "string",
+                                        "example": "His narrations from this specific teacher contain munkarat because his notes were lost."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/projects/{projectId}/findings": {
             "get": {
                 "summary": "List empirical findings and hypotheses",

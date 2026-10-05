@@ -17,6 +17,9 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\SearchWorkspaceController;
 use App\Http\Controllers\Api\AnalysisController;
 use App\Http\Controllers\Api\EditorialController;
+use App\Http\Controllers\Api\HadithFamilyController;
+use App\Http\Controllers\Api\IlalCaseController;
+use App\Http\Controllers\Api\TeacherAssessmentController;
 
 Route::prefix('v1')->group(function () {
 
@@ -113,13 +116,32 @@ Route::prefix('v1')->group(function () {
             Route::post('/result-sets', [SearchWorkspaceController::class, 'storeResultSet']);
             Route::get('/result-sets/{setId}', [SearchWorkspaceController::class, 'getResultSet']);
 
-            // Module 7 (Analysis Workbench)
+            // Module 7 (Analysis Workbench & R2a Algorithmic Engines)
             Route::post('/analyses/matn-compare', [AnalysisController::class, 'matnCompare']);
             Route::post('/analyses/isnad-compare', [AnalysisController::class, 'isnadCompare']);
             Route::post('/analyses/criticism-matrix', [AnalysisController::class, 'criticismMatrix']);
+            Route::post('/analyses/collate', [AnalysisController::class, 'collate']);
+            Route::post('/analyses/isnad-topology', [AnalysisController::class, 'isnadTopology']);
+            Route::post('/analyses/temporal-check', [AnalysisController::class, 'temporalCheck']);
             Route::get('/analyses', [AnalysisController::class, 'index']);
             Route::post('/analyses/save', [AnalysisController::class, 'save']);
             Route::get('/analyses/{analysisId}', [AnalysisController::class, 'show']);
+
+            // Release 2: Hadith Families & Mutaba'at / Shawahid (ANA-08)
+            Route::get('/families', [HadithFamilyController::class, 'index']);
+            Route::post('/families', [HadithFamilyController::class, 'store']);
+            Route::post('/families/{familyId}/members', [HadithFamilyController::class, 'addMember']);
+            Route::delete('/families/{familyId}/members/{memberId}', [HadithFamilyController::class, 'removeMember']);
+
+            // Release 2: 'Ilal Case Dossiers (ANA-09)
+            Route::get('/ilal-cases', [IlalCaseController::class, 'index']);
+            Route::post('/ilal-cases', [IlalCaseController::class, 'store']);
+            Route::get('/ilal-cases/{caseId}', [IlalCaseController::class, 'show']);
+            Route::match(['put', 'patch'], '/ilal-cases/{caseId}', [IlalCaseController::class, 'update']);
+
+            // Release 2: Teacher-Specific Narrator Assessments (ANA-11)
+            Route::get('/narrator-assessments', [TeacherAssessmentController::class, 'index']);
+            Route::post('/narrator-assessments', [TeacherAssessmentController::class, 'store']);
 
             // Project Resources (Bibliography)
             Route::get('/resources', [EvidenceController::class, 'listResources']);

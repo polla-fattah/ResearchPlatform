@@ -2086,6 +2086,543 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Sequence collation across Classical Arabic witnesses (Needleman-Wunsch with affine gaps)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/analyses/collate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "analyses",
+                                "collate"
+                            ]
+                        },
+                        "description": "Sequence collation across Classical Arabic witnesses (Needleman-Wunsch with affine gaps)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"baseline_text\": \"إنما الأعمال بالنيات وإنما لكل امرئ ما نوى\",\n    \"variants\": \"\",\n    \"save_run\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Topological transmission DAG analysis & Madār al-Isnād (Common Link) detection with Cytoscape.js export",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/analyses/isnad-topology",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "analyses",
+                                "isnad-topology"
+                            ]
+                        },
+                        "description": "Topological transmission DAG analysis & Madār al-Isnād (Common Link) detection with Cytoscape.js export",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"sanad_ids\": [\n        1,\n        2\n    ],\n    \"custom_chains\": [],\n    \"direction\": \"author_to_source\",\n    \"save_run\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Temporal CSP constraint satisfaction (Hijri lifespans & T_min=7 AH Tamyīz lower bound verification)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/analyses/temporal-check",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "analyses",
+                                "temporal-check"
+                            ]
+                        },
+                        "description": "Temporal CSP constraint satisfaction (Hijri lifespans & T_min=7 AH Tamyīz lower bound verification)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"teacher_name\": \"Nafi' Mawla Ibn Umar\",\n    \"teacher_death\": 117,\n    \"student_name\": \"Malik ibn Anas\",\n    \"student_birth\": 93,\n    \"student_death\": 179,\n    \"min_audition_age\": 7,\n    \"save_run\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/families",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "families"
+                            ]
+                        },
+                        "description": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create a new canonical Hadith family cluster",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/families",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "families"
+                            ]
+                        },
+                        "description": "Create a new canonical Hadith family cluster",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"canonical_title\": \"Hadith of Actions and Intentions (Innama al-A'mal)\",\n    \"root_companion\": \"Umar ibn al-Khattab\",\n    \"core_theme\": \"Sincerity and intentionality in religious acts\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/families/{familyId}/members",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "families",
+                                "{familyId}",
+                                "members"
+                            ]
+                        },
+                        "description": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"evidence_id\": 1,\n    \"corpus_hadith_id\": 10,\n    \"corpus_sanad_id\": 20,\n    \"relationship_type\": \"mutabaah_tammah\",\n    \"convergence_narrator\": \"Yahya ibn Sa'id al-Ansari\",\n    \"convergence_depth\": 1,\n    \"scholarly_notes\": \"Parallel transmission through Yahya\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Remove a member from the Hadith family cluster",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/families/{familyId}/members/{memberId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "families",
+                                "{familyId}",
+                                "members",
+                                "{memberId}"
+                            ]
+                        },
+                        "description": "Remove a member from the Hadith family cluster",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List structured ʿIlal (hidden defect) investigation dossiers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/ilal-cases",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "ilal-cases"
+                            ]
+                        },
+                        "description": "List structured ʿIlal (hidden defect) investigation dossiers",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Open a structured ʿIlal investigation dossier",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/ilal-cases",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "ilal-cases"
+                            ]
+                        },
+                        "description": "Open a structured ʿIlal investigation dossier",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Discrepancy in Basran transmission of Hadith al-Niyyat\",\n    \"discrepancy_category\": \"ikhtilaf_sanad\",\n    \"competing_variants\": [],\n    \"critics_judgments\": [],\n    \"resolution_notes\": \"Preliminary investigation underway\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Retrieve single ʿIlal investigation dossier",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/ilal-cases/{caseId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "ilal-cases",
+                                "{caseId}"
+                            ]
+                        },
+                        "description": "Retrieve single ʿIlal investigation dossier",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update or resolve ʿIlal investigation dossier",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/ilal-cases/{caseId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "ilal-cases",
+                                "{caseId}"
+                            ]
+                        },
+                        "description": "Update or resolve ʿIlal investigation dossier",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"resolved_authentic\",\n    \"preferred_version\": \"Muttasil chain of Hammad ibn Zayd\",\n    \"resolution_notes\": \"Resolved: The mursal transmission is an anomaly by a lesser student.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List critic assessments conditioned on specific teachers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/narrator-assessments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "narrator-assessments"
+                            ]
+                        },
+                        "description": "List critic assessments conditioned on specific teachers",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Record critic assessment conditioned on a specific teacher",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/narrator-assessments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "narrator-assessments"
+                            ]
+                        },
+                        "description": "Record critic assessment conditioned on a specific teacher",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"narrator_id\": 501,\n    \"teacher_id\": 702,\n    \"assessment_category\": \"weakened_specifically\",\n    \"critic_name\": \"Ahmad ibn Hanbal\",\n    \"qawl_text\": \"His narrations from this specific teacher contain munkarat because his notes were lost.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
