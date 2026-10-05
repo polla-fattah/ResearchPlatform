@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="23 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R1c · 23 · Reviewer workspace</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">PUB-04 · PUB-05 · SRS §12.1 review package</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#2A2620;color:#E3DBCB">
+    <div style="padding:12px clamp(16px,3vw,32px);display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center">
+      <span style="font-family:Newsreader,serif;font-size:19px;font-weight:600;color:#F5F1E8">Open Hadith Research</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#B9B0A0">Publication review</span>
+      <span style="margin-left:auto;font-size:13px">Reviewer R-0003 · access to SUB-0007 v2 only · until 27 Oct 2026</span>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1200px;margin:0 auto;padding:28px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+
+    <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:640px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Not part of your review</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">You tried to open evidence EV-0021 in the project workspace. Reviewers can see only the frozen package they're assigned to, not the project, its notes or its discussions. Everything the package cites is included in it.</p>
+        <button onClick="{{ goRead }}" style="align-self:flex-start;font:inherit;font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Back to the package</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:640px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Your review access has ended</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">Access to SUB-0007 v2 ended on 27 Oct 2026. Your saved draft comments are kept. Ask the editor, Hêro Salih, to extend access if you still need it.</p>
+      </div>
+    </sc-if>
+    <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;gap:16px;flex-wrap:wrap"><div style="flex:2 1 400px;height:480px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="flex:1 1 260px;height:480px;background:#F2EDE2"></div></div></sc-if>
+
+    <!-- DECLARE -->
+    <sc-if value="{{ isDeclare }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:680px;background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:16px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Review invitation · SUB-0007 v2 · from editor Hêro Salih</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;line-height:1.2;margin:0">Before you open the package</h1>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Title: “Kufan chains of the wuḍūʾ reports”. Authors are shown after you declare, so you can check for conflicts.</p>
+        <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+          <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">Conflict of interest</legend>
+          <sc-for list="{{ coiQs }}" as="q" hint-placeholder-count="4"><label style="display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.5;cursor:pointer"><input type="checkbox" style="margin-top:3px">{{ q }}</label></sc-for>
+        </fieldset>
+        <div style="font-size:13px;line-height:1.5;color:#4A443B;border-left:3px solid #1F5A57;padding-left:12px">If you tick anything, the editor will assign someone else. Your declaration is seen only by the editorial team.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button onClick="{{ goRead }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">No conflict: open package</button><button style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Decline review</button></div>
+      </div>
+    </sc-if>
+
+    <!-- READ + COMMENT -->
+    <sc-if value="{{ isRead }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">SUB-0007 · package v2 · frozen 6 Oct 2026 10:40 · sha256:5c1e…a02f</span><h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;line-height:1.15;margin:0">Kufan chains of the wuḍūʾ reports</h1><span style="font-size:13px;color:#4A443B">Shilan Rashid, Aras Kamal · Main article v18 · findings F-02, F-04</span></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57">Review package</span>
+      </div>
+      <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" style="border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">The authors have submitted v3.</strong> You're reviewing v2. Your recommendation stays attached to v2. The editor will tell you if they want you to review v3 too.</div>
+      </sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+        <article style="flex:2 1 420px;min-width:0;box-sizing:border-box;background:#FFFFFF;border:1px solid #E3DBCB;padding:28px clamp(18px,3vw,36px);display:flex;flex-direction:column;gap:16px">
+          <sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+            <section style="display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid #EDE6D8">
+              <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:21px;margin:0">{{ s.h }}</h2><button style="font:inherit;font-size:12px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0;white-space:nowrap">+ Comment</button></div>
+              <p dir="auto" style="margin:0;font-size:15px;line-height:1.75">{{ s.p }}</p>
+              <sc-if value="{{ s.q }}" hint-placeholder-val="{{ false }}"><figure style="margin:0;border-left:3px solid #1D1A15;padding-left:14px;display:flex;flex-direction:column;gap:4px"><figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase">❝ Source · {{ s.qcite }}</figcaption><blockquote dir="rtl" lang="ar" style="margin:0;font-family:'Noto Naskh Arabic',serif;font-size:19px;line-height:1.9;text-align:right">{{ s.q }}</blockquote></figure></sc-if>
+              <sc-if value="{{ s.flag }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px dashed #8A8276;color:#6A6257">{{ s.flag }}</span></sc-if>
+              <sc-if value="{{ s.comment }}" hint-placeholder-val="{{ false }}"><div style="background:#F5ECD9;padding:10px 12px;font-size:13px;line-height:1.55;display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#7A5413">Your review comment · draft</span>{{ s.comment }}</div></sc-if>
+            </section>
+          </sc-for>
+        </article>
+        <aside style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:14px;font-weight:600">Recommendation</span>
+            <sc-for list="{{ recs }}" as="r" hint-placeholder-count="4"><label style="display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer"><input type="radio" name="rec" defaultChecked="{{ r.first }}">{{ r.label }}</label></sc-for>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:13px">Summary for the editor<textarea rows="4" style="padding:8px 10px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;line-height:1.5;border-radius:2px;resize:vertical">The Limitations section answers my earlier point. §3.2 now engages the Ibn ʿUyayna reading fairly. One citation still lacks a page.</textarea></label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:13px">Comments for the authors <span style="color:#6A6257">(shared without your name)</span><textarea rows="3" style="padding:8px 10px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;line-height:1.5;border-radius:2px;resize:vertical"></textarea></label>
+            <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;cursor:pointer"><input type="checkbox" style="margin-top:2px">Name me publicly as reviewer if this is published</label>
+            <button style="align-self:flex-start;font:inherit;font-size:14px;font-weight:500;padding:9px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Submit review for v2</button>
+            <span style="font-size:12px;color:#6A6257">Your recommendation goes to the editor. The editor makes the decision.</span>
+          </section>
+          <div style="font-size:12px;line-height:1.55;color:#6A6257">Included in this package: 13 citations, each with its permitted source excerpt. Project notes, discussions, tasks and private annotations aren't included.</div>
+        </aside>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['declare','Conflict declaration'],['read','Read package + recommend']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { declare:['normal'], read:['normal','loading','error','forbidden','conflict'] };
+  state = { view:'read', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    return {
+      on,
+      isDeclare: view === 'declare', isRead: view === 'read' && ['normal','conflict'].includes(eff),
+      goRead: go('read'),
+      coiQs: ['I am an author, project member or have contributed to this research', 'I have co-authored with any listed author in the last 3 years', 'I have a supervisory, family or financial relationship with an author', 'I have publicly committed to a conclusion on this exact question'],
+      sections: [
+        { h:'1. Scope', p:'Of 14 occurrences of the “three times each” report in the six Sunan collections, 11 preserve only the threefold wording.', q:'', qcite:'', flag:'', comment:'' },
+        { h:'2. The wording of the Kufan reports', p:'The shortest form is preserved by Abū Dāwūd through Musaddad.', q:'أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا', qcite:'Abū Dāwūd, al-Sunan, ed. al-Arnaʾūṭ, 1:78, no. 106', flag:'', comment:'' },
+        { h:'3.2 The identity of Sufyān', p:'Wakīʿ transmits from both al-Thawrī and Ibn ʿUyayna. We read al-Thawrī here and give the alternative.', q:'', qcite:'', flag:'Incomplete citation · al-Nasāʾī 84, page unknown', comment:'Please state why the Kufan setting favours al-Thawrī, beyond frequency.' },
+        { h:'5. Limitations', p:'The conclusion depends on an unresolved narrator identity and on one occurrence without recorded wording.', q:'', qcite:'', flag:'', comment:'' }
+      ],
+      recs: [['Accept as is',false],['Minor revisions',true],['Major revisions',false],['Not suitable',false]].map(([label, first]) => ({ label, first })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="27 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 27 · Isnād graph</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ANA-07</div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px dashed #D9C9A3;color:#D9C9A3">Draft · pending specialist review</span>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button></sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px"><div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Analysis</div></div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7"><a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1"><span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span></a></sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">{{ me.name }}</div><div style="font-size:12px;color:#6A6257">{{ me.sub }}</div></div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / PRJ-0012</div><div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">Chains of the wuḍūʾ reports in the Sunan collections</div></div>
+        <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10"><a href="{{ t.href }}" aria-current="{{ t.current }}" style="flex-shrink:0;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</a></sc-for></nav>
+      </div>
+
+      <div style="padding:24px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257">Analysis / Isnād graphs / G-02</div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">Chains of the “three times” report, from 5 sources</h1>
+        </div>
+
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B">You're a <strong style="font-weight:600;color:#1D1A15">Viewer</strong>. You can explore the graph and chains, but you can't change narrator identifications or edges.</div></sc-if>
+        <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">Aras Kamal changed a narrator identification while you were viewing.</strong> He linked “Sufyān” in Aḥmad 1/57 to Sufyān al-Thawrī. The graph below shows his change, marked. Your selection is kept. <a href="#">Undo or discuss</a></div></sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">The chain from Aḥmad 1/57 couldn’t be loaded.</strong> The graph shows 4 of 5 sources. Wakīʿ’s count below is incomplete, so it isn’t shown as a shared narrator.</div></sc-if>
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="height:520px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-if>
+        <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:10px;max-width:720px"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">No chains selected</h2><p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Add occurrences that have their isnād recorded. The graph is built only from narrators and links stated in those sources.</p><a href="./10%20Comparison%20Workspace.dc.html" style="align-self:flex-start;font-size:14px;padding:9px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Pick occurrences</a></div></sc-if>
+
+        <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:10px 16px;background:#FFFDF8;border:1px solid #E3DBCB;font-size:13px">
+            <label style="display:flex;gap:6px;align-items:center">Show<select style="font:inherit;font-size:13px;padding:4px 6px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px"><option>8 generations</option><option>3 generations from selected</option></select></label>
+            <span>Sources: <strong style="font-weight:600">{{ srcLine }}</strong></span>
+            <span style="color:#6A6257">Arrows point from teacher to student.</span>
+            <span style="margin-left:auto;font-size:12px;color:#6A6257">{{ boundLine }}</span>
+          </div>
+
+          <sc-if value="{{ isGraph }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div role="region" aria-label="Isnād graph. Scroll sideways if needed. The chain list has the same content as text." style="flex:2 1 560px;min-width:0;overflow-x:auto;background:#FFFDF8;border:1px solid #E3DBCB">
+                <div style="position:relative;width:960px;height:700px">
+                  {{ edgeLayer }}
+                  <sc-for list="{{ labels }}" as="l" hint-placeholder-count="14"><span style="position:absolute;left:{{ l.x }}px;top:{{ l.y }}px;transform:translate(-50%,-50%);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:0 4px;background:#FFFDF8;color:{{ l.c }};white-space:nowrap">{{ l.t }}</span></sc-for>
+                  <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="17">
+                    <button onClick="{{ n.pick }}" aria-pressed="{{ n.sel }}" style="position:absolute;left:{{ n.left }}px;top:{{ n.top }}px;width:136px;min-height:38px;box-sizing:border-box;font:inherit;padding:3px 6px;border:{{ n.bw }} {{ n.bs }} {{ n.bc }};background:{{ n.bg }};border-radius:2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.2">
+                      <span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:14px;color:{{ n.fg }}">{{ n.ar }}</span>
+                      <span style="font-size:10px;color:{{ n.sub }}">{{ n.en }}</span>
+                      <sc-if value="{{ n.count }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-9px;right:-9px;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:0 4px;background:#1D1A15;color:#F5F1E8">{{ n.count }}</span></sc-if>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+              <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px">
+                <section style="background:#FFFDF8;border:1px solid #1F5A57;display:flex;flex-direction:column">
+                  <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px"><span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:19px;text-align:right">{{ selNode.ar }}</span><span style="font-size:14px;font-weight:600">{{ selNode.en }}</span></div>
+                  <sc-for list="{{ selNode.facts }}" as="f" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border-bottom:1px solid #EDE6D8;font-size:13px"><span style="color:#6A6257">{{ f.k }}</span><span style="text-align:right">{{ f.v }}</span></div></sc-for>
+                  <div style="padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap"><a href="./30%20Narrator%20Dossier.dc.html" style="font-size:13px">Narrator dossier</a><a href="#" style="font-size:13px">Show only chains through here</a></div>
+                </section>
+                <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:7px;font-size:12px;line-height:1.5;color:#4A443B">
+                  <span style="font-size:13px;font-weight:600;color:#1D1A15">Key</span>
+                  <span>Black number: how many of the selected chains pass through this narrator.</span>
+                  <span>Dashed box: the narrator’s identity is unresolved.</span>
+                  <span>Dashed line: the source names no one here. The gap is shown, not filled.</span>
+                  <span>Small text on a line: the transmission term in the source (ḥaddathanā, ʿan …).</span>
+                </section>
+              </aside>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+              <sc-for list="{{ chains }}" as="c" hint-placeholder-count="5">
+                <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:14px 16px;border-bottom:1px solid #EDE6D8;align-items:start">
+                  <span style="display:flex;flex-direction:column;gap:2px"><a href="./09%20Evidence%20Inspector.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ c.loc }}</a><span style="font-size:11px;color:#6A6257">{{ c.n }}</span></span>
+                  <div dir="rtl" style="display:flex;flex-wrap:wrap;gap:4px 6px;align-items:baseline">
+                    <sc-for list="{{ c.links }}" as="k" hint-placeholder-count="6"><span lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:16px;padding:0 6px;border:1px {{ k.bs }} {{ k.bc }};color:{{ k.fg }}">{{ k.name }}</span><span lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:13px;color:#6A6257">{{ k.f }}</span></sc-for>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="padding:10px 16px;font-size:12px;color:#6A6257">Each chain reads right to left, from the collector to the Prophet ﷺ, with the transmission term in the source between narrators.</div>
+            </div>
+          </sc-if>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['graph','Graph'],['list','Chain list']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { graph:['normal','empty','loading','error','forbidden','conflict'], list:['normal','empty','loading','error'] };
+  state = { view:'graph', st:'normal', sel:'X' };
+  N = {
+    P:['The Prophet ﷺ','النبي ﷺ',0,480], A:['ʿAlī','علي',1,480], K:['ʿAbd Khayr','عبد خير',2,480],
+    X:['Khālid ibn ʿAlqama','خالد بن علقمة',3,320], I:['Abū Isḥāq','أبو إسحاق',3,660],
+    AW:['Abū ʿAwāna','أبو عوانة',4,190], SF:['Sufyān · unresolved','سفيان',4,440], SH:['Shuʿba','شعبة',4,700],
+    MU:['Musaddad','مسدد',5,110], QU:['Qutayba','قتيبة',5,280], WK:['Wakīʿ','وكيع',5,480], HN:['Hannād','هناد',6,640],
+    AD:['Abū Dāwūd','أبو داود',7,110], NS:['al-Nasāʾī','النسائي',7,280], TR:['al-Tirmidhī','الترمذي',7,640], AH:['Aḥmad','أحمد',7,440], IM:['Ibn Mājah','ابن ماجه',7,830]
+  };
+  E = [['P','A','qāla'],['A','K','ʿan'],['K','X','ʿan'],['K','I','ʿan'],['X','AW','ʿan'],['X','SF','ʿan'],['I','SH','ʿan'],['AW','MU','ḥaddathanā'],['AW','QU','ḥaddathanā'],['SF','WK','ḥaddathanā'],['MU','AD','ḥaddathanā'],['QU','NS','akhbaranā'],['WK','HN','ḥaddathanā'],['HN','TR','ḥaddathanā'],['WK','AH','ḥaddathanā'],['SH','IM','gap','gap']];
+  renderVals() {
+    const { view, st, sel } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const forb = eff === 'forbidden', err = eff === 'error', conf = eff === 'conflict';
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','2'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const ptabsDef = [['Overview','./06%20Project%20Overview.dc.html'],['Resources','./03b%20Project%20Resources.dc.html'],['Searches','./08%20Search%20Workspace.dc.html'],['Evidence','./09%20Evidence%20Inspector.dc.html'],['Analysis','./10%20Comparison%20Workspace.dc.html'],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html'],['Findings & Documents','./11%20Finding%20Editor.dc.html'],['Review & Publication','./21%20Submission.dc.html'],['Activity','./18%20Activity.dc.html'],['Settings','./15%20Members.dc.html']];
+    const y = g => 40 + g * 88;
+    const hide = err ? ['AH'] : [];
+    const edges = this.E.filter(e => !hide.includes(e[1]));
+    const counts = { K: err ? 4 : 5, X: err ? 3 : 4, WK: err ? 0 : 2, AW: 2, A: err ? 4 : 5, P: err ? 4 : 5 };
+    const el = React.createElement;
+    const edgeLayer = el('svg', { width: 960, height: 700, style: { position:'absolute', inset:0 }, 'aria-hidden': true },
+      el('defs', null, el('marker', { id:'arr', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:7, markerHeight:7, orient:'auto-start-reverse' }, el('path', { d:'M0,0 L10,5 L0,10 z', fill:'#4A443B' }))),
+      ...edges.map(([a, b, f, kind], i) => {
+        const A = this.N[a], B = this.N[b];
+        return el('line', { key:i, x1:A[3], y1:y(A[2]) + 19, x2:B[3], y2:y(B[2]) - 21, stroke: kind === 'gap' ? '#8A8276' : (conf && b === 'WK') ? '#1F5A57' : '#4A443B', strokeWidth: (conf && b === 'WK') ? 2 : 1.3, strokeDasharray: kind === 'gap' ? '5 4' : null, markerEnd:'url(#arr)' });
+      })
+    );
+    const labels = edges.map(([a, b, f, kind]) => { const A = this.N[a], B = this.N[b]; return { x: (A[3] + B[3]) / 2, y: (y(A[2]) + y(B[2])) / 2, t: kind === 'gap' ? 'gap · no narrator named in source' : f, c: kind === 'gap' ? '#6A6257' : '#4A443B' }; });
+    const nodes = Object.entries(this.N).filter(([k]) => !hide.includes(k)).map(([k, [en, ar, g, x]]) => {
+      const unres = k === 'SF' && !conf;
+      const isSel = sel === k;
+      return { en: conf && k === 'SF' ? 'Sufyān al-Thawrī · changed' : en, ar, left: x - 68, top: y(g) - 19, sel: isSel, count: counts[k] && counts[k] > 1 ? `${counts[k]}` : '', bw: isSel ? '2px' : '1px', bs: unres ? 'dashed' : 'solid', bc: isSel ? '#1F5A57' : unres ? '#8A8276' : '#4A443B', bg: isSel ? '#E3EEEC' : '#FFFFFF', fg: '#1D1A15', sub: '#6A6257', pick: () => this.setState({ sel: k }) };
+    });
+    const facts = {
+      X: [{ k:'Chains through here', v: err ? '3 of 4 loaded' : '4 of 5 chains' }, { k:'Teachers in graph', v:'1 · ʿAbd Khayr' }, { k:'Students in graph', v:'2 · Abū ʿAwāna, Sufyān' }, { k:'Terms used', v:'ʿan (4)' }],
+      SF: [{ k:'Identity', v: conf ? 'Sufyān al-Thawrī (A. Kamal, today)' : 'Unresolved: al-Thawrī or Ibn ʿUyayna' }, { k:'Chains through here', v:'2 chains' }, { k:'Why it matters', v:'The two have different dates and students' }, { k:'Discussion', v:'D-0014' }],
+      SH: [{ k:'Chains through here', v:'1 chain' }, { k:'Student in graph', v:'Ibn Mājah, with a gap' }, { k:'Gap', v:'No narrator named in Ibn Mājah 404 (this edition)' }, { k:'Researcher note', v:'Suggested link not accepted' }]
+    };
+    const nd = this.N[sel] || this.N.X;
+    const selNode = { en: nd[0], ar: nd[1], facts: facts[sel] || [{ k:'Chains through here', v: counts[sel] ? `${counts[sel]} chains` : '1 chain' }, { k:'Generation', v:`${nd[2] + 1} of 8` }] };
+    const Lk = (name, f, unres) => ({ name, f, bs: unres ? 'dashed' : 'solid', bc: unres ? '#8A8276' : '#E3DBCB', fg: '#1D1A15' });
+    const chains = [
+      { loc:'Abū Dāwūd 106', n:'6 narrators', links:[Lk('أبو داود','حدثنا'),Lk('مسدد','حدثنا'),Lk('أبو عوانة','عن'),Lk('خالد بن علقمة','عن'),Lk('عبد خير','عن'),Lk('علي','قال'),Lk('النبي ﷺ','')] },
+      { loc:'al-Nasāʾī 84', n:'6 narrators', links:[Lk('النسائي','أخبرنا'),Lk('قتيبة','حدثنا'),Lk('أبو عوانة','عن'),Lk('خالد بن علقمة','عن'),Lk('عبد خير','عن'),Lk('علي','قال'),Lk('النبي ﷺ','')] },
+      { loc:'al-Tirmidhī 44', n:'7 narrators', links:[Lk('الترمذي','حدثنا'),Lk('هناد','حدثنا'),Lk('وكيع','حدثنا'),Lk('سفيان','عن',true),Lk('خالد بن علقمة','عن'),Lk('عبد خير','عن'),Lk('علي','قال'),Lk('النبي ﷺ','')] },
+      ...(err ? [] : [{ loc:'Aḥmad 1/57', n:'6 narrators', links:[Lk('أحمد','حدثنا'),Lk('وكيع','حدثنا'),Lk('سفيان','عن',true),Lk('خالد بن علقمة','عن'),Lk('عبد خير','عن'),Lk('علي','قال'),Lk('النبي ﷺ','')] }]),
+      { loc:'Ibn Mājah 404', n:'5 named · 1 gap', links:[Lk('ابن ماجه','—'),Lk('[لا راوي مذكور]','',true),Lk('شعبة','عن'),Lk('أبو إسحاق','عن'),Lk('عبد خير','عن'),Lk('علي','قال'),Lk('النبي ﷺ','')] }
+    ];
+    return {
+      on,
+      me: forb ? { name:'Dilan Omar', sub:'Viewer in PRJ-0012' } : { name:'Shilan Rashid', sub:'Owner of PRJ-0012' },
+      showMain: ['normal','error','forbidden','conflict'].includes(eff),
+      isGraph: view === 'graph', isList: view === 'list',
+      srcLine: err ? '4 of 5 occurrences' : '5 occurrences',
+      boundLine: 'Showing 17 narrators, 8 generations · 9 further chains in the project aren’t selected',
+      edgeLayer, labels, nodes, selNode, chains,
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href], i) => ({ label, href, current: i === 4 ? 'page' : undefined, rule: i === 4 ? '#1F5A57' : 'transparent', fg: i === 4 ? '#123B39' : '#4A443B', weight: i === 4 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="20 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R1b · 20 · Public announcement pages</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ANN-02 · ANN-03 · ANN-04 · ANN-05 · SRS §4.3, §12.1</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+    <div style="max-width:1120px;margin:0 auto;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap">
+      <a href="#" onClick="{{ goList }}" style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em;color:#1D1A15;text-decoration:none">Open Hadith Research</a>
+      <nav aria-label="Public" style="display:flex;gap:4px;flex-wrap:wrap">
+        <sc-for list="{{ pubNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.click }}" aria-current="{{ n.current }}" style="font-size:14px;padding:6px 10px;text-decoration:none;color:{{ n.fg }};border-bottom:2px solid {{ n.rule }};display:flex;gap:6px;align-items:baseline">{{ n.label }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8276">{{ n.tag }}</span></a></sc-for>
+      </nav>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center"><a href="./01%20Registration.dc.html" style="font-size:14px;padding:8px 12px;color:#1D1A15;text-decoration:none">Sign in</a><a href="./01%20Registration.dc.html" style="font-size:14px;font-weight:500;padding:8px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Apply</a></div>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:36px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px">
+
+    <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:12px"><div style="height:40px;width:60%;background:#EAE3D4;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:140px;background:#EFE9DC"></div><div style="height:140px;background:#EFE9DC"></div></div></sc-if>
+    <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:14px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;color:#5C2A1C"><span><strong style="font-weight:600;color:#9A3B24">This page couldn't load.</strong> It's a problem on our side. Try again in a moment.</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #9A3B24;background:transparent;color:#9A3B24;border-radius:2px;cursor:pointer;flex-shrink:0">Try again</button></div>
+    </sc-if>
+    <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:620px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">/projects/PRJ-0012/evidence/EV-0004</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Page not found</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">There's nothing public at this address. Private research isn't reachable from the public site, and links into a project workspace don't open here.</p>
+        <a href="#" onClick="{{ goList }}" style="align-self:flex-start;font-size:14px">Browse research announcements</a>
+      </div>
+    </sc-if>
+
+    <!-- LISTING -->
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:760px">
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:40px;line-height:1.05;margin:0">Research announcements</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">Projects that are under way, announced by their researchers. Announcements describe questions and scope. They are not reviewed findings. Reviewed results are listed separately under Published research.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+        <input placeholder="Search announcements" aria-label="Search announcements" style="flex:1 1 240px;min-width:0;padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px">
+        <select aria-label="Topic" style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Any topic</option><option>Isnād</option><option>Narrator criticism</option><option>Takhrīj</option></select>
+        <select aria-label="Stage" style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Any stage</option><option>Collecting</option><option>Analysing</option><option>Writing</option></select>
+        <select aria-label="Language" style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Any language</option><option>Arabic</option><option>Sorani</option><option>English</option></select>
+      </div>
+      <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:24px;font-size:14px;line-height:1.6;color:#4A443B;max-width:640px">No announcements match “ʿilal Basra”. Try a broader word, or clear the filters.</div></sc-if>
+      <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ cards }}" as="c" hint-placeholder-count="3">
+            <article style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px dashed #4A443B;color:#4A443B">Announcement · ongoing · not peer-reviewed</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57">{{ c.stage }}</span><span style="font-size:12px;color:#6A6257">Updated {{ c.updated }}</span></div>
+              <a href="#" onClick="{{ goDetail }}" dir="auto" style="font-family:Newsreader,serif;font-size:23px;line-height:1.25;color:#1D1A15;text-decoration:none" style-hover="text-decoration:underline">{{ c.title }}</a>
+              <p dir="auto" style="margin:0;font-family:{{ c.font }};font-size:{{ c.size }};line-height:1.6;color:#4A443B;text-align:{{ c.align }}">{{ c.summary }}</p>
+              <span style="font-size:13px;color:#6A6257">{{ c.credit }}</span>
+            </article>
+          </sc-for>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <!-- DETAIL -->
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+        <article style="flex:2 1 460px;min-width:0;display:flex;flex-direction:column;gap:18px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">openhadith.org/announcements/kufan-chains-wudu</div>
+          <div style="border:1px dashed #4A443B;background:#FFFDF8;padding:12px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1D1A15">Project announcement · ongoing research</span><span style="font-size:13px;line-height:1.5;color:#4A443B">This is the researchers' own description of work in progress. It hasn't been peer-reviewed, and it isn't a finding.</span></div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:40px;line-height:1.1;margin:0">Kufan chains of the wuḍūʾ reports</h1>
+          <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">We are comparing the 14 occurrences of the report that the Prophet performed wuḍūʾ “three times each” across the six Sunan collections, to understand where their chains meet and where the wording diverges.</p>
+          <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 16px;font-size:14px;padding:18px 0;border-top:1px solid #E3DBCB;border-bottom:1px solid #E3DBCB">
+            <span style="color:#6A6257">Scope</span><span>Six Sunan collections · narrators to the 3rd generation</span>
+            <span style="color:#6A6257">Stage</span><span>Analysing</span>
+            <span style="color:#6A6257">Keywords</span><span>wuḍūʾ · isnād · Kufa · takhrīj</span>
+            <span style="color:#6A6257">Researchers</span><span>Shilan Rashid · Aras Kamal</span>
+            <span style="color:#6A6257">Published</span><span>1 Oct 2026 · last updated 4 Oct 2026</span>
+          </div>
+          <section style="display:flex;flex-direction:column;gap:8px">
+            <h2 style="margin:0;font-size:16px;font-weight:600">Publications from this project</h2>
+            <div style="border:1px dashed #8A8276;padding:12px 14px;font-size:14px;line-height:1.5;color:#4A443B;background:#FFFDF8">None yet. When a finding from this project is reviewed and released, it will be linked here. A publication shows only its released content.</div>
+          </section>
+        </article>
+        <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:18px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:15px;font-weight:600">Interested in collaborating?</span>
+            <span style="font-size:13px;line-height:1.55;color:#4A443B">Send the researchers a short message. You need a verified account. Your message shares only what you write. Joining always needs a separate invitation from the project owner.</span>
+            <a href="./01%20Registration.dc.html" style="align-self:flex-start;font-size:14px;font-weight:500;padding:9px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Sign in to ask</a>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8A8276">Request form: R2 (ANN-06)</span>
+          </div>
+          <div style="font-size:12px;line-height:1.55;color:#6A6257">This page shows only what the owner chose to publish. Notes, evidence, discussions and the member list aren't public, and having this address doesn't give access to the project.</div>
+          <a href="#" style="font-size:13px;color:#4A443B">Report this announcement</a>
+        </aside>
+      </div>
+    </sc-if>
+
+    <!-- UNPUBLISHED / HIDDEN notices -->
+    <sc-if value="{{ isGone }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:620px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">openhadith.org/announcements/kufan-chains-wudu</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">{{ goneTitle }}</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">{{ goneText }}</p>
+        <a href="#" onClick="{{ goList }}" style="align-self:flex-start;font-size:14px">Browse other announcements</a>
+      </div>
+    </sc-if>
+  </main>
+
+  <footer style="border-top:1px solid #E3DBCB;background:#FFFDF8">
+    <div style="max-width:1120px;margin:0 auto;padding:18px clamp(16px,3vw,32px);display:flex;gap:8px 24px;flex-wrap:wrap;font-size:13px;color:#6A6257"><span>Open Hadith Research Platform</span><a href="#" style="color:#6A6257">About announcements and publications</a><a href="#" style="color:#6A6257">Source rights</a><span style="margin-left:auto">کوردی · العربية</span></div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['list','Listing'],['detail','Announcement page'],['unpublished','Unpublished notice'],['hidden','Hidden notice']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { list:['normal','empty','loading','error','forbidden'], detail:['normal','loading','error','forbidden'], unpublished:['normal'], hidden:['normal'] };
+  state = { view:'list', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => e => { if (e && e.preventDefault) e.preventDefault(); this.setState({ view: v, st: 'normal' }); };
+    const blocked = ['loading','error','forbidden'].includes(eff);
+    const sans = "'IBM Plex Sans',sans-serif", ar = "'Noto Naskh Arabic',serif";
+    return {
+      on,
+      isList: view === 'list' && !blocked, isDetail: view === 'detail' && !blocked,
+      isGone: ['unpublished','hidden'].includes(view),
+      showList: !on.empty,
+      goneTitle: view === 'hidden' ? 'This announcement is temporarily hidden' : 'This announcement is no longer available',
+      goneText: view === 'hidden' ? 'It’s being reviewed by the platform’s moderators. The researchers have been told why, and the page may return after changes.' : 'The researchers have unpublished it. The research itself may still be going on privately.',
+      goList: go('list'), goDetail: go('detail'),
+      pubNav: [['Research announcements','', true, go('list')], ['Published research','R1c', false, e => e.preventDefault()], ['Researcher profiles','', false, e => e.preventDefault()], ['Search','', false, e => e.preventDefault()]].map(([label, tag, cur, click]) => ({ label, tag, click, current: cur ? 'page' : undefined, fg: tag ? '#8A8276' : cur ? '#123B39' : '#1D1A15', rule: cur ? '#1F5A57' : 'transparent' })),
+      cards: [
+        { title:'Kufan chains of the wuḍūʾ reports', summary:'We are comparing the 14 occurrences of the report that the Prophet performed wuḍūʾ “three times each” across the six Sunan collections.', stage:'Analysing', updated:'4 Oct 2026', credit:'Shilan Rashid · Aras Kamal', font: sans, size:'15px', align:'left' },
+        { title:'گێڕانەوەکانی ئیبن لەهیعە پێش و پاش ساڵی ١٧٠ی کۆچی', summary:'لێکۆڵینەوە لە جیاوازیی هەڵسەنگاندنی ڕەخنەگران بۆ گێڕانەوە سەرەتایی و دواییەکانی.', stage:'Collecting', updated:'2 Oct 2026', credit:'Shilan Rashid', font: ar, size:'17px', align:'right' },
+        { title:'Early Basran narrators in Muslim’s introduction', summary:'Mapping which Basran transmitters Muslim names in his introduction, and how later critics assessed them.', stage:'Collecting', updated:'28 Sep 2026', credit:'Hêro Salih', font: sans, size:'15px', align:'left' }
+      ],
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

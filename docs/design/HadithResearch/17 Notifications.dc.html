@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="17 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R1b · 17 · Notifications</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">COL-05 · SRS §12.1</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R1b · Collaboration</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">Shilan Rashid</div>
+        <div style="font-size:12px;color:#6A6257">Researcher · Sorani interface</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;padding:28px clamp(16px,3vw,40px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;max-width:1100px">
+      <header style="display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:6px"><h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.05;margin:0">Notifications</h1><span style="font-size:14px;color:#6A6257">{{ countLine }}</span></div>
+        <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.pick }}" style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid {{ t.border }};background:{{ t.bg }};border-radius:2px;cursor:pointer;color:#1D1A15;white-space:nowrap">{{ t.label }}</button></sc-for>
+        </div>
+      </header>
+
+      <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="background:#FFFDF8;border:1px solid #E3DBCB"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="5"><div style="height:70px;border-bottom:1px solid #EDE6D8;background:#F7F3EA;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-for></div></sc-if>
+
+      <!-- INBOX -->
+      <sc-if value="{{ isInbox }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:8px;max-width:640px"><span style="font-size:17px;font-weight:600">You're all caught up</span><span style="font-size:14px;line-height:1.6;color:#4A443B">Invitations, mentions, task assignments, review decisions and finished downloads will show up here. Choose which ones also come by email in Preferences.</span></div>
+        </sc-if>
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">2 notifications can no longer be opened.</strong> You were removed from “Sorani reading guide” on 4 Oct, so links to it stop working. The notifications stay in your list without their content.</div>
+        </sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;color:#5C2A1C"><span><strong style="font-weight:600;color:#9A3B24">New notifications couldn't load.</strong> Showing what was loaded at 11:20. Nothing has been marked as read.</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #9A3B24;background:transparent;color:#9A3B24;border-radius:2px;cursor:pointer;flex-shrink:0">Try again</button></div>
+        </sc-if>
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center">
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="6"><button style="font:inherit;font-size:12px;padding:4px 10px;border:1px solid {{ f.border }};background:{{ f.bg }};border-radius:2px;cursor:pointer;color:#1D1A15;white-space:nowrap">{{ f.label }}</button></sc-for></div>
+            <button style="font:inherit;font-size:13px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">Mark all as read</button>
+          </div>
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+            <sc-for list="{{ items }}" as="n" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:12px;padding:14px 18px;border-bottom:1px solid #EDE6D8;align-items:start;opacity:{{ n.op }}">
+                <span style="width:8px;height:8px;border-radius:50%;margin-top:6px;background:{{ n.dot }}" aria-label="{{ n.readLabel }}"></span>
+                <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                  <span style="display:flex;gap:8px;flex-wrap:wrap;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">{{ n.kind }}</span><span style="font-size:12px;color:#6A6257">{{ n.where }}</span></span>
+                  <span style="font-size:14px;line-height:1.5;font-weight:{{ n.weight }}">{{ n.text }}</span>
+                  <span style="font-size:12px;color:#6A6257">{{ n.when }}</span>
+                </div>
+                <sc-if value="{{ n.cta }}" hint-placeholder-val="{{ true }}"><a href="{{ n.href }}" style="font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF;white-space:nowrap">{{ n.cta }}</a></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- PREFERENCES -->
+      <sc-if value="{{ isPrefs }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;overflow-x:auto">
+            <div style="min-width:560px">
+              <div style="display:grid;grid-template-columns:minmax(0,2fr) 90px 90px;gap:12px;padding:10px 18px;border-bottom:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257"><span>Event</span><span>In app</span><span>Email</span></div>
+              <sc-for list="{{ prefs }}" as="p" hint-placeholder-count="8">
+                <div style="display:grid;grid-template-columns:minmax(0,2fr) 90px 90px;gap:12px;padding:10px 18px;border-bottom:1px solid #EDE6D8;align-items:center;font-size:14px">
+                  <span style="display:flex;flex-direction:column;gap:2px"><span>{{ p.label }}</span><span style="font-size:12px;color:#6A6257">{{ p.sub }}</span></span>
+                  <input type="checkbox" defaultChecked="{{ p.app }}" disabled="{{ p.lockApp }}" aria-label="In app">
+                  <input type="checkbox" defaultChecked="{{ p.email }}" disabled="{{ p.lockEmail }}" aria-label="Email">
+                </div>
+              </sc-for>
+            </div>
+          </section>
+          <div style="display:flex;flex-wrap:wrap;gap:12px">
+            <label style="flex:1 1 240px;display:flex;flex-direction:column;gap:4px;font-size:13px">Email frequency<select style="padding:8px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Right away</option><option>Daily summary at 08:00</option><option>Weekly summary</option></select></label>
+            <label style="flex:1 1 240px;display:flex;flex-direction:column;gap:4px;font-size:13px">Mute a project<select style="padding:8px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>None muted</option><option>Ibn Lahīʿa (PRJ-0015)</option></select></label>
+          </div>
+          <button style="align-self:flex-start;font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Save preferences</button>
+        </sc-if>
+      </sc-if>
+
+      <!-- EMAIL PREVIEW -->
+      <sc-if value="{{ isEmail }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+          <div style="flex:1.3 1 340px;min-width:0;background:#FFFFFF;border:1px solid #E3DBCB;box-shadow:0 6px 24px rgba(29,26,21,.08)">
+            <div style="padding:12px 18px;border-bottom:1px solid #EDE6D8;font-size:13px;color:#4A443B;display:flex;flex-direction:column;gap:2px"><span><strong style="font-weight:600;color:#1D1A15">From:</strong> Open Hadith Research &lt;no-reply@…&gt;</span><span><strong style="font-weight:600;color:#1D1A15">Subject:</strong> Aras Kamal mentioned you in a project discussion</span></div>
+            <div style="padding:22px 18px;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.6">
+              <span>Aras Kamal mentioned you in a discussion in one of your projects.</span>
+              <span style="font-size:14px;color:#4A443B">To read it, sign in. The link only works for project members.</span>
+              <span style="align-self:flex-start;font-size:14px;font-weight:500;padding:10px 16px;background:#1F5A57;color:#FFFFFF;border-radius:2px">Open the discussion</span>
+              <span style="font-size:12px;color:#6A6257">You get these because Mentions are on in your preferences. Change them in Notifications › Preferences.</span>
+            </div>
+          </div>
+          <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:14px;font-weight:600">What emails never include</span>
+            <div style="background:#FFFDF8;border:1px dashed #8A8276;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.55;color:#4A443B">
+              <span>✕ The text of the comment, or any quoted source passage</span>
+              <span>✕ The project title, when the project is private</span>
+              <span>✕ Evidence, notes, document text or member lists</span>
+              <span>✓ Who acted, the kind of event, and a sign-in link</span>
+            </div>
+            <span style="font-size:12px;line-height:1.5;color:#6A6257">The link checks access when it's opened. If you've been removed since, it shows “not available” and nothing else.</span>
+          </aside>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['inbox','Inbox'],['prefs','Preferences'],['email','Email preview']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { inbox:['normal','empty','loading','error','forbidden'], prefs:['normal','loading'], email:['normal'] };
+  state = { view:'inbox', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','#', on.empty ? '' : '3'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const N = (kind, where, text, when, unread, cta, href, extra = {}) => ({ kind, where, text, when, cta, href, dot: unread ? '#1F5A57' : 'transparent', weight: unread ? 500 : 400, readLabel: unread ? 'Unread' : 'Read', op: 1, ...extra });
+    let items = [
+      N('Mention', 'PRJ-0012 · thread D-0014', 'Aras Kamal mentioned you: “@Shilan the locator is in Fatḥ al-Bārī…”', '12 min ago', true, 'Open thread', './16%20Discussion%20Tasks.dc.html'),
+      N('Task assigned', 'PRJ-0012', 'Nawroz Ali assigned you “Page numbers for al-Nasāʾī 84” (due —).', '1 h ago', true, 'Open task', './16%20Discussion%20Tasks.dc.html'),
+      N('Download ready', 'Downloads', 'Project ZIP EXP-0059 is ready (2 parts). It expires on 11 Oct.', '4 Oct 10:58', true, 'Download', './12%20Downloads.dc.html'),
+      N('Invitation', 'Project', 'Hêro Salih invited you to “Early Basran narrators” as Project reviewer. Expires 18 Oct.', '4 Oct 09:30', false, 'View invitation', './15%20Members.dc.html'),
+      N('Role changed', 'PRJ-0012', 'Shilan Rashid changed Nawroz Ali’s role to Project reviewer.', '3 Oct', false, '', '#'),
+      N('Review decision', 'R1c', 'Submission decisions will appear here once publication review arrives in R1c.', '—', false, '', '#', { op: 0.5 }),
+      N('Corpus correction', 'COR-0031', 'Your correction for al-Nasāʾī 84 is with the corpus editors.', '1 Oct', false, 'View', './09%20Evidence%20Inspector.dc.html')
+    ];
+    if (eff === 'forbidden') items.splice(3, 0, N('Mention', 'Project no longer available', 'You were mentioned in a project you’ve since left. Content hidden.', '2 Oct', false, '', '#', { op: 0.6 }), N('Task assigned', 'Project no longer available', 'A task in a project you’ve since left. Content hidden.', '1 Oct', false, '', '#', { op: 0.6 }));
+    const P = (label, sub, app, email, lockApp, lockEmail) => ({ label, sub, app, email, lockApp: !!lockApp, lockEmail: !!lockEmail });
+    return {
+      on,
+      countLine: on.empty ? 'Nothing new' : '3 unread · 7 in the last 30 days',
+      tabs: this.VIEWS.map(([k, label]) => ({ label, pick: go(k), border: view === k ? '#1F5A57' : '#CFC6B4', bg: view === k ? '#E3EEEC' : '#FFFDF8' })),
+      isInbox: view === 'inbox', isPrefs: view === 'prefs', isEmail: view === 'email',
+      showList: view === 'inbox' && ['normal','error','forbidden'].includes(eff),
+      notLoading: !on.loading,
+      skel: [1,2,3,4,5], items,
+      filters: ['All','Mentions','Tasks','Invitations','Downloads','Reviews · R1c'].map((label, i) => ({ label, border: i === 0 ? '#1F5A57' : '#CFC6B4', bg: i === 0 ? '#E3EEEC' : '#FFFFFF' })),
+      prefs: [
+        P('Invitations', 'Someone invites you to a project', true, true),
+        P('Mentions', '@ in a discussion you can see', true, true),
+        P('Task assigned or changed', 'Assigned to you, due date or state changed', true, false),
+        P('Replies in threads you started', '', true, false),
+        P('Role changed or removed', 'Your role in a project changes', true, true, true, false),
+        P('Downloads finished, partial or failed', '', true, true),
+        P('Saved search finished or partial', '', true, false),
+        P('Review decisions', 'Arrives in R1c', false, false, true, true),
+        P('Security', 'New sign-in, password change, recovery code used', true, true, true, true)
+      ],
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 4 ? 'page' : undefined, bg: i === 4 ? '#E3EEEC' : 'transparent', fg: i === 4 ? '#123B39' : '#1D1A15', weight: i === 4 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

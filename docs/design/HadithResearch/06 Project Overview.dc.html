@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="06 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">06 · Project overview and settings</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">PRJ-03 · 04 · 05 · 06 · 07</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">Research workspace</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8A8276">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">Shilan Rashid</div>
+        <div style="font-size:12px;color:#6A6257">Researcher · Sorani interface</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:48px clamp(16px,3vw,40px)">
+          <div style="max-width:640px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257">Projects / PRJ-0021</div>
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;line-height:1.15;margin:0">Project not available</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">This project doesn't exist, or you don't have access to it. We show the same message in both cases so private projects stay private.</p>
+            <a href="./04%20Project%20Index.dc.html" style="align-self:flex-start;margin-top:6px;font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none;background:#FFFFFF">Go to your projects</a>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showProject }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / {{ p.id }}</div>
+              <div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">{{ p.title }}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57;white-space:nowrap">{{ stage }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #6A6257;color:#4A443B;white-space:nowrap">🔒 Private project</span>
+            </div>
+          </div>
+          <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px">
+            <sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10">
+              <a href="{{ t.href }}" onClick="{{ t.click }}" aria-current="{{ t.current }}" style="flex-shrink:0;display:flex;gap:6px;align-items:baseline;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8276">{{ t.tag }}</span></a>
+            </sc-for>
+          </nav>
+        </div>
+
+        <!-- OVERVIEW -->
+        <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:28px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:28px;max-width:1240px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+              <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">Overview</h1>
+              <button onClick="{{ goCopy }}" style="flex-shrink:0;font:inherit;font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;background:#FFFDF8;border-radius:2px;cursor:pointer;color:#1D1A15;white-space:nowrap">Copy to another project…</button>
+            </div>
+
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}">
+              <div aria-busy="true" style="display:flex;flex-wrap:wrap;gap:20px"><div style="flex:2 1 420px;height:180px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="flex:1 1 280px;height:180px;background:#EFE9DC"></div><div style="flex:1 1 100%;height:120px;background:#F2EDE2"></div></div>
+            </sc-if>
+
+            <sc-if value="{{ showBody }}" hint-placeholder-val="{{ true }}">
+              <section aria-label="Question and scope" style="display:flex;flex-wrap:wrap;gap:20px">
+                <div style="flex:2 1 420px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB;padding:24px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Research question</span><span style="font-family:Newsreader,serif;font-size:21px;line-height:1.4">{{ p.question }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Scope</span><span style="font-size:14px;line-height:1.6;color:#4A443B">{{ p.scope }}</span></div>
+                  <div style="display:flex;gap:6px 20px;flex-wrap:wrap;font-size:13px;color:#6A6257"><span>Content: Arabic, Sorani</span><span>Owner: Shilan Rashid</span><span>Created 18 Sep 2026</span></div>
+                </div>
+                <div style="flex:1 1 280px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB;padding:24px;display:flex;flex-direction:column;gap:14px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Stage</span>
+                  <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+                    <sc-for list="{{ stages }}" as="s" hint-placeholder-count="6">
+                      <li><button onClick="{{ s.pick }}" aria-current="{{ s.cur }}" style="font:inherit;width:100%;text-align:left;display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:6px 8px;border:none;border-radius:2px;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }};font-weight:{{ s.weight }};font-size:14px"><span style="font-family:'IBM Plex Mono',monospace;color:{{ s.markColor }}">{{ s.mark }}</span><span>{{ s.label }}</span></button></li>
+                    </sc-for>
+                  </ol>
+                  <span style="font-size:12px;line-height:1.5;color:#6A6257">Click a stage to move. Moving back is allowed and goes in the activity log. Archiving is separate and lives in Settings.</span>
+                </div>
+              </section>
+
+              <sc-if value="{{ stageNote }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid #BCD6D2;background:#E3EEEC;padding:12px 16px;font-size:14px;color:#1F3F3D;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>{{ stageNote }}</span><button onClick="{{ undoStage }}" style="font:inherit;font-size:13px;background:none;border:none;text-decoration:underline;color:#123B39;cursor:pointer;padding:0">Undo</button></div>
+              </sc-if>
+
+              <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}">
+                <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:18px">
+                  <div style="display:flex;flex-direction:column;gap:6px"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:24px;margin:0">This project is empty</h2><p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Start by gathering sources and saving a search. Evidence counts, milestones and findings will appear here as you work.</p></div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+                    <a href="./07%20Resource%20Picker.dc.html" style="border:1px solid #E3DBCB;padding:16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:#1D1A15" style-hover="border-color:#1F5A57"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">01</span><span style="font-size:15px;font-weight:600">Collect sources →</span><span style="font-size:13px;color:#4A443B">From My Library or the corpus</span></a>
+                    <a href="./08%20Search%20Workspace.dc.html" style="border:1px solid #E3DBCB;padding:16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:#1D1A15" style-hover="border-color:#1F5A57"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">02</span><span style="font-size:15px;font-weight:600">Save a search →</span><span style="font-size:13px;color:#4A443B">So you can rerun it and keep its results</span></a>
+                  </div>
+                </section>
+              </sc-if>
+
+              <sc-if value="{{ hasData }}" hint-placeholder-val="{{ true }}">
+                <section aria-labelledby="h-ev" style="display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 id="h-ev" style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Evidence by state</h2><span style="font-size:13px;color:#6A6257">{{ evTotal }}</span></div>
+                  <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+                    <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;color:#5C2A1C"><span><strong style="font-weight:600;color:#9A3B24">Counts couldn't be calculated.</strong> They're shown as Unknown, not zero. Your evidence is unchanged.</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #9A3B24;background:transparent;color:#9A3B24;border-radius:2px;cursor:pointer">Recalculate</button></div>
+                  </sc-if>
+                  <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:16px">
+                    <div role="img" aria-label="{{ evAria }}" style="display:flex;height:12px;gap:2px">
+                      <sc-for list="{{ evBar }}" as="b" hint-placeholder-count="5"><div style="flex:{{ b.n }};background:{{ b.color }};border:{{ b.border }}"></div></sc-for>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">
+                      <sc-for list="{{ evStates }}" as="e" hint-placeholder-count="5">
+                        <a href="./09%20Evidence%20Inspector.dc.html" style="display:flex;flex-direction:column;gap:4px;text-decoration:none;color:#1D1A15;padding:4px 0">
+                          <span style="display:flex;gap:8px;align-items:center"><span style="width:10px;height:10px;background:{{ e.color }};border:{{ e.border }};flex-shrink:0"></span><span style="font-size:13px;color:#4A443B">{{ e.label }}</span></span>
+                          <span style="font-family:Newsreader,serif;font-size:26px;line-height:1.1;color:{{ e.numColor }}">{{ e.n }}</span>
+                          <span style="font-size:12px;color:#6A6257">{{ e.of }}</span>
+                        </a>
+                      </sc-for>
+                    </div>
+                    <span style="font-size:12px;color:#6A6257">“Reviewed” means you have checked the item. It doesn't mean the report is authentic or correct.</span>
+                  </div>
+                </section>
+
+                <div style="display:flex;flex-wrap:wrap;gap:20px">
+                  <section aria-labelledby="h-ms" style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 id="h-ms" style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Milestones</h2><button style="font:inherit;font-size:13px;background:none;border:none;color:#1F5A57;cursor:pointer;padding:0">+ Add</button></div>
+                    <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+                      <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="4">
+                        <div style="padding:14px 18px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:8px">
+                          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:14px;font-weight:500">{{ m.label }}</span><span style="font-size:12px;color:#6A6257">{{ m.due }}</span></div>
+                          <div style="height:4px;background:#EDE6D8"><div style="height:100%;width:{{ m.pct }};background:#1F5A57"></div></div>
+                          <span style="font-size:12px;color:#6A6257;display:flex;gap:8px;flex-wrap:wrap;align-items:center">{{ m.basis }}<sc-if value="{{ m.manual }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px dashed #8A8276">Manual estimate</span></sc-if></span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </section>
+                  <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+                    <section aria-labelledby="h-oq" style="display:flex;flex-direction:column;gap:12px">
+                      <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 id="h-oq" style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Open questions</h2><button style="font:inherit;font-size:13px;background:none;border:none;color:#1F5A57;cursor:pointer;padding:0">+ Add</button></div>
+                      <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+                        <sc-for list="{{ questions }}" as="q" hint-placeholder-count="3"><div style="padding:12px 16px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:3px"><span dir="auto" style="font-size:14px;line-height:1.5">{{ q.text }}</span><span style="font-size:12px;color:#6A6257">{{ q.meta }}</span></div></sc-for>
+                      </div>
+                    </section>
+                    <section aria-labelledby="h-na" style="display:flex;flex-direction:column;gap:12px">
+                      <h2 id="h-na" style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Next actions</h2>
+                      <div style="display:flex;flex-direction:column;gap:6px">
+                        <sc-for list="{{ nexts }}" as="n" hint-placeholder-count="3"><a href="{{ n.href }}" style="display:flex;justify-content:space-between;gap:12px;padding:12px 14px;background:#FFFDF8;border:1px solid #E3DBCB;text-decoration:none;color:#1D1A15;font-size:14px" style-hover="border-color:#1F5A57"><span>{{ n.label }}</span><span style="color:#1F5A57">→</span></a></sc-for>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+
+                <section aria-label="Project contents" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#E3DBCB;border:1px solid #E3DBCB">
+                  <sc-for list="{{ contents }}" as="c" hint-placeholder-count="6"><a href="{{ c.href }}" style="background:#FFFDF8;padding:14px 16px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:#1D1A15" style-hover="background:#FBF8F1"><span style="font-family:Newsreader,serif;font-size:22px">{{ c.n }}</span><span style="font-size:13px;color:#6A6257">{{ c.label }}</span></a></sc-for>
+                </section>
+              </sc-if>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- SETTINGS -->
+        <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:28px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:24px;max-width:880px;box-sizing:border-box">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">Settings</h1>
+            <sc-if value="{{ isTrashed }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed #8A8276;background:#FFFDF8;padding:16px 18px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap">
+                <div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#4A443B">In trash · read-only</span><span style="font-size:14px;line-height:1.5">You can read everything but can't change it. Restore before <strong style="font-weight:600">3 Nov 2026</strong>, or it's deleted permanently.</span></div>
+                <button style="flex-shrink:0;font:inherit;font-size:14px;font-weight:500;padding:9px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Restore project</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:12px"><div style="height:200px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:140px;background:#F2EDE2"></div></div></sc-if>
+            <sc-if value="{{ settingsBody }}" hint-placeholder-val="{{ false }}">
+              <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:24px;display:flex;flex-direction:column;gap:18px;opacity:{{ roOp }}">
+                <h2 style="margin:0;font-size:16px;font-weight:600">Details</h2>
+                <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Title</span><input defaultValue="{{ p.title }}" disabled="{{ isTrashed }}" style="padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px"></label>
+                <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Research question</span><textarea rows="2" defaultValue="{{ p.question }}" disabled="{{ isTrashed }}" style="padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;line-height:1.5;border-radius:2px;resize:vertical"></textarea></label>
+                <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Scope</span><textarea rows="3" defaultValue="{{ p.scope }}" disabled="{{ isTrashed }}" style="padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;line-height:1.5;border-radius:2px;resize:vertical"></textarea></label>
+                <button disabled="{{ isTrashed }}" style="align-self:flex-start;font:inherit;font-size:14px;font-weight:500;padding:9px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Save details</button>
+              </section>
+              <section style="background:#FFFDF8;border:1px solid #E3DBCB">
+                <div style="padding:20px 24px;border-bottom:1px solid #EDE6D8;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap">
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px"><span style="font-size:15px;font-weight:600">Archive project</span><span style="font-size:13px;line-height:1.5;color:#4A443B">Takes it out of your active list. The stage stays {{ stage }}. An unfinished project isn't marked Completed. You can unarchive at any time.</span></div>
+                  <button disabled="{{ isTrashed }}" style="flex-shrink:0;font:inherit;font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Archive</button>
+                </div>
+                <div style="padding:20px 24px;border-bottom:1px solid #EDE6D8;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;opacity:.65">
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px"><span style="font-size:15px;font-weight:600;display:flex;gap:8px;align-items:baseline">Transfer ownership</span><span style="font-size:13px;line-height:1.5;color:#4A443B">Choose an existing member. The new owner must accept the transfer.</span></div>
+                  <a href="./15%20Members.dc.html" style="flex-shrink:0;font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;background:#FFFFFF;color:#1D1A15;border-radius:2px;text-decoration:none">Transfer</a>
+                </div>
+                <div style="padding:20px 24px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap">
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 300px"><span style="font-size:15px;font-weight:600">Move to trash</span><span style="font-size:13px;line-height:1.5;color:#4A443B">The project becomes read-only and can be restored for 30 days. 38 evidence items, 6 findings and 2 documents go with it. My Library isn't affected.</span></div>
+                  <button disabled="{{ isTrashed }}" style="flex-shrink:0;font:inherit;font-size:14px;padding:9px 14px;border:1px solid #1D1A15;background:transparent;border-radius:2px;cursor:pointer">Move to trash…</button>
+                </div>
+              </section>
+            </sc-if>
+          </div>
+        </sc-if>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- COPY TO ANOTHER PROJECT (PRJ-06) -->
+  <sc-if value="{{ isCopy }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="cp-h" style="background:#FFFDF8;max-width:860px;width:100%;max-height:calc(100vh - 48px);overflow:auto;box-sizing:border-box;display:flex;flex-direction:column;border:1px solid #E3DBCB">
+        <div style="padding:24px 28px 16px;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">From PRJ-0012</div>
+          <h2 id="cp-h" style="font-family:Newsreader,serif;font-weight:500;font-size:26px;line-height:1.2;margin:0">Copy to another project</h2>
+        </div>
+        <div style="display:flex;flex-wrap:wrap">
+          <div style="flex:1 1 340px;padding:20px 28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;border-right:1px solid #E3DBCB">
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">Destination</span><select style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><option>Women narrators in the Kufan wuḍūʾ chains · PRJ-0018</option><option>Ibn Lahīʿa: assessments before and after 170 AH · PRJ-0015</option></select></label>
+            <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+              <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">What to copy</legend>
+              <sc-for list="{{ copyGroups }}" as="g" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:13px;color:#6A6257">{{ g.label }}</span>
+                  <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="2">
+                    <label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ i.on }}" onChange="{{ i.toggle }}"><span>{{ i.label }}</span></label>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </fieldset>
+          </div>
+          <div style="flex:1 1 300px;padding:20px 28px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;background:#F5F1E8">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><span style="font-size:14px;font-weight:600">Visibility preview</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57">Project · PRJ-0018</span></div>
+            <div style="font-size:13px;line-height:1.5;color:#4A443B">Copies become visible to members of PRJ-0018 (just you in R1a). Each copy records where it came from.</div>
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+              <div style="padding:10px 14px;border-bottom:1px solid #EDE6D8;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Copied · {{ copyCount }}</div>
+              <sc-for list="{{ copySel }}" as="c" hint-placeholder-count="3"><div style="padding:8px 14px;border-bottom:1px solid #EDE6D8;font-size:13px;display:flex;flex-direction:column;gap:2px"><span>{{ c.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">copied from PRJ-0012 · 4 Oct 2026</span></div></sc-for>
+            </div>
+            <div style="border:1px dashed #8A8276;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-size:13px;color:#4A443B">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase">Never copied</span>
+              <span>Members and roles · private annotations · publication authority · activity history</span>
+            </div>
+            <div style="font-size:12px;line-height:1.5;color:#6A6257">Changes in the destination never change this project.</div>
+          </div>
+        </div>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="margin:0 28px;border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;flex-direction:column;gap:4px;font-size:13px;color:#5C2A1C">
+            <span style="font-weight:600;color:#9A3B24;font-size:14px">Copied 3 of 4 items</span>
+            <span>✓ 2 resources and 1 saved query were copied.</span>
+            <span>✕ Analysis “Kufan chains side by side” wasn't copied: one of its inputs is no longer in the corpus. Open the analysis to review it, then try again.</span>
+          </div>
+        </sc-if>
+        <div style="padding:16px 28px 24px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ goOverview }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button>
+          <button onClick="{{ goOverview }}" disabled="{{ on.loading }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer;opacity:{{ copyOp }}">{{ copyLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['overview','Overview'],['copy','Copy to project (preview)'],['settings','Settings'],['trashed','Settings · in trash']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { overview:['normal','empty','loading','error','forbidden'], copy:['normal','loading','error'], settings:['normal','loading','forbidden'], trashed:['normal'] };
+  STAGES = ['Scoping','Collecting','Analysing','Writing','Reviewing','Completed'];
+  state = { view:'overview', st:'normal', stage:'Analysing', prevStage:null, copy:{ r1:true, r2:true, q1:true, a1:true, r3:false } };
+  renderVals() {
+    const { view, st, stage, prevStage, copy } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const empty = view === 'overview' && eff === 'empty';
+    const p = empty
+      ? { id:'PRJ-0018', title:'Women narrators in the Kufan wuḍūʾ chains', question:'هل في أسانيد أحاديث الوضوء الكوفية رواة من النساء، وما موقعهن في الطبقات؟', scope:'Occurrences of REP-000318 and related reports in the six Sunan collections. Narrators up to the 3rd generation.' }
+      : { id:'PRJ-0012', title:'Chains of the wuḍūʾ reports in the Sunan collections', question:'Do the Kufan chains of the “three times” wording share a common link, and where does the wording diverge?', scope:'All 14 occurrences of REP-000318 in the six Sunan collections and their chains. Narrator assessments from Taqrīb and al-Kāmil only. Excludes commentaries and later collections.' };
+    const curStage = empty ? 'Scoping' : stage;
+    const ci = this.STAGES.indexOf(curStage);
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html',''],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const activeTab = (view === 'settings' || view === 'trashed') ? 9 : 0;
+    const ptabsDef = [['Overview','#',''],['Resources','./03b%20Project%20Resources.dc.html',''],['Searches','./08%20Search%20Workspace.dc.html',''],['Evidence','./09%20Evidence%20Inspector.dc.html',''],['Analysis','./10%20Comparison%20Workspace.dc.html',''],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html',''],['Findings & Documents','./11%20Finding%20Editor.dc.html',''],['Review & Publication','./21%20Submission.dc.html',''],['Activity','./18%20Activity.dc.html',''],['Settings','#','']];
+    const ev = [['Candidate',7,'#FFFDF8','1px solid #8A8276'],['Included',19,'#1F5A57','none'],['Reviewed',8,'#6E9C97','none'],['Excluded',3,'#B9B0A0','none'],['Unresolved',1,'#FFFDF8','1px dashed #6A6257']];
+    const total = 38;
+    const err = view === 'overview' && eff === 'error';
+    const cg = [
+      { label:'Resources', items:[['r1','Sunan Abī Dāwūd 106 (occurrence)'],['r2','Sunan al-Tirmidhī 44 (occurrence)'],['r3','Juynboll, Encyclopedia (reference)']] },
+      { label:'Saved queries', items:[['q1','“wuḍūʾ thalāthan” · exact · 3 runs']] },
+      { label:'Analyses', items:[['a1','Kufan chains side by side · v2']] }
+    ];
+    const sel = cg.flatMap(g => g.items).filter(([k]) => copy[k]).map(([, label]) => ({ label }));
+    return {
+      on, p, stage: curStage,
+      showProject: eff !== 'forbidden',
+      isOverview: view === 'overview' || view === 'copy',
+      isSettings: view === 'settings' || view === 'trashed',
+      isTrashed: view === 'trashed',
+      isCopy: view === 'copy',
+      roOp: view === 'trashed' ? 0.7 : 1,
+      settingsBody: (view === 'settings' || view === 'trashed') && eff !== 'loading',
+      showBody: !(view === 'overview' && eff === 'loading'),
+      hasData: !empty,
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: tag ? '#8A8276' : i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href, tag], i) => ({ label, href, tag, click: i === 0 ? (e => { e.preventDefault(); this.setState({ view:'overview' }); }) : i === 9 ? (e => { e.preventDefault(); this.setState({ view:'settings' }); }) : undefined, current: i === activeTab ? 'page' : undefined, rule: i === activeTab ? '#1F5A57' : 'transparent', fg: tag ? '#8A8276' : i === activeTab ? '#123B39' : '#4A443B', weight: i === activeTab ? 600 : 400 })),
+      stages: this.STAGES.map((label, i) => ({ label, cur: i === ci ? 'step' : undefined, mark: i < ci ? '✓' : i === ci ? '●' : '○', markColor: i <= ci ? '#1F5A57' : '#B1A898', bg: i === ci ? '#E3EEEC' : 'transparent', fg: i <= ci ? '#1D1A15' : '#6A6257', weight: i === ci ? 600 : 400, pick: () => { if (label !== curStage && !empty) this.setState({ prevStage: curStage, stage: label }); } })),
+      stageNote: prevStage && !empty ? `Stage changed from ${prevStage} to ${stage}${this.STAGES.indexOf(stage) < this.STAGES.indexOf(prevStage) ? ' (moved back)' : ''}. Recorded in the activity log, 4 Oct 2026 11:24.` : '',
+      undoStage: () => this.setState(s => ({ stage: s.prevStage, prevStage: null })),
+      evTotal: err ? 'Total: Unknown' : `${total} evidence items in this project`,
+      evAria: err ? 'Evidence counts unknown' : ev.map(([l, n]) => `${l} ${n} of ${total}`).join(', '),
+      evBar: err ? [{ n: 1, color: '#FFFDF8', border: '1px dashed #8A8276' }] : ev.map(([, n, color, border]) => ({ n, color, border })),
+      evStates: ev.map(([label, n, color, border]) => ({ label, color, border, n: err ? 'Unknown' : String(n), numColor: err ? '#6A6257' : '#1D1A15', of: err ? 'Couldn’t calculate' : `of ${total} evidence items` })),
+      milestones: [
+        { label:'All 14 occurrences collected', due:'Done 26 Sep', pct:'100%', basis:'14 of 14 occurrences saved as evidence', manual:false },
+        { label:'Every chain parsed and checked', due:'Due 10 Oct', pct:'71%', basis:'10 of 14 chains checked', manual:false },
+        { label:'Narrator assessments gathered', due:'Due 20 Oct', pct:'40%', basis:'About 40%, judged by you', manual:true },
+        { label:'Draft of main article', due:'Due 15 Nov', pct:'10%', basis:'About 10%, judged by you', manual:true }
+      ],
+      questions: [
+        { text:'Is Shuʿba really the common link, or is it Abū Isḥāq?', meta:'Added 25 Sep · linked to 3 evidence items' },
+        { text:'هل لفظ «ثلاثاً ثلاثاً» محفوظ في رواية الترمذي؟', meta:'Added 27 Sep · linked to 2 evidence items' },
+        { text:'Which edition of al-Kāmil do we cite?', meta:'Added 30 Sep' }
+      ],
+      nexts: [
+        { label:'Review 7 candidate evidence items', href:'./09%20Evidence%20Inspector.dc.html' },
+        { label:'Resolve 1 unresolved item: chain order of Tirmidhī 44', href:'./10%20Comparison%20Workspace.dc.html' },
+        { label:'Rerun “wuḍūʾ thalāthan”: corpus updated since the last run', href:'./08%20Search%20Workspace.dc.html' }
+      ],
+      contents: [
+        { n:'12', label:'resources', href:'./03b%20Project%20Resources.dc.html' }, { n:'4', label:'saved searches', href:'./08%20Search%20Workspace.dc.html' }, { n:'2', label:'result sets', href:'./08%20Search%20Workspace.dc.html' },
+        { n:'3', label:'analyses', href:'./10%20Comparison%20Workspace.dc.html' }, { n:'6', label:'findings', href:'./11%20Finding%20Editor.dc.html' }, { n:'2', label:'documents', href:'./11%20Finding%20Editor.dc.html' }
+      ],
+      goCopy: go('copy'), goOverview: go('overview'),
+      copyGroups: cg.map(g => ({ label: g.label, items: g.items.map(([k, label]) => ({ label, on: copy[k], toggle: () => this.setState(s => ({ copy: { ...s.copy, [k]: !s.copy[k] } })) })) })),
+      copySel: sel, copyCount: `${sel.length} item${sel.length === 1 ? '' : 's'}`,
+      copyLabel: view === 'copy' && eff === 'loading' ? 'Copying…' : `Copy ${sel.length} item${sel.length === 1 ? '' : 's'}`,
+      copyOp: view === 'copy' && eff === 'loading' ? 0.55 : 1,
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view (per spec). Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

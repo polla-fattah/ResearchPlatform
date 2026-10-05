@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="09 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">09 · Evidence inspector</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">EVI-01 · 02 · 03 · 04 · 05 · 06 · 07 · LIB-08</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">Research workspace</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8A8276">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">Shilan Rashid</div>
+        <div style="font-size:12px;color:#6A6257">Researcher · Sorani interface</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / PRJ-0012</div>
+            <div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">Chains of the wuḍūʾ reports in the Sunan collections</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57;white-space:nowrap">Analysing</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #6A6257;color:#4A443B;white-space:nowrap">🔒 Private project</span>
+          </div>
+        </div>
+        <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px">
+          <sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10">
+            <a href="{{ t.href }}" aria-current="{{ t.current }}" style="flex-shrink:0;display:flex;gap:6px;align-items:baseline;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8276">{{ t.tag }}</span></a>
+          </sc-for>
+        </nav>
+      </div>
+
+      <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:40px clamp(16px,3vw,40px)">
+          <div style="max-width:680px;background:#FFFDF8;border:1px solid #E3DBCB;padding:32px;display:flex;flex-direction:column;gap:14px">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">No evidence yet</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">Evidence is an exact passage or record you've captured for this project, with its locator and source version. Add it from search results, from a resource, or by selecting text in a source. It starts as Candidate, and you decide what to include.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap"><a href="./08%20Search%20Workspace.dc.html" style="font-size:14px;font-weight:500;padding:10px 16px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Search the corpus</a><a href="./03b%20Project%20Resources.dc.html" style="font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none">From project resources</a></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasEvidence }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;flex:1;min-height:0">
+          <section aria-label="Evidence list" style="flex:1 1 240px;min-width:0;max-width:340px;border-right:1px solid #E3DBCB;display:flex;flex-direction:column">
+            <div style="padding:14px 16px;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:600">Evidence</span><span style="font-size:12px;color:#6A6257">38 evidence items</span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px">
+                <sc-for list="{{ stateFilters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.pick }}" style="font:inherit;font-size:12px;padding:3px 8px;border:1px solid {{ f.border }};background:{{ f.bg }};border-radius:2px;cursor:pointer;color:#1D1A15;white-space:nowrap">{{ f.label }}</button></sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="6"><div style="padding:14px 16px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:8px"><div style="height:10px;width:70px;background:#EAE3D4;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:14px;width:80%;background:#EFE9DC"></div></div></sc-for></div></sc-if>
+            <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+              <div role="listbox" aria-label="Evidence items">
+                <sc-for list="{{ list }}" as="e" hint-placeholder-count="6">
+                  <button role="option" aria-selected="{{ e.sel }}" onClick="{{ e.pick }}" style="font:inherit;text-align:left;width:100%;display:flex;flex-direction:column;gap:5px;padding:12px 16px;border:none;border-bottom:1px solid #EDE6D8;border-left:3px solid {{ e.rule }};background:{{ e.bg }};cursor:pointer;color:#1D1A15" style-hover="background:#FBF8F1">
+                    <span style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px {{ e.sbs }} {{ e.sc }};color:{{ e.sc }}">{{ e.state }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ e.id }}</span></span>
+                    <span style="font-size:14px;font-weight:500;line-height:1.35">{{ e.title }}</span>
+                    <span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:15px;line-height:1.7;color:#4A443B;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ e.ar }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </section>
+
+          <section aria-label="Evidence detail" style="flex:2 1 360px;min-width:0;padding:24px clamp(16px,2.5vw,36px) 80px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px;background:#FFFDF8">
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:14px"><div style="height:14px;width:140px;background:#EAE3D4"></div><div style="height:30px;width:70%;background:#EAE3D4"></div><div style="height:130px;background:#F2EDE2"></div><div style="height:90px;background:#F2EDE2"></div><div style="height:160px;background:#F2EDE2"></div></div></sc-if>
+            <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+              <header style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">{{ ev.id }} · from {{ ev.origin }}</span>
+                  <span style="display:flex;gap:6px;flex-wrap:wrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px {{ ev.sbs }} {{ ev.sc }};color:{{ ev.sc }}">{{ ev.state }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57">Project</span></span>
+                </div>
+                <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;line-height:1.2;margin:0">{{ ev.title }}</h1>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <a href="#" style="font-size:13px;padding:6px 11px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF">Open exact source ↗</a>
+                  <a href="./10%20Comparison%20Workspace.dc.html" style="font-size:13px;padding:6px 11px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF">Chain</a>
+                  <a href="./10%20Comparison%20Workspace.dc.html" style="font-size:13px;padding:6px 11px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF">Narrators</a>
+                  <a href="./10%20Comparison%20Workspace.dc.html" style="font-size:13px;padding:6px 11px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF">Judgments</a>
+                </div>
+              </header>
+
+              <section aria-label="Captured text" style="display:flex;flex-direction:column;gap:12px">
+                <figure style="margin:0;border-left:3px solid #1D1A15;padding:6px 0 6px 18px;display:flex;flex-direction:column;gap:10px">
+                  <figcaption style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase"><span>❝ Source · exact captured span</span><span style="color:#6A6257">Arabic · right-to-left</span></figcaption>
+                  <blockquote dir="rtl" lang="ar" style="margin:0;font-family:'Noto Naskh Arabic',serif;font-size:23px;line-height:2;text-align:right">{{ ev.ar }}</blockquote>
+                </figure>
+                <details style="font-size:13px;color:#4A443B"><summary style="cursor:pointer">Normalized form (for search only, never quoted)</summary><div dir="rtl" lang="ar" style="margin-top:8px;font-family:'Noto Naskh Arabic',serif;font-size:17px;text-align:right;padding:8px 12px;border:1px dashed #CFC6B4">{{ ev.norm }}</div></details>
+              </section>
+
+              <section aria-label="Locator" style="display:flex;flex-direction:column;gap:10px">
+                <h2 style="margin:0;font-size:15px;font-weight:600">Locator and version</h2>
+                <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:1px dashed #8A8276;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.5;color:#4A443B"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1D1A15">Incomplete citation</span><span>This edition has no page number recorded for source no. 84. The volume is known, the page is not. Citations from this evidence will show “p. unknown” until it is filled in. It's never guessed. If you know the page, propose a corpus correction.</span></div>
+                </sc-if>
+                <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:6px 14px;font-size:13px;padding:14px 16px;border:1px solid #E3DBCB;background:#FFFFFF">
+                  <sc-for list="{{ ev.loc }}" as="l" hint-placeholder-count="8">
+                    <span style="color:#6A6257">{{ l.k }}</span><span style="font-family:{{ l.font }};font-size:{{ l.size }};color:{{ l.c }};line-height:1.5;word-break:break-all">{{ l.v }}</span>
+                  </sc-for>
+                </div>
+              </section>
+
+              <section aria-label="State" style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:15px;font-weight:600">State</h2><span style="font-size:12px;color:#6A6257">Reviewed means checked by you. It doesn't mean authentic, correct or agreed.</span></div>
+                <div role="radiogroup" aria-label="Evidence state" style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ stateOpts }}" as="s" hint-placeholder-count="5"><button role="radio" aria-checked="{{ s.sel }}" onClick="{{ s.pick }}" style="font:inherit;font-size:13px;padding:6px 12px;border:1px {{ s.bs }} {{ s.border }};background:{{ s.bg }};color:{{ s.fg }};border-radius:2px;cursor:pointer">{{ s.label }}</button></sc-for>
+                </div>
+                <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px">
+                  <sc-for list="{{ ev.history }}" as="h" hint-placeholder-count="2"><li style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;color:#4A443B"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ h.when }}</span><span>{{ h.text }}</span></li></sc-for>
+                </ol>
+              </section>
+
+              <section aria-label="Annotations" style="display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:15px;font-weight:600">Annotations</h2><span style="font-size:12px;color:#6A6257">{{ annCount }}</span></div>
+                <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:1px dashed #8A8276;padding:12px 14px;font-size:13px;line-height:1.5;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">Only annotations you may see are listed.</strong> Other authors' private annotations are never shown here, in search, in document links or in exports, including to project owners.</div>
+                </sc-if>
+                <sc-for list="{{ anns }}" as="a" hint-placeholder-count="4">
+                  <div style="background:{{ a.bg }};border:{{ a.border }};padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:{{ a.c }}">{{ a.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid {{ a.c }};color:{{ a.c }}">{{ a.vis }}</span></div>
+                    <div dir="{{ a.dir }}" lang="{{ a.lang }}" style="font-size:{{ a.size }};line-height:1.7;color:#1D1A15;font-family:{{ a.font }};text-align:{{ a.align }}">{{ a.text }}</div>
+                    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:#4A443B"><span>{{ a.meta }}</span><sc-if value="{{ a.action }}" hint-placeholder-val="{{ false }}"><button style="font:inherit;font-size:12px;border:none;background:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">{{ a.action }}</button></sc-if></div>
+                  </div>
+                </sc-for>
+                <div style="border:1px solid #E3DBCB;padding:12px;display:flex;flex-direction:column;gap:10px;background:#FFFFFF">
+                  <textarea dir="auto" rows="2" placeholder="Add an annotation…" style="width:100%;box-sizing:border-box;border:none;font:inherit;font-size:14px;line-height:1.5;resize:vertical;background:transparent" style-focus="outline:none"></textarea>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                    <select aria-label="Kind" style="padding:6px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Researcher note</option><option>Attributed judgment (needs a source)</option></select>
+                    <select aria-label="Visibility" style="padding:6px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>🔒 Private to me</option><option>Project</option></select>
+                    <button style="margin-left:auto;font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Add</button>
+                  </div>
+                </div>
+              </section>
+
+              <section aria-label="Linked findings" style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:15px;font-weight:600">Linked findings</h2><button onClick="{{ goLink }}" style="font:inherit;font-size:13px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">+ Link to finding</button></div>
+                <sc-for list="{{ ev.findings }}" as="f" hint-placeholder-count="2">
+                  <a href="./11%20Finding%20Editor.dc.html" style="display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #E3DBCB;text-decoration:none;color:#1D1A15;flex-wrap:wrap;background:#FFFFFF"><span style="font-size:14px">{{ f.title }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border:1px {{ f.bs }} #4A443B;color:#4A443B">{{ f.rel }}</span></a>
+                </sc-for>
+              </section>
+
+              <section aria-label="Dependencies" style="display:flex;flex-direction:column;gap:10px">
+                <h2 style="margin:0;font-size:15px;font-weight:600">Used in</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px">
+                  <sc-for list="{{ ev.deps }}" as="d" hint-placeholder-count="3"><span style="padding:5px 10px;border:1px solid #E3DBCB;background:#FFFFFF">{{ d }}</span></sc-for>
+                </div>
+              </section>
+
+              <footer style="display:flex;gap:10px;flex-wrap:wrap;padding-top:16px;border-top:1px solid #EDE6D8">
+                <button onClick="{{ goCorr }}" style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Propose corpus correction…</button>
+                <button onClick="{{ goRemove }}" style="font:inherit;font-size:13px;padding:7px 12px;border:none;background:none;text-decoration:underline;cursor:pointer;color:#1D1A15">Remove evidence…</button>
+              </footer>
+            </sc-if>
+          </section>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- dialogs -->
+  <sc-if value="{{ dlg.state }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="st-h" style="background:#FFFDF8;max-width:560px;width:100%;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;border:1px solid #E3DBCB">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">{{ ev.id }} · Included → {{ targetState }}</div>
+        <h2 id="st-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">Mark as {{ targetState }}</h2>
+        <label style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Reason <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span><textarea rows="3" dir="auto" defaultValue="{{ reasonText }}" style="padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;line-height:1.5;border-radius:2px;resize:vertical"></textarea><span style="font-size:12px;color:#6A6257">Excluded and Unresolved always need a reason. It is attributed to you and dated.</span></label>
+        <div style="font-size:13px;line-height:1.5;color:#4A443B">Used in 2 findings. They keep the link and will show this evidence as {{ targetState }}.</div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Change state</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ dlg.link }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="lk-h" style="background:#FFFDF8;max-width:600px;width:100%;max-height:calc(100vh - 48px);overflow:auto;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;border:1px solid #E3DBCB">
+        <h2 id="lk-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">Link {{ ev.id }} to a finding</h2>
+        <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+          <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">Finding</legend>
+          <sc-for list="{{ findingOpts }}" as="f" hint-placeholder-count="3"><label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:14px;cursor:pointer;opacity:{{ f.op }}"><input type="radio" name="fd" defaultChecked="{{ f.first }}" disabled="{{ f.linked }}"><span style="display:flex;flex-direction:column;gap:1px"><span>{{ f.title }}</span><span style="font-size:12px;color:#6A6257">{{ f.sub }}</span></span></label></sc-for>
+        </fieldset>
+        <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+          <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">Relation</legend>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ relOpts }}" as="r" hint-placeholder-count="4"><label style="display:flex;gap:6px;align-items:center;padding:7px 12px;border:1px solid #CFC6B4;font-size:14px;cursor:pointer;border-radius:2px;background:#FFFFFF"><input type="radio" name="rel" defaultChecked="{{ r.first }}">{{ r.label }}</label></sc-for>
+          </div>
+          <span style="font-size:12px;color:#6A6257">The same evidence can support one finding and oppose another. Its source isn't duplicated.</span>
+        </fieldset>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Link</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ dlg.corr }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="cr-h" style="background:#FFFDF8;max-width:680px;width:100%;max-height:calc(100vh - 48px);overflow:auto;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;border:1px solid #E3DBCB">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Corpus correction proposal · OCC-NAS-000084</div>
+        <h2 id="cr-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">Propose a correction to the corpus</h2>
+        <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Field</span><select style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><option>Page number</option><option>Volume</option><option>Matn wording</option><option>Chain: narrator identity</option><option>Chain: order</option><option>Other</option></select></label>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Current value</span><div style="padding:9px 12px;border:1px dashed #8A8276;font-size:14px;color:#6A6257">Unknown (not recorded)</div></div>
+          <label style="flex:1 1 220px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Proposed value</span><input defaultValue="p. 64" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"></label>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Evidence for the change</span><input defaultValue="Printed edition, Dār al-Maʿrifa 1420, vol. 1, p. 64; scan in my library EXT-0011" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"></label>
+        <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Explanation</span><textarea rows="3" style="padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;line-height:1.5;border-radius:2px;resize:vertical">The corpus entry has volume 1 but no page. The printed edition shows this report on page 64.</textarea></label>
+        <div style="font-size:13px;line-height:1.5;color:#4A443B;border-left:3px solid #1F5A57;padding-left:12px">Your proposal goes to the corpus editors' queue, which is separate from this project. Nothing in the corpus changes until an editor accepts it, and accepting it inside a project never changes the canonical record.</div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Send proposal</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ dlg.remove }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="rm-h" style="background:#FFFDF8;max-width:600px;width:100%;max-height:calc(100vh - 48px);overflow:auto;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;border:1px solid #E3DBCB">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Remove evidence · {{ ev.id }}</div>
+        <h2 id="rm-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">This evidence is in use</h2>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Removing “{{ ev.title }}” affects 4 places:</p>
+        <div style="border:1px solid #E3DBCB">
+          <sc-for list="{{ depRows }}" as="d" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #EDE6D8;font-size:13px;flex-wrap:wrap"><span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57;margin-right:8px">{{ d.kind }}</span>{{ d.name }}</span><span style="color:#4A443B">{{ d.effect }}</span></div></sc-for>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#4A443B;border-left:3px solid #1F5A57;padding-left:12px">Earlier document versions keep their quoted text unchanged. The evidence stays recoverable for 30 days, until 3 Nov 2026. Consider marking it Excluded with a reason instead.</div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Mark Excluded instead</button><button onClick="{{ goInspector }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:1px solid #1D1A15;background:#1D1A15;color:#FFFFFF;border-radius:2px;cursor:pointer">Remove {{ ev.id }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['inspector','Inspector'],['state','Change state (reason)'],['link','Link to finding'],['corr','Propose correction'],['remove','Remove (dependencies)']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { inspector:['normal','empty','loading','error','forbidden','conflict'], state:['normal'], link:['normal'], corr:['normal'], remove:['normal'] };
+  SC = { Candidate:['#4A443B','solid'], Included:['#1F5A57','solid'], Reviewed:['#123B39','solid'], Excluded:['#6A6257','solid'], Unresolved:['#6A6257','dashed'] };
+  EV = [
+    { id:'EV-0004', state:'Included', title:'Sunan Abī Dāwūd 106: “three times each”', origin:'search run R-0031-3', ar:'أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا', norm:'ان النبي صلى الله عليه وسلم توضا ثلاثا ثلاثا', book:'Sunan Abī Dāwūd', ed:'ed. al-Arnaʾūṭ, Dār al-Risāla 2009', vp:'vol. 1, p. 78', num:'Source no. 106 (Abū Dāwūd numbering, not a global ID)', missing:false },
+    { id:'EV-0040', state:'Candidate', title:'Sunan al-Nasāʾī 84: “three times each”', origin:'search run R-0031-4', ar:'تَوَضَّأَ ثَلاَثًا ثَلاَثًا', norm:'توضا ثلاثا ثلاثا', book:'Sunan al-Nasāʾī', ed:'ed. Abū Ghudda', vp:'vol. 1, p. Unknown', num:'Source no. 84 (al-Nasāʾī numbering)', missing:true },
+    { id:'EV-0007', state:'Reviewed', title:'Sunan al-Tirmidhī 44: once, twice, three times', origin:'resource OCC-TIR-000044', ar:'تَوَضَّأَ النَّبِيُّ صلى الله عليه وسلم مَرَّةً مَرَّةً، وَمَرَّتَيْنِ مَرَّتَيْنِ، وَثَلاَثًا ثَلاَثًا', norm:'توضا النبي صلى الله عليه وسلم مره مره ومرتين مرتين وثلاثا ثلاثا', book:'Sunan al-Tirmidhī', ed:'ed. Shākir', vp:'vol. 1, p. 63', num:'Source no. 44 (al-Tirmidhī numbering)', missing:false },
+    { id:'EV-0021', state:'Unresolved', title:'Ibn Ḥajar on Ibn Lahīʿa (Taqrīb 3563)', origin:'resource JDG-IHJ-03563', ar:'صدوق، خلّط بعد احتراق كتبه', norm:'صدوق خلط بعد احتراق كتبه', book:'Taqrīb al-Tahdhīb', ed:'ed. ʿAwwāma', vp:'p. 319', num:'Entry no. 3563', missing:false },
+    { id:'EV-0013', state:'Excluded', title:'Sunan Ibn Mājah 413: chain outside scope', origin:'search run R-0031-1', ar:'تَوَضَّأَ ثَلاَثًا ثَلاَثًا', norm:'توضا ثلاثا ثلاثا', book:'Sunan Ibn Mājah', ed:'ed. ʿAbd al-Bāqī', vp:'vol. 1, p. 143', num:'Source no. 413 (Ibn Mājah numbering)', missing:false }
+  ];
+  state = { view:'inspector', st:'normal', sel:0, filter:'All', target:'Unresolved' };
+  renderVals() {
+    const { view, st, filter, target } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const sel = eff === 'error' ? 1 : (view === 'corr' ? 1 : this.state.sel);
+    const e = this.EV[sel];
+    const [sc, sbs] = this.SC[e.state];
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html',''],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const ptabsDef = [['Overview','./06%20Project%20Overview.dc.html',''],['Resources','./03b%20Project%20Resources.dc.html',''],['Searches','./08%20Search%20Workspace.dc.html',''],['Evidence','#',''],['Analysis','./10%20Comparison%20Workspace.dc.html',''],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html',''],['Findings & Documents','./11%20Finding%20Editor.dc.html',''],['Review & Publication','./21%20Submission.dc.html',''],['Activity','./18%20Activity.dc.html',''],['Settings','./06%20Project%20Overview.dc.html','']];
+    const mono = "'IBM Plex Mono',monospace", sans = "'IBM Plex Sans',sans-serif";
+    const loc = [
+      ['Work', e.book, sans, '13px', '#1D1A15'], ['Edition', e.ed, sans, '13px', '#1D1A15'],
+      ['Volume / page', e.vp, mono, '12px', e.missing ? '#6A6257' : '#1D1A15'], ['Number', e.num, sans, '13px', '#1D1A15'],
+      ['Corpus version', 'v2026.09 · source status: Current', mono, '12px', '#1D1A15'],
+      ['Snapshot hash', 'sha256:9f2c…41ab7e', mono, '12px', '#1D1A15'],
+      ['Collected', 'Shilan Rashid · 22 Sep 2026, 15:44', sans, '13px', '#1D1A15'],
+      ['Original saved locator', 'OCC-' + e.id.slice(3) + ' · kept even if the corpus record changes', mono, '12px', '#4A443B']
+    ].map(([k, v, font, size, c]) => ({ k, v, font, size, c }));
+    const history = e.state === 'Included'
+      ? [{ when:'22 Sep 2026 15:44', text:'Candidate · added by Shilan Rashid from run R-0031-3' }, { when:'24 Sep 2026 10:12', text:'Included · Shilan Rashid · “Kufan chain within scope; base wording.”' }]
+      : e.state === 'Unresolved' ? [{ when:'14 Sep 2026', text:'Candidate · added by Shilan Rashid' }, { when:'30 Sep 2026', text:'Unresolved · Shilan Rashid · “Unclear which edition of Taqrīb the corpus uses.”' }]
+      : e.state === 'Excluded' ? [{ when:'20 Sep 2026', text:'Candidate · added by Shilan Rashid' }, { when:'21 Sep 2026', text:'Excluded · Shilan Rashid · “Chain is not Kufan; outside scope.”' }]
+      : [{ when:'4 Oct 2026 11:05', text:'Candidate · added by Shilan Rashid from run R-0031-4' }];
+    const anns = [
+      { label:'❝ Source quotation · span of this evidence', vis:'Project', c:'#1D1A15', bg:'#FFFFFF', border:'1px solid #E3DBCB', text:'ثَلاَثًا ثَلاَثًا', dir:'rtl', lang:'ar', font:"'Noto Naskh Arabic',serif", size:'18px', align:'right', meta:'Exact wording, not edited · vol. 1, p. 78', action:'' },
+      { label:'⚖ Attributed to al-Tirmidhī', vis:'Project', c:'#7A5413', bg:'#F5ECD9', border:'none', text:'هذا أحسن شيء في هذا الباب وأصح', dir:'rtl', lang:'ar', font:"'Noto Naskh Arabic',serif", size:'18px', align:'right', meta:'Sunan al-Tirmidhī, after no. 44 · exact wording kept · added by Shilan Rashid', action:'Open source' },
+      { label:'✎ Researcher note · Shilan Rashid', vis:'🔒 Private', c:'#2F4E7A', bg:'#E8EDF5', border:'none', text:'The chain via Abū ʿAwāna looks stronger than the Tirmidhī route. Check whether Musaddad heard from him directly.', dir:'ltr', lang:'en', font:sans, size:'14px', align:'left', meta:'24 Sep 2026 · visible only to you', action:'Share with project…' },
+      { label:'✎ Researcher note · Shilan Rashid', vis:'Project', c:'#2F4E7A', bg:'#E8EDF5', border:'none', text:'ئەم دەقە بنەمای بەراوردی دەربڕینەکانە.', dir:'rtl', lang:'ckb', font:"'Noto Naskh Arabic',serif", size:'16px', align:'right', meta:'Shared with the project on 25 Sep 2026 (promoted from private)', action:'' },
+      { label:'◇ Suggestion (not accepted)', vis:'R3', c:'#6A6257', bg:'#FFFDF8', border:'1px dashed #8A8276', text:'Machine suggestions arrive in R3. Until you accept one, it can never be shown as a scholar’s statement.', dir:'ltr', lang:'en', font:sans, size:'13px', align:'left', meta:'Treatment reserved; nothing is generated in R1a', action:'' }
+    ];
+    const tgt = target;
+    const filters = ['All','Candidate','Included','Reviewed','Excluded','Unresolved'];
+    const counts = { All:38, Candidate:7, Included:19, Reviewed:8, Excluded:3, Unresolved:1 };
+    const list = this.EV.filter(x => filter === 'All' || x.state === filter).map(x => {
+      const i = this.EV.indexOf(x); const [c, bs] = this.SC[x.state];
+      return { ...x, sel: i === sel, rule: i === sel ? '#1F5A57' : 'transparent', bg: i === sel ? '#FFFDF8' : 'transparent', sc: c, sbs: bs, pick: () => this.setState({ sel: i }) };
+    });
+    return {
+      on,
+      ev: { ...e, sc, sbs, loc, history, findings: [{ title:'F-02 · The Kufan chains share Abū ʿAwāna as a common link', rel:'Supporting', bs:'solid' }, { title:'F-05 · “Three times” is the earliest wording', rel:'Contextual', bs:'solid' }], deps: ['2 findings', '1 document: “Main article” draft v14 (1 citation)', '1 analysis: Kufan chains side by side v2'] },
+      anns, annCount: '5 annotations · 3 Project · 1 Private · 1 reserved',
+      hasEvidence: !on.empty, notLoading: !on.loading,
+      skel: [1,2,3,4,5,6],
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: tag ? '#8A8276' : i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href, tag], i) => ({ label, href, tag, current: i === 3 ? 'page' : undefined, rule: i === 3 ? '#1F5A57' : 'transparent', fg: tag ? '#8A8276' : i === 3 ? '#123B39' : '#4A443B', weight: i === 3 ? 600 : 400 })),
+      stateFilters: filters.map(f => ({ label: `${f} · ${counts[f]}`, pick: () => this.setState({ filter: f }), border: filter === f ? '#1F5A57' : '#CFC6B4', bg: filter === f ? '#E3EEEC' : '#FFFFFF' })),
+      list,
+      stateOpts: ['Candidate','Included','Reviewed','Excluded','Unresolved'].map(s => { const isCur = s === e.state; return { label: s, sel: isCur, bs: s === 'Unresolved' ? 'dashed' : 'solid', border: isCur ? '#1F5A57' : '#CFC6B4', bg: isCur ? '#1F5A57' : '#FFFFFF', fg: isCur ? '#FFFFFF' : '#1D1A15', pick: () => { if (s === 'Excluded' || s === 'Unresolved') this.setState({ view: 'state', target: s }); } }; }),
+      targetState: tgt,
+      reasonText: tgt === 'Excluded' ? '' : 'Chain order between Sufyān and Abū Isḥāq is uncertain in this edition; needs a second edition before deciding.',
+      dlg: { state: view === 'state', link: view === 'link', corr: view === 'corr', remove: view === 'remove' || (view === 'inspector' && eff === 'conflict') },
+      goInspector: go('inspector'), goLink: go('link'), goCorr: go('corr'), goRemove: go('remove'),
+      findingOpts: [
+        { title:'F-02 · The Kufan chains share Abū ʿAwāna as a common link', sub:'Already linked as Supporting', linked:true, op:0.55, first:false },
+        { title:'F-04 · Al-Tirmidhī’s wording is a later expansion', sub:'Provisional · 3 evidence items', linked:false, op:1, first:true },
+        { title:'F-06 · Shuʿba is not the common link', sub:'Inconclusive · 2 evidence items', linked:false, op:1, first:false }
+      ],
+      relOpts: [['Supporting',false],['Opposing',true],['Contextual',false],['Unresolved',false]].map(([label, first]) => ({ label, first })),
+      depRows: [
+        { kind:'Finding', name:'F-02 · common link Abū ʿAwāna', effect:'Loses 1 of 4 supporting items' },
+        { kind:'Finding', name:'F-05 · earliest wording', effect:'Loses its only contextual item' },
+        { kind:'Document', name:'Main article · draft v14', effect:'1 citation becomes “source removed”' },
+        { kind:'Analysis', name:'Kufan chains side by side · v2', effect:'Input missing; rerunning creates v3' }
+      ],
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view (per spec). Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

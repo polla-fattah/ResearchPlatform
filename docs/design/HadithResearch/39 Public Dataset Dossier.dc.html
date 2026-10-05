@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="39 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 39 · Public dataset and dossier pages</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">PUB-13</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="2">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+    <div style="max-width:1120px;margin:0 auto;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap">
+      <span style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Open Hadith Research</span>
+      <nav aria-label="Public" style="display:flex;gap:4px;flex-wrap:wrap">
+        <a href="./20%20Public%20Announcement.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Research announcements</a>
+        <a href="./24%20Public%20Publication.dc.html" aria-current="page" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#123B39;border-bottom:2px solid #1F5A57">Published research</a>
+        <a href="#" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Researcher profiles</a>
+        <a href="./25%20Public%20Search.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Search</a>
+      </nav>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center"><a href="./01%20Registration.dc.html" style="font-size:14px;padding:8px 12px;color:#1D1A15;text-decoration:none">Sign in</a><a href="./01%20Registration.dc.html" style="font-size:14px;font-weight:500;padding:8px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Apply</a></div>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:36px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px">
+    <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:12px"><div style="height:44px;width:70%;background:#EAE3D4;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:260px;background:#EFE9DC"></div></div></sc-if>
+    <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:14px 18px;font-size:14px;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">The download list couldn't load.</strong> The page itself is fine. Try again for the files. Version checksums are shown below, so you can check a file you already have.</div></sc-if>
+    <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:620px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ url }}</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Page not found</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">Nothing has been published at this address. Datasets and dossiers that are released inside a project, or still under review, aren’t public.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showPage }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}"><div role="note" style="border:1px solid #1D1A15;background:#FFFDF8;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.55;color:#4A443B"><span><strong style="font-weight:600;color:#1D1A15">You’re viewing {{ oldVer }}. A newer version, {{ newVer }}, was released on 2 Oct 2026.</strong> This page and its files stay exactly as they were, so citations to {{ oldVer }} still work.</span><a href="#" style="font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none;flex-shrink:0">Go to {{ newVer }}</a></div></sc-if>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1D1A15;color:#1D1A15">{{ typeLabel }}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57">Public publication</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #6A6257;color:#4A443B">Editor-reviewed · 1 reviewer</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ verLine }}</span>
+        </div>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:40px;line-height:1.1;margin:0;max-width:880px;text-wrap:balance">{{ title }}</h1>
+        <span style="font-size:15px;color:#4A443B">Shilan Rashid, Aras Kamal · released {{ released }} · {{ licence }}</span>
+        <p style="margin:0;max-width:760px;font-size:16px;line-height:1.65;color:#1D1A15;text-wrap:pretty">{{ abstract }}</p>
+      </div>
+
+      <!-- DATASET -->
+      <sc-if value="{{ isDataset }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+          <div style="flex:1.6 1 460px;min-width:0;display:flex;flex-direction:column;gap:20px">
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">How records were selected</h2>
+              <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#1D1A15"><li>Included: results of a fixed search for “thalāthan thalāthan” in wuḍūʾ chapters (run of 14 Sep 2026).</li><li>Limited to the six Sunan and Musnad Aḥmad.</li><li>Included: 2 records added by hand, each with its reason.</li><li>Excluded: 2 records, each with its reason (listed in the manifest).</li></ol>
+              <span style="font-size:13px;color:#6A6257">Source snapshot CS-2026-09-30. The rules are in the manifest, so the selection can be repeated.</span>
+            </section>
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Data dictionary · schema 1.0</h2>
+              <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+                <sc-for list="{{ dict }}" as="d" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:130px 120px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 14px;border-bottom:1px solid #EDE6D8;font-size:13px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500">{{ d.col }}</span><span style="justify-self:start;font-size:11px;padding:1px 6px;background:{{ d.bg }};color:{{ d.fg }};border-left:3px solid {{ d.rule }}">{{ d.origin }}</span><span style="line-height:1.5;color:#4A443B">{{ d.def }}</span></div></sc-for>
+              </div>
+            </section>
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">First records</h2>
+              <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+                <sc-for list="{{ sample }}" as="x" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start;padding:10px 14px;border-bottom:1px solid #EDE6D8;font-size:13px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A443B">{{ x.loc }}</span><span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:16px;line-height:1.6;text-align:right;border-right:3px solid #1D1A15;padding-right:8px">{{ x.matn }}</span><span style="color:#2F4E7A">{{ x.labels }}</span></div></sc-for>
+                <div style="padding:9px 14px;font-size:12px;color:#6A6257">3 of 14 records. 2 records have no text column, because their edition may be cited but not redistributed.</div>
+              </div>
+            </section>
+          </div>
+          <aside style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Download {{ curVer }}</div>
+              <sc-if value="{{ dlOk }}" hint-placeholder-val="{{ true }}"><sc-for list="{{ files }}" as="f" hint-placeholder-count="4"><a href="#" style="display:flex;justify-content:space-between;gap:8px;padding:9px 16px;border-bottom:1px solid #EDE6D8;font-size:13px;text-decoration:none"><span>{{ f.name }}</span><span style="color:#6A6257">{{ f.size }}</span></a></sc-for></sc-if>
+              <div style="padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257;word-break:break-all">SHA-256 {{ checksum }}</div>
+            </section>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Versions</div>
+              <sc-for list="{{ versions }}" as="v" hint-placeholder-count="2"><div style="padding:9px 16px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:2px;font-size:13px"><span style="display:flex;justify-content:space-between;gap:8px"><a href="#" style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ v.id }}</a><span style="font-size:12px;color:#6A6257">{{ v.when }}</span></span><span style="color:#4A443B">{{ v.note }}</span></div></sc-for>
+            </section>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:14px;font-weight:600">Redistribution</span>
+              <span style="font-size:13px;line-height:1.55;color:#4A443B">Labels and dictionary: CC BY 4.0. Source text: under each edition’s terms, listed per record in the manifest.</span>
+            </section>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:14px;font-weight:600">Cite this version</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#1D1A15">Rashid, S. &amp; Kamal, A. (2026). Wuḍūʾ “three times” occurrences [dataset], {{ curVer }}. Open Hadith Research. openhadith.org/data/DS-0003/{{ curVer }}</span>
+            </section>
+          </aside>
+        </div>
+      </sc-if>
+
+      <!-- DOSSIER -->
+      <sc-if value="{{ isDossier }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+          <div style="flex:1.6 1 460px;min-width:0;display:flex;flex-direction:column;gap:22px">
+            <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+              <section style="display:flex;flex-direction:column;gap:10px">
+                <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">{{ s.title }}</h2>
+                <sc-for list="{{ s.items }}" as="i" hint-placeholder-count="2">
+                  <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><span style="font-size:14px;font-weight:500">{{ i.claim }}</span><span style="font-size:11px;padding:1px 7px;background:{{ i.bg }};color:{{ i.fg }};border:1px {{ i.bs }} {{ i.bc }}">{{ i.label }}</span></div>
+                    <sc-if value="{{ i.ar }}" hint-placeholder-val="{{ false }}"><span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:17px;line-height:1.8;text-align:right;border-right:3px solid #1D1A15;padding-right:10px">{{ i.ar }}</span></sc-if>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ i.src }}</span>
+                  </div>
+                </sc-for>
+              </section>
+            </sc-for>
+          </div>
+          <aside style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Download {{ curVer }}</div>
+              <sc-if value="{{ dlOk }}" hint-placeholder-val="{{ true }}"><sc-for list="{{ files }}" as="f" hint-placeholder-count="3"><a href="#" style="display:flex;justify-content:space-between;gap:8px;padding:9px 16px;border-bottom:1px solid #EDE6D8;font-size:13px;text-decoration:none"><span>{{ f.name }}</span><span style="color:#6A6257">{{ f.size }}</span></a></sc-for></sc-if>
+              <div style="padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257;word-break:break-all">SHA-256 {{ checksum }}</div>
+            </section>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.55;color:#4A443B">
+              <span style="font-size:14px;font-weight:600;color:#1D1A15">Reading this dossier</span>
+              <span>❝ Source: wording quoted from a cited work.</span>
+              <span style="color:#7A5413">Attributed to a critic: what the source reports a critic said.</span>
+              <span style="color:#2F4E7A">Researcher note: the authors’ own reading.</span>
+              <span>Estimated dates are marked “estimated”, and competing reports are both shown.</span>
+            </section>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Versions</div>
+              <sc-for list="{{ versions }}" as="v" hint-placeholder-count="2"><div style="padding:9px 16px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:2px;font-size:13px"><span style="display:flex;justify-content:space-between;gap:8px"><a href="#" style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ v.id }}</a><span style="font-size:12px;color:#6A6257">{{ v.when }}</span></span><span style="color:#4A443B">{{ v.note }}</span></div></sc-for>
+            </section>
+          </aside>
+        </div>
+      </sc-if>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['dataset','Dataset page'],['dossier','Dossier page']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { dataset:['normal','loading','error','forbidden','conflict'], dossier:['normal','loading','error','forbidden','conflict'] };
+  state = { view:'dataset', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const ds = view === 'dataset';
+    const conf = eff === 'conflict';
+    const curVer = ds ? (conf ? 'v1' : 'v2') : (conf ? 'v1' : 'v2');
+    const OR = o => o === 'Source' ? { origin:'❝ Source', bg:'transparent', fg:'#1D1A15', rule:'#1D1A15' } : o === 'Researcher' ? { origin:'Researcher label', bg:'#E8EDF5', fg:'#2F4E7A', rule:'#2F4E7A' } : { origin:'System', bg:'transparent', fg:'#4A443B', rule:'#CFC6B4' };
+    const D = (col, o, def) => ({ col, def, ...OR(o) });
+    const L = (k) => ({ src:['❝ Source','transparent','#1D1A15','solid','#1D1A15'], crit:['Attributed to critic','#F5ECD9','#7A5413','solid','#F5ECD9'], note:['Researcher note','#E8EDF5','#2F4E7A','solid','#E8EDF5'], est:['Estimated','transparent','#6A6257','dashed','#8A8276'], unres:['Unresolved','transparent','#6A6257','dashed','#8A8276'] })[k];
+    const It = (claim, k, src, ar) => { const [label, bg, fg, bs, bc] = L(k); return { claim, label, bg, fg, bs, bc, src, ar: ar || '' }; };
+    return {
+      on,
+      url: ds ? 'openhadith.org/data/DS-0003' : 'openhadith.org/dossier/ND-0007',
+      showPage: ['normal','error','conflict'].includes(eff),
+      oldVer: 'v1', newVer: 'v2',
+      typeLabel: ds ? 'Dataset' : 'Narrator dossier',
+      verLine: ds ? `${curVer} · schema 1.0 · 14 records` : `${curVer} · 19 source-linked statements`,
+      title: ds ? 'Wuḍūʾ “three times” occurrences, labelled by wording and route' : 'Wakīʿ ibn al-Jarrāḥ: transmission from Sufyān',
+      released: conf ? '22 Sep 2026' : '2 Oct 2026',
+      licence: ds ? 'CC BY 4.0 for labels' : 'CC BY 4.0 for notes',
+      abstract: ds ? 'Each record is one occurrence of the report in the cited edition. Two researcher labels, wording and route, are defined in the data dictionary. They’re the authors’ reading, not authenticity grades.' : 'Evidence about Wakīʿ’s identity, dates and teachers, focusing on his transmission from Sufyān. Every statement links to its source. Where reports compete or the teacher is unresolved, both readings are kept.',
+      isDataset: ds, isDossier: !ds, curVer,
+      dict: [D('record_id','System','Stable occurrence ID.'), D('collection','Source','Collection name.'), D('locator','Source','Book and number in the cited edition.'), D('matn_text','Source','Unnormalized matn. Empty where redistribution isn’t permitted.'), D('wording','Researcher','threefold · expanded · unknown'), D('route','Researcher','Wakīʿ · other · unknown')],
+      sample: [{ loc:'Abū Dāwūd 106', matn:'تَوَضَّأَ ثَلَاثًا ثَلَاثًا', labels:'threefold · other' }, { loc:'al-Nasāʾī 84', matn:'فَغَسَلَ وَجْهَهُ ثَلَاثًا', labels:'threefold · other' }, { loc:'al-Tirmidhī 44', matn:'تَوَضَّأَ ثَلَاثًا ثَلَاثًا وَمَسَحَ بِرَأْسِهِ', labels:'expanded · Wakīʿ' }],
+      dlOk: eff !== 'error',
+      files: ds ? [{ name:'ds-0003-' + curVer + '.csv', size:'38 KB' }, { name:'ds-0003-' + curVer + '.json', size:'61 KB' }, { name:'data-dictionary.csv', size:'2 KB' }, { name:'manifest.json (rules, exclusions, snapshot)', size:'5 KB' }] : [{ name:'nd-0007-' + curVer + '.json', size:'44 KB' }, { name:'nd-0007-' + curVer + '.pdf', size:'310 KB' }, { name:'sources.bib', size:'3 KB' }],
+      checksum: ds ? '9f2c…e41a (all files: manifest.json)' : '41bd…07c2 (all files: manifest.json)',
+      versions: ds ? [{ id:'v2', when:'2 Oct 2026', note:'Added chain status; excluded a duplicate printing.' }, { id:'v1', when:'22 Sep 2026', note:'First public release, 15 records.' }] : [{ id:'v2', when:'2 Oct 2026', note:'Added Ibn Ḥajar’s remark; date of death estimate revised.' }, { id:'v1', when:'22 Sep 2026', note:'First public release.' }],
+      sections: [
+        { title:'Identity and dates', items:[ It('Died 197 AH','src','Ibn Ḥajar, Tahdhīb al-Tahdhīb 11/123'), It('Some reports give 196 AH. Both readings are kept.','est','Reported in al-Mizzī, Tahdhīb al-Kamāl 30/462 · competing alternative') ] },
+        { title:'Critics on Wakīʿ', items:[ It('Called “thiqa ḥāfiẓ”','crit','Attributed to Ibn Ḥajar · Taqrīb no. 7414','ثقة حافظ عابد') ] },
+        { title:'Teacher-specific: from Sufyān', items:[ It('Said to be among the most reliable in Sufyān’s material','crit','Attributed to Aḥmad ibn Ḥanbal · reported in Tahdhīb al-Kamāl 30/468'), It('Which Sufyān (al-Thawrī or Ibn ʿUyayna) is meant in al-Tirmidhī 44 is unresolved. This remark applies to Sufyān al-Thawrī only.','unres','Researcher reading · see dataset DS-0003'), It('This remark is about his transmission from Sufyān. It isn’t a judgment on all his transmissions.','note','Researcher note') ] }
+      ],
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

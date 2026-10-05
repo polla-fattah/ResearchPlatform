@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="40 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 40 · Collaboration-interest form</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ANN-06</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <!-- PUBLIC SIDE -->
+  <sc-if value="{{ isPublic }}" hint-placeholder-val="{{ true }}">
+    <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+      <div style="max-width:1120px;margin:0 auto;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap">
+        <span style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Open Hadith Research</span>
+        <nav aria-label="Public" style="display:flex;gap:4px;flex-wrap:wrap">
+          <a href="./20%20Public%20Announcement.dc.html" aria-current="page" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#123B39;border-bottom:2px solid #1F5A57">Research announcements</a>
+          <a href="./24%20Public%20Publication.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Published research</a>
+          <a href="./25%20Public%20Search.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Search</a>
+        </nav>
+        <div style="margin-left:auto;font-size:14px;color:#4A443B">{{ visitor }}</div>
+      </div>
+    </header>
+    <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:36px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+      <section style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57;align-self:flex-start">Public announcement · Call for collaborators</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:32px;line-height:1.15;margin:0">Kufan chains of the wuḍūʾ reports: seeking a manuscript specialist</h1>
+        <span style="font-size:14px;color:#4A443B">Shilan Rashid · PRJ-0012 · announced 28 Sep 2026</span>
+        <p style="margin:0;font-size:15px;line-height:1.65;color:#1D1A15">We’re looking for someone who can check manuscript witnesses of Ibn Mājah’s Kitāb al-Ṭahāra against the printed editions.</p>
+        <a href="./20%20Public%20Announcement.dc.html" style="font-size:13px">Read the full announcement</a>
+      </section>
+
+      <section style="flex:1.2 1 380px;min-width:0;display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="height:420px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-if>
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF8;border:1px dashed #8A8276;padding:22px;display:flex;flex-direction:column;gap:10px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Sign in with a verified account to offer help</h2>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">This keeps requests accountable and protects the researchers from spam. Any registered account with a verified email can send a request. You don’t need researcher approval to send one.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><a href="./01%20Registration.dc.html" style="font-size:14px;font-weight:500;padding:9px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Sign in</a><a href="./01%20Registration.dc.html" style="font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none">Create an account</a></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF8;border:1px dashed #6A6257;padding:22px;display:flex;flex-direction:column;gap:8px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">This call closed while you were writing</h2>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">The owner stopped taking requests at 11:20. Your message wasn’t sent. A copy is below for you to keep. Contact the researchers through their public profile if they list a way to.</p>
+            <pre dir="auto" style="margin:0;padding:10px 12px;background:#FBF8F1;border:1px solid #E3DBCB;font:inherit;font-size:13px;line-height:1.55;white-space:pre-wrap">I have photographs of two Ibn Mājah manuscripts (Istanbul, Köprülü 1/52; Rabat 3/118) covering the ṭahāra chapters…</pre>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:22px;display:flex;flex-direction:column;gap:16px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Offer to collaborate</h2>
+            <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:10px 14px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">Not sent.</strong> The connection dropped. Your message and choices are kept. Send again when you’re back online.</div></sc-if>
+            <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+              <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">What the owner will see about you</legend>
+              <sc-for list="{{ share }}" as="s" hint-placeholder-count="5"><label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;align-items:start;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ s.on }}" disabled="{{ s.lock }}" onChange="{{ s.toggle }}" style="margin-top:3px"><span style="display:flex;flex-direction:column;gap:1px"><span>{{ s.label }}</span><span style="font-size:12px;color:#6A6257">{{ s.val }}</span></span></label></sc-for>
+            </fieldset>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:600">How you could help</span><textarea dir="auto" rows="4" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;line-height:1.55;border-radius:2px;resize:vertical">I have photographs of two Ibn Mājah manuscripts (Istanbul, Köprülü 1/52; Rabat 3/118) covering the ṭahāra chapters, and can collate the wuḍūʾ reports against the Cairo print.</textarea></label>
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:12px;color:#6A6257;max-width:340px;line-height:1.5">Only the project owner sees this. Sending doesn’t give you access to the project.</span><button onClick="{{ goSent }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Send request</button></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF8;border:1px solid #1F5A57;padding:22px;display:flex;flex-direction:column;gap:10px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Request sent to Shilan Rashid</h2>
+            <span style="font-size:14px;line-height:1.6;color:#4A443B">You shared: your name, your affiliation and your message. If the owner accepts, you’ll get a separate project invitation with a stated role. You can decline it. Nothing else happens automatically.</span>
+            <div style="display:flex;gap:12px;flex-wrap:wrap"><a href="./02%20Personal%20Home.dc.html" style="font-size:14px">See your sent requests</a><button style="font:inherit;font-size:14px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">Withdraw request</button></div>
+          </div>
+        </sc-if>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- OWNER SIDE -->
+  <sc-if value="{{ isOwner }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+      <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+        <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+          <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Collaboration</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+            <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1"><span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span></a>
+          </sc-for>
+        </div>
+        <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">Shilan Rashid</div><div style="font-size:12px;color:#6A6257">Owner of PRJ-0012</div></div>
+      </nav>
+      <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;padding:28px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257">PRJ-0012 / Settings / Members / Collaboration requests</div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">{{ ownerTitle }}</h1>
+          <span style="font-size:14px;color:#6A6257">From the call “seeking a manuscript specialist” · taking requests</span>
+        </div>
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="height:320px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-if>
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B">Only the project owner sees collaboration requests. You’re a <strong style="font-weight:600;color:#1D1A15">Researcher</strong> here. Ask Shilan Rashid if you think someone should be invited.</div></sc-if>
+        <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:8px;max-width:680px"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">No requests yet</h2><p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Requests from your call for collaborators appear here. You’ll be notified when one arrives.</p></div></sc-if>
+
+        <sc-if value="{{ showInbox }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ requests }}" as="r" hint-placeholder-count="3">
+              <article style="background:#FFFDF8;border:1px {{ r.bs }} {{ r.bc }};padding:18px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><span style="font-size:15px;font-weight:600">{{ r.who }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid #6A6257;color:#4A443B">{{ r.state }}</span></div>
+                <span style="font-size:12px;color:#6A6257">{{ r.shared }}</span>
+                <p dir="auto" style="margin:0;font-size:14px;line-height:1.6">{{ r.msg }}</p>
+                <span style="font-size:12px;color:#4A443B">{{ r.check }}</span>
+                <sc-if value="{{ r.act }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ goAccept }}" style="font:inherit;font-size:13px;font-weight:500;padding:7px 12px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Accept and invite…</button><button style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Decline</button></div></sc-if>
+              </article>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">Your decline wasn’t saved.</strong> The request from Bawan Faraj is still pending. Try again.</div></sc-if>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ACCEPT -->
+  <sc-if value="{{ isAccept }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="ac-h" style="background:#FFFDF8;max-width:580px;width:100%;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;border:1px solid #E3DBCB">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Collaboration request · Dr. Leyla Mustafa</span>
+        <h2 id="ac-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">Accept and send an invitation</h2>
+        <div style="display:flex;flex-direction:column;border:1px solid #E3DBCB">
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid #EDE6D8;font-size:13px"><span>{{ c.k }}</span><span style="color:{{ c.c }}">{{ c.v }}</span></div></sc-for>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Role in PRJ-0012</span><select style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><option>Researcher: can add evidence and edit drafts</option><option>Project reviewer: can comment, not edit</option><option>Viewer: read only</option></select></label>
+        <span style="font-size:13px;line-height:1.55;color:#4A443B">Accepting doesn’t add her to the project. She gets an invitation, as in screen 15, and joins only if she accepts it. The role matrix and private-note rules apply.</span>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goInbox }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Cancel</button><a href="./15%20Members.dc.html" style="font-size:14px;font-weight:500;padding:10px 16px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Send invitation</a></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['form','Visitor form'],['sent','Sent'],['inbox','Owner: requests'],['accept','Owner: accept and invite']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { form:['normal','loading','error','forbidden','conflict'], sent:['normal'], inbox:['normal','empty','loading','error','forbidden'], accept:['normal'] };
+  state = { view:'form', st:'normal', sh:{ name:true, aff:true, prof:false, email:false } };
+  renderVals() {
+    const { view, st, sh } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const isPublic = ['form','sent'].includes(view);
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','3'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const S = (k, label, val, lock) => ({ label, val, on: sh[k], lock: !!lock, toggle: () => this.setState(s => ({ sh: { ...s.sh, [k]: !s.sh[k] } })) });
+    const Rq = (who, state, shared, msg, check, act, hl) => ({ who, state, shared, msg, check, act, bs: hl ? 'solid' : 'solid', bc: hl ? '#1F5A57' : '#E3DBCB' });
+    return {
+      on, isPublic, isOwner: ['inbox','accept'].includes(view), isAccept: view === 'accept',
+      visitor: eff === 'forbidden' ? 'Not signed in' : 'Signed in as Leyla Mustafa · verified email',
+      showForm: view === 'form' && ['normal','error'].includes(eff),
+      isSent: view === 'sent',
+      share: [S('name','Your name','Dr. Leyla Mustafa',true), S('aff','Affiliation','Salahaddin University, Erbil'), S('prof','Link to your public profile','openhadith.org/people/lmustafa'), S('email','Email address','l.mustafa@…  (otherwise replies come through the platform)')],
+      goSent: go('sent'), goAccept: go('accept'), goInbox: go('inbox'),
+      ownerTitle: 'Collaboration requests',
+      showInbox: view === 'inbox' && ['normal','error'].includes(eff),
+      requests: [
+        Rq('Dr. Leyla Mustafa','New · 3 Oct', 'Shared: name, affiliation (Salahaddin University). No email shared, so you reply through the platform.', 'I have photographs of two Ibn Mājah manuscripts (Istanbul, Köprülü 1/52; Rabat 3/118) covering the ṭahāra chapters, and can collate the wuḍūʾ reports against the Cairo print.', 'Approved researcher account · no shared projects with you', true, true),
+        Rq('Bawan Faraj','New · 1 Oct', 'Shared: name only.', 'Happy to help with typing up variants.', 'Registered account, not an approved researcher. He’d need approval before an invitation can be accepted.', true),
+        Rq('Hêro Salih','Declined · 29 Sep', 'Shared: name, profile.', 'Interested in the isnād side rather than manuscripts.', 'Declined. She was told only that the request wasn’t taken up.', false)
+      ],
+      checks: [{ k:'Account', v:'Approved researcher', c:'#123B39' }, { k:'Verified email', v:'Yes', c:'#123B39' }, { k:'Details she shared', v:'name, affiliation', c:'#4A443B' }],
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

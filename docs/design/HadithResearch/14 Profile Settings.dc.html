@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="14 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">14 · Profile and settings (added: gap in specs)</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ACC-04 · 06 · 07 · 08 · ADM-04 · NFR-14</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">Research workspace</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8A8276">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">Shilan Rashid</div>
+        <div style="font-size:12px;color:#6A6257">Researcher · Sorani interface</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;padding:28px clamp(16px,3vw,40px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;max-width:1180px">
+      <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.05;margin:0">Profile and settings</h1>
+      <div role="tablist" aria-label="Settings sections" style="display:flex;gap:2px;border-bottom:1px solid #E3DBCB;overflow-x:auto;overflow-y:hidden">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6"><button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.pick }}" style="font:inherit;flex-shrink:0;font-size:14px;padding:10px 12px;border:none;background:transparent;cursor:pointer;white-space:nowrap;margin-bottom:-1px;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8276;margin-left:6px">{{ t.tag }}</span></button></sc-for>
+      </div>
+
+      <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" style="border:1px dashed #6A6257;background:#FFFDF8;padding:14px 18px;display:flex;flex-direction:column;gap:4px">
+          <span style="font-weight:600;font-size:15px">Your account is suspended</span>
+          <span style="font-size:14px;line-height:1.55;color:#4A443B">Since 3 Oct 2026, new writes, sharing and downloads are paused. Reason given: “Unusual export volume. Please contact us to confirm the account is yours.” Your research is kept. You can still read it, sign out of other sessions, and contact administrators.</span>
+          <button style="align-self:flex-start;margin-top:6px;font:inherit;font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Contact administrators</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">Changes not saved.</strong> The server didn't respond. Your edits are still in the form below. Try saving again.</div>
+      </sc-if>
+      <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:10px"><div style="height:180px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:120px;background:#F2EDE2"></div></div></sc-if>
+
+      <sc-if value="{{ body }}" hint-placeholder-val="{{ true }}">
+        <!-- PROFILE -->
+        <sc-if value="{{ v.profile }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <section style="flex:1.3 1 320px;min-width:0;box-sizing:border-box;background:#FFFDF8;border:1px solid #E3DBCB;padding:22px;display:flex;flex-direction:column;gap:16px;opacity:{{ roOp }}">
+              <label style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding-bottom:14px;border-bottom:1px solid #EDE6D8;cursor:pointer"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Public profile</span><span style="font-size:13px;color:#4A443B">{{ pubLine }}</span></span><input type="checkbox" checked="{{ pub }}" onChange="{{ togglePub }}" disabled="{{ ro }}" style="width:18px;height:18px"></label>
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="6">
+                <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end">
+                  <label style="flex:1 1 240px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">{{ f.label }}</span><input dir="auto" defaultValue="{{ f.value }}" disabled="{{ ro }}" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"></label>
+                  <label style="display:flex;gap:6px;align-items:center;font-size:13px;padding-bottom:9px;cursor:pointer;opacity:{{ f.op }}"><input type="checkbox" checked="{{ f.shown }}" onChange="{{ f.toggle }}" disabled="{{ f.disabled }}">Show publicly</label>
+                </div>
+              </sc-for>
+              <span style="font-size:12px;color:#6A6257">Your email is private unless you choose to show it. Profile fields are separate from your account details. Changing one never changes the other.</span>
+            </section>
+            <aside style="flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:14px;font-weight:600">Public preview</span>
+              <sc-if value="{{ pub }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #1F5A57;color:#1F5A57;align-self:flex-start">Public</span>
+                  <sc-for list="{{ preview }}" as="p" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:11px;color:#6A6257">{{ p.label }}</span><span dir="auto" style="font-size:{{ p.size }};font-family:{{ p.font }}">{{ p.value }}</span></div></sc-for>
+                  <div style="padding-top:10px;border-top:1px solid #EDE6D8;font-size:13px;color:#4A443B">Public research: none yet. Announcements and publications you release appear here.</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ notPub }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #8A8276;padding:16px;font-size:13px;line-height:1.5;color:#4A443B;background:#FFFDF8">Your profile isn't public, so other visitors see nothing about you. Turn on Public profile and choose the fields to show.</div></sc-if>
+            </aside>
+          </div>
+        </sc-if>
+
+        <!-- LANGUAGE -->
+        <sc-if value="{{ v.lang }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+            <sc-for list="{{ langFields }}" as="f" hint-placeholder-count="5">
+              <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">{{ f.label }}</span><select disabled="{{ ro }}" style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="2"><option>{{ o }}</option></sc-for></select><span style="font-size:12px;line-height:1.45;color:#6A6257">{{ f.note }}</span></label>
+            </sc-for>
+          </section>
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:18px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600">Preview with these settings</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px"><span>Date: ٥ ئۆکتۆبەر ٢٠٢٦</span><span>Hijri: ٢٣ ربيع الآخر ١٤٤٨ <span style="font-size:12px;color:#6A6257">(converted)</span></span><span>Source date: 174 AH <span style="font-size:12px;color:#6A6257">(as stored)</span></span><span>Time: ١١:٤٠ (UTC+3)</span></div>
+          </section>
+          <div style="font-size:12px;color:#6A6257">Interface language changes menus and labels only. Source texts always show their original wording. English interface arrives in R2.</div>
+        </sc-if>
+
+        <!-- SECURITY -->
+        <sc-if value="{{ v.security }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <section style="flex:1 1 220px;min-width:0;box-sizing:border-box;background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <h2 style="margin:0;font-size:15px;font-weight:600">Password</h2>
+              <span style="font-size:13px;color:#4A443B">Last changed 2 Oct 2026</span>
+              <button style="align-self:flex-start;font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Change password</button>
+            </section>
+            <section style="flex:1.3 1 300px;min-width:0;box-sizing:border-box;background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><h2 style="margin:0;font-size:15px;font-weight:600">Two-factor authentication</h2><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border:1px solid #123B39;color:#123B39">On · TOTP</span></div>
+              <span style="font-size:13px;line-height:1.5;color:#4A443B">Recommended for researchers, and required for administrators and editors. You have 8 of 10 single-use recovery codes left.</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><button style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">New recovery codes</button><button style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Change authenticator</button></div>
+            </section>
+          </div>
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB">
+            <div style="padding:12px 18px;border-bottom:1px solid #E3DBCB;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><span style="font-size:15px;font-weight:600">Active sessions · 3</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #1D1A15;background:transparent;border-radius:2px;cursor:pointer">Sign out all other sessions</button></div>
+            <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="3"><div style="display:flex;flex-wrap:wrap;gap:8px 20px;padding:12px 18px;border-bottom:1px solid #EDE6D8;align-items:center;font-size:13px"><span style="flex:1 1 220px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">{{ s.device }}</span><span style="color:#6A6257">{{ s.meta }}</span></span><sc-if value="{{ s.current }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border:1px solid #1F5A57;color:#1F5A57">This session</span></sc-if><sc-if value="{{ s.other }}" hint-placeholder-val="{{ true }}"><button style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Sign out</button></sc-if></div></sc-for>
+            <div style="padding:10px 18px;font-size:12px;color:#6A6257">A signed-out session stops working on its next request. Sessions expire after 14 days without use.</div>
+          </section>
+        </sc-if>
+
+        <!-- SUPPORT GRANTS -->
+        <sc-if value="{{ v.support }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:12px;max-width:820px">
+            <h2 style="margin:0;font-size:15px;font-weight:600">Let support see something private</h2>
+            <span style="font-size:13px;line-height:1.55;color:#4A443B">Administrators can't see your private research. If you need help with a specific project or document, grant read-only access for a limited time. You can end it at any time.</span>
+            <div style="display:flex;flex-wrap:wrap;gap:12px">
+              <label style="flex:1 1 220px;display:flex;flex-direction:column;gap:4px;font-size:13px">What<select disabled="{{ ro }}" style="padding:8px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>Project · Ibn Lahīʿa (PRJ-0015)</option><option>Document · Main article</option></select></label>
+              <label style="flex:1 1 160px;display:flex;flex-direction:column;gap:4px;font-size:13px">For<select disabled="{{ ro }}" style="padding:8px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"><option>24 hours</option><option>72 hours</option><option>7 days</option></select></label>
+              <label style="flex:2 1 260px;display:flex;flex-direction:column;gap:4px;font-size:13px">Reason or ticket<input defaultValue="Ticket #311: export failing" disabled="{{ ro }}" style="padding:8px 10px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:13px;border-radius:2px"></label>
+            </div>
+            <button disabled="{{ ro }}" style="align-self:flex-start;font:inherit;font-size:13px;font-weight:500;padding:8px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Grant read-only access</button>
+          </section>
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;max-width:820px">
+            <div style="padding:12px 18px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Your grants</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px 16px;padding:12px 18px;align-items:center;font-size:13px"><span style="flex:1 1 260px">PRJ-0015 · read-only · until 5 Oct 10:00 (22 hours left)</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border:1px solid #123B39;color:#123B39">Active</span><button style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #1D1A15;background:transparent;border-radius:2px;cursor:pointer">End now</button></div>
+          </section>
+        </sc-if>
+
+        <!-- NOTIFICATIONS -->
+        <sc-if value="{{ v.notif }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:12px;max-width:760px">
+            <h2 style="margin:0;font-size:15px;font-weight:600">Email me about</h2>
+            <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="5"><label style="display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:14px;opacity:{{ n.op }};cursor:pointer"><span style="display:flex;gap:8px;align-items:baseline">{{ n.label }}<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8276">{{ n.tag }}</span></span><input type="checkbox" defaultChecked="{{ n.on }}" disabled="{{ n.disabled }}"></label></sc-for>
+            <span style="font-size:12px;color:#6A6257">Security emails, like sign-in from a new device, are always sent.</span>
+          </section>
+        </sc-if>
+
+        <!-- ACCOUNT -->
+        <sc-if value="{{ v.account }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:grid;grid-template-columns:160px minmax(0,1fr);gap:8px 16px;font-size:14px;max-width:760px">
+            <span style="color:#6A6257">Account ID</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px">ACC-0142</span>
+            <span style="color:#6A6257">Email (private)</span><span>shilan.rashid@example.org</span>
+            <span style="color:#6A6257">Status</span><span>{{ acctStatus }}</span>
+            <span style="color:#6A6257">Approved</span><span>4 Oct 2026 by Platform administrator</span>
+          </section>
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:12px;max-width:760px">
+            <h2 style="margin:0;font-size:15px;font-weight:600">Close account</h2>
+            <span style="font-size:13px;line-height:1.55;color:#4A443B">You own 4 active projects, 2 archived projects and 1 in trash. Before closing, decide for each one: download it, move it to trash, or transfer it. You have no publications. An administrator confirms the closure, and your data is kept for 30 days before deletion.</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><a href="./12%20Downloads.dc.html" style="font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;border-radius:2px;text-decoration:none;color:#1D1A15;background:#FFFFFF">Download all research first</a><button disabled="{{ ro }}" style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #1D1A15;background:transparent;border-radius:2px;cursor:pointer">Request closure…</button></div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showSave }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:10px;align-items:center"><button disabled="{{ ro }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer;opacity:{{ roOp }}">{{ saveLabel }}</button><span style="font-size:13px;color:#6A6257">{{ saveHint }}</span></div>
+        </sc-if>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['profile','Public profile'],['lang','Language & display'],['security','Security & sessions'],['support','Support access'],['notif','Notifications'],['account','Account & closure']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { profile:['normal','empty','loading','error','forbidden'], lang:['normal','loading','error','forbidden'], security:['normal','loading','forbidden'], support:['normal','loading','forbidden'], notif:['normal','loading'], account:['normal','loading','forbidden'] };
+  state = { view:'profile', st:'normal', pub:true, show:{ name:true, interests:true, affiliation:true, bio:true, email:false, lang:false } };
+  renderVals() {
+    const { view, st, show } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = k => () => this.setState({ view: k, st: 'normal' });
+    const v = {}; this.VIEWS.forEach(([k]) => v[k] = view === k);
+    const pub = eff === 'empty' ? false : this.state.pub;
+    const ro = eff === 'forbidden' && ['profile','lang','support','account'].includes(view);
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html',''],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','#','']];
+    const F = [['name','Display name','Shilan Rashid'], ['interests','Research interests','Takhrīj of ritual purity reports; Kufan narrator criticism'], ['affiliation','Affiliation','Not provided'], ['bio','Biography','لێکۆڵەری فەرموودە، سلێمانی'], ['email','Email','shilan.rashid@example.org'], ['lang','Preferred language','Sorani']];
+    const fields = F.map(([k, label, value]) => ({ label, value, shown: pub && show[k], disabled: !pub || ro, op: pub ? 1 : 0.45, toggle: () => this.setState(s => ({ show: { ...s.show, [k]: !s.show[k] } })) }));
+    const preview = F.filter(([k]) => show[k] && k !== 'affiliation').map(([k, label, value]) => ({ label, value, size: k === 'name' ? '20px' : '14px', font: k === 'name' ? 'Newsreader,serif' : "'IBM Plex Sans',sans-serif" }));
+    return {
+      on, v, ro, roOp: ro ? 0.6 : 1, pub, notPub: !pub,
+      body: eff !== 'loading',
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 6 ? 'page' : undefined, bg: i === 6 ? '#E3EEEC' : 'transparent', fg: tag ? '#8A8276' : i === 6 ? '#123B39' : '#1D1A15', weight: i === 6 ? 600 : 400 })),
+      tabs: this.VIEWS.map(([k, label]) => ({ label, tag: '', sel: view === k, pick: go(k), rule: view === k ? '#1F5A57' : 'transparent', fg: view === k ? '#123B39' : '#4A443B', weight: view === k ? 600 : 400 })),
+      pubLine: pub ? 'On. Visitors see only the fields marked Show publicly.' : 'Off. Nothing about you is public.',
+      togglePub: () => this.setState(s => ({ pub: !s.pub })),
+      fields, preview,
+      langFields: [
+        { label:'Interface language', opts:['Sorani · کوردی','Arabic · العربية'], note:'Menus and labels. English arrives in R2.' },
+        { label:'Default content language', opts:['Sorani','Arabic','English'], note:'Suggested direction for new notes and blocks. You can change it per block.' },
+        { label:'Numerals', opts:['Eastern Arabic (٠١٢٣)','Western (0123)'], note:'Applies to dates, counts and page numbers you see.' },
+        { label:'Calendar display', opts:['Gregorian with Hijri','Hijri with Gregorian','Gregorian only'], note:'Hijri dates from sources are shown as stored. Converted dates are labelled.' },
+        { label:'Time zone', opts:['Asia/Baghdad (UTC+3)','UTC'], note:'Used for run times, saves and download expiry.' }
+      ],
+      sessions: [
+        { device:'Firefox · Windows · Sulaymaniyah', meta:'Signed in 5 Oct 09:05 · active now', current:true, other:false },
+        { device:'Chrome · macOS laptop', meta:'Last active 4 Oct 11:38', current:false, other:true },
+        { device:'Safari · iPhone', meta:'Last active 28 Sep', current:false, other:true }
+      ],
+      notifs: [
+        { label:'Download ready or failed', tag:'', on:true, disabled:false, op:1 },
+        { label:'Saved search finished or partial', tag:'', on:true, disabled:false, op:1 },
+        { label:'A saved source changed in the corpus', tag:'', on:true, disabled:false, op:1 },
+        { label:'Corpus correction decisions', tag:'', on:true, disabled:false, op:1 },
+        { label:'Invitations, tasks, mentions', tag:'', on:true, disabled:false, op:1 }
+      ],
+      acctStatus: eff === 'forbidden' ? 'Suspended since 3 Oct 2026 · reason shown above' : 'Active researcher',
+      showSave: ['profile','lang','notif'].includes(view),
+      saveLabel: 'Save changes',
+      saveHint: on.error ? 'Last attempt failed. Your edits are kept.' : (ro ? 'Read-only while suspended' : ''),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([k, label]) => ({ label, pick: go(k), bg: k === view ? '#F5F1E8' : 'transparent', fg: k === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

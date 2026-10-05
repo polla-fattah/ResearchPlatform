@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="07 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">07 · Resource picker</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">LIB-01 · LIB-03 · LIB-07 · SEA-08</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="2">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;background:#EDE7DA;padding:24px clamp(8px,2vw,32px);box-sizing:border-box">
+    <div role="dialog" aria-modal="true" aria-labelledby="rp-h" style="flex:1;max-width:1200px;width:100%;margin:0 auto;background:#FFFDF8;border:1px solid #E3DBCB;box-shadow:0 12px 40px rgba(29,26,21,.12);display:flex;flex-direction:column;min-height:0">
+      <div style="padding:20px 24px 0;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Opened from {{ origin }}</div>
+            <h1 id="rp-h" style="font-family:Newsreader,serif;font-weight:500;font-size:28px;line-height:1.1;margin:0">Add resource</h1>
+          </div>
+          <a href="./03%20My%20Library.dc.html" aria-label="Close" style="font-size:14px;padding:6px 10px;border:1px solid #CFC6B4;color:#1D1A15;text-decoration:none;border-radius:2px">Close</a>
+        </div>
+        <div role="tablist" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+            <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.pick }}" style="font:inherit;flex-shrink:0;font-size:14px;padding:10px 12px;border:none;background:transparent;cursor:pointer;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+        <div style="margin:20px 24px 0;border:1px dashed #8A8276;padding:14px 18px;display:flex;flex-direction:column;gap:4px">
+          <span style="font-weight:600;font-size:15px">You can't add resources to this project right now</span>
+          <span style="font-size:14px;line-height:1.5;color:#4A443B">The project is read-only because it's in trash or archived, or your account can't make changes. You can still save to My Library.</span>
+          <button onClick="{{ toLibrary }}" style="align-self:flex-start;margin-top:6px;font:inherit;font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Save to My Library instead</button>
+        </div>
+      </sc-if>
+
+      <!-- CORPUS -->
+      <sc-if value="{{ isCorpus }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;flex:1;min-height:0">
+          <section aria-label="Corpus search" style="flex:1 1 320px;min-width:0;border-right:1px solid #E3DBCB;display:flex;flex-direction:column">
+            <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid #E3DBCB">
+              <div style="display:flex;gap:8px">
+                <input dir="auto" value="{{ q }}" onChange="{{ setQ }}" placeholder="Title, ID, narrator or words from the text" aria-label="Search the corpus" style="flex:1;min-width:0;padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px">
+                <button style="font:inherit;font-size:14px;font-weight:500;padding:9px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Find</button>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ typeChips }}" as="t" hint-placeholder-count="10"><button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="font:inherit;font-size:12px;padding:4px 9px;border:1px solid {{ t.border }};background:{{ t.bg }};color:#1D1A15;border-radius:2px;cursor:pointer">{{ t.label }}</button></sc-for>
+              </div>
+              <div style="font-size:12px;color:#6A6257">For full searches with filters, saved queries and result sets, use the <a href="./08%20Search%20Workspace.dc.html">Search workspace</a>.</div>
+            </div>
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}">
+              <div aria-busy="true"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="5"><div style="padding:14px 20px;border-bottom:1px solid #EDE6D8;display:flex;flex-direction:column;gap:8px"><div style="height:10px;width:90px;background:#EAE3D4;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:14px;width:75%;background:#EFE9DC"></div></div></sc-for></div>
+            </sc-if>
+            <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+              <div role="alert" style="margin:16px 20px;border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#5C2A1C"><span style="font-weight:600;color:#9A3B24">Search didn't finish</span><span>The corpus index didn't respond. Your search “{{ q }}” is kept. Try again in a moment.</span><button style="align-self:flex-start;font:inherit;font-size:13px;padding:6px 12px;border:1px solid #9A3B24;background:transparent;color:#9A3B24;border-radius:2px;cursor:pointer">Try again</button></div>
+            </sc-if>
+            <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px 20px;display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:15px;font-weight:600">No corpus items match “{{ q }}”</span>
+                <span style="font-size:14px;line-height:1.55;color:#4A443B">This box matches titles, IDs and narrator names exactly as written. Try fewer words, a different spelling, or a type filter. If the source isn't in the corpus, add it as an external reference.</span>
+                <button onClick="{{ toExternal }}" style="align-self:flex-start;margin-top:6px;font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Add an external reference</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showResults }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:8px 20px;font-size:12px;color:#6A6257;border-bottom:1px solid #EDE6D8">5 corpus items: 1 report record and 4 occurrences</div>
+              <div role="listbox" aria-label="Results">
+                <sc-for list="{{ results }}" as="r" hint-placeholder-count="5">
+                  <button role="option" aria-selected="{{ r.sel }}" onClick="{{ r.pick }}" style="font:inherit;text-align:left;width:100%;display:flex;flex-direction:column;gap:4px;padding:12px 20px;border:none;border-bottom:1px solid #EDE6D8;border-left:3px solid {{ r.rule }};background:{{ r.bg }};cursor:pointer;color:#1D1A15" style-hover="background:#FBF8F1">
+                    <span style="display:flex;justify-content:space-between;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">{{ r.type }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ r.id }}</span></span>
+                    <span style="font-size:14px;font-weight:500;line-height:1.35">{{ r.title }}</span>
+                    <span style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:#6A6257">{{ r.loc }}<sc-if value="{{ r.saved }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid #CFC6B4;color:#4A443B">{{ r.saved }}</span></sc-if></span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </section>
+
+          <section aria-label="Source details" style="flex:1.3 1 400px;min-width:0;padding:20px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+            <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:12px"><div style="height:26px;width:70%;background:#EAE3D4"></div><div style="height:100px;background:#F2EDE2"></div><div style="height:140px;background:#F2EDE2"></div></div></sc-if>
+            <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">{{ d.typeLong }}</span>
+                <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">{{ d.title }}</h2>
+                <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:4px 12px;font-size:13px"><span style="color:#6A6257">ID</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ d.id }}</span><span style="color:#6A6257">Locator</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.5">{{ d.locator }}</span><span style="color:#6A6257">Corpus</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">v2026.09 · snapshot kept on save</span></div>
+              </div>
+
+              <sc-if value="{{ d.ar }}" hint-placeholder-val="{{ false }}">
+                <figure style="margin:0;border-left:3px solid #1D1A15;padding:4px 0 4px 16px;display:flex;flex-direction:column;gap:8px">
+                  <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase">❝ Source · original text</figcaption>
+                  <blockquote dir="rtl" lang="ar" style="margin:0;font-family:'Noto Naskh Arabic',serif;font-size:20px;line-height:1.9;text-align:right">{{ d.ar }}</blockquote>
+                </figure>
+              </sc-if>
+
+              <sc-if value="{{ showDup }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px dashed #8A8276;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                  <span style="font-weight:600;font-size:14px">Already in My Library</span>
+                  <span style="font-size:13px;line-height:1.55;color:#4A443B">Saved 20 Sep 2026 as excerpt “vol. 1, p. 78 (ḥadīth 106)”. It's also a resource in PRJ-0012. Saving again won't duplicate it.</span>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:14px;cursor:pointer"><input type="radio" name="dupc" defaultChecked="{{ true }}"><span>Reuse the existing entry (add it to another collection or project)</span></label>
+                    <label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:14px;cursor:pointer"><input type="radio" name="dupc"><span>Save a distinct excerpt (pick a different page or span below)</span></label>
+                  </div>
+                </div>
+              </sc-if>
+
+              <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">What to save</legend>
+                <sc-for list="{{ excerptOpts }}" as="o" hint-placeholder-count="3">
+                  <label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;align-items:start;font-size:14px;cursor:pointer"><input type="radio" name="ex" checked="{{ o.on }}" onChange="{{ o.pick }}"><span style="display:flex;flex-direction:column;gap:2px"><span>{{ o.label }}</span><span style="font-size:12px;color:#6A6257">{{ o.sub }}</span></span></label>
+                </sc-for>
+              </fieldset>
+
+              <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">Save to</legend>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <sc-for list="{{ dests }}" as="x" hint-placeholder-count="2">
+                    <label style="flex:1 1 220px;display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;padding:12px;border:1px solid {{ x.border }};background:{{ x.bg }};cursor:pointer;opacity:{{ x.op }}"><input type="radio" name="dest" checked="{{ x.on }}" onChange="{{ x.pick }}" disabled="{{ x.disabled }}"><span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:500">{{ x.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid #6A6257;color:#4A443B;align-self:flex-start">{{ x.badge }}</span><span style="font-size:12px;line-height:1.45;color:#6A6257">{{ x.sub }}</span></span></label>
+                  </sc-for>
+                </div>
+              </fieldset>
+            </sc-if>
+          </section>
+        </div>
+      </sc-if>
+
+      <!-- EXTERNAL REFERENCE -->
+      <sc-if value="{{ isExternal }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;flex:1;min-height:0">
+          <section style="flex:1.4 1 420px;min-width:0;padding:20px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;border-right:1px solid #E3DBCB;opacity:{{ formOp }}">
+            <p style="margin:0;font-size:14px;line-height:1.55;color:#4A443B">For an article, edition, manuscript or web page that isn't in the corpus. Fill in what you know. Anything left blank is marked as missing, never guessed.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:16px">
+              <label style="flex:1 1 180px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Kind</span><select style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><option>Journal article</option><option>Book or edition</option><option>Book chapter</option><option>Manuscript</option><option>Thesis</option><option>Web page</option></select></label>
+              <label style="flex:2 1 280px;display:flex;flex-direction:column;gap:6px"><span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Title <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span><input dir="auto" value="{{ x.title }}" onChange="{{ setX.title }}" disabled="{{ locked }}" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></label>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Author(s)</span><input dir="auto" value="{{ x.author }}" onChange="{{ setX.author }}" disabled="{{ locked }}" placeholder="Leave blank if unknown" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></label>
+            <div style="display:flex;flex-wrap:wrap;gap:16px">
+              <div style="flex:1 1 200px;display:flex;flex-direction:column;gap:6px">
+                <label for="xd" style="font-size:14px;font-weight:500">Publication date</label>
+                <input id="xd" value="{{ x.date }}" onChange="{{ setX.date }}" disabled="{{ dateDisabled }}" placeholder="Year, or year and month" style="padding:9px 12px;border:1px solid #CFC6B4;background:{{ dateBg }};font:inherit;font-size:15px;border-radius:2px">
+                <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:#4A443B;cursor:pointer"><input type="checkbox" checked="{{ x.dateUnknown }}" onChange="{{ toggleDateUnknown }}" disabled="{{ locked }}">Date unknown</label>
+              </div>
+              <label style="flex:1 1 200px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Accessed on</span><input value="{{ x.accessed }}" onChange="{{ setX.accessed }}" disabled="{{ locked }}" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px"><span style="font-size:12px;color:#6A6257">Defaults to today</span></label>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px">
+              <label style="flex:2 1 280px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">URL</span><input value="{{ x.url }}" onChange="{{ setX.url }}" disabled="{{ locked }}" placeholder="https://" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:13px;border-radius:2px"></label>
+              <label style="flex:1 1 180px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Identifier</span><input value="{{ x.ident }}" onChange="{{ setX.ident }}" disabled="{{ locked }}" placeholder="DOI, ISBN, shelfmark" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:13px;border-radius:2px"></label>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px">
+              <label style="flex:1 1 200px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Published in / publisher</span><input dir="auto" value="{{ x.venue }}" onChange="{{ setX.venue }}" disabled="{{ locked }}" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px"></label>
+              <label style="flex:1 1 140px;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Pages</span><input value="{{ x.pages }}" onChange="{{ setX.pages }}" disabled="{{ locked }}" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;border-radius:2px"></label>
+            </div>
+          </section>
+          <aside style="flex:1 1 300px;min-width:0;padding:20px 24px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;background:#F5F1E8">
+            <span style="font-size:14px;font-weight:600">Citation preview</span>
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;font-size:14px;line-height:1.6">{{ citePreview }}</div>
+            <sc-if value="{{ missingAny }}" hint-placeholder-val="{{ true }}">
+              <div style="border:1px dashed #8A8276;padding:12px 14px;display:flex;flex-direction:column;gap:6px;background:#FFFDF8">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#4A443B">Incomplete citation</span>
+                <span style="font-size:13px;line-height:1.5;color:#4A443B">Missing: {{ missingList }}. You can still save it. It will carry this flag everywhere it's cited until you fill the gaps.</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ complete }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #BCD6D2;background:#E3EEEC;padding:12px 14px;font-size:13px;color:#1F3F3D">All citation details are filled in.</div>
+            </sc-if>
+            <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+              <legend style="font-size:14px;font-weight:600;padding:0;margin-bottom:6px">Save to</legend>
+              <sc-for list="{{ dests }}" as="d" hint-placeholder-count="2">
+                <label style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;padding:10px;border:1px solid {{ d.border }};background:{{ d.bg }};cursor:pointer;opacity:{{ d.op }}"><input type="radio" name="dest2" checked="{{ d.on }}" onChange="{{ d.pick }}" disabled="{{ d.disabled }}"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:500">{{ d.label }}</span><span style="font-size:12px;color:#6A6257">{{ d.badge }}</span></span></label>
+              </sc-for>
+            </fieldset>
+          </aside>
+        </div>
+      </sc-if>
+
+      <div style="padding:14px 24px;border-top:1px solid #E3DBCB;display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap;background:#FFFDF8">
+        <span style="font-size:13px;color:#6A6257;margin-right:auto">{{ footerLine }}</span>
+        <a href="./03%20My%20Library.dc.html" style="font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none">Cancel</a>
+        <button disabled="{{ saveDisabled }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer;opacity:{{ saveOp }}">{{ saveLabel }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['corpus','Corpus resource'],['external','External reference']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { corpus:['normal','empty','loading','error','forbidden','conflict'], external:['normal','empty','loading','error','forbidden'] };
+  RES = [
+    { type:'Report record', typeLong:'Report record (all occurrences)', id:'REP-000318', title:'Report: the Prophet performed wuḍūʾ three times each', loc:'14 occurrences in 6 books', locator:'Report-level record REP-000318', ar:'', saved:'In My Library' },
+    { type:'Occurrence', typeLong:'Report occurrence', id:'OCC-ABD-000106', title:'Sunan Abī Dāwūd, k. al-Ṭahāra, ḥadīth 106', loc:'Vol. 1, p. 78', locator:'Sunan Abī Dāwūd · ed. al-Arnaʾūṭ (2009) · vol. 1, p. 78 · source no. 106', ar:'أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا', saved:'In My Library' },
+    { type:'Occurrence', typeLong:'Report occurrence', id:'OCC-ABD-000111', title:'Sunan Abī Dāwūd, k. al-Ṭahāra, ḥadīth 111', loc:'Vol. 1, p. 82', locator:'Sunan Abī Dāwūd · ed. al-Arnaʾūṭ (2009) · vol. 1, p. 82 · source no. 111', ar:'ثُمَّ غَسَلَ وَجْهَهُ ثَلاَثًا', saved:'' },
+    { type:'Occurrence', typeLong:'Report occurrence', id:'OCC-NAS-000084', title:'Sunan al-Nasāʾī, k. al-Ṭahāra, ḥadīth 84', loc:'Vol. 1, p. 64 · page unknown in edition', locator:'Sunan al-Nasāʾī · source no. 84 · volume 1 · page: Unknown', ar:'تَوَضَّأَ ثَلاَثًا ثَلاَثًا', saved:'' },
+    { type:'Occurrence', typeLong:'Report occurrence', id:'OCC-IMJ-000413', title:'Sunan Ibn Mājah, k. al-Ṭahāra, ḥadīth 413', loc:'Vol. 1, p. 143', locator:'Sunan Ibn Mājah · ed. ʿAbd al-Bāqī · vol. 1, p. 143 · source no. 413', ar:'تَوَضَّأَ ثَلاَثًا ثَلاَثًا', saved:'' }
+  ];
+  XFILLED = { title:'Early Egyptian transmission and the burning of books', author:'', date:'', dateUnknown:true, accessed:'4 Oct 2026', url:'https://example.org/article/ibn-lahia', ident:'', venue:'', pages:'' };
+  state = { view:'corpus', st:'normal', sel:2, ex:'item', dest:'project', type:'Occurrence', q:'wuḍūʾ thalāthan', x:{ ...this.XFILLED } };
+  pickState(s) {
+    const x = s === 'empty' ? { title:'', author:'', date:'', dateUnknown:false, accessed:'4 Oct 2026', url:'', ident:'', venue:'', pages:'' } : { ...this.XFILLED };
+    this.setState({ st: s, x, sel: s === 'conflict' ? 1 : 2, q: s === 'empty' ? 'wudu thalathan abu dawud kufa' : 'wuḍūʾ thalāthan', dest: s === 'forbidden' ? 'library' : this.state.dest });
+  }
+  renderVals() {
+    const { view, st, sel, ex, dest, type, q, x } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const d = this.RES[sel];
+    const locked = eff === 'loading';
+    const forb = eff === 'forbidden';
+    const mk = (k, label, badge, sub) => ({ label, badge, sub, on: dest === k, pick: () => this.setState({ dest: k }), disabled: forb && k === 'project', op: forb && k === 'project' ? 0.5 : 1, border: dest === k ? '#1F5A57' : '#CFC6B4', bg: dest === k ? '#E3EEEC' : '#FFFFFF' });
+    const dests = [
+      mk('library', 'My Library', '🔒 Private', 'Only you. Available across all your projects.'),
+      mk('project', 'Project PRJ-0012 resources', 'Project', 'Visible to project members (just you in R1a). Also saved to My Library.')
+    ];
+    const missing = [];
+    if (!x.title) missing.push('title');
+    if (!x.author) missing.push('author');
+    if (!x.date) missing.push(x.dateUnknown ? 'publication date (marked unknown)' : 'publication date');
+    if (!x.venue) missing.push('publisher or journal');
+    if (!x.pages) missing.push('pages');
+    const setXk = k => e => { const v = e.target.value; this.setState(p => ({ x: { ...p.x, [k]: v } })); };
+    const setX = {}; Object.keys(this.XFILLED).forEach(k => setX[k] = setXk(k));
+    const cite = [x.author || '[Author unknown]', x.date ? `(${x.date})` : '(n.d.)', x.title ? `“${x.title}”` : '[Title missing]', x.venue || '', x.pages ? `pp. ${x.pages}` : '', x.url ? x.url : '', `Accessed ${x.accessed || '[date]'}`].filter(Boolean).join('. ') + '.';
+    const isCorpus = view === 'corpus';
+    const extSaveBlocked = !x.title;
+    return {
+      on, d, q, x, setX, dests, locked,
+      origin: dest === 'project' ? 'Project PRJ-0012 · Resources' : 'My Library',
+      isCorpus, isExternal: view === 'external',
+      tabs: this.VIEWS.map(([k, label]) => ({ label: k === 'corpus' ? 'From the corpus' : 'External reference', sel: view === k, pick: go(k), rule: view === k ? '#1F5A57' : 'transparent', fg: view === k ? '#123B39' : '#4A443B', weight: view === k ? 600 : 400 })),
+      setQ: e => this.setState({ q: e.target.value }),
+      typeChips: ['Book','Chapter','Section','Report','Occurrence','Chain','Narrator','Judgment','Source passage'].map(t => ({ label: t, on: type === t, pick: () => this.setState({ type: type === t ? '' : t }), border: type === t ? '#1F5A57' : '#CFC6B4', bg: type === t ? '#E3EEEC' : '#FFFFFF' })),
+      skel: [1,2,3,4,5],
+      showResults: isCorpus && ['normal','conflict','forbidden'].includes(eff),
+      showDetail: isCorpus && ['normal','conflict','forbidden'].includes(eff),
+      showDup: isCorpus && eff === 'conflict',
+      results: this.RES.map((r, i) => ({ ...r, sel: i === sel, rule: i === sel ? '#1F5A57' : 'transparent', bg: i === sel ? '#FBF8F1' : 'transparent', pick: () => this.setState({ sel: i }) })),
+      excerptOpts: [
+        ['item', `The whole ${d.type.toLowerCase()}`, 'Saves the record and its locator.'],
+        ['span', 'A selected passage', 'Select text in the source panel to save just that span, with its own locator.'],
+        ['page', 'A page range', 'For example vol. 1, pp. 78–79.']
+      ].map(([k, label, sub]) => ({ label, sub, on: ex === k, pick: () => this.setState({ ex: k }) })),
+      toExternal: go('external'),
+      toLibrary: () => this.setState({ dest: 'library' }),
+      formOp: locked ? 0.55 : 1,
+      dateDisabled: locked || x.dateUnknown,
+      dateBg: x.dateUnknown ? '#F2EDE2' : '#FFFFFF',
+      toggleDateUnknown: () => this.setState(p => ({ x: { ...p.x, dateUnknown: !p.x.dateUnknown, date: '' } })),
+      citePreview: cite,
+      missingAny: missing.length > 0, complete: missing.length === 0,
+      missingList: missing.join(', '),
+      footerLine: isCorpus
+        ? (['loading','error','empty'].includes(eff) ? 'Nothing selected' : `${d.id} → ${dest === 'project' ? 'PRJ-0012 resources' : 'My Library'}`)
+        : (extSaveBlocked ? 'A title is needed to save' : (missing.length ? `Saves with an Incomplete citation flag (${missing.length} missing)` : 'Ready to save')),
+      saveLabel: locked ? 'Saving…' : (isCorpus ? (eff === 'conflict' ? 'Continue' : 'Save') : (missing.length ? 'Save with flag' : 'Save reference')),
+      saveDisabled: locked || (isCorpus && ['empty','error'].includes(eff)) || (!isCorpus && extSaveBlocked),
+      saveOp: locked || (isCorpus && ['empty','error'].includes(eff)) || (!isCorpus && extSaveBlocked) ? 0.5 : 1,
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view (per spec). Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.pickState(s), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

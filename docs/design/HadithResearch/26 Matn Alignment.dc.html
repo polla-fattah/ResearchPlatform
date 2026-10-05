@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="26 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 26 · Matn alignment</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ANA-06</div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px dashed #D9C9A3;color:#D9C9A3">Draft · pending specialist review</span>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Analysis</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1"><span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span></a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">{{ me.name }}</div><div style="font-size:12px;color:#6A6257">{{ me.sub }}</div></div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / PRJ-0012</div>
+          <div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">Chains of the wuḍūʾ reports in the Sunan collections</div>
+        </div>
+        <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px">
+          <sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10"><a href="{{ t.href }}" aria-current="{{ t.current }}" style="flex-shrink:0;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</a></sc-for>
+        </nav>
+      </div>
+
+      <div style="padding:24px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px 16px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257">Analysis / Matn alignment / AL-0004</div>
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">4 occurrences of the “three times” wuḍūʾ report</h1>
+            <span style="font-size:14px;color:#6A6257">Compared against al-Tirmidhī 44 · difference labels describe the text, not its soundness</span>
+          </div>
+        </div>
+
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B">You're a <strong style="font-weight:600;color:#1D1A15">Viewer</strong>. You can change normalization for your own view, but you can't correct the alignment or add notes.</div></sc-if>
+        <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.55;color:#4A443B"><span><strong style="font-weight:600;color:#1D1A15">Aras Kamal corrected the alignment of Aḥmad 1/57 two minutes ago.</strong> He split “رأسه” into its own position. Your view is out of date. Your own unsaved correction to the same row is kept.</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer;flex-shrink:0">Compare corrections</button></div></sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">al-Nasāʾī 84 couldn’t be loaded.</strong> The other 3 occurrences are aligned below. No difference is reported for the missing text, so its absence can’t be read as an omission.</div></sc-if>
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="height:360px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-if>
+        <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:10px;max-width:720px"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">Choose at least 2 occurrences</h2><p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Alignment compares the matn of two or more occurrences word by word. Pick occurrences from a result set or from the Comparison workspace.</p><a href="./10%20Comparison%20Workspace.dc.html" style="align-self:flex-start;font-size:14px;padding:9px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Pick occurrences</a></div></sc-if>
+
+        <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:12px 16px;background:#FFFDF8;border:1px solid #E3DBCB">
+            <span style="font-size:13px;font-weight:600">Normalization</span>
+            <div role="radiogroup" aria-label="Normalization level" style="display:flex;gap:2px;padding:2px;border:1px solid #CFC6B4;background:#FFFFFF;flex-wrap:wrap">
+              <sc-for list="{{ levels }}" as="l" hint-placeholder-count="4"><button role="radio" aria-checked="{{ l.sel }}" onClick="{{ l.pick }}" title="{{ l.desc }}" style="font:inherit;font-size:12px;padding:5px 10px;border:none;cursor:pointer;background:{{ l.bg }};color:{{ l.fg }}">{{ l.label }}</button></sc-for>
+            </div>
+            <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked="{{ raw }}" onChange="{{ toggleRaw }}">Show text as printed</label>
+            <span style="font-size:12px;color:#6A6257;margin-left:auto">{{ levelDesc }}</span>
+          </div>
+
+          <!-- ALIGN -->
+          <sc-if value="{{ isAlign }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB;overflow-x:auto" role="region" aria-label="Aligned texts, scroll sideways if needed">
+              <div dir="rtl" style="min-width:760px">
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+                  <div style="display:grid;grid-template-columns:150px repeat(6,minmax(84px,1fr));border-bottom:1px solid #EDE6D8;background:{{ r.bg }}">
+                    <div dir="ltr" style="padding:12px 14px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #E3DBCB;text-align:left">
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500">{{ r.loc }}</span>
+                      <span style="font-size:11px;color:#6A6257">{{ r.sub }}</span>
+                    </div>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+                      <button onClick="{{ c.pick }}" title="{{ c.title }}" style="font:inherit;padding:10px 8px;border:none;border-left:1px solid #F1ECE1;background:{{ c.bg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;outline:{{ c.outline }};outline-offset:-2px">
+                        <span lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:19px;line-height:1.6;color:{{ c.fg }};text-decoration:{{ c.deco }};border-bottom:{{ c.under }}">{{ c.text }}</span>
+                        <span dir="ltr" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;color:{{ c.tagC }}">{{ c.tag }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:#4A443B">
+              <span><span style="font-family:'IBM Plex Mono',monospace">+ added</span>: in this text, not in the base</span>
+              <span><span style="font-family:'IBM Plex Mono',monospace">∅ omitted</span>: in the base, not in this text</span>
+              <span><span style="font-family:'IBM Plex Mono',monospace">~ different</span>: same position, different wording</span>
+              <span style="color:#6A6257">These are textual differences only. They aren’t marked as errors or defects.</span>
+            </div>
+            <sc-if value="{{ selCell }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#FFFDF8;border:1px solid #1F5A57;padding:16px;display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start">
+                <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:6px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Position 5 · Aḥmad 1/57</span>
+                  <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap"><span style="font-size:13px;color:#6A6257">Base</span><span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:20px">بِرَأْسِهِ</span><span style="font-size:13px;color:#6A6257">This text</span><span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:20px">رَأْسَهُ</span></div>
+                  <span style="font-size:13px;color:#4A443B">Different wording at the same position. The system’s alignment, not yet checked by a researcher.</span>
+                </div>
+                <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:13px;font-weight:600">Correct the alignment</span>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ fixes }}" as="f" hint-placeholder-count="4"><button disabled="{{ ro }}" style="font:inherit;font-size:12px;padding:6px 10px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer;opacity:{{ roOp }}">{{ f }}</button></sc-for></div>
+                  <span style="font-size:12px;color:#6A6257">Corrections are saved with your name and a reason. The automatic alignment stays available to compare.</span>
+                </div>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <!-- DIFFS -->
+          <sc-if value="{{ isDiffs }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+              <div style="display:grid;grid-template-columns:60px 130px 110px minmax(0,1fr) minmax(0,1.3fr);gap:12px;padding:8px 16px;border-bottom:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257"><span>Pos.</span><span>Text</span><span>Difference</span><span>Base → this text</span><span>Researcher note</span></div>
+              <sc-for list="{{ diffs }}" as="d" hint-placeholder-count="5">
+                <div style="display:grid;grid-template-columns:60px 130px 110px minmax(0,1fr) minmax(0,1.3fr);gap:12px;align-items:baseline;padding:10px 16px;border-bottom:1px solid #EDE6D8;font-size:13px">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">{{ d.pos }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ d.loc }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px">{{ d.kind }}</span>
+                  <span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:17px;text-align:right">{{ d.pair }}</span>
+                  <sc-if value="{{ d.note }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.5;padding:4px 8px;background:#E8EDF5;color:#2F4E7A">Researcher note · {{ d.note }}</span></sc-if>
+                  <sc-if value="{{ d.noNote }}" hint-placeholder-val="{{ true }}"><button disabled="{{ ro }}" style="justify-self:start;font:inherit;font-size:12px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">+ Add interpretation</button></sc-if>
+                </div>
+              </sc-for>
+              <div style="padding:10px 16px;font-size:12px;color:#6A6257">{{ diffFoot }}</div>
+            </div>
+          </sc-if>
+
+          <!-- LOG -->
+          <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB;max-width:820px">
+              <sc-for list="{{ log }}" as="l" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:12px 16px;border-bottom:1px solid #EDE6D8;font-size:13px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">{{ l.when }}</span><span style="display:flex;flex-direction:column;gap:3px"><span style="font-weight:600">{{ l.what }}</span><span style="color:#4A443B;line-height:1.5">{{ l.why }}</span></span></div></sc-for>
+            </div>
+          </sc-if>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['align','Aligned texts'],['diffs','Difference list'],['log','Alignment corrections']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { align:['normal','empty','loading','error','forbidden','conflict'], diffs:['normal','empty','loading','forbidden'], log:['normal','loading'] };
+  state = { view:'align', st:'normal', lvl:1, raw:false, sel:true };
+  W = [
+    { loc:'al-Tirmidhī 44', sub:'Base text', base:true, t:[['تَوَضَّأَ','توضأ'],['ثَلَاثًا','ثلاثا'],['ثَلَاثًا','ثلاثا'],['وَمَسَحَ','ومسح'],['بِرَأْسِهِ','برأسه'],['وَأُذُنَيْهِ','وأذنيه']] },
+    { loc:'Abū Dāwūd 106', sub:'Dār al-Risāla', t:[['تَوَضَّأَ','توضأ'],['ثَلَاثًا','ثلاثا'],['ثَلَاثًا','ثلاثا'],null,null,null] },
+    { loc:'al-Nasāʾī 84', sub:'unvocalized edition', t:[['فتوضأ','فتوضأ',3],['ثلاثا','ثلاثا',1],['ثلاثا','ثلاثا',1],null,null,null] },
+    { loc:'Aḥmad 1/57', sub:'Musnad', t:[['تَوَضَّا','توضا',2],['ثَلَاثًا','ثلاثا'],null,['وَمَسَحَ','ومسح'],['رَأْسَهُ','رأسه',9],['وَأُذُنَيْهِ','وأذنيه']] }
+  ];
+  renderVals() {
+    const { view, st, lvl, raw, sel } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const forb = eff === 'forbidden';
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','2'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const ptabsDef = [['Overview','./06%20Project%20Overview.dc.html'],['Resources','./03b%20Project%20Resources.dc.html'],['Searches','./08%20Search%20Workspace.dc.html'],['Evidence','./09%20Evidence%20Inspector.dc.html'],['Analysis','./10%20Comparison%20Workspace.dc.html'],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html'],['Findings & Documents','./11%20Finding%20Editor.dc.html'],['Review & Publication','./21%20Submission.dc.html'],['Activity','./18%20Activity.dc.html'],['Settings','./15%20Members.dc.html']];
+    const L = [['Exact','Every character counts, including vowel marks'],['Ignore vowel marks','Ḥarakāt and tanwīn ignored'],['+ hamza and alif forms','أ إ آ ا treated alike'],['+ attached wa/fa','Leading و ف ignored']];
+    const errNas = eff === 'error';
+    const ws = this.W.filter(w => !(errNas && w.loc.startsWith('al-Nasāʾī')));
+    const diffs = [];
+    const rows = ws.map((w, wi) => ({
+      loc: w.loc, sub: w.sub, bg: w.base ? '#FBF8F1' : 'transparent',
+      cells: w.t.map((tok, i) => {
+        const base = this.W[0].t[i];
+        let kind = '', tag = '';
+        if (!w.base) {
+          if (!tok && base) kind = 'om';
+          else if (tok && !base) kind = 'add';
+          else if (tok && (tok[2] || 0) > lvl) kind = 'sub';
+        }
+        if (kind) diffs.push({ pos: `${i + 1}`, loc: w.loc, kind: kind === 'om' ? '∅ omitted' : kind === 'add' ? '+ added' : '~ different', pair: `${base ? base[raw ? 0 : 1] : '—'} ← ${tok ? tok[raw ? 0 : 1] : '∅'}`, note: (w.loc === 'Abū Dāwūd 106' && i === 3) ? 'Possibly a shorter transmission, not necessarily an abridgement. See F-04.' : '', noNote: !(w.loc === 'Abū Dāwūd 106' && i === 3) });
+        const isSel = sel && w.loc === 'Aḥmad 1/57' && i === 4 && view === 'align';
+        return {
+          text: tok ? tok[raw ? 0 : 1] : '∅',
+          fg: tok ? '#1D1A15' : '#8A8276',
+          deco: 'none', under: kind === 'add' ? '2px solid #1D1A15' : kind === 'sub' ? '2px dotted #1D1A15' : '0',
+          tag: kind === 'om' ? 'omitted' : kind === 'add' ? '+ added' : kind === 'sub' ? '~ different' : '',
+          tagC: '#4A443B', bg: kind ? '#F5F1E8' : 'transparent',
+          outline: isSel ? '2px solid #1F5A57' : 'none',
+          title: kind ? `Position ${i + 1}: ${kind}` : `Position ${i + 1}`,
+          pick: () => this.setState({ sel: w.loc === 'Aḥmad 1/57' && i === 4 })
+        };
+      })
+    }));
+    return {
+      on, ro: forb, roOp: forb ? 0.45 : 1,
+      me: forb ? { name:'Dilan Omar', sub:'Viewer in PRJ-0012' } : { name:'Shilan Rashid', sub:'Owner of PRJ-0012' },
+      showMain: ['normal','error','forbidden','conflict'].includes(eff),
+      isAlign: view === 'align', isDiffs: view === 'diffs', isLog: view === 'log',
+      levels: L.map(([label, desc], i) => ({ label, desc, sel: lvl === i, pick: () => this.setState({ lvl: i }), bg: lvl === i ? '#1D1A15' : 'transparent', fg: lvl === i ? '#F5F1E8' : '#1D1A15' })),
+      levelDesc: `${L[lvl][1]} · ${diffs.length} differences at this level`,
+      raw, toggleRaw: () => this.setState(s => ({ raw: !s.raw })),
+      rows, selCell: sel && view === 'align',
+      fixes: ['Mark as aligned correctly','Move to position 4','Leave unaligned','Split into two positions'],
+      diffs, diffFoot: `${diffs.length} differences at “${L[lvl][0]}”. Change the normalization level to see differences in spelling and vowel marks, or to hide them.`,
+      log: [
+        { when:'4 Oct 2026 16:02', what:'Shilan Rashid split position 1 in al-Nasāʾī 84', why:'“فتوضأ” is aligned with “توضأ”. The attached fa is shown as a difference only at the Exact to hamza levels.' },
+        { when:'3 Oct 2026 11:40', what:'Aras Kamal marked position 3 in Aḥmad 1/57 as omitted', why:'The automatic alignment had matched the second “ثلاثا” to “ومسح”.' },
+        { when:'3 Oct 2026 11:12', what:'Automatic alignment created', why:'4 occurrences, base al-Tirmidhī 44, aligner v0.3.' }
+      ],
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href], i) => ({ label, href, current: i === 4 ? 'page' : undefined, rule: i === 4 ? '#1F5A57' : 'transparent', fg: i === 4 ? '#123B39' : '#4A443B', weight: i === 4 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

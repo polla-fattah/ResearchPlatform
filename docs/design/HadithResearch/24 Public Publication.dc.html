@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="24 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R1c · 24 · Public publication page</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">PUB-08 · PUB-10 · PUB-11 · UC-08</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+    <div style="max-width:1120px;margin:0 auto;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap">
+      <span style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Open Hadith Research</span>
+      <nav aria-label="Public" style="display:flex;gap:4px;flex-wrap:wrap">
+        <a href="./20%20Public%20Announcement.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Research announcements</a>
+        <a href="#" aria-current="page" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#123B39;border-bottom:2px solid #1F5A57">Published research</a>
+        <a href="#" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Researcher profiles</a>
+        <a href="./25%20Public%20Search.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Search</a>
+      </nav>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center"><a href="./01%20Registration.dc.html" style="font-size:14px;padding:8px 12px;color:#1D1A15;text-decoration:none">Sign in</a><a href="./01%20Registration.dc.html" style="font-size:14px;font-weight:500;padding:8px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Apply</a></div>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:36px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px">
+    <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:12px"><div style="height:44px;width:70%;background:#EAE3D4;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="height:220px;background:#EFE9DC"></div></div></sc-if>
+    <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:14px 18px;font-size:14px;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">This page couldn't load.</strong> Try again in a moment. Downloads and citations are unaffected.</div></sc-if>
+    <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:620px;background:#FFFDF8;border:1px dashed #8A8276;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">openhadith.org/research/SUB-0007/v2</span>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Page not found</h1>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">Nothing has been published at this address. Submissions that are under review or approved but not yet released aren't public, even if you have the link.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showPage }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ isWithdrawn }}" hint-placeholder-val="{{ false }}">
+        <div role="note" style="border:2px solid #1D1A15;background:#FFFDF8;padding:16px 20px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:500">Withdrawn · 2 Dec 2026</span>
+          <span style="font-size:15px;line-height:1.6">The authors withdrew this publication after finding that the chain of Sunan Ibn Mājah 404 had been misread. This is no longer an active, approved finding. The text below is kept for the record and is marked as withdrawn.</span>
+          <span style="font-size:13px;color:#4A443B">Decision by the editorial team · withdrawal notice WD-0001</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isCorrected }}" hint-placeholder-val="{{ false }}">
+        <div role="note" style="border:1px solid #1F5A57;background:#E3EEEC;padding:14px 18px;display:flex;flex-direction:column;gap:6px;color:#123B39">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:500">Corrected · version 1.1 · 20 Nov 2026</span>
+          <span style="font-size:14px;line-height:1.6;color:#1F3F3D">§3.2: the page number for al-Nasāʾī 84 was added (vol. 1, p. 64). No source quotations changed. The correction was reviewed by the editorial team. <a href="#" style="color:#123B39">See what changed</a> · <a href="#" style="color:#123B39">Read version 1.0</a></span>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;opacity:{{ bodyOp }}">
+        <article style="flex:2 1 480px;min-width:0;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;background:{{ label.bg }};color:{{ label.fg }};border:1px solid {{ label.border }}">{{ label.text }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border:1px solid #6A6257;color:#4A443B">Article with findings</span>
+          </div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:42px;line-height:1.08;margin:0;text-wrap:balance">Kufan chains of the wuḍūʾ reports: where the “three times” wording diverges</h1>
+          <div style="font-size:15px;color:#4A443B">Shilan Rashid · Aras Kamal</div>
+          <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+            <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Abstract</h2>
+            <p style="margin:0;font-size:16px;line-height:1.7">Of 14 occurrences of the “three times each” report in the six Sunan collections, 11 preserve only the threefold wording. The 3 expanded forms all pass through Wakīʿ. We argue the expansion is a later development on that route, while noting the unresolved identity of his teacher Sufyān.</p>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:12px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:24px;margin:0">2. The wording of the Kufan reports</h2>
+            <p style="margin:0;font-size:16px;line-height:1.75">The shortest form is preserved by Abū Dāwūd through Musaddad.<sup style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">[1]</sup></p>
+            <figure style="margin:0;border-left:3px solid #1D1A15;padding-left:16px;display:flex;flex-direction:column;gap:6px"><figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase">❝ Source · exact quotation [1]</figcaption><blockquote dir="rtl" lang="ar" style="margin:0;font-family:'Noto Naskh Arabic',serif;font-size:22px;line-height:1.9;text-align:right">أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا</blockquote></figure>
+            <p style="margin:0;font-size:16px;line-height:1.75">Al-Tirmidhī’s version adds the once and twice forms before the threefold one.<sup style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">[2]</sup> <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:0 5px;border:1px solid #2F4E7A;color:#2F4E7A;vertical-align:2px">Paraphrase</span></p>
+            <div style="background:#F5ECD9;padding:10px 14px;display:flex;flex-direction:column;gap:4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#7A5413">⚖ Attributed to Ibn Ḥajar · Taqrīb no. 5065 [3]</span><span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:18px;text-align:right">ثقة مكثر عابد، اختلط بأخرة</span></div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:8px">
+            <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:24px;margin:0">5. Limitations</h2>
+            <p style="margin:0;font-size:16px;line-height:1.75">The conclusion depends on an unresolved narrator identity and on one occurrence without recorded wording.</p>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid #E3DBCB">
+            <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Citations</h2>
+            <sc-for list="{{ cites }}" as="c" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;font-size:14px;line-height:1.55"><span style="font-family:'IBM Plex Mono',monospace;color:#1F5A57">{{ c.n }}</span><span>{{ c.t }}</span></div></sc-for>
+          </section>
+        </article>
+        <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:16px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 10px;font-size:13px">
+            <span style="color:#6A6257">Review</span><span>{{ label.short }}</span>
+            <span style="color:#6A6257">Released</span><span>12 Oct 2026</span>
+            <span style="color:#6A6257">Version</span><span>{{ version }}</span>
+            <span style="color:#6A6257">Licence</span><span>CC BY 4.0</span>
+            <span style="color:#6A6257">Cite as</span><span style="font-size:12px;line-height:1.5">Rashid, S. &amp; Kamal, A. (2026). Kufan chains of the wuḍūʾ reports. Open Hadith Research, PUB-0003 {{ version }}.</span>
+          </div>
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+            <div style="padding:10px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Downloads</div>
+            <sc-for list="{{ downloads }}" as="d" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border-bottom:1px solid #EDE6D8;font-size:13px;opacity:{{ d.op }}"><span>{{ d.t }}</span><span style="color:#6A6257">{{ d.s }}</span></div></sc-for>
+          </div>
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+            <div style="padding:10px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Versions</div>
+            <sc-for list="{{ versions }}" as="v" hint-placeholder-count="2"><div style="padding:8px 16px;border-bottom:1px solid #EDE6D8;font-size:13px;display:flex;justify-content:space-between;gap:8px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ v.v }}</span><span style="color:#4A443B">{{ v.t }}</span></div></sc-for>
+          </div>
+          <a href="./20%20Public%20Announcement.dc.html" style="font-size:13px">From the project announced as “Kufan chains of the wuḍūʾ reports”</a>
+          <span style="font-size:12px;line-height:1.55;color:#6A6257">This page shows the released version only. Project discussions, notes and unpublished drafts aren't public.</span>
+        </aside>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['released','Released v1.0'],['corrected','Corrected v1.1'],['withdrawn','Withdrawn']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { released:['normal','loading','error','forbidden'], corrected:['normal'], withdrawn:['normal'] };
+  state = { view:'released', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const wd = view === 'withdrawn', cor = view === 'corrected';
+    return {
+      on,
+      showPage: !['loading','error','forbidden'].includes(eff),
+      isWithdrawn: wd, isCorrected: cor,
+      bodyOp: wd ? 0.6 : 1,
+      label: wd ? { text:'Withdrawn', short:'Withdrawn after review', bg:'#1D1A15', fg:'#F5F1E8', border:'#1D1A15' } : { text:'Peer-reviewed · editorial review', short:'1 reviewer + editor · 2 rounds', bg:'#1F5A57', fg:'#FFFFFF', border:'#1F5A57' },
+      version: cor ? 'v1.1' : 'v1.0',
+      cites: [
+        { n:'1', t:'Abū Dāwūd, al-Sunan, ed. al-Arnaʾūṭ (2009), 1:78, no. 106. Exact quotation.' },
+        { n:'2', t:'al-Tirmidhī, al-Sunan, ed. Shākir, 1:63, no. 44. Paraphrase.' },
+        { n:'3', t:'Ibn Ḥajar, Taqrīb al-Tahdhīb, ed. ʿAwwāma, no. 5065. Attributed judgment.' },
+        { n:'4', t: cor ? 'al-Nasāʾī, al-Sunan, ed. Abū Ghudda, 1:64, no. 84. (Page added in v1.1)' : 'al-Nasāʾī, al-Sunan, ed. Abū Ghudda, 1:[page unknown], no. 84.' }
+      ],
+      downloads: [{ t:'PDF · Arabic and English', s:'1.2 MB', op:1 }, { t:'Citations (BibTeX, RIS)', s:'13 citations', op:1 }, { t:'Source excerpts (JSON)', s:'3 permitted excerpts', op:1 }, { t:'Corpus page scans', s:'Restricted · cited by reference only', op:0.55 }],
+      versions: cor ? [{ v:'v1.1', t:'Correction · 20 Nov 2026' }, { v:'v1.0', t:'Released · 12 Oct 2026' }] : wd ? [{ v:'Withdrawn', t:'2 Dec 2026' }, { v:'v1.0', t:'Released · 12 Oct 2026' }] : [{ v:'v1.0', t:'Released · 12 Oct 2026' }],
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="36 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 36 · Uploads and reference import</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">LIB-04 · LIB-10</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Library</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">Shilan Rashid</div>
+        <div style="font-size:12px;color:#6A6257">Researcher</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;padding:28px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px 16px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./03%20My%20Library.dc.html" style="color:#6A6257">My Library</a> / {{ crumb }}</div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">{{ title }}</h1>
+          <span style="font-size:14px;color:#6A6257">{{ subtitle }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #6A6257;color:#4A443B">🔒 Private</div>
+      </div>
+
+      <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px dashed #8A8276;background:#FFFDF8;padding:16px 18px;display:flex;flex-direction:column;gap:6px;max-width:760px">
+          <span style="font-size:15px;font-weight:600">{{ forbTitle }}</span>
+          <span style="font-size:14px;line-height:1.6;color:#4A443B">{{ forbText }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;gap:16px;flex-wrap:wrap"><div style="flex:1.4 1 380px;height:420px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="flex:1 1 260px;height:420px;background:#F2EDE2"></div></div></sc-if>
+      <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:10px;max-width:720px">
+          <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">{{ emptyTitle }}</h2>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">{{ emptyText }}</p>
+          <button onClick="{{ emptyGo }}" style="align-self:flex-start;font:inherit;font-size:14px;font-weight:500;padding:9px 14px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">{{ emptyCta }}</button>
+        </div>
+      </sc-if>
+
+      <!-- UPLOAD FORM -->
+      <sc-if value="{{ showUpload }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.55;color:#5C2A1C"><span><strong style="font-weight:600;color:#9A3B24">Upload failed at 61%. The connection dropped.</strong> Your details below are kept. Choose the same file again to retry. Nothing partial was saved.</span><button style="font:inherit;font-size:13px;padding:6px 12px;border:1px solid #9A3B24;background:transparent;color:#9A3B24;border-radius:2px;cursor:pointer;flex-shrink:0">Retry upload</button></div></sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+          <section style="flex:1.3 1 400px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB;padding:22px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px dashed #8A8276;background:#FBF8F1;padding:22px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+              <span style="font-size:15px;font-weight:500">{{ fileLine }}</span>
+              <span style="font-size:13px;color:#6A6257">PDF, JPEG, PNG, TIFF, CSV or DOCX · up to 200 MB per file</span>
+              <button style="font:inherit;font-size:13px;padding:7px 12px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Choose file</button>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">What is it?</span><select style="padding:9px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"><option>Manuscript or print scan</option><option>Article or chapter</option><option>Research data</option><option>Own notes or draft</option></select></label>
+            <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Description</span><textarea dir="auto" rows="2" style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;line-height:1.5;border-radius:2px;resize:vertical">Photographs of Ibn Mājah, Kitāb al-Ṭahāra, fols. 21b–23a, from my own copy of the 1952 Cairo print.</textarea></label>
+            <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+              <legend style="font-size:14px;font-weight:500;padding:0;margin-bottom:6px">Ownership and rights</legend>
+              <label style="display:flex;gap:8px;font-size:14px"><input type="radio" name="own" defaultChecked="{{ true }}">I made these images, or own the rights</label>
+              <label style="display:flex;gap:8px;font-size:14px"><input type="radio" name="own">Third-party material I may use under a licence or permission</label>
+              <label style="display:flex;gap:8px;font-size:14px"><input type="radio" name="own">Third-party material, rights unknown (private use only)</label>
+              <label style="display:flex;flex-direction:column;gap:6px;margin-top:4px"><span style="font-size:13px;color:#4A443B">Rights statement</span><input dir="auto" defaultValue="Own photographs of a public-domain print (1952)." style="padding:9px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:14px;border-radius:2px"></label>
+            </fieldset>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button onClick="{{ goStatus }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Upload to My Library</button><span style="font-size:12px;color:#6A6257">Private. You choose later whether to add it to a project.</span></div>
+          </section>
+          <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px">
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.55;color:#4A443B">
+              <span style="font-size:14px;font-weight:600;color:#1D1A15">What happens next</span>
+              <span>1. The file is checked for malware. Until that finishes, it’s listed but can’t be opened, shared or downloaded, even by you.</span>
+              <span>2. Once it passes, it’s ready in My Library.</span>
+              <span>3. If it fails or the type isn’t supported, you’re told why. Your description and rights statement are kept so you can retry.</span>
+            </section>
+            <div style="font-size:12px;line-height:1.5;color:#6A6257">Storage: 1.2 GB of 5 GB used. Uploads follow the rights policy (DATA-06, approved 12 Sep 2026).</div>
+          </aside>
+        </div>
+      </sc-if>
+
+      <!-- STATUS -->
+      <sc-if value="{{ showStatus }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 110px 120px minmax(0,1.3fr);gap:12px;padding:8px 16px;border-bottom:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257"><span>File</span><span>Size</span><span>Status</span><span>Next step</span></div>
+          <sc-for list="{{ uploads }}" as="u" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:minmax(0,1.6fr) 110px 120px minmax(0,1.3fr);gap:12px;align-items:baseline;padding:12px 16px;border-bottom:1px solid #EDE6D8;font-size:13px">
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:500;word-break:break-word">{{ u.name }}</span><span style="color:#6A6257">{{ u.meta }}</span></span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A443B">{{ u.size }}</span>
+              <span style="justify-self:start;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px {{ u.bs }} {{ u.c }};color:{{ u.c }};background:{{ u.bg }}">{{ u.state }}</span>
+              <span style="color:#4A443B;line-height:1.5">{{ u.next }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- IMPORT -->
+      <sc-if value="{{ showImport }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">1 existing reference changed after this preview was made.</strong> You edited “Ibn Ḥajar, Tahdhīb al-Tahdhīb” in another tab at 10:42. The duplicate check for that entry was run again below. Nothing has been imported yet.</div></sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">This file can’t be read as RIS.</strong> Line 1 should start with “TY  -”. It looks like EndNote XML. Export from your reference manager as RIS or BibTeX and try again.</div></sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;background:#FFFDF8;border:1px solid #E3DBCB">wudu-sources.bib · BibTeX · 9 entries</span>
+          <div style="display:grid;grid-template-columns:repeat(4,auto);gap:8px">
+            <sc-for list="{{ impTallies }}" as="t" hint-placeholder-count="4"><span style="font-size:13px;padding:4px 10px;border:1px {{ t.bs }} {{ t.c }};color:{{ t.c }}">{{ t.label }}</span></sc-for>
+          </div>
+        </div>
+        <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+          <div style="display:grid;grid-template-columns:36px minmax(0,1.6fr) 120px minmax(0,1.4fr);gap:12px;padding:8px 16px;border-bottom:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257"><span>Line</span><span>Entry</span><span>Check</span><span>Action</span></div>
+          <sc-for list="{{ entries }}" as="e" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:36px minmax(0,1.6fr) 120px minmax(0,1.4fr);gap:12px;align-items:start;padding:11px 16px;border-bottom:1px solid #EDE6D8;font-size:13px;background:{{ e.rowBg }}">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">{{ e.line }}</span>
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span dir="auto" style="font-weight:500">{{ e.title }}</span><span style="color:#6A6257">{{ e.meta }}</span></span>
+              <span style="justify-self:start;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px {{ e.bs }} {{ e.c }};color:{{ e.c }}">{{ e.state }}</span>
+              <span style="display:flex;flex-direction:column;gap:4px;color:#4A443B;line-height:1.5">
+                <sc-if value="{{ e.isDup }}" hint-placeholder-val="{{ false }}"><select style="font:inherit;font-size:13px;padding:5px 7px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px"><option>Skip, keep my existing reference</option><option>Import as a separate reference</option><option>Fill only my empty fields</option></select></sc-if>
+                <span>{{ e.note }}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:12px;color:#6A6257;max-width:560px;line-height:1.5">Existing references are never overwritten. “Fill only my empty fields” adds what’s missing and shows you each field first. Entries with errors are left out, and you get a report of them.</span>
+          <button onClick="{{ goResult }}" disabled="{{ importBlocked }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer;opacity:{{ importOp }}">Import 6 references</button>
+        </div>
+      </sc-if>
+
+      <!-- RESULT -->
+      <sc-if value="{{ showResult }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:22px;display:flex;flex-direction:column;gap:12px;max-width:720px">
+          <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">6 references imported to My Library</h2>
+          <div style="display:flex;flex-direction:column;border:1px solid #E3DBCB">
+            <sc-for list="{{ resultRows }}" as="r" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid #EDE6D8;font-size:13px"><span>{{ r.k }}</span><span style="color:#4A443B">{{ r.v }}</span></div></sc-for>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><a href="./03%20My%20Library.dc.html" style="font-size:14px;padding:9px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Open in My Library</a><a href="#" style="font-size:14px;padding:9px 14px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none">Download error report (2 entries)</a></div>
+          <span style="font-size:12px;color:#6A6257">Imported references are tagged “import 5 Oct 2026”, so you can find or undo them together.</span>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['upload','Upload a file'],['status','Upload status'],['import','Import BibTeX/RIS'],['result','Import result']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { upload:['normal','error','forbidden'], status:['normal','empty','loading'], import:['normal','empty','loading','error','conflict'], result:['normal'] };
+  state = { view:'upload', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','2'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const S = { ready:['Ready','#123B39','solid','#E3EEEC'], scan:['Scanning','#6A6257','dashed','#FFFDF8'], rej:['Not accepted','#9A3B24','solid','#F6E5DF'], fail:['Failed','#9A3B24','solid','#F6E5DF'] };
+    const U = (name, meta, size, k, next) => { const [state, c, bs, bg] = S[k]; return { name, meta, size, state, c, bs, bg, next }; };
+    const E = { new:['New','#123B39','solid'], dup:['Possible duplicate','#4A443B','dashed'], bad:['Error','#9A3B24','solid'] };
+    const En = (line, title, meta, k, note, hl) => { const [state, c, bs] = E[k]; return { line, title, meta, state, c, bs, note, isDup: k === 'dup', rowBg: hl ? '#FBF8F1' : 'transparent' }; };
+    const conf = eff === 'conflict';
+    const isErr = view === 'import' && eff === 'error';
+    const titles = { upload:['Upload','Upload a supporting file','Private to you until you add it to a project'], status:['Uploads','Your uploads','Files are checked before anyone can open them'], import:['Import','Import references','Check each entry before anything is added'], result:['Import','Import finished',"Here's what was added and what was left out"] };
+    const t = titles[view];
+    const emptyMap = { status:['No uploads yet','Upload scans, articles or data that support your research. Each file needs a rights statement.','Upload a file','upload'], import:['Choose a BibTeX or RIS file','Export from Zotero, EndNote or another reference manager. You’ll see every entry, and any duplicates or errors, before anything is imported.','Choose file','import'] };
+    const em = emptyMap[view] || emptyMap.status;
+    return {
+      on,
+      crumb: t[0], title: t[1], subtitle: t[2],
+      forbTitle: 'Uploads are paused for your account',
+      forbText: 'An administrator paused uploads for your account on 2 Oct 2026, pending a rights query about an earlier file. Your existing files and references are unaffected, and you can still import references. Contact support if you think this is a mistake.',
+      showUpload: view === 'upload' && eff !== 'forbidden',
+      fileLine: eff === 'error' ? 'ibn-majah-tahara-fols21-23.pdf · 48.2 MB (choose again to retry)' : 'ibn-majah-tahara-fols21-23.pdf · 48.2 MB',
+      goStatus: go('status'), goResult: go('result'),
+      showStatus: view === 'status' && eff === 'normal',
+      uploads: [
+        U('ibn-majah-tahara-fols21-23.pdf','Manuscript or print scan · own rights','48.2 MB','scan','Can’t be opened until the check finishes (usually under 2 minutes).'),
+        U('tahdhib-11-123.jpg','Manuscript or print scan · licensed','3.1 MB','ready','In My Library. Not in any project yet.'),
+        U('wudu-variants.numbers','Research data','0.4 MB','rej','Apple Numbers files aren’t supported. Export as CSV and upload again. Your description is kept.'),
+        U('isnad-notes-draft.docx','Own notes · own rights','1.8 MB','fail','Upload interrupted. Details kept. Retry with the same file.')
+      ],
+      showImport: view === 'import' && ['normal','error','conflict'].includes(eff),
+      impTallies: [{ label:'4 new', c:'#123B39', bs:'solid' }, { label:'3 possible duplicates', c:'#4A443B', bs:'dashed' }, { label:'2 errors', c:'#9A3B24', bs:'solid' }, { label:'6 will import', c:'#1D1A15', bs:'solid' }],
+      entries: [
+        En('1','Sunan Abī Dāwūd','ed. Shuʿayb al-Arnaʾūṭ · Dār al-Risāla, 2009','dup','Matches your reference REF-0011 (same title, editor, year).'),
+        En('14','Tahdhīb al-Tahdhīb','Ibn Ḥajar · Dāʾirat al-Maʿārif, 1907','dup', conf ? 'Checked again after your 10:42 edit. Still matches REF-0019. Your edit added the volume count.' : 'Matches REF-0019. Your copy has no volume count. This entry has one (12 vols).', conf),
+        En('27','Al-ʿIlal al-kabīr','al-Tirmidhī · ed. Ṣubḥī al-Sāmarrāʾī, 1989','new','Will be added.'),
+        En('35','The Development of Hadith Criticism','J. Brown · 2011','new','Will be added.'),
+        En('48','Kitāb al-Ṭahāra in the Sunan','article · no year','bad','Missing required field “year” for @article. Fix it in your file and import it again.'),
+        En('52','شرح علل الترمذي','ابن رجب · مكتبة المنار، ١٩٨٧','new','Will be added. Arabic title kept as written.'),
+        En('60','@book{wudu-2,','—','bad','Unclosed brace at line 60, so this entry can’t be read. The other entries aren’t affected.')
+      ],
+      importBlocked: isErr, importOp: isErr ? 0.45 : 1,
+      showResult: view === 'result',
+      resultRows: [{ k:'New references', v:'4 added' }, { k:'Duplicates kept separate', v:'1 (you chose)' }, { k:'Duplicates filled', v:'1 · added volume count to REF-0019' }, { k:'Duplicates skipped', v:'1 · REF-0011 unchanged' }, { k:'Errors left out', v:'2 entries · lines 48 and 60' }],
+      emptyTitle: em[0], emptyText: em[1], emptyCta: em[2], emptyGo: go(em[3]),
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 1 ? 'page' : undefined, bg: i === 1 ? '#E3EEEC' : 'transparent', fg: i === 1 ? '#123B39' : '#1D1A15', weight: i === 1 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

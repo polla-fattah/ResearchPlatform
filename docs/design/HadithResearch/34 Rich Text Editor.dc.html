@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="34 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 34 · Rich-text editing (extends 11)</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">WRT-10</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Writing</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="7">
+          <a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1">
+            <span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:14px;font-weight:500">{{ me.name }}</div>
+        <div style="font-size:12px;color:#6A6257">{{ me.sub }}</div>
+      </div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / PRJ-0012</div>
+            <div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">Chains of the wuḍūʾ reports in the Sunan collections</div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid #6A6257;color:#4A443B;white-space:nowrap">3 members · shared project</span>
+        </div>
+        <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px">
+          <sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10">
+            <a href="{{ t.href }}" aria-current="{{ t.current }}" style="flex-shrink:0;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</a>
+          </sc-for>
+        </nav>
+      </div>
+
+      <div style="padding:14px clamp(16px,3vw,40px);background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+        <div style="display:flex;flex-direction:column;gap:2px;flex:1 1 260px;min-width:0">
+          <a href="./11%20Finding%20Editor.dc.html" style="font-size:12px;text-decoration:none">← Findings and documents</a>
+          <span style="font-family:Newsreader,serif;font-size:21px;line-height:1.2">Main article · v18</span>
+        </div>
+        <div role="status" aria-live="polite" style="display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px {{ save.bs }} {{ save.border }};background:{{ save.bg }};font-size:13px;color:{{ save.fg }};flex-shrink:0">{{ save.text }}</div>
+        <div role="radiogroup" aria-label="Editing mode" style="display:flex;gap:2px;padding:2px;border:1px solid #CFC6B4;background:#FFFFFF;flex-shrink:0">
+          <sc-for list="{{ modeOpts }}" as="m" hint-placeholder-count="2"><button role="radio" aria-checked="{{ m.sel }}" onClick="{{ m.pick }}" style="font:inherit;font-size:12px;padding:5px 11px;border:none;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</button></sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ showToolbar }}" hint-placeholder-val="{{ true }}">
+        <div role="toolbar" aria-label="Formatting" style="padding:8px clamp(16px,3vw,40px);background:#FBF8F1;border-bottom:1px solid #E3DBCB;display:flex;flex-wrap:wrap;gap:6px;align-items:center;opacity:{{ tbOp }}">
+          <select aria-label="Block style" disabled="{{ ro }}" style="font:inherit;font-size:13px;padding:5px 8px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px"><option>Paragraph</option><option>Heading 2</option><option>Heading 3</option><option>List</option></select>
+          <span style="width:1px;height:22px;background:#E3DBCB"></span>
+          <sc-for list="{{ tools }}" as="t" hint-placeholder-count="5"><button disabled="{{ t.dis }}" title="{{ t.title }}" style="font:inherit;font-size:13px;min-width:32px;padding:5px 9px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer;font-weight:{{ t.w }};font-style:{{ t.i }};opacity:{{ t.op }}">{{ t.label }}</button></sc-for>
+          <span style="width:1px;height:22px;background:#E3DBCB"></span>
+          <button disabled="{{ ro }}" style="font:inherit;font-size:13px;padding:5px 10px;border:1px solid #1D1A15;background:#FFFFFF;border-radius:2px;cursor:pointer">❝ Source quotation</button>
+          <button disabled="{{ ro }}" style="font:inherit;font-size:13px;padding:5px 10px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;cursor:pointer">Insert citation</button>
+          <div role="radiogroup" aria-label="Block direction" style="display:flex;gap:2px;padding:2px;border:1px solid #CFC6B4;background:#FFFFFF">
+            <button role="radio" aria-checked="false" style="font:inherit;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border:none;background:transparent;cursor:pointer">LTR</button>
+            <button role="radio" aria-checked="true" style="font:inherit;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border:none;background:#1D1A15;color:#F5F1E8;cursor:pointer">RTL</button>
+          </div>
+          <span style="font-size:12px;color:#6A6257;margin-left:auto">Direction is set per block. Selected block: Sorani paragraph</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}"><div style="margin:16px clamp(16px,3vw,40px) 0;border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B">You're a <strong style="font-weight:600;color:#1D1A15">Viewer</strong>. You can read this document in either mode, but you can't edit it.</div></sc-if>
+      <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}">
+        <div style="margin:16px clamp(16px,3vw,40px) 0;border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.55;color:#4A443B"><span><strong style="font-weight:600;color:#1D1A15">Aras Kamal changed the table in Markdown mode while you were editing it here.</strong> Both modes edit the same document, so his other changes are already in. Only this table needs a choice.</span><a href="./11%20Finding%20Editor.dc.html" style="font-size:13px;padding:6px 12px;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;text-decoration:none;flex-shrink:0">Compare the two tables</a></div>
+      </sc-if>
+      <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" style="margin:16px clamp(16px,3vw,40px) 0;border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">Paste stopped at the quotation.</strong> The pasted text changes the wording inside an exact source quotation [1]. Exact quotations can't be edited as ordinary text. The rest of the paste went in. To change the quotation, re-insert it from its evidence or turn it into a paraphrase.</div>
+      </sc-if>
+      <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="padding:20px clamp(16px,3vw,40px)"><div style="max-width:760px;height:460px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></div></sc-if>
+
+      <sc-if value="{{ showDoc }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;gap:24px;padding:24px clamp(16px,3vw,40px) 96px;align-items:flex-start;box-sizing:border-box">
+          <article aria-label="Document" style="flex:2 1 460px;min-width:0;max-width:780px;background:#FFFFFF;border:1px solid #E3DBCB;padding:32px clamp(20px,4vw,48px);box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
+            <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;color:#8A8276">Start writing. Use the toolbar for headings and lists, and ❝ Source quotation to quote from your evidence.</div></sc-if>
+            <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="7">
+              <div style="position:relative;outline:{{ b.outline }};outline-offset:6px">
+                <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h2 dir="ltr" style="font-family:Newsreader,serif;font-weight:500;font-size:26px;line-height:1.25;margin:0">{{ b.text }}</h2></sc-if>
+                <sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}"><p dir="{{ b.dir }}" lang="{{ b.lang }}" style="margin:0;font-family:{{ b.font }};font-size:{{ b.size }};line-height:1.75;text-align:{{ b.align }}">{{ b.text }}<sc-if value="{{ b.cite }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goCite }}" contentEditable="false" style="font:inherit;font-family:'IBM Plex Mono',monospace;font-size:11px;margin:0 3px;padding:0 5px;border:1px solid #1F5A57;background:#E3EEEC;color:#123B39;border-radius:2px;cursor:pointer;vertical-align:2px">{{ b.cite }}</button></sc-if><sc-if value="{{ b.para }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:0 5px;margin-left:6px;border:1px solid #2F4E7A;color:#2F4E7A;vertical-align:2px">Paraphrase</span></sc-if></p></sc-if>
+                <sc-if value="{{ b.isQ }}" hint-placeholder-val="{{ false }}">
+                  <figure style="margin:0;border-left:3px solid #1D1A15;padding:6px 0 6px 16px;display:flex;flex-direction:column;gap:6px;background:#FBF8F1">
+                    <figcaption style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding-right:10px"><span>❝ Source · exact quotation · {{ b.cite }}</span><span style="color:#6A6257">Locked · edit from evidence</span></figcaption>
+                    <blockquote dir="rtl" lang="ar" style="margin:0;padding-right:10px;font-family:'Noto Naskh Arabic',serif;font-size:22px;line-height:1.9;text-align:right;user-select:none">{{ b.text }}</blockquote>
+                  </figure>
+                </sc-if>
+                <sc-if value="{{ b.isList }}" hint-placeholder-val="{{ false }}"><ul style="margin:0;padding-inline-start:22px;font-size:16px;line-height:1.75"><sc-for list="{{ b.items }}" as="i" hint-placeholder-count="3"><li>{{ i }}</li></sc-for></ul></sc-if>
+                <sc-if value="{{ b.isTable }}" hint-placeholder-val="{{ false }}">
+                  <div style="overflow-x:auto;border:1px {{ b.tblBs }} {{ b.tblBc }}"><table style="border-collapse:collapse;font-size:14px;width:100%;min-width:420px"><thead><tr><th style="text-align:start;padding:7px 10px;border-bottom:2px solid #1D1A15;font-weight:600">Book</th><th style="text-align:start;padding:7px 10px;border-bottom:2px solid #1D1A15;font-weight:600">Wording</th><th style="text-align:start;padding:7px 10px;border-bottom:2px solid #1D1A15;font-weight:600">Route</th></tr></thead><tbody><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3"><tr><td style="padding:7px 10px;border-bottom:1px solid #E3DBCB">{{ r.a }}</td><td dir="rtl" lang="ar" style="padding:7px 10px;border-bottom:1px solid #E3DBCB;font-family:'Noto Naskh Arabic',serif;font-size:16px;text-align:right">{{ r.b }}</td><td style="padding:7px 10px;border-bottom:1px solid #E3DBCB">{{ r.c }}</td></tr></sc-for></tbody></table></div>
+                </sc-if>
+                <sc-if value="{{ b.tag }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-22px;right:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;background:{{ b.tagBg }};color:{{ b.tagFg }}">{{ b.tag }}</span></sc-if>
+              </div>
+            </sc-for>
+          </article>
+
+          <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:14px">
+            <sc-if value="{{ isCite }}" hint-placeholder-val="{{ false }}">
+              <section style="background:#FFFDF8;border:1px solid #1F5A57;display:flex;flex-direction:column">
+                <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;display:flex;justify-content:space-between;gap:8px"><span style="font-size:14px;font-weight:600">Citation 1</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6A6257">[@EV-0004]</span></div>
+                <div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.55">
+                  <span>Abū Dāwūd, <em>Sunan</em>, Kitāb al-Ṭahāra, no. 106. Edition: Dār al-Risāla 2009, 1/78.</span>
+                  <span style="color:#4A443B">The citation is stored as a link to evidence EV-0004, not as text. Rich-text mode shows it as a chip you can move or delete. You can't retype it.</span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap"><a href="./09%20Evidence%20Inspector.dc.html" style="font-size:13px">Open evidence</a><button style="font:inherit;font-size:13px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">Change to paraphrase</button><button style="font:inherit;font-size:13px;border:none;background:none;color:#1F5A57;cursor:pointer;padding:0">Remove citation</button></div>
+                </div>
+              </section>
+            </sc-if>
+            <section style="background:#FFFDF8;border:1px solid #E3DBCB;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">Preserved in both modes</div>
+              <sc-for list="{{ preserved }}" as="p" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border-bottom:1px solid #EDE6D8;font-size:13px"><span>{{ p.k }}</span><span style="color:#4A443B;white-space:nowrap">{{ p.v }}</span></div></sc-for>
+              <div style="padding:10px 16px;font-size:12px;line-height:1.5;color:#6A6257">Rich text and Markdown are two ways to edit one stored document. Switching modes doesn't convert or re-save anything.</div>
+            </section>
+          </aside>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- SWITCH -->
+  <sc-if value="{{ isSwitch }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(29,26,21,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10">
+      <div role="dialog" aria-modal="true" aria-labelledby="sw-h" style="background:#FFFDF8;max-width:580px;width:100%;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;border:1px solid #E3DBCB">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Main article · v18</span>
+        <h2 id="sw-h" style="font-family:Newsreader,serif;font-weight:500;font-size:24px;line-height:1.25;margin:0">One block can't be shown as rich text</h2>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">Block 9 has a Markdown footnote definition with an HTML comment. Rich-text mode will show it as a protected block. You can see it and move it, but you edit it in Markdown. Nothing is removed or rewritten.</p>
+        <pre dir="ltr" style="margin:0;padding:10px 12px;background:#FBF8F1;border:1px dashed #8A8276;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;white-space:pre-wrap">[^w]: Wakīʿ’s teacher unresolved &lt;!-- check Tahdhīb 11/123 --&gt;</pre>
+        <div style="display:flex;flex-direction:column;border:1px solid #E3DBCB">
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="5"><div style="display:flex;justify-content:space-between;gap:8px;padding:7px 12px;border-bottom:1px solid #EDE6D8;font-size:13px"><span>{{ c.k }}</span><span style="color:{{ c.c }}">{{ c.v }}</span></div></sc-for>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button onClick="{{ goMd }}" style="font:inherit;font-size:14px;padding:10px 16px;border:1px solid #CFC6B4;background:transparent;border-radius:2px;cursor:pointer">Stay in Markdown</button><button onClick="{{ goRich }}" style="font:inherit;font-size:14px;font-weight:500;padding:10px 16px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Open in rich text</button></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['rich','Rich-text mode'],['cite','Citation chip selected'],['switch','Switch from Markdown'],['md','Markdown mode (same document)']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { rich:['normal','empty','loading','error','forbidden','conflict'], cite:['normal','forbidden'], switch:['normal'], md:['normal','loading'] };
+  state = { view:'rich', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const forb = eff === 'forbidden';
+    const md = view === 'md';
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','2'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const ptabsDef = [['Overview','./06%20Project%20Overview.dc.html'],['Resources','./03b%20Project%20Resources.dc.html'],['Searches','./08%20Search%20Workspace.dc.html'],['Evidence','./09%20Evidence%20Inspector.dc.html'],['Analysis','./10%20Comparison%20Workspace.dc.html'],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html'],['Findings & Documents','./11%20Finding%20Editor.dc.html'],['Review & Publication','./21%20Submission.dc.html'],['Activity','./18%20Activity.dc.html'],['Settings','./15%20Members.dc.html']];
+    const P = (text, o = {}) => ({ k:'p', text, dir:'ltr', lang:'en', ...o });
+    const MD = { h:'## 2. The wording of the Kufan reports', p1:'The shortest form is preserved by Abū Dāwūd through Musaddad [@EV-0004].', q:'> «أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا» [@EV-0004 exact]', ckb:'لە ڕیوایەتی تیرمیزیدا دەربڕینەکە فراوانترە و "یەک جار، دوو جار" ی تێدایە.', p2:'Al-Tirmidhī’s version adds the once and twice forms before the threefold one [@EV-0007 paraphrase].', list:'- 11 of 14 occurrences: “three times” only  - 3 of 14: expanded form, all via Wakīʿ', tbl:'| Book | Wording | Route | … 3 rows' };
+    const raw = md ? [
+      { k:'p', text: MD.h, mono:true }, { k:'p', text: MD.p1, mono:true }, { k:'p', text: MD.q, dir:'rtl', lang:'ar' }, { k:'p', text: MD.ckb, dir:'rtl', lang:'ckb' }, { k:'p', text: MD.p2, mono:true }, { k:'p', text: MD.list, mono:true }, { k:'p', text: MD.tbl, mono:true }
+    ] : [
+      { k:'h', text:'2. The wording of the Kufan reports' },
+      P('The shortest form is preserved by Abū Dāwūd through Musaddad', { cite:'1' }),
+      { k:'q', text:'«أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ ثَلاَثًا ثَلاَثًا»', cite:'1' },
+      P('لە ڕیوایەتی تیرمیزیدا دەربڕینەکە فراوانترە و "یەک جار، دوو جار" ی تێدایە.', { dir:'rtl', lang:'ckb', sel:true }),
+      P('Al-Tirmidhī’s version adds the once and twice forms before the threefold one', { cite:'2', para:true }),
+      { k:'list', items:['11 of 14 occurrences: “three times” only','3 of 14: expanded form, all via Wakīʿ','1 occurrence: wording not recorded (limitation notice)'] },
+      { k:'table', rows:[{ a:'Abū Dāwūd 106', b:'ثلاثا ثلاثا', c:'Musaddad' }, { a:'al-Tirmidhī 44', b:'مرة مرة … ثلاثا', c:'Wakīʿ' }, { a:'al-Nasāʾī 84 [3]', b:'ثلاثا ثلاثا', c:'Qutayba' }] }
+    ];
+    const conflictT = eff === 'conflict';
+    const blocks = (eff === 'empty' ? [] : raw).map(b => {
+      const rtl = b.dir === 'rtl';
+      const isT = b.k === 'table';
+      return {
+        ...b, cite: b.cite || '', para: !!b.para, items: b.items || [], rows: b.rows || [], dir: b.dir || 'ltr', lang: b.lang || 'en',
+        isH: b.k === 'h', isP: b.k === 'p', isQ: b.k === 'q', isList: b.k === 'list', isTable: isT,
+        align: rtl ? 'right' : 'left',
+        font: b.mono ? "'IBM Plex Mono',monospace" : rtl ? "'Noto Naskh Arabic',serif" : "'IBM Plex Sans',sans-serif",
+        size: b.mono ? '13px' : rtl ? '18px' : '16px',
+        outline: b.sel && !forb && !md ? '1px solid #1F5A57' : isT && conflictT ? '1px dashed #6A6257' : 'none',
+        tblBs: conflictT ? 'dashed' : 'solid', tblBc: conflictT ? '#6A6257' : 'transparent',
+        tag: isT && conflictT ? 'Changed by Aras in Markdown · needs choice' : b.sel && !forb && !md ? 'RTL · Sorani' : '',
+        tagBg: isT && conflictT ? '#FFFDF8' : '#E3EEEC', tagFg: isT && conflictT ? '#4A443B' : '#123B39'
+      };
+    });
+    const T = (label, title, w, i, dis) => ({ label, title, w: w || 400, i: i || 'normal', dis: forb || !!dis, op: forb || dis ? 0.45 : 1 });
+    const saveMap = {
+      normal:{ text:'Saved · v18', bg:'#E3EEEC', fg:'#123B39', border:'#E3EEEC', bs:'solid' },
+      error:{ text:'Saved except the blocked paste', bg:'#F6E5DF', fg:'#5C2A1C', border:'#D9A898', bs:'solid' },
+      conflict:{ text:'1 block needs a choice', bg:'#FFFDF8', fg:'#4A443B', border:'#8A8276', bs:'dashed' },
+      forbidden:{ text:'Read only', bg:'#FFFDF8', fg:'#4A443B', border:'#8A8276', bs:'dashed' }
+    };
+    const curMode = md ? 'md' : 'rich';
+    return {
+      on, ro: forb, tbOp: forb ? 0.6 : 1,
+      me: forb ? { name:'Dilan Omar', sub:'Viewer in PRJ-0012' } : { name:'Shilan Rashid', sub:'Owner of PRJ-0012' },
+      save: saveMap[eff] || saveMap.normal,
+      modeOpts: [['rich','Rich text'],['md','Markdown']].map(([k, label]) => ({ label, sel: curMode === k, pick: k === 'rich' ? go('switch') : go('md'), bg: curMode === k ? '#1D1A15' : 'transparent', fg: curMode === k ? '#F5F1E8' : '#1D1A15' })),
+      showToolbar: !md && eff !== 'loading',
+      tools: [T('B','Bold',600), T('I','Italic',400,'italic'), T('• List','Bulleted list'), T('1. List','Numbered list'), T('Table','Insert table')],
+      showDoc: eff !== 'loading',
+      blocks, isCite: view === 'cite', isSwitch: view === 'switch', goCite: go('cite'),
+      preserved: [{ k:'Citations', v:'3 linked to evidence' }, { k:'Exact quotations', v:'1 quotation, locked' }, { k:'Paraphrase labels', v:'1 label' }, { k:'Text direction', v:'2 RTL blocks · 5 LTR' }, { k:'Protected blocks', v: md ? 'none' : '1 (edit in Markdown)' }],
+      checks: [{ k:'Citations', v:'3 of 3 kept', c:'#123B39' }, { k:'Exact quotation', v:'1 of 1 kept, locked', c:'#123B39' }, { k:'Direction markers', v:'7 of 7 blocks kept', c:'#123B39' }, { k:'Table', v:'kept', c:'#123B39' }, { k:'Footnote with HTML comment', v:'shown as protected block', c:'#4A443B' }],
+      goMd: go('md'), goRich: go('rich'),
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href], i) => ({ label, href, current: i === 6 ? 'page' : undefined, rule: i === 6 ? '#1F5A57' : 'transparent', fg: i === 6 ? '#123B39' : '#4A443B', weight: i === 6 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

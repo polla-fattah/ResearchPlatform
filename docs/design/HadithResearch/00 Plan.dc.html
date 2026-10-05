@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}</style>
+</helmet>
+<div style="max-width:1120px;margin:0 auto;padding:56px 32px 96px;display:flex;flex-direction:column;gap:48px">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">Open Hadith Research Platform · R1a Personal Research Core</div>
+    <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:48px;line-height:1.05;margin:0;text-wrap:balance">Screen plan and coverage tracker</h1>
+    <p style="margin:0;max-width:720px;font-size:16px;line-height:1.6;color:#4A443B;text-wrap:pretty">All 13 drafted R1a screens are built one at a time, plus one screen the specs are missing. Each screen file covers every view and all six required states. Every one of the 64 R1a requirements is mapped below, so nothing gets left out.</p>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1F5A57">R2 · Advanced analysis and exchange</div>
+      <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">R2 build order</h2>
+      <p style="margin:0;max-width:720px;font-size:14px;line-height:1.6;color:#4A443B">There are 15 screens covering all 20 R2 requirements. All 15 are built. Screens 26–32 are analysis views that depend on domain decisions. They're built as drafts marked “pending specialist review”, so the specialists can react to something concrete. Screens 33–40 are final.</p>
+    </div>
+    <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+      <sc-for list="{{ r2Screens }}" as="s" hint-placeholder-count="15">
+        <div style="display:grid;grid-template-columns:48px minmax(0,1.4fr) minmax(0,2fr) 120px;gap:16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid #EDE6D8">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6A6257">{{ s.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:2px"><a href="{{ s.href }}" style="font-weight:500;text-decoration:none">{{ s.name }}</a><div style="font-size:13px;color:#6A6257">{{ s.views }}</div></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#4A443B">{{ s.reqs }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:{{ s.statusColor }}">{{ s.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+      <sc-for list="{{ r2Reqs }}" as="r" hint-placeholder-count="20">
+        <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:{{ r.bg }};border:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:12px"><span>{{ r.id }}</span><span style="color:#6A6257">{{ r.where }}</span></div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:16px 20px;background:#FFFDF8;border:1px dashed #8A8276">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#6A6257">For specialist review (26–32, drafts built)</div>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#4A443B">
+        <li>Matn alignment: default normalization levels, and the names for addition, omission and substitution. A difference is never labelled a defect.</li>
+        <li>Isnād graph: how far traversal goes by default, which transmission formulas appear on edges, and how missing links are drawn so nothing invents an intermediary.</li>
+        <li>Hadith families: the relationship types for shawāhid and mutābaʿāt, and how algorithmic candidates are labelled apart from reviewed members.</li>
+        <li>ʿIlal cases: the list of discrepancy categories, and wording for “inconclusive” so no authenticity verdict is forced.</li>
+        <li>Narrator dossier: wording for impossible / possible / documented meeting / documented audition, and how a teacher-specific judgment is shown.</li>
+        <li>Book structure and terminology: which critic expressions are counted, and the unit for each count.</li>
+        <li>Argument map: the relationship set (objection, reply, qualification, alternative conclusion) and anything missing from it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1F5A57">R1c · Review and publication</div>
+      <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">R1c build order</h2>
+      <p style="margin:0;max-width:720px;font-size:14px;line-height:1.6;color:#4A443B">A private project produces a reviewed public publication. The owner submits and freezes an exact package. An editor who isn't conflicted assigns a reviewer, decides on that exact version, and releases it explicitly. Corrections and withdrawals keep the public history.</p>
+    </div>
+    <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+      <sc-for list="{{ r1cScreens }}" as="s" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:48px minmax(0,1.4fr) minmax(0,2fr) 120px;gap:16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid #EDE6D8">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6A6257">{{ s.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:2px"><a href="{{ s.href }}" style="font-weight:500;text-decoration:none">{{ s.name }}</a><div style="font-size:13px;color:#6A6257">{{ s.views }}</div></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#4A443B">{{ s.reqs }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:{{ s.statusColor }}">{{ s.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+      <sc-for list="{{ r1cReqs }}" as="r" hint-placeholder-count="14">
+        <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:{{ r.bg }};border:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:12px"><span>{{ r.id }}</span><span style="color:#6A6257">{{ r.where }}</span></div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1F5A57">R1b · Collaboration and announcements</div>
+      <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">R1b build order</h2>
+      <p style="margin:0;max-width:720px;font-size:14px;line-height:1.6;color:#4A443B">R1b turns on the parts R1a showed as disabled: members, discussion and tasks, notifications, activity and announcements. It uses the fixed roles from SRS §3.2: Owner, Researcher, Project reviewer and Viewer. The R1a screens stay as they are; these screens show the R1b behaviour.</p>
+    </div>
+    <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+      <sc-for list="{{ r1bScreens }}" as="s" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:48px minmax(0,1.4fr) minmax(0,2fr) 120px;gap:16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid #EDE6D8">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6A6257">{{ s.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:2px"><a href="{{ s.href }}" style="font-weight:500;text-decoration:none">{{ s.name }}</a><div style="font-size:13px;color:#6A6257">{{ s.views }}</div></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#4A443B">{{ s.reqs }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:{{ s.statusColor }}">{{ s.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+      <sc-for list="{{ r1bReqs }}" as="r" hint-placeholder-count="14">
+        <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:{{ r.bg }};border:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:12px"><span>{{ r.id }}</span><span style="color:#6A6257">{{ r.where }}</span></div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">How each screen is delivered</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+      <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">01</div><div style="font-weight:600">Review bar</div><div style="font-size:14px;line-height:1.5;color:#4A443B">A dark strip at the top shows the screen ID, its requirement IDs, a view switcher and a state switcher.</div></div>
+      <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">02</div><div style="font-weight:600">Six states</div><div style="font-size:14px;line-height:1.5;color:#4A443B">Normal, empty, loading, error, forbidden, conflict (SRS §18). States the spec marks not applicable say so.</div></div>
+      <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">03</div><div style="font-weight:600">Conventions applied</div><div style="font-size:14px;line-height:1.5;color:#4A443B">Provenance and visibility labels, counts with units, neutral unknown states, per-block RTL, and safe-action dialogs.</div></div>
+      <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:20px;display:flex;flex-direction:column;gap:8px"><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">04</div><div style="font-weight:600">Real shell</div><div style="font-size:14px;line-height:1.5;color:#4A443B">Same account rail and project header on every screen, following navigation-map.md.</div></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Build order</h2>
+    <div style="background:#FFFDF8;border:1px solid #E3DBCB">
+      <sc-for list="{{ screens }}" as="s" hint-placeholder-count="14">
+        <div style="display:grid;grid-template-columns:48px minmax(0,1.4fr) minmax(0,2fr) 120px;gap:16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid #EDE6D8">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6A6257">{{ s.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:2px"><a href="{{ s.href }}" style="font-weight:500;text-decoration:none">{{ s.name }}</a><div style="font-size:13px;color:#6A6257">{{ s.views }}</div></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#4A443B">{{ s.reqs }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:{{ s.statusColor }}">{{ s.status }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Gaps found in the specs</h2>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ gaps }}" as="g" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:16px 20px;background:#FFFDF8;border:1px dashed #8A8276">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1D1A15">{{ g.id }}</div>
+          <div style="font-size:14px;line-height:1.55;color:#4A443B">{{ g.text }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Requirement coverage</h2><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6A6257">{{ coverageLine }}</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+      <sc-for list="{{ reqs }}" as="r" hint-placeholder-count="64">
+        <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:{{ r.bg }};border:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:12px"><span>{{ r.id }}</span><span style="color:#6A6257">{{ r.where }}</span></div>
+      </sc-for>
+    </div>
+    <div style="font-size:13px;color:#6A6257">Teal = screen built. Paper = mapped, not built yet.</div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">R1a journeys, end to end</h2>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ journeys }}" as="j" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:14px 18px;background:#FFFDF8;border:1px solid #E3DBCB">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">{{ j.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:500">{{ j.name }}</span><span style="font-size:13px;line-height:1.55;color:#4A443B">{{ j.path }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Decisions recorded</h2>
+    <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:16px 20px;background:#FFFDF8;border:1px solid #E3DBCB">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1F5A57">Desktop only</div>
+      <div style="font-size:14px;line-height:1.6;color:#4A443B">Research work needs a large screen, so there are no phone layouts. The researcher, editorial and admin workspaces target 1024px and wider. Narrower windows get a notice asking for a larger screen instead of a squeezed layout. This replaces the 360px rule in conventions.md §8 (NFR-12), so update that spec. Public pages (announcements, publications, search) still read acceptably on a tablet. Comparison views may still scroll sideways inside a labelled area.</div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 style="font-family:Newsreader,serif;font-weight:500;font-size:28px;margin:0">Still open (outside design)</h2>
+    <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#4A443B">
+      <li>Sorani and Arabic UI labels: terminology.md has no entries yet, so screens use English for review.</li>
+      <li>Sample hadith texts, chains and critic judgments are illustrative fixtures. They need specialist review before testing.</li>
+      <li>The exact definition of an “occurrence” depends on DATA-02 (R0).</li>
+      <li>Limits shown (1 GB parts, 5,000-member result sets, 5 GB quota, 7-day support grants) are placeholders until the R0 workload benchmark.</li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const r1cBuilt = ['21','22','23','24','25'];
+    const r1bBuilt = ['15','16','17','18','19','20','11+'];
+    const built = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','03b'];
+    const S = [
+      ['01','Registration and application','01 Registration.dc.html','Apply · Verify email · Application status · Sign in · Recover','ACC-01 to 04'],
+      ['02','Personal home','02 Personal Home.dc.html','Home with projects, next actions, exports','ACC-05, PRJ-02, EXP-06'],
+      ['03','My Library (personal)','03 My Library.dc.html','Library · Item detail · Add to project with sharing preview · Duplicate prompt','LIB-01, 02, 03, 05, 07, 08, 09'],
+      ['03b','Project Resources (per project)','03b Project Resources.dc.html','Per-project list · Project tags and reasons · Separate from library · Remove','LIB-05, 06, 07, 09, PRJ-03'],
+      ['04','Project index','04 Project Index.dc.html','Owned/shared · Filters · Archive · Trash','PRJ-01, 02, 04, 07'],
+      ['05','Project creation','05 Project Creation.dc.html','Create form · Privacy note','PRJ-01, 04'],
+      ['06','Project overview and settings','06 Project Overview.dc.html','Overview · Copy to project · Settings','PRJ-03 to 07'],
+      ['07','Resource picker','07 Resource Picker.dc.html','Corpus search · External reference · Duplicate prompt','LIB-01, 03, 07, SEA-08'],
+      ['08','Search workspace','08 Search Workspace.dc.html','Query · Results · Run history · Save result set · Saved searches','SEA-01 to 08'],
+      ['09','Evidence inspector','09 Evidence Inspector.dc.html','Evidence · Annotations · Links · Dependencies · Correction','EVI-01 to 07, LIB-08'],
+      ['10','Comparison workspace','10 Comparison Workspace.dc.html','Occurrences · Chains · Narrator dossier · Criticism','ANA-01 to 05'],
+      ['11','Finding and document editor','11 Finding Editor.dc.html','Editor · Finding panel · Citation · Versions · Conflict','WRT-01 to 06, EVI-03, 05, 06'],
+      ['12','Downloads','12 Downloads.dc.html','New export · Scope preview · Jobs · Parts · Quota','EXP-01 to 04, 06 to 10'],
+      ['13','Administration','13 Administration.dc.html','Applications · Accounts · Limits · Support access · Audit · Ops','ACC-03, 07, 08, ADM-01, 03 to 06'],
+      ['14','Profile and settings (added)','14 Profile Settings.dc.html','Public profile · Language · Security · Sessions · Closure','ACC-04, 06, 07, 08, NFR-14']
+    ];
+    const screens = S.map(([id,name,file,views,reqs]) => {
+      const done = built.includes(id);
+      return { id, name, href: './' + encodeURI(file), views, reqs, status: done ? 'Built' : 'Planned', statusColor: done ? '#1F5A57' : '#8A8276' };
+    });
+    const map = {
+      'SEC-01':'all','ACC-01':'01','ACC-02':'01','ACC-03':'01·13','ACC-04':'01·14','ACC-05':'02','ACC-06':'14','ACC-07':'13·14','ACC-08':'13·14',
+      'LIB-01':'03·07','LIB-02':'03','LIB-03':'03·07','LIB-05':'03','LIB-06':'03b','LIB-07':'03·07','LIB-08':'03·09','LIB-09':'03',
+      'PRJ-01':'04·05','PRJ-02':'02·04','PRJ-03':'06','PRJ-04':'04·05·06','PRJ-05':'06','PRJ-06':'06','PRJ-07':'04·06',
+      'SEA-01':'08','SEA-02':'08','SEA-03':'08','SEA-04':'08','SEA-05':'08','SEA-06':'08','SEA-07':'08','SEA-08':'07·08',
+      'EVI-01':'09','EVI-02':'09','EVI-03':'09·11','EVI-04':'09','EVI-05':'09·11','EVI-06':'09·11','EVI-07':'09',
+      'ANA-01':'10','ANA-02':'10','ANA-03':'10','ANA-04':'10','ANA-05':'10',
+      'WRT-01':'11','WRT-02':'11','WRT-03':'11','WRT-04':'11','WRT-05':'11','WRT-06':'11',
+      'EXP-01':'12','EXP-02':'12','EXP-03':'12','EXP-04':'12','EXP-06':'02·12','EXP-07':'12','EXP-08':'12','EXP-09':'12','EXP-10':'12',
+      'ADM-01':'13','ADM-03':'13','ADM-04':'13·14','ADM-05':'13','ADM-06':'13'
+    };
+    const reqs = Object.entries(map).map(([id, where]) => {
+      const ws = where === 'all' ? ['all'] : where.split('·');
+      const done = where === 'all' ? built.length === 15 : ws.every(w => built.includes(w));
+      return { id, where, bg: done ? '#E3EEEC' : '#FFFDF8' };
+    });
+    const doneCount = reqs.filter(r => r.bg === '#E3EEEC').length;
+    const r2Built = ['26','27','28','29','30','31','32','33','34','35','36','37','38','39','40'];
+    const r2Files = { '26':'26 Matn Alignment.dc.html','27':'27 Isnad Graph.dc.html','28':'28 Hadith Family.dc.html','29':'29 Ilal Case.dc.html','30':'30 Narrator Dossier.dc.html','31':'31 Book Structure.dc.html','32':'32 Argument Map.dc.html', '33':'33 Dataset Builder.dc.html','34':'34 Rich Text Editor.dc.html','35':'35 Search Run Compare.dc.html','36':'36 Uploads Import.dc.html','37':'37 Project Templates.dc.html','38':'38 Export Import.dc.html','39':'39 Public Dataset Dossier.dc.html','40':'40 Collaboration Interest.dc.html' };
+    const r2Review = ['26','27','28','29','30','31','32'];
+    const r2Screens = [
+      ['26','Matn alignment','Aligned variants · Addition/omission/substitution · Normalization slider · Unnormalized text · Manual alignment fix','ANA-06'],
+      ['27','Isnād graph','Graph and chain-list views · Shared nodes, branching, convergence · Formulas on edges · Bounded traversal · Gaps shown, not filled','ANA-07'],
+      ['28','Hadith family and shawāhid','Candidate grouping · Shawāhid/mutābaʿāt with relationship types · Algorithmic vs reviewed labels','ANA-08'],
+      ['29','ʿIlal case file','Competing chains/matns · Discrepancy category · Critics’ statements · Preferred version and reasons · Objections · Unresolved / inconclusive','ANA-09'],
+      ['30','Narrator dossier: dates and teachers','Date intervals · Meeting/audition evidence · Temporal check result · Teacher-specific assessment · Historical assertions with alternatives','ANA-10, ANA-11, EVI-08'],
+      ['31','Book structure and terminology','Chapter tree · Occurrences · Lexical concordance · Critic expressions · Scoped counts with drill-down','ANA-12'],
+      ['32','Argument map','Claim, objection, reply, qualification, alternative · Source behind each node · Export structure','WRT-08'],
+      ['33','Dataset builder','Selection rules · Exclusions · Labels · Data dictionary · Source snapshot · Version · Redistribution terms','WRT-09'],
+      ['34','Rich-text editing (extends 11)','WYSIWYG mode · Markdown ↔ rich text round-trip · Citations and RTL markers kept','WRT-10'],
+      ['35','Search run comparison and schedules','Added/removed/changed · Missing coverage notice · Scheduled reruns · Change alerts without duplicates','SEA-09, SEA-10'],
+      ['36','Uploads and reference import','File upload with rights statement · Pending scan · Retry · BibTeX/RIS preview · Per-entry errors · Duplicates','LIB-04, LIB-10'],
+      ['37','Project templates','Takhrīj · Narrator study · Grading comparison · ʿIlal investigation · Editable questions, fields, milestones · Blank','PRJ-08'],
+      ['38','DOCX/graph export and package import','DOCX with citations and RTL · Graph and dataset formats · Package import preview · ID remapping · What isn’t recreated','EXP-05, EXP-11'],
+      ['39','Public dataset and dossier pages','Dataset page with schema/version · Dossier with source-linked evidence · Versioned downloads','PUB-13'],
+      ['40','Collaboration-interest form','Verified visitor form · Sender-chosen details · Owner review · Accept → explicit invitation','ANN-06']
+    ].map(([id,name,views,reqs]) => { const done = r2Built.includes(id); const rev = r2Review.includes(id); return { id, name, views, reqs, href: r2Files[id] ? './' + encodeURI(r2Files[id]) : '#', status: done && rev ? 'Draft · review' : done ? 'Built' : rev ? 'Needs review' : 'Planned', statusColor: done && rev ? '#7A5413' : done ? '#1F5A57' : rev ? '#7A5413' : '#8A8276' }; });
+    const r2Reqs = Object.entries({ 'ANA-06':'26','ANA-07':'27','ANA-08':'28','ANA-09':'29','ANA-10':'30','ANA-11':'30','EVI-08':'30','ANA-12':'31','WRT-08':'32','WRT-09':'33','WRT-10':'34','SEA-09':'35','SEA-10':'35','LIB-04':'36','LIB-10':'36','PRJ-08':'37','EXP-05':'38','EXP-11':'38','PUB-13':'39','ANN-06':'40' }).map(([id, where]) => ({ id, where, bg: r2Built.includes(where) ? '#E3EEEC' : '#FFFDF8' }));
+    return {
+      screens, reqs, r2Screens, r2Reqs,
+      r1bScreens: [
+        ['15','Members and invitations','15 Members.dc.html','Members + role matrix · Invite · Invitee view · Role change / removal · Ownership transfer','COL-01, COL-02, SEC-02, PRJ-07'],
+        ['16','Discussion and tasks','16 Discussion Tasks.dc.html','Threads anchored to evidence/span/finding · Resolve with retained alternatives · Task board · Task detail','COL-03, COL-04, COL-07'],
+        ['17','Notifications','17 Notifications.dc.html','Inbox · Preferences · Email preview without private passages','COL-05'],
+        ['18','Activity','18 Activity.dc.html','Filterable research activity · Private notes never shown','COL-08'],
+        ['19','Announcement editor','19 Announcement Editor.dc.html','Draft · Public preview with allowlist · Publish · Update history · Unpublish · Moderation','ANN-01, ANN-02, ANN-03, ANN-04'],
+        ['20','Public announcement page','20 Public Announcement.dc.html','Public site shell · Announcement page · Listing with type labels · Hidden/unpublished notices','ANN-02, ANN-03, ANN-05'],
+        ['11+','Shared-edit conflict (added to 11)','11 Finding Editor.dc.html','Concurrent edit by another member · compare and recover','COL-06']
+      ].map(([id,name,file,views,reqs]) => { const done = r1bBuilt.includes(id); return { id, name, href: './' + encodeURI(file), views, reqs, status: done ? 'Built' : 'Planned', statusColor: done ? '#1F5A57' : '#8A8276' }; }),
+      r1cScreens: [
+        ['21','Submission builder and status','21 Submission.dc.html','Select findings/docs · Authors and consent · Rights and licence · Public vs internal preview · Freeze package · Status and revision response','PUB-01, 02, 06, 12, WRT-07'],
+        ['22','Editorial console','22 Editorial Console.dc.html','Queues by stage, assignee, age, action · Triage · Assign reviewer with conflict check · Decide on an exact version · Release','ADM-02, PUB-03, 04, 05, 07'],
+        ['23','Reviewer workspace','23 Reviewer Workspace.dc.html','Assigned package only · Conflict declaration · Comments by section · Recommendation','PUB-04, 05'],
+        ['24','Public publication page','24 Public Publication.dc.html','Released page · Review-status label · Versions · Correction notice · Withdrawal notice','PUB-08, 10, 11'],
+        ['25','Public research search','25 Public Search.dc.html','Search by title, author, topic, type, language, date · Announcements and results kept separate','PUB-09']
+      ].map(([id,name,file,views,reqs]) => { const done = r1cBuilt.includes(id); return { id, name, href: './' + encodeURI(file), views, reqs, status: done ? 'Built' : 'Planned', statusColor: done ? '#1F5A57' : '#8A8276' }; }),
+      r1cReqs: Object.entries({ 'ADM-02':'22','PUB-01':'21','PUB-02':'21','PUB-03':'22','PUB-04':'22·23','PUB-05':'22·23','PUB-06':'21','PUB-07':'22','PUB-08':'24','PUB-09':'25','PUB-10':'24','PUB-11':'24','PUB-12':'21','WRT-07':'21' }).map(([id, where]) => ({ id, where, bg: where.split('·').every(w => r1cBuilt.includes(w)) ? '#E3EEEC' : '#FFFDF8' })),
+      r1bReqs: Object.entries({ 'COL-01':'15','COL-02':'15','COL-03':'16','COL-04':'16','COL-05':'17','COL-06':'11+','COL-07':'16','COL-08':'18','SEC-02':'15','ANN-01':'19','ANN-02':'19·20','ANN-03':'19·20','ANN-04':'19','ANN-05':'20' }).map(([id, where]) => ({ id, where, bg: where.split('·').every(w => r1bBuilt.includes(w)) ? '#E3EEEC' : '#FFFDF8' })),
+      journeys: [
+        { id: 'UC-01', name: 'Save and reuse resources', path: '03 My Library → 04 Project index → 05 Create project (A and B) → 07 Resource picker → 03 Add to project with sharing preview' },
+        { id: 'UC-02', name: 'Takhrīj and comparison', path: '08 Search → save query → save result set → bulk add → 09 Evidence → 10 Comparison → 11 Finding' },
+        { id: 'UC-07', name: 'Download all research', path: '12 New export → scope preview → job → download part → regenerate when expired' },
+        { id: 'Onboarding', name: 'Apply to first project', path: '01 Apply → verify → status → 13 Applications (approve) → 01 Approved → 02 Home' }
+      ],
+      coverageLine: `${reqs.length} requirements mapped · ${doneCount} fully built`,
+      gaps: [
+        { id: 'ACC-06', text: 'No screen covers public profile fields. Added screen 14, Profile and settings, which also holds session revocation (ACC-04), researcher MFA (ACC-08), account closure (ACC-07) and separate language/numeral/time-zone settings (NFR-14).' },
+        { id: 'LIB-06', text: 'Project-local tags and inclusion rationale have no screen. Added screen 03b, Project Resources. Each project has its own list, separate from My Library, with project tags and reasons that never change your personal tags or another project.' },
+        { id: 'SEA-04', text: 'Saved Searches is in the account navigation but has no spec. Added it as a view in screen 08, covering both personal and project scope.' },
+        { id: 'SEC-01', text: 'Policy-module enforcement has no UI of its own. Every screen shows it in its Forbidden state, which never reveals that a private object exists.' },
+        { id: 'R1b', text: 'R1a screens now show the full product: Notifications, Discussion & Tasks, Activity, Review & Publication and Shared projects link to their R1b/R1c screens. Release scope lives in the specs, not the screens.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="25 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R1c · 25 · Public research search</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">PUB-09 · SRS §12.1</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+    <div style="max-width:1120px;margin:0 auto;padding:14px clamp(16px,3vw,32px);display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap">
+      <span style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Open Hadith Research</span>
+      <nav aria-label="Public" style="display:flex;gap:4px;flex-wrap:wrap">
+        <a href="./20%20Public%20Announcement.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Research announcements</a>
+        <a href="./24%20Public%20Publication.dc.html" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Published research</a>
+        <a href="#" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#1D1A15">Researcher profiles</a>
+        <a href="#" aria-current="page" style="font-size:14px;padding:6px 10px;text-decoration:none;color:#123B39;border-bottom:2px solid #1F5A57">Search</a>
+      </nav>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center"><a href="./01%20Registration.dc.html" style="font-size:14px;padding:8px 12px;color:#1D1A15;text-decoration:none">Sign in</a><a href="./01%20Registration.dc.html" style="font-size:14px;font-weight:500;padding:8px 14px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Apply</a></div>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:32px clamp(16px,3vw,32px) 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+    <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Search public research</h1>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input dir="auto" value="{{ q }}" onChange="{{ setQ }}" aria-label="Search" style="flex:1 1 320px;min-width:0;padding:11px 14px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:16px;border-radius:2px">
+      <button style="font:inherit;font-size:15px;font-weight:500;padding:11px 20px;border:none;background:#1F5A57;color:#FFFFFF;border-radius:2px;cursor:pointer">Search</button>
+    </div>
+
+    <div role="tablist" aria-label="Result type" style="display:flex;gap:2px;border-bottom:1px solid #E3DBCB;overflow-x:auto;overflow-y:hidden">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.pick }}" style="font:inherit;flex-shrink:0;font-size:14px;padding:10px 12px;border:none;background:transparent;cursor:pointer;white-space:nowrap;margin-bottom:-1px;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</button></sc-for>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <aside aria-label="Filters" style="flex:0 1 220px;min-width:180px;display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ facets }}" as="f" hint-placeholder-count="5">
+          <fieldset style="border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px">
+            <legend style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257;padding:0;margin-bottom:4px">{{ f.k }}</legend>
+            <sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="3"><label style="display:flex;justify-content:space-between;gap:8px;font-size:13px;cursor:pointer"><span style="display:flex;gap:6px;align-items:center"><input type="checkbox" defaultChecked="{{ o.on }}">{{ o.l }}</span><span style="color:#6A6257">{{ o.n }}</span></label></sc-for>
+          </fieldset>
+        </sc-for>
+      </aside>
+
+      <section style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="3"><div style="height:120px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div></sc-for></div></sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">Search isn't available right now.</strong> Your search text is kept. Try again in a moment.</div></sc-if>
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:24px;display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">No public research matches “{{ q }}”</span><span style="font-size:14px;line-height:1.6;color:#4A443B">Only released publications and published announcements can be searched. Try another spelling, such as wudu or الوضوء, or remove a filter.</span></div>
+        </sc-if>
+        <sc-if value="{{ showResults }}" hint-placeholder-val="{{ true }}">
+          <span style="font-size:13px;color:#6A6257">{{ countLine }}</span>
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+            <article style="background:#FFFDF8;border:1px solid #E3DBCB;padding:18px 20px;display:flex;flex-direction:column;gap:8px;opacity:{{ r.op }}">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px {{ r.bs }} {{ r.lc }};background:{{ r.lbg }};color:{{ r.lfg }}">{{ r.label }}</span><span style="font-size:12px;color:#6A6257">{{ r.meta }}</span></div>
+              <a href="{{ r.href }}" dir="auto" style="font-family:Newsreader,serif;font-size:21px;line-height:1.25;color:#1D1A15;text-decoration:none" style-hover="text-decoration:underline">{{ r.title }}</a>
+              <p dir="auto" style="margin:0;font-family:{{ r.font }};font-size:{{ r.size }};line-height:1.6;color:#4A443B;text-align:{{ r.align }}">{{ r.snippet }}</p>
+              <span style="font-size:13px;color:#6A6257">{{ r.authors }}</span>
+            </article>
+          </sc-for>
+        </sc-if>
+        <div style="font-size:12px;line-height:1.55;color:#6A6257;border-top:1px solid #E3DBCB;padding-top:10px">Search covers released publications and published announcements only. Private projects, drafts, submissions under review and unpublished announcements are never indexed, suggested or listed in feeds.</div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = ['normal','empty','loading','error'];
+  state = { st:'normal', tab:'pub', q:'wuḍūʾ' };
+  renderVals() {
+    const { st, tab, q } = this.state;
+    const ok = this.APPL.includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const sans = "'IBM Plex Sans',sans-serif", ar = "'Noto Naskh Arabic',serif";
+    const PUB = (label, meta, title, snippet, authors, href, extra = {}) => ({ label, meta, title, snippet, authors, href, bs:'solid', lc:'#1F5A57', lbg:'#1F5A57', lfg:'#FFFFFF', op:1, font: sans, size:'14px', align:'left', ...extra });
+    const pubs = [
+      PUB('Peer-reviewed', 'Article with findings · English, Arabic · released 12 Oct 2026 · v1.1 corrected', 'Kufan chains of the wuḍūʾ reports: where the “three times” wording diverges', 'Of 14 occurrences of the “three times each” report… the 3 expanded forms all pass through Wakīʿ.', 'Shilan Rashid · Aras Kamal', './24%20Public%20Publication.dc.html'),
+      PUB('Peer-reviewed', 'Article · Sorani · released 30 Sep 2026', 'دەستنوێژی سێ جاری لە ڕیوایەتەکانی بەسرەدا', 'لێکۆڵینەوەیەک لە ڕیوایەتە بەسرییەکانی دەستنوێژ و جیاوازیی دەربڕینەکانیان.', 'Hêro Salih', './24%20Public%20Publication.dc.html', { font: ar, size:'16px', align:'right' }),
+      PUB('Withdrawn', 'Article · withdrawn 2 Dec 2026', 'Ibn Mājah’s wuḍūʾ chains as a single route', 'Withdrawn by the authors after the chain of Ibn Mājah 404 was found to have been misread.', 'Dara Hama', './24%20Public%20Publication.dc.html', { bs:'solid', lc:'#1D1A15', lbg:'#1D1A15', lfg:'#F5F1E8', op:0.7 })
+    ];
+    const anns = [
+      PUB('Announcement · not peer-reviewed', 'Ongoing · Analysing · updated 4 Oct 2026', 'Kufan chains of the wuḍūʾ reports', 'We are comparing the 14 occurrences of the report that the Prophet performed wuḍūʾ “three times each”…', 'Shilan Rashid · Aras Kamal', './20%20Public%20Announcement.dc.html', { bs:'dashed', lc:'#4A443B', lbg:'transparent', lfg:'#4A443B' })
+    ];
+    const results = tab === 'pub' ? pubs : anns;
+    const isEmpty = eff === 'empty';
+    return {
+      on, q,
+      setQ: e => this.setState({ q: e.target.value }),
+      tabs: [['pub','Published research · 3'],['ann','Announcements (ongoing) · 1']].map(([k, label]) => ({ label, sel: tab === k, pick: () => this.setState({ tab: k }), rule: tab === k ? '#1F5A57' : 'transparent', fg: tab === k ? '#123B39' : '#4A443B', weight: tab === k ? 600 : 400 })),
+      facets: [
+        { k:'Type', opts:[{ l:'Article with findings', n:'2', on:false }, { l:'Dataset · R2', n:'0', on:false }, { l:'Dossier · R2', n:'0', on:false }] },
+        { k:'Topic', opts:[{ l:'Isnād', n:'3', on:false }, { l:'Matn variants', n:'2', on:false }, { l:'Narrator criticism', n:'1', on:false }] },
+        { k:'Language', opts:[{ l:'Arabic', n:'2', on:false }, { l:'Sorani', n:'1', on:false }, { l:'English', n:'2', on:false }] },
+        { k:'Status', opts:[{ l:'Current', n:'2', on:true }, { l:'Corrected', n:'1', on:true }, { l:'Withdrawn', n:'1', on:true }] },
+        { k:'Released', opts:[{ l:'Last 30 days', n:'2', on:false }, { l:'2026', n:'3', on:false }] }
+      ],
+      results, skel:[1,2,3],
+      isEmpty, showResults: eff === 'normal',
+      countLine: tab === 'pub' ? '3 publications · 1 withdrawn, shown with its status' : '1 announcement · ongoing research, not peer-reviewed',
+      naNote: ok ? '' : `${cap(st)}: not applicable on this screen. Showing normal.`,
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s, q: s === 'empty' ? 'ʿilal Basra' : 'wuḍūʾ' }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL.includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="01 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">01 · Registration and application</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ACC-01 · ACC-02 · ACC-03 · ACC-04</div>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">View</span>
+      <sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="8">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+      <span style="font-size:12px;color:#8A8276;width:44px">State</span>
+      <sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6">
+        <button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button>
+      </sc-for>
+      <sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if>
+    </div>
+  </div>
+
+  <header style="background:#FFFDF8;border-bottom:1px solid #E3DBCB">
+    <div style="max-width:1120px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <div style="font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Open Hadith Research</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">Researcher access</div>
+      </div>
+      <nav style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button onClick="{{ goSignin }}" style="font:inherit;font-size:14px;padding:8px 14px;background:transparent;border:1px solid transparent;color:#1D1A15;cursor:pointer" style-hover="text-decoration:underline">Sign in</button>
+        <button onClick="{{ goApply }}" style="font:inherit;font-size:14px;font-weight:500;padding:8px 14px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer" style-hover="background:#174744">Apply</button>
+      </nav>
+    </div>
+  </header>
+
+  <main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:48px 32px 96px;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start">
+    <div style="flex:1 1 560px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB;padding:40px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px">
+
+      <!-- APPLY -->
+      <sc-if value="{{ on.apply }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Apply for researcher access</h1>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">An administrator reviews every application before you can create projects. Fill in the fields marked Required. Everything else is optional.</p>
+        </div>
+        <sc-if value="{{ on.applyError }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-weight:600;color:#9A3B24;font-size:15px">Fix 2 fields to continue</div>
+            <div style="font-size:14px;line-height:1.55;color:#5C2A1C">Email: enter a full address, like name@example.org.<br>Research interests: add at least one interest.</div>
+            <div style="font-size:13px;color:#5C2A1C">Your other answers are saved.</div>
+          </div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:22px;opacity:{{ formOpacity }}">
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Display name <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span>
+            <input value="{{ form.name }}" onChange="{{ set.name }}" disabled="{{ locked }}" placeholder="The name other researchers will see" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Email <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span>
+            <input type="email" value="{{ form.email }}" onChange="{{ set.email }}" disabled="{{ locked }}" placeholder="name@example.org" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid {{ emailBorder }};background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px">
+            <sc-if value="{{ on.applyError }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#9A3B24">Error: this address is missing a domain ending, like .org or .com.</span></sc-if>
+            <span style="font-size:13px;color:#6A6257">Private. We send a verification link here, and it's never shown on your profile unless you choose to show it.</span>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Research interests <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span>
+            <textarea value="{{ form.interests }}" onChange="{{ set.interests }}" disabled="{{ locked }}" rows="3" placeholder="Topics, collections or methods you work on" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid {{ interestsBorder }};background:#FFFFFF;font:inherit;font-size:15px;line-height:1.5;color:#1D1A15;border-radius:2px;resize:vertical" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></textarea>
+            <sc-if value="{{ on.applyError }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#9A3B24">Error: add at least one research interest.</span></sc-if>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Preferred language <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#1F5A57">Required</span></span>
+            <select value="{{ form.lang }}" onChange="{{ set.lang }}" disabled="{{ locked }}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px">
+              <option value="">Choose a language</option>
+              <option value="ckb">Sorani · کوردی</option>
+              <option value="ar">Arabic · العربية</option>
+            </select>
+            <span style="font-size:13px;color:#6A6257">Sets the interface language. Your research content can be in Arabic, Sorani or English.</span>
+          </label>
+          <div style="height:1px;background:#EDE6D8"></div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Affiliation <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Optional</span></span>
+            <input value="{{ form.affiliation }}" onChange="{{ set.affiliation }}" disabled="{{ locked }}" placeholder="University, institute or study circle" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px">
+            <span style="font-size:13px;color:#6A6257">You don't need an academic affiliation to be approved.</span>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:500">Biography <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257">Optional</span></span>
+            <textarea value="{{ form.bio }}" onChange="{{ set.bio }}" disabled="{{ locked }}" rows="3" placeholder="A few sentences about your background" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;line-height:1.5;color:#1D1A15;border-radius:2px;resize:vertical" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></textarea>
+          </label>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <button onClick="{{ submitApply }}" disabled="{{ locked }}" style="font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer;opacity:{{ formOpacity }}" style-hover="background:#174744">{{ submitLabel }}</button>
+          <button onClick="{{ goPending }}" style="font:inherit;font-size:14px;background:none;border:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">Already applied? Check your status</button>
+        </div>
+      </sc-if>
+
+      <!-- VERIFY -->
+      <sc-if value="{{ on.verify }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ on.verifyLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Checking your link…</h1>
+            <div style="height:4px;background:#EDE6D8;overflow:hidden"><div style="width:40%;height:100%;background:#1F5A57;animation:ohpulse 1.2s ease-in-out infinite"></div></div>
+            <p style="margin:0;font-size:15px;color:#4A443B">This usually takes a second. Keep this page open.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ on.verifyNormal }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Check your email</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">We sent a verification link to <strong style="font-weight:600;color:#1D1A15">shilan.rashid@example.org</strong>. Your application joins the review queue once you open it. The link works once and expires in 24 hours.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding:20px;background:#F5F1E8;border:1px solid #E3DBCB">
+            <div style="font-size:14px;font-weight:500">Didn't get it?</div>
+            <div style="font-size:14px;line-height:1.55;color:#4A443B">Check your spam folder first. You can ask for a new link once a minute, up to 5 times a day.</div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <button disabled="{{ true }}" style="font:inherit;font-size:14px;padding:9px 16px;background:transparent;border:1px solid #CFC6B4;color:#8A8276;border-radius:2px">Resend link</button>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">Available in 0:52 · 2 of 5 used today</span>
+            </div>
+          </div>
+          <button onClick="{{ goApply }}" style="align-self:flex-start;font:inherit;font-size:14px;background:none;border:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">Wrong address? Edit your application</button>
+        </sc-if>
+        <sc-if value="{{ on.verifyError }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">This link no longer works</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">It has expired or was already used. Nothing changed in your application. Ask for a new link and use the most recent email.</p>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:14px;font-weight:500">Email</span>
+            <input value="shilan.rashid@example.org" readOnly="{{ true }}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px">
+          </label>
+          <button style="align-self:flex-start;font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer" style-hover="background:#174744">Send a new link</button>
+        </sc-if>
+      </sc-if>
+
+      <!-- STATUS PAGES (shared header) -->
+      <sc-if value="{{ isStatus }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ on.pendingForbidden }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px dashed #8A8276;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600">Researcher screens aren't open to you yet</div>
+            <div style="font-size:14px;line-height:1.5;color:#4A443B">You tried to open Projects. Until your application is approved, you can only see this status page.</div>
+          </div>
+        </sc-if>
+        <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6A6257">
+          <span>Application APP-2026-0417</span><span>Submitted 2 Oct 2026, 14:08</span>
+        </div>
+        <sc-if value="{{ on.pendingLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px" aria-busy="true">
+            <div style="height:38px;width:70%;background:#EAE3D4"></div>
+            <div style="height:14px;width:95%;background:#EFE9DC"></div>
+            <div style="height:14px;width:80%;background:#EFE9DC"></div>
+            <div style="height:120px;background:#F2EDE2;margin-top:8px"></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ pendingContent }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Your application is under review</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B;text-wrap:pretty">An administrator will approve it, decline it with a reason, or ask you for more information. We'll email shilan.rashid@example.org when something changes.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:160px minmax(0,1fr);gap:10px 16px;font-size:14px;padding-top:20px;border-top:1px solid #EDE6D8">
+            <span style="color:#6A6257">Display name</span><span>Shilan Rashid</span>
+            <span style="color:#6A6257">Research interests</span><span style="line-height:1.5">Takhrīj of reports on ritual purity; narrator criticism in early Kufan transmission</span>
+            <span style="color:#6A6257">Preferred language</span><span>Sorani</span>
+            <span style="color:#6A6257">Affiliation</span><span style="color:#6A6257">Not provided (optional)</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ on.info }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ on.infoLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px" aria-busy="true"><div style="height:38px;width:75%;background:#EAE3D4"></div><div style="height:110px;background:#F2EDE2"></div><div style="height:96px;background:#F2EDE2"></div></div>
+          </sc-if>
+          <sc-if value="{{ infoContent }}" hint-placeholder-val="{{ false }}">
+            <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">An administrator asked for more information</h1>
+            <div style="border:1px solid #E3DBCB;background:#F5F1E8;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:#6A6257"><span style="font-weight:500;color:#1D1A15">Platform administrator</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">3 Oct 2026, 09:30</span></div>
+              <div style="font-size:15px;line-height:1.6">Could you describe a recent piece of hadith research you worked on, or a source you're studying now? A short paragraph is enough.</div>
+            </div>
+            <sc-if value="{{ on.infoError }}" hint-placeholder-val="{{ false }}">
+              <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;color:#5C2A1C">Your reply wasn't sent because the connection dropped. Your text is still here. Try sending it again.</div>
+            </sc-if>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:14px;font-weight:500">Your reply</span>
+              <textarea rows="5" value="{{ form.reply }}" onChange="{{ set.reply }}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;line-height:1.5;color:#1D1A15;border-radius:2px;resize:vertical" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></textarea>
+            </label>
+            <button style="align-self:flex-start;font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer" style-hover="background:#174744">Send reply</button>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ on.rejected }}" hint-placeholder-val="{{ false }}">
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Your application wasn't approved</h1>
+          <div style="border:1px solid #E3DBCB;background:#F5F1E8;padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:#6A6257"><span><span style="font-weight:500;color:#1D1A15">Platform administrator</span> · reason given</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">4 Oct 2026, 11:02</span></div>
+            <div style="font-size:15px;line-height:1.6">The information request from 3 Oct got no reply within 14 days. You're welcome to reply now and ask us to reconsider.</div>
+          </div>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">We keep your account. If you're approved later, you'll use this same account, so there's no need to apply again.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button style="font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer" style-hover="background:#174744">Contact administrators</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ on.approved }}" hint-placeholder-val="{{ false }}">
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">You're approved</h1>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">Approved by Platform administrator on 4 Oct 2026. Your account is ready for research.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid #E3DBCB;background:#F5F1E8">
+            <div style="font-size:14px;font-weight:500">Recommended: turn on two-factor authentication</div>
+            <div style="font-size:14px;line-height:1.55;color:#4A443B">Use an authenticator app, and keep single-use recovery codes in case you lose your phone.</div>
+            <button style="align-self:flex-start;margin-top:4px;font:inherit;font-size:14px;padding:9px 16px;background:transparent;border:1px solid #CFC6B4;color:#1D1A15;border-radius:2px;cursor:pointer" style-hover="border-color:#1D1A15">Set up now</button>
+          </div>
+          <a href="./02%20Personal%20Home.dc.html" style="align-self:flex-start;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border-radius:2px;text-decoration:none">Go to your home</a>
+        </sc-if>
+      </sc-if>
+
+      <!-- SIGN IN -->
+      <sc-if value="{{ on.signin }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ on.signinForbidden }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px dashed #8A8276;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:14px;font-weight:600">You were signed out</div>
+            <div style="font-size:14px;line-height:1.5;color:#4A443B">This session was ended from another device or it expired. Sign in again to continue. Unsaved editor text is kept as a local draft.</div>
+          </div>
+        </sc-if>
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Sign in</h1>
+        <sc-if value="{{ on.signinError }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;display:flex;flex-direction:column;gap:4px;font-size:14px;color:#5C2A1C"><span style="font-weight:600;color:#9A3B24">The email or password doesn't match</span><span>Check both and try again. After 5 failed attempts, sign-in pauses for 15 minutes.</span></div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:20px;opacity:{{ formOpacity }}">
+          <label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;font-weight:500">Email</span><input type="email" value="{{ form.email }}" onChange="{{ set.email }}" disabled="{{ locked }}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></label>
+          <label style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;font-size:14px;font-weight:500">Password <button onClick="{{ goRecover }}" style="font:inherit;font-size:13px;font-weight:400;background:none;border:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">Forgot password?</button></span><input type="password" value="correct-horse" readOnly="{{ true }}" disabled="{{ locked }}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></label>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <button disabled="{{ locked }}" style="font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer;opacity:{{ formOpacity }}" style-hover="background:#174744">{{ signinLabel }}</button>
+          <button onClick="{{ goApply }}" style="font:inherit;font-size:14px;background:none;border:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">No account? Apply for access</button>
+        </div>
+      </sc-if>
+
+      <!-- RECOVER -->
+      <sc-if value="{{ on.recover }}" hint-placeholder-val="{{ false }}">
+        <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:36px;line-height:1.1;margin:0">Reset your password</h1>
+        <sc-if value="{{ on.recoverNormal }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px solid #BCD6D2;background:#E3EEEC;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-weight:600;font-size:15px;color:#123B39">Check your email</div>
+            <div style="font-size:14px;line-height:1.55;color:#1F3F3D">If an account uses shilan.rashid@example.org, a reset link is on its way. The link expires in 1 hour.</div>
+          </div>
+          <button onClick="{{ goSignin }}" style="align-self:flex-start;font:inherit;font-size:14px;background:none;border:none;color:#1F5A57;text-decoration:underline;cursor:pointer;padding:0">Back to sign in</button>
+        </sc-if>
+        <sc-if value="{{ recoverForm }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#4A443B">Enter the email you applied with. If it belongs to an account, we'll send a link to choose a new password.</p>
+          <sc-if value="{{ on.recoverError }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;color:#5C2A1C">Too many reset requests in a short time. Try again in 10 minutes. Your email is still filled in.</div>
+          </sc-if>
+          <label style="display:flex;flex-direction:column;gap:6px;opacity:{{ formOpacity }}"><span style="font-size:14px;font-weight:500">Email</span><input type="email" value="{{ form.email }}" onChange="{{ set.email }}" disabled="{{ locked }}" placeholder="name@example.org" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #CFC6B4;background:#FFFFFF;font:inherit;font-size:15px;color:#1D1A15;border-radius:2px" style-focus="outline:2px solid #1F5A57;outline-offset:1px"></label>
+          <button disabled="{{ locked }}" style="align-self:flex-start;font:inherit;font-size:15px;font-weight:500;padding:12px 20px;background:#1F5A57;color:#FFFFFF;border:none;border-radius:2px;cursor:pointer;opacity:{{ formOpacity }}" style-hover="background:#174744">{{ recoverLabel }}</button>
+        </sc-if>
+      </sc-if>
+    </div>
+
+    <aside style="flex:0 1 300px;min-width:240px;display:flex;flex-direction:column;gap:20px;padding-top:8px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">How access works</div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <li style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid #E3DBCB">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:{{ s.color }}">{{ s.mark }}</span>
+            <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:{{ s.weight }};color:{{ s.textColor }}">{{ s.label }}</span><span style="font-size:13px;line-height:1.45;color:#6A6257">{{ s.sub }}</span></span>
+          </li>
+        </sc-for>
+      </ol>
+      <p style="margin:0;font-size:13px;line-height:1.55;color:#6A6257;text-wrap:pretty">In this release, everything you create stays private to you. Sharing and publishing come in later releases.</p>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['apply','Apply'],['verify','Verify email'],['pending','Status · pending'],['info','Status · info requested'],['rejected','Status · rejected'],['approved','Status · approved'],['signin','Sign in'],['recover','Recover password']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { apply:['normal','empty','loading','error'], verify:['normal','loading','error'], pending:['normal','loading','forbidden'], info:['normal','loading','error'], rejected:['normal'], approved:['normal'], signin:['normal','loading','error','forbidden'], recover:['normal','empty','loading','error'] };
+  FILLED = { name:'Shilan Rashid', email:'shilan.rashid@example.org', interests:'Takhrīj of reports on ritual purity; narrator criticism in early Kufan transmission', lang:'ckb', affiliation:'', bio:'', reply:'I am comparing the chains of the wuḍūʾ reports in Sunan Abī Dāwūd with those in al-Tirmidhī, focusing on the Kufan transmitters.' };
+  state = { view: 'apply', st: 'normal', form: { ...this.FILLED } };
+  presetFor(st) {
+    if (st === 'empty') return { name:'', email:'', interests:'', lang:'', affiliation:'', bio:'', reply:'' };
+    if (st === 'error') return { ...this.FILLED, email:'shilan.rashid@example', interests:'' };
+    return { ...this.FILLED };
+  }
+  pickState(st) { this.setState({ st, form: this.presetFor(st) }); }
+  renderVals() {
+    const { view, st, form } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {};
+    this.VIEWS.forEach(([v]) => { on[v] = view === v; this.STATES.forEach(s => { on[v + cap(s)] = view === v && eff === s; }); });
+    const setF = k => e => { const val = e.target.value; this.setState(p => ({ form: { ...p.form, [k]: val } })); };
+    const set = {}; Object.keys(this.FILLED).forEach(k => set[k] = setF(k));
+    const go = v => () => this.setState({ view: v, st: 'normal', form: { ...this.FILLED } });
+    const loading = eff === 'loading';
+    const order = ['apply','verify','review','enabled'];
+    const at = { apply:0, verify:1, pending:2, info:2, rejected:2, approved:4, signin:4, recover:4 }[view];
+    const stepDefs = [
+      ['Apply','Tell us who you are and what you research.'],
+      ['Verify your email','Open the link we send you.'],
+      [view === 'rejected' ? 'Review: not approved' : view === 'info' ? 'Review: information requested' : 'Administrator review', view === 'rejected' ? 'A reason is always given. You can reply.' : 'Approve, decline with a reason, or ask a question.'],
+      ['Access enabled','Same account, no need to sign up again.']
+    ];
+    const steps = stepDefs.map(([label, sub], i) => {
+      const done = i < at, cur = i === at;
+      return { label, sub, mark: done ? '✓' : cur ? '●' : '○', color: done || cur ? '#1F5A57' : '#B1A898', weight: cur ? 600 : 400, textColor: done || cur ? '#1D1A15' : '#6A6257' };
+    });
+    return {
+      on, form, set, steps,
+      isStatus: ['pending','info','rejected','approved'].includes(view),
+      pendingContent: view === 'pending' && eff !== 'loading',
+      infoContent: view === 'info' && eff !== 'loading',
+      recoverForm: view === 'recover' && eff !== 'normal',
+      locked: loading,
+      formOpacity: loading ? 0.55 : 1,
+      submitLabel: loading ? 'Submitting…' : 'Submit application',
+      signinLabel: loading ? 'Signing in…' : 'Sign in',
+      recoverLabel: loading ? 'Sending…' : 'Send reset link',
+      emailBorder: on.applyError ? '#9A3B24' : '#CFC6B4',
+      interestsBorder: on.applyError ? '#9A3B24' : '#CFC6B4',
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view (per spec). Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.pickState(s), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 })),
+      goApply: go('apply'), goSignin: go('signin'), goRecover: go('recover'), goPending: go('pending'),
+      submitApply: () => this.setState({ view: 'verify', st: 'normal' })
+    };
+  }
+}
+</script>
+</body>
+</html>

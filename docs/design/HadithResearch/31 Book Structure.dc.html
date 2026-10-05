@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F5F1E8;color:#1D1A15;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#1F5A57}a:hover{color:#123B39}@keyframes ohpulse{0%,100%{opacity:1}50%{opacity:.45}}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div data-screen-label="31 review bar" style="background:#1D1A15;color:#F5F1E8;padding:12px 24px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9B0A0">R2 · 31 · Book structure and terminology</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FC2BC">ANA-12</div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px dashed #D9C9A3;color:#D9C9A3">Draft · pending specialist review</span>
+      <a href="./00%20Plan.dc.html" style="font-size:12px;color:#B9B0A0;margin-left:auto">← Plan</a>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:#8A8276;width:44px">View</span><sc-for list="{{ viewChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:12px;color:#8A8276;width:44px">State</span><sc-for list="{{ stateChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.pick }}" style="font:inherit;font-size:12px;padding:5px 10px;border:1px solid #4A443B;border-radius:2px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }}">{{ c.label }}</button></sc-for><sc-if value="{{ naNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#D9C9A3;margin-left:8px">{{ naNote }}</span></sc-if></div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-wrap:wrap;min-height:0">
+    <nav aria-label="Account" style="flex:1 1 200px;background:#FFFDF8;border-right:1px solid #E3DBCB;padding:20px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px"><div style="font-family:Newsreader,serif;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.15">Open Hadith Research</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6A6257">R2 · Analysis</div></div>
+      <div style="display:flex;flex-direction:column;gap:2px"><sc-for list="{{ rail }}" as="r" hint-placeholder-count="7"><a href="{{ r.href }}" aria-current="{{ r.current }}" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;font-size:14px;text-decoration:none;border-radius:2px;background:{{ r.bg }};color:{{ r.fg }};font-weight:{{ r.weight }}" style-hover="background:#F1ECE1"><span>{{ r.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1F5A57">{{ r.tag }}</span></a></sc-for></div>
+      <div style="margin-top:auto;padding:12px 10px 0;border-top:1px solid #E3DBCB;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">{{ me.name }}</div><div style="font-size:12px;color:#6A6257">{{ me.sub }}</div></div>
+    </nav>
+
+    <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column">
+      <div style="padding:24px clamp(16px,3vw,40px) 0;background:#FFFDF8;border-bottom:1px solid #E3DBCB;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:4px"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257"><a href="./04%20Project%20Index.dc.html" style="color:#6A6257">Projects</a> / PRJ-0012</div><div style="font-family:Newsreader,serif;font-size:24px;font-weight:500;line-height:1.2">Chains of the wuḍūʾ reports in the Sunan collections</div></div>
+        <nav aria-label="Project" style="display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;margin-bottom:-1px"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="10"><a href="{{ t.href }}" aria-current="{{ t.current }}" style="flex-shrink:0;padding:10px 12px;font-size:14px;text-decoration:none;white-space:nowrap;border-bottom:2px solid {{ t.rule }};color:{{ t.fg }};font-weight:{{ t.weight }}">{{ t.label }}</a></sc-for></nav>
+      </div>
+
+      <div style="padding:24px clamp(16px,3vw,40px) 96px;display:flex;flex-direction:column;gap:16px;box-sizing:border-box">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#6A6257">Analysis / Book structure and terms</div>
+          <h1 style="font-family:Newsreader,serif;font-weight:500;font-size:30px;margin:0">{{ title }}</h1>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 16px;background:#FFFDF8;border:1px solid #E3DBCB;font-size:13px">
+          <span style="font-weight:600">Scope</span>
+          <label style="display:flex;gap:6px;align-items:center">Collections<select style="font:inherit;font-size:13px;padding:4px 6px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px"><option>Six Sunan + Musnad Aḥmad</option><option>Abū Dāwūd only</option></select></label>
+          <label style="display:flex;gap:6px;align-items:center">Snapshot<select style="font:inherit;font-size:13px;padding:4px 6px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px"><option>CS-2026-10-01</option></select></label>
+          <span style="margin-left:auto;font-size:12px;color:#6A6257">{{ coverage }}</span>
+        </div>
+
+        <sc-if value="{{ on.forbidden }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #8A8276;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B">The critic-expression index uses a licensed edition of Tahdhīb al-Kamāl. Your institution’s licence doesn’t include it. Chapter and concordance views work as normal. Counts for that edition aren’t shown, and its absence isn’t counted as zero.</div></sc-if>
+        <sc-if value="{{ on.conflict }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed #6A6257;background:#FFFDF8;padding:12px 16px;font-size:14px;line-height:1.55;color:#4A443B"><strong style="font-weight:600;color:#1D1A15">The corpus snapshot changed while you were reading.</strong> The counts below are from CS-2026-09-30. CS-2026-10-01 adds Musnad Aḥmad vol. 1, so counts that include it will go up. <a href="#">Recount with the new snapshot</a></div></sc-if>
+        <sc-if value="{{ on.error }}" hint-placeholder-val="{{ false }}"><div role="alert" style="border:1px solid #D9A898;background:#F6E5DF;padding:12px 16px;font-size:14px;line-height:1.55;color:#5C2A1C"><strong style="font-weight:600;color:#9A3B24">The concordance timed out on 7 collections.</strong> Narrow the scope, or search a longer word form. Partial counts aren’t shown, so they can’t be read as totals.</div></sc-if>
+        <sc-if value="{{ on.loading }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:flex;gap:16px;flex-wrap:wrap"><div style="flex:1 1 280px;height:420px;background:#EFE9DC;animation:ohpulse 1.4s ease-in-out infinite"></div><div style="flex:2 1 400px;height:420px;background:#F2EDE2"></div></div></sc-if>
+        <sc-if value="{{ on.empty }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:28px;display:flex;flex-direction:column;gap:10px;max-width:720px"><h2 style="font-family:Newsreader,serif;font-weight:500;font-size:22px;margin:0">No matches in this scope</h2><p style="margin:0;font-size:14px;line-height:1.6;color:#4A443B">“ثلاثا ثلاثا” doesn’t occur in Musnad al-Shāfiʿī as indexed. 61% of that book is indexed, so this result is incomplete. It isn’t a confirmed absence.</p></div></sc-if>
+
+        <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+          <!-- CHAPTERS -->
+          <sc-if value="{{ isTree }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <section style="flex:1 1 320px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB">
+                <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;display:flex;justify-content:space-between;gap:8px"><span style="font-size:14px;font-weight:600">Sunan Abī Dāwūd</span><span style="font-size:12px;color:#6A6257">35 books · 1,871 chapters</span></div>
+                <sc-for list="{{ tree }}" as="t" hint-placeholder-count="7">
+                  <button onClick="{{ t.pick }}" style="width:100%;font:inherit;text-align:left;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:8px 16px 8px {{ t.pad }};border:none;border-bottom:1px solid #EDE6D8;background:{{ t.bg }};cursor:pointer;font-size:13px">
+                    <span style="display:flex;flex-direction:column;gap:1px"><span style="font-weight:{{ t.w }}">{{ t.name }}</span><span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:14px;color:#4A443B;text-align:left">{{ t.ar }}</span></span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4A443B;white-space:nowrap">{{ t.n }}</span>
+                  </button>
+                </sc-for>
+              </section>
+              <section style="flex:1.4 1 400px;min-width:0;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap"><h2 style="margin:0;font-size:16px;font-weight:600">Chapter 50 · Washing three times</h2><span style="font-size:12px;color:#6A6257">4 occurrences · 4 of 4 contributing records listed</span></div>
+                <sc-for list="{{ chapterRecs }}" as="r" hint-placeholder-count="4"><div style="background:#FFFDF8;border:1px solid #E3DBCB;padding:10px 14px;display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:start;font-size:13px"><a href="./09%20Evidence%20Inspector.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:12px">{{ r.loc }}</a><span dir="rtl" lang="ar" style="font-family:'Noto Naskh Arabic',serif;font-size:16px;line-height:1.6;text-align:right;border-right:3px solid #1D1A15;padding-right:8px">{{ r.matn }}</span></div></sc-for>
+                <span style="font-size:12px;color:#6A6257">An occurrence is one hadith entry in the edition, as defined in DATA-02. Chapter titles are as printed. Numbering follows the Dār al-Risāla edition.</span>
+              </section>
+            </div>
+          </sc-if>
+
+          <!-- CONCORDANCE -->
+          <sc-if value="{{ isConc }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><span style="font-size:13px;font-weight:600">Word form</span><input dir="rtl" lang="ar" defaultValue="ثلاثا ثلاثا" style="font-family:'Noto Naskh Arabic',serif;font-size:17px;padding:5px 10px;border:1px solid #CFC6B4;background:#FFFFFF;border-radius:2px;width:200px"><span style="font-size:12px;color:#6A6257">vowel marks ignored · exact word order</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <section style="flex:1 1 260px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB">
+                <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;font-size:14px;font-weight:600">By collection</div>
+                <sc-for list="{{ byColl }}" as="c" hint-placeholder-count="7"><button style="width:100%;font:inherit;text-align:left;display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border:none;border-bottom:1px solid #EDE6D8;background:transparent;cursor:pointer;font-size:13px"><span>{{ c.name }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:{{ c.c }}">{{ c.n }}</span></button></sc-for>
+                <div style="padding:9px 16px;font-size:12px;color:#6A6257">Matches = places the word form appears. One occurrence can contain more than one match.</div>
+              </section>
+              <section style="flex:2 1 440px;min-width:0;background:#FFFDF8;border:1px solid #E3DBCB">
+                <div style="padding:12px 16px;border-bottom:1px solid #E3DBCB;display:flex;justify-content:space-between;gap:8px"><span style="font-size:14px;font-weight:600">In context</span><span style="font-size:12px;color:#6A6257">6 of 31 matches</span></div>
+                <sc-for list="{{ kwic }}" as="k" hint-placeholder-count="6">
+                  <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:center;padding:8px 16px;border-bottom:1px solid #EDE6D8">
+                    <a href="./09%20Evidence%20Inspector.dc.html" style="font-family:'IBM Plex Mono',monospace;font-size:11px">{{ k.loc }}</a>
+                    <div dir="rtl" lang="ar" style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;font-family:'Noto Naskh Arabic',serif;font-size:16px;line-height:1.6"><span style="text-align:left;color:#4A443B;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl">{{ k.before }}</span><strong style="font-weight:600;border-bottom:2px solid #1F5A57">{{ k.hit }}</strong><span style="text-align:right;color:#4A443B;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">{{ k.after }}</span></div>
+                  </div>
+                </sc-for>
+              </section>
+            </div>
+          </sc-if>
+
+          <!-- CRITIC EXPRESSIONS -->
+          <sc-if value="{{ isTerms }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFFDF8;border:1px solid #E3DBCB;overflow-x:auto" role="region" aria-label="Critic expressions by critic">
+              <div style="min-width:720px">
+                <div style="display:grid;grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(90px,1fr));gap:12px;padding:8px 16px;border-bottom:1px solid #E3DBCB;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#6A6257"><span>Expression</span><span>Ibn Maʿīn</span><span>Abū Ḥātim</span><span>al-Nasāʾī</span><span>Ibn Ḥajar</span></div>
+                <sc-for list="{{ terms }}" as="t" hint-placeholder-count="6">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(90px,1fr));gap:12px;align-items:baseline;padding:10px 16px;border-bottom:1px solid #EDE6D8;font-size:13px">
+                    <span style="display:flex;flex-direction:column;gap:1px"><span lang="ar" dir="rtl" style="font-family:'Noto Naskh Arabic',serif;font-size:17px;text-align:left">{{ t.ar }}</span><span style="font-size:12px;color:#6A6257">{{ t.en }}</span></span>
+                    <sc-for list="{{ t.cells }}" as="c" hint-placeholder-count="4"><a href="#" style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:{{ c.c }};text-decoration:{{ c.u }}">{{ c.v }}</a></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <span style="font-size:12px;line-height:1.5;color:#6A6257">Counts are statements about narrators in the indexed biographical works, attributed to each critic as reported. Select a count to see each statement and its source. “Not indexed” means the critic’s work isn’t in this scope. It doesn’t mean zero. The expressions are grouped as written. The platform doesn’t rank them.</span>
+          </sc-if>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  VIEWS = [['tree','Chapters and occurrences'],['conc','Concordance'],['terms','Critic expressions']];
+  STATES = ['normal','empty','loading','error','forbidden','conflict'];
+  APPL = { tree:['normal','loading','conflict'], conc:['normal','empty','loading','error','conflict'], terms:['normal','loading','forbidden','conflict'] };
+  state = { view:'tree', st:'normal' };
+  renderVals() {
+    const { view, st } = this.state;
+    const ok = this.APPL[view].includes(st);
+    const eff = ok ? st : 'normal';
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const on = {}; this.STATES.forEach(s => on[s] = eff === s);
+    const go = v => () => this.setState({ view: v, st: 'normal' });
+    const forb = eff === 'forbidden';
+    const rail = [['Home','./02%20Personal%20Home.dc.html',''],['My Library','./03%20My%20Library.dc.html',''],['Projects','./04%20Project%20Index.dc.html',''],['Saved Searches','./08%20Search%20Workspace.dc.html',''],['Notifications','./17%20Notifications.dc.html','2'],['Downloads','./12%20Downloads.dc.html',''],['Profile & Settings','./14%20Profile%20Settings.dc.html','']];
+    const ptabsDef = [['Overview','./06%20Project%20Overview.dc.html'],['Resources','./03b%20Project%20Resources.dc.html'],['Searches','./08%20Search%20Workspace.dc.html'],['Evidence','./09%20Evidence%20Inspector.dc.html'],['Analysis','./10%20Comparison%20Workspace.dc.html'],['Discussion & Tasks','./16%20Discussion%20Tasks.dc.html'],['Findings & Documents','./11%20Finding%20Editor.dc.html'],['Review & Publication','./21%20Submission.dc.html'],['Activity','./18%20Activity.dc.html'],['Settings','./15%20Members.dc.html']];
+    const T = (name, ar, n, lvl, sel) => ({ name, ar, n, pad: `${16 + lvl * 18}px`, w: lvl === 0 || sel ? 600 : 400, bg: sel ? '#E3EEEC' : 'transparent', pick: () => {} });
+    const Cl = (v, na) => ({ v, c: na ? '#8A8276' : '#1F5A57', u: na ? 'none' : 'underline' });
+    const conf = eff === 'conflict';
+    return {
+      on,
+      me: { name:'Shilan Rashid', sub:'Owner of PRJ-0012' },
+      title: { tree:'Chapters and occurrences', conc:'Concordance: “ثلاثا ثلاثا”', terms:'Critic expressions about narrators' }[view],
+      coverage: { tree:'Abū Dāwūd: 1,871 of 1,871 chapters indexed', conc:'7 collections · 6 fully indexed · Musnad Aḥmad 81%', terms: forb ? '3 of 4 works available' : '4 biographical works · 2,104 narrators' }[view],
+      showMain: ['normal','error','forbidden','conflict'].includes(eff) && !(view === 'conc' && eff === 'error'),
+      isTree: view === 'tree', isConc: view === 'conc', isTerms: view === 'terms',
+      tree: [
+        T('Book 1 · Purification','كتاب الطهارة','612 occurrences',0),
+        T('Ch. 49 · Washing once','باب الوضوء مرة مرة','2 occurrences',1),
+        T('Ch. 50 · Washing three times','باب الوضوء ثلاثا ثلاثا','4 occurrences',1,true),
+        T('Ch. 51 · Washing twice','باب الوضوء مرتين','3 occurrences',1),
+        T('Ch. 52 · Wiping the head','باب صفة مسح الرأس','11 occurrences',1),
+        T('Book 2 · Prayer','كتاب الصلاة','1,402 occurrences',0),
+        T('Book 3 · Zakāt','كتاب الزكاة','188 occurrences',0)
+      ],
+      chapterRecs: [
+        { loc:'Abū Dāwūd 106', matn:'تَوَضَّأَ ثَلَاثًا ثَلَاثًا' },
+        { loc:'Abū Dāwūd 107', matn:'فَغَسَلَ يَدَيْهِ ثَلَاثًا' },
+        { loc:'Abū Dāwūd 108', matn:'ثُمَّ تَمَضْمَضَ ثَلَاثًا' },
+        { loc:'Abū Dāwūd 109', matn:'هَكَذَا رَأَيْتُ رَسُولَ اللهِ يَتَوَضَّأُ ثَلَاثًا' }
+      ],
+      byColl: [
+        { name:'Abū Dāwūd', n:'6 matches', c:'#1D1A15' }, { name:'al-Tirmidhī', n:'4 matches', c:'#1D1A15' }, { name:'al-Nasāʾī', n:'7 matches', c:'#1D1A15' },
+        { name:'Ibn Mājah', n:'5 matches', c:'#1D1A15' }, { name:'al-Bukhārī', n:'2 matches', c:'#1D1A15' }, { name:'Muslim', n:'3 matches', c:'#1D1A15' },
+        { name: conf ? 'Musnad Aḥmad (vol. 1 not in this snapshot)' : 'Musnad Aḥmad · 81% indexed', n:'4+ matches', c:'#6A6257' }
+      ],
+      kwic: [
+        { loc:'Abū Dāwūd 106', before:'أَنَّ النَّبِيَّ صلى الله عليه وسلم تَوَضَّأَ', hit:'ثَلَاثًا ثَلَاثًا', after:'' },
+        { loc:'al-Tirmidhī 44', before:'تَوَضَّأَ', hit:'ثَلَاثًا ثَلَاثًا', after:'وَمَسَحَ بِرَأْسِهِ وَأُذُنَيْهِ' },
+        { loc:'al-Nasāʾī 84', before:'فَتَوَضَّأَ', hit:'ثَلَاثًا ثَلَاثًا', after:'ثُمَّ قَالَ هَكَذَا' },
+        { loc:'Ibn Mājah 404', before:'رَأَيْتُ عَلِيًّا تَوَضَّأَ', hit:'ثَلَاثًا ثَلَاثًا', after:'' },
+        { loc:'al-Bukhārī 159', before:'فَغَسَلَ وَجْهَهُ', hit:'ثَلَاثًا ثَلَاثًا', after:'وَيَدَيْهِ إِلَى الْمِرْفَقَيْنِ' },
+        { loc:'Muslim 230', before:'تَوَضَّأَ', hit:'ثَلَاثًا ثَلَاثًا', after:'ثُمَّ قَالَ' }
+      ],
+      terms: [
+        { ar:'ثقة', en:'trustworthy', cells:[Cl('412 statements'),Cl('288 statements'),Cl('197 statements'), forb ? Cl('not available',true) : Cl('1,034 statements')] },
+        { ar:'صدوق', en:'truthful', cells:[Cl('96 statements'),Cl('341 statements'),Cl('18 statements'), forb ? Cl('not available',true) : Cl('612 statements')] },
+        { ar:'لا بأس به', en:'no harm in him', cells:[Cl('140 statements'),Cl('52 statements'),Cl('133 statements'), forb ? Cl('not available',true) : Cl('not indexed',true)] },
+        { ar:'ليس بالقوي', en:'not strong', cells:[Cl('21 statements'),Cl('88 statements'),Cl('64 statements'), forb ? Cl('not available',true) : Cl('not indexed',true)] },
+        { ar:'ضعيف', en:'weak', cells:[Cl('203 statements'),Cl('117 statements'),Cl('141 statements'), forb ? Cl('not available',true) : Cl('388 statements')] },
+        { ar:'منكر الحديث', en:'his reports are rejected', cells:[Cl('9 statements'),Cl('64 statements'),Cl('12 statements'), forb ? Cl('not available',true) : Cl('not indexed',true)] }
+      ],
+      rail: rail.map(([label, href, tag], i) => ({ label, href, tag, current: i === 2 ? 'page' : undefined, bg: i === 2 ? '#E3EEEC' : 'transparent', fg: i === 2 ? '#123B39' : '#1D1A15', weight: i === 2 ? 600 : 400 })),
+      ptabs: ptabsDef.map(([label, href], i) => ({ label, href, current: i === 4 ? 'page' : undefined, rule: i === 4 ? '#1F5A57' : 'transparent', fg: i === 4 ? '#123B39' : '#4A443B', weight: i === 4 ? 600 : 400 })),
+      naNote: ok ? '' : `${cap(st)}: not applicable on this view. Showing normal.`,
+      viewChips: this.VIEWS.map(([v, label]) => ({ label, pick: go(v), bg: v === view ? '#F5F1E8' : 'transparent', fg: v === view ? '#1D1A15' : '#E3DBCB' })),
+      stateChips: this.STATES.map(s => ({ label: cap(s), pick: () => this.setState({ st: s }), bg: s === st ? '#8FC2BC' : 'transparent', fg: s === st ? '#1D1A15' : '#E3DBCB', op: this.APPL[view].includes(s) ? 1 : 0.4 }))
+    };
+  }
+}
+</script>
+</body>
+</html>
