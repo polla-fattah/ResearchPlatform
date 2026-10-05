@@ -126,6 +126,17 @@ The result items now have `occurrences[]` instead of `references[]`, and `meta.c
 - `POST /projects`: Stores `null` when `question` is omitted; database migration made column nullable.
 - `GET /projects`: Dynamically generates contextual `next_action` per project (candidate evidence review, unanswered question, open milestone).
 
+### C-12 · Projects: gaps found while building screens 04–06 · P1
+Re-check 6 Oct (late): `GET /home` and `GET /projects/{id}/summary` now return 200 ✅ (C-5 is closed), and nested users in `GET /projects/{id}` no longer carry `mfa_secret`, `recovery_codes` or `password_reset_*` ✅ (the frontend contract test asserts this). The full create → stage → edit → milestone → question → archive → copy → trash → restore cycle passes against the live API (`CONTRACT_WRITE=1 npm run test:contract`).
+Still needed:
+- **A trashed project cannot be opened.** `GET /projects/{id}` filters `is_deleted=false`, so it answers 404 for a project in the trash. The design shows "View (read-only)" for trashed rows and an "In trash · read-only" Settings view. **Request:** return a trashed project to its owner, with `is_deleted: true`, `deleted_at`, `recovery_deadline`; all writes except restore must be refused (the policy already does this). Until then the index shows trashed rows without a link.
+- **Titles are not unique per owner**, but the design requires it ("Titles must be unique among your projects"). The frontend checks the owner's first 100 projects; the backend should enforce it with a 422 on `title`.
+- **`GET /projects` has no `sort`.** The design offers Recent activity / Title A–Z / Created, newest. The frontend sends no `sort` and reorders the loaded page; add `sort=recent|title|created` so it works across pages.
+- **Copy:** `POST /projects/{id}/copy` silently skips anything it cannot copy (analyses are ignored, a missing item produces no result row), and `copy-preview` always answers `can_copy: true`. The design shows per-item results with a reason ("one of its inputs is no longer in the corpus"). **Request:** one result row per requested item with `status: copied | skipped | failed` and a `reason`; make `copy-preview` truthful; support `analysis`.
+- **Milestones in `computed` mode have no number.** There is `computed_basis` (text) but no `computed_percent`; the frontend can show the basis but not draw progress.
+- `POST /projects/{id}/archive` is a toggle; a double click or a stale tab flips it back. Please accept `{ archived: true|false }` so it is idempotent.
+- `GET /projects/{id}/summary` has no `next_actions`; the frontend derives them from the counts and open questions. The project list's `next_action` is good; please expose the same list there.
+
 ### C-11 · No email is ever sent (ACC-02, ACC-04) · P1
 **Status:** 🟡 **Mailer Configured.**
 Mail driver configured (`MAIL_MAILER=array` in testing, `smtp` in production). Tokens and verification links point to frontend routes `/verify-email?token=...` and `/recover/reset?token=...&email=...`.
