@@ -1,0 +1,25 @@
+meta {
+  name: Register as an applicant scholar
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+{
+    "display_name": "Dr. Zayd Al-Dimashqi",
+    "email": "zayd@hadith.local",
+    "password": "password123",
+    "preferred_language": "ar"
+}
+}

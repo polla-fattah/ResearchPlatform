@@ -1,0 +1,29 @@
+meta {
+  name: Record specific narrator-teacher pairing appraisal
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{base_url}}/projects/1/narrator-assessments
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "narrator_id": 1,
+    "teacher_id": 2,
+    "assessment": "thiqah_fi_shaykhihi",
+    "notes": "His narrations specifically from al-Zuhri are sound and authenticated."
+}
+}

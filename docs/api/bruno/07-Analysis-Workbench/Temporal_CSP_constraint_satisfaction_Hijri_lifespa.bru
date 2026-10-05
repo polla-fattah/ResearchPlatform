@@ -1,0 +1,32 @@
+meta {
+  name: Temporal CSP constraint satisfaction (Hijri lifespans & T_min=7 AH Tamyīz lower bound verification)
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/temporal-check
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "teacher_name": "Nafi' Mawla Ibn Umar",
+    "teacher_death": 117,
+    "student_name": "Malik ibn Anas",
+    "student_birth": 93,
+    "student_death": 179,
+    "min_audition_age": 7,
+    "save_run": true
+}
+}

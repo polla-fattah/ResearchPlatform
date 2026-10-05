@@ -1,0 +1,20 @@
+meta {
+  name: List saved analysis runs with input parameters and results
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/projects/1/analyses
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

@@ -1,0 +1,20 @@
+meta {
+  name: Remove member occurrence from Hadith family
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{base_url}}/projects/1/families/1/members/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

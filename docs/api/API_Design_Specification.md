@@ -616,6 +616,7 @@ Response:
 - `GET /api/v1/projects/{id}/ilal-cases/{caseId}`: Returns complete investigation dossier.
 - `PATCH /api/v1/projects/{id}/ilal-cases/{caseId}`: Resolves or updates dossier (`status`: `resolved_authentic`, `resolved_defective`, `inconclusive`).
 
+
 ### 6. Teacher-Specific Narrator Assessment Matrix
 - `GET /api/v1/projects/{id}/narrator-assessments?narrator_id={id}`: Queries critic assessments conditioned on specific teachers.
 - `POST /api/v1/projects/{id}/narrator-assessments`: Records conditioned assessment.
@@ -628,5 +629,133 @@ Response:
     "qawl_text": "His narrations from this specific teacher contain munkarat because his notes were lost in transit."
   }
   ```
+
+---
+
+## 🧭 Module 8: Dialectical Argumentation Graph (`WRT-08`)
+
+Provides directed acyclic graph (DAG) modeling for scholarly hypotheses, objections, rebuttals, warrants, and evidence backings.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/projects/{projectId}/argument-graph` | Retrieve project argumentation graph (nodes and edges) | Bearer | `WRT-08` |
+| `POST` | `/projects/{projectId}/argument-nodes` | Create argument node (premise, conclusion, objection, warrant, backing) | Bearer | `WRT-08` |
+| `PATCH` | `/projects/{projectId}/argument-nodes/{nodeId}` | Update argument node claim text or confidence | Bearer | `WRT-08` |
+| `DELETE` | `/projects/{projectId}/argument-nodes/{nodeId}` | Delete argument node and cascade edges | Bearer | `WRT-08` |
+| `POST` | `/projects/{projectId}/argument-edges` | Connect argument nodes with directed relation (supports, attacks, rebuts) | Bearer | `WRT-08` |
+| `DELETE` | `/projects/{projectId}/argument-edges/{edgeId}` | Remove directed argument relation | Bearer | `WRT-08` |
+
+#### Create Argument Node Example
+```http
+POST /api/v1/projects/1/argument-nodes
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "node_type": "premise",
+  "claim_text": "Al-Zuhri had an unbroken chain of transmission from Salim ibn Abd Allah.",
+  "confidence_level": "qati",
+  "source_type": "evidence",
+  "source_id": 1
+}
+```
+
+---
+
+## 📜 Module 6: Historical Assertions & Epistemic Grounding (`EVI-08`)
+
+Enables explicit registration of historical facts, biographical claims, and hearing statements with graded certainty (`certain`, `probable`, `disputed`, `rejected`).
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/projects/{projectId}/assertions` | List historical assertions with evidence citations | Bearer | `EVI-08` |
+| `POST` | `/projects/{projectId}/assertions` | Register historical assertion with certainty degree | Bearer | `EVI-08` |
+| `GET` | `/projects/{projectId}/assertions/{id}` | Retrieve specific historical assertion details | Bearer | `EVI-08` |
+| `PATCH` | `/projects/{projectId}/assertions/{id}` | Update assertion claim or certainty degree | Bearer | `EVI-08` |
+| `DELETE` | `/projects/{projectId}/assertions/{id}` | Remove historical assertion | Bearer | `EVI-08` |
+
+---
+
+## 🗂️ Module 4: Research Project Templates (`PRJ-08`)
+
+Provides standardized research workspace templates (Takhrīj, ʿIlal Investigation, Comparative Rijāl Study) with automated task and milestone scaffolding.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/project-templates` | List available project templates | Public | `PRJ-08` |
+| `GET` | `/project-templates/{id}` | Retrieve template structure and preconfigured tasks | Public | `PRJ-08` |
+| `POST` | `/project-templates/{id}/instantiate` | Scaffold new research workspace from template | Bearer | `PRJ-08` |
+
+---
+
+## 🤝 Module 13: Scholar Collaboration Requests (`ANN-06`)
+
+Allows external scholars to apply to join workspaces with proposed research contributions.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `POST` | `/projects/{projectId}/collaboration-requests` | Submit request to join project workspace | Bearer | `ANN-06` |
+| `GET` | `/projects/{projectId}/collaboration-requests` | List incoming collaboration requests | Bearer | `ANN-06` |
+| `PATCH` | `/projects/{projectId}/collaboration-requests/{requestId}` | Accept or reject collaboration request | Bearer | `ANN-06` |
+
+---
+
+## 🗺️ Module 15: Geospatial Network & Narrator Trajectories (`ANA-13`)
+
+Models the geographical distribution of transmission centers, narrator travel itineraries (Riḥlah), and geographic transmission arcs.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/geospatial/places` | GeoJSON FeatureCollection of historical Islamic cities | Public | `ANA-13` |
+| `GET` | `/geospatial/narrators/{narratorId}/trajectory` | Geographical travel waypoints for narrator | Public | `ANA-13` |
+| `POST` | `/geospatial/narrators/{narratorId}/trajectory` | Record narrator travel waypoint (Riḥlah) | Bearer | `ANA-13` |
+| `GET` | `/geospatial/isnad-flow` | Geographic transmission flow arcs for Sanad or Hadith | Public | `ANA-13` |
+
+---
+
+## 📚 Module 6: Bibliographic Reference Ingestion (`LIB-10`)
+
+Supports automated parsing and ingestion of classical and modern academic bibliography from BibTeX and RIS formats.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `POST` | `/projects/{projectId}/references/preview-bibtex` | Parse and preview BibTeX or RIS entries | Bearer | `LIB-10` |
+| `POST` | `/projects/{projectId}/references/import-bibtex` | Ingest BibTeX / RIS into bibliography with deduplication | Bearer | `LIB-10` |
+
+---
+
+## 🔔 Module 5: Search Subscriptions & Monitoring (`SEA-09`, `SEA-10`)
+
+Allows scholars to set automated recurring search subscriptions and diff historical search runs to track corpus additions.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/projects/{projectId}/search-subscriptions` | List automated search subscriptions | Bearer | `SEA-10` |
+| `POST` | `/projects/{projectId}/search-subscriptions` | Create recurring search subscription | Bearer | `SEA-10` |
+| `PATCH` | `/projects/{projectId}/search-subscriptions/{id}/toggle` | Activate or pause search subscription | Bearer | `SEA-10` |
+| `POST` | `/projects/{projectId}/search-runs/compare` | Diff two search runs to identify new records | Bearer | `SEA-09` |
+
+---
+
+## 📖 Module 2: Classical Book Structure & Concordance (`ANA-12`)
+
+Provides structured navigation into classical book tables of contents (Kutub & Abwāb) and lexical concordance across hadith matns.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/corpus/books/{bookId}/structure` | Hierarchical TOC (Kutub/Abwāb) with hadith counts | Public | `ANA-12` |
+| `GET` | `/corpus/books/{bookId}/concordance` | Lexical concordance drill-down across book | Public | `ANA-12` |
+
+---
+
+## 📦 Module 11: GraphML/Cytoscape Export & Package Import (`EXP-05`, `EXP-11`)
+
+Provides network visualization exports and portable ZIP research package ingestion.
+
+| Method | Endpoint | Description | Auth | Requirement |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/projects/{projectId}/exports/graph` | Export graph data as Cytoscape JSON or GraphML | Bearer | `EXP-05` |
+| `POST` | `/projects/import-package` | Ingest archived project package (.zip) | Bearer | `EXP-11` |
+
 
 

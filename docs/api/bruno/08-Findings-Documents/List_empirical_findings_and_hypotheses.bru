@@ -1,0 +1,20 @@
+meta {
+  name: List empirical findings and hypotheses
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/projects/1/findings
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

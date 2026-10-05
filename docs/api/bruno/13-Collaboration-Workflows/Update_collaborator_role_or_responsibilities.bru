@@ -1,0 +1,26 @@
+meta {
+  name: Update collaborator role or responsibilities
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/projects/1/members/{userId}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "role": "reviewer"
+}
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Algorithmic text collation (Needleman-Wunsch with affine gap penalty)
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{base_url}}/analysis/collate
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

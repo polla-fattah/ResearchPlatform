@@ -1,0 +1,16 @@
+meta {
+  name: List classical books with filters (century, author)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/corpus/books
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

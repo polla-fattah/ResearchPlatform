@@ -1,0 +1,27 @@
+meta {
+  name: Create new revision version for Markdown document
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/projects/1/documents/1/versions
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "content": "# Monograph Title\\n\\n## 1. Abstract\\n...",
+    "change_summary": "Added topological isnad graph section."
+}
+}

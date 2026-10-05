@@ -1,0 +1,20 @@
+meta {
+  name: Download completed export package
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/projects/1/exports/1/download
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

@@ -1,0 +1,29 @@
+meta {
+  name: Update project title, question, scope, or stage
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/projects/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "",
+    "question": "",
+    "scope": "",
+    "stage": ""
+}
+}

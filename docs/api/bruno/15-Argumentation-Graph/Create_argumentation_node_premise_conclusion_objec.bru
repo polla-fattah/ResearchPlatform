@@ -1,0 +1,31 @@
+meta {
+  name: Create argumentation node (premise, conclusion, objection, warrant)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/argument-nodes
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "node_type": "premise",
+    "claim_text": "Al-Zuhri had an unbroken chain of transmission from Salim.",
+    "confidence_level": "qati",
+    "source_type": "evidence",
+    "source_id": 1,
+    "metadata": ""
+}
+}

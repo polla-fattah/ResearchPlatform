@@ -23,7 +23,7 @@ class GenerateApiDocs extends Command
     {
         $this->info("Building OpenAPI 3.1, Postman, and Bruno API specifications...");
 
-        $scriptPath = 'c:/Users/polla/.gemini/antigravity-ide/brain/5aff2ef5-9ee6-4bc0-b901-104c2c185c11/scratch/build_api_docs.php';
+        $scriptPath = base_path('scripts/build_api_docs.php');
         if (file_exists($scriptPath)) {
             require $scriptPath;
         }

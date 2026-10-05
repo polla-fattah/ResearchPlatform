@@ -1,0 +1,28 @@
+meta {
+  name: Editor issues formal editorial verdict
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/editor/submissions/1/decision
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "decision": "approve",
+    "decision_notes": "Accepted based on unanimous reviewer consensus.",
+    "coi_confirmed": true
+}
+}

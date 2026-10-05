@@ -1,0 +1,27 @@
+meta {
+  name: Create a new personal collection
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/library/collections
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "name": "Early Hijazi Bottlenecks",
+    "description": "Traditions with singular Medinan conduits."
+}
+}

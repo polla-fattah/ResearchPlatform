@@ -1,0 +1,20 @@
+meta {
+  name: Decline collaboration invitation
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/invitations/{token}/decline
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

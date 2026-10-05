@@ -1,0 +1,20 @@
+meta {
+  name: List research documents in workspace
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/projects/1/documents
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

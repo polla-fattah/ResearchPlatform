@@ -1,0 +1,20 @@
+meta {
+  name: Retrieve single saved analysis run
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/projects/1/analyses/{analysisId}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

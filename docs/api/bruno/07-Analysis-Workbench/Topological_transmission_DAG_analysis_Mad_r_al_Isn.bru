@@ -1,0 +1,32 @@
+meta {
+  name: Topological transmission DAG analysis & Madār al-Isnād (Common Link) detection with Cytoscape.js export
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/isnad-topology
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "sanad_ids": [
+        1,
+        2
+    ],
+    "custom_chains": [],
+    "direction": "author_to_source",
+    "save_run": true
+}
+}

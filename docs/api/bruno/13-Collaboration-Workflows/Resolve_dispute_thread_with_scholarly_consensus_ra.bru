@@ -1,0 +1,27 @@
+meta {
+  name: Resolve dispute thread with scholarly consensus rationale
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/discussions/1/resolve
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "resolution_notes": "Consensus reached: Yahya is the unquestioned Madar al-Isnad.",
+    "alternative_interpretation": "Minor anomalous claims in al-Daraqutni classified as shadh."
+}
+}

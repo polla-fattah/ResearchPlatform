@@ -1,0 +1,26 @@
+meta {
+  name: Flag project task as blocked with explicit scholarly rationale
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{base_url}}/projects/1/tasks/1/block
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "blocking_reason": "Awaiting high-res manuscript scan from Istanbul library."
+}
+}

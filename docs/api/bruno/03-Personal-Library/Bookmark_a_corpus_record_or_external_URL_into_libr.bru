@@ -1,0 +1,30 @@
+meta {
+  name: Bookmark a corpus record or external URL into library
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/library/items
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "resource_type": "corpus_hadith",
+    "corpus_id": 1,
+    "title": "Sahih al-Bukhari #1 — Bad al-Wahy",
+    "personal_notes": "Essential baseline recension.",
+    "is_favourite": true
+}
+}

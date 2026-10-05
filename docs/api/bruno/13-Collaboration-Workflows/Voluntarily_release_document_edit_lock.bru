@@ -1,0 +1,20 @@
+meta {
+  name: Voluntarily release document edit lock
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{base_url}}/projects/1/documents/1/unlock
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

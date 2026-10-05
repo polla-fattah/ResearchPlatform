@@ -1,0 +1,20 @@
+meta {
+  name: Mark discussion thread as resolved
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/projects/1/threads/1/resolve
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

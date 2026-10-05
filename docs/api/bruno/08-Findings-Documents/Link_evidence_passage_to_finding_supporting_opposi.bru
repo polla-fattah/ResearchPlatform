@@ -1,0 +1,28 @@
+meta {
+  name: Link evidence passage to finding (supporting/opposing)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/projects/1/findings/1/evidence
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "evidence_id": 1,
+    "relation_type": "supporting",
+    "interpretation": "Direct empirical proof from Medinan recension."
+}
+}

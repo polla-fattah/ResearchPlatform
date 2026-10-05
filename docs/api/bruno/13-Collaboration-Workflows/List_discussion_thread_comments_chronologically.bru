@@ -1,0 +1,20 @@
+meta {
+  name: List discussion thread comments chronologically
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/discussions/1/comments
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

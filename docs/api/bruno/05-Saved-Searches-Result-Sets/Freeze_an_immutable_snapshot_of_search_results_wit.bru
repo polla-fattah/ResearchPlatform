@@ -1,0 +1,28 @@
+meta {
+  name: Freeze an immutable snapshot of search results with metadata
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/projects/1/result-sets
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "name": "Baseline Canonical Cohort v1",
+    "search_run_id": 1,
+    "items": ""
+}
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Update argumentation node text or confidence
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{base_url}}/projects/1/argument-nodes/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "claim_text": "Updated claim text with scholarly revision.",
+    "confidence_level": "zanni_ghalib"
+}
+}

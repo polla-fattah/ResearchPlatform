@@ -1,0 +1,27 @@
+meta {
+  name: Approve or reject researcher application
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/admin/applications/1/decide
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "decision": "approved",
+    "reason": "Verified academic credentials at SUE."
+}
+}

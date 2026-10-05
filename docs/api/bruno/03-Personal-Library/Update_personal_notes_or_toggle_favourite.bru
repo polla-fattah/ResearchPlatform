@@ -1,0 +1,27 @@
+meta {
+  name: Update personal notes or toggle favourite
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/library/items/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "personal_notes": "Updated notes on Medinan transmission.",
+    "is_favourite": true
+}
+}

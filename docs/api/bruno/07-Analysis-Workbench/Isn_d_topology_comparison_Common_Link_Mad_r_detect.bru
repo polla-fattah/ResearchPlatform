@@ -1,0 +1,30 @@
+meta {
+  name: Isnād topology comparison & Common Link (Madār) detection
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/isnad-compare
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "sanad_ids": [
+        539426,
+        539430
+    ],
+    "save_run": true
+}
+}

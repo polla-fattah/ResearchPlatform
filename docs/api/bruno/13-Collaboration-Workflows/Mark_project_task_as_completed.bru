@@ -1,0 +1,20 @@
+meta {
+  name: Mark project task as completed
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{base_url}}/projects/1/tasks/1/complete
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

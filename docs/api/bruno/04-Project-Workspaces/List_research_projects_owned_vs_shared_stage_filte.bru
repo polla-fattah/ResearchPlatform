@@ -1,0 +1,20 @@
+meta {
+  name: List research projects (owned vs shared, stage filters)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/projects
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

@@ -1,0 +1,31 @@
+meta {
+  name: Algorithmic Matn variant lexical diff & consensus core detection
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/matn-compare
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "hadith_ids": [
+        1,
+        1907
+    ],
+    "custom_texts": "",
+    "save_run": true
+}
+}

@@ -1,0 +1,29 @@
+meta {
+  name: Create an isolated research project workspace
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "The Isnād Dynamics of the Niyyah Tradition",
+    "question": "Why did a Gharīb tradition undergo combinatorial explosion in 2nd century Iraq?",
+    "scope": "Textual collation of 18 canonical recensions.",
+    "stage": "scoping"
+}
+}

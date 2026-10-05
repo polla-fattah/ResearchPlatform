@@ -1,0 +1,36 @@
+meta {
+  name: Freeze package and submit for editorial peer review
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/projects/1/submissions
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "The Anatomy of a Gharīb Bottleneck",
+    "abstract": "This study examines the transmission bottleneck...",
+    "keywords": [
+        "isnād",
+        "gharīb",
+        "bottleneck"
+    ],
+    "rights_declaration": true,
+    "coi_declared": false,
+    "parent_submission_id": 1,
+    "author_response_notes": "Addressed reviewer remarks regarding Basran chains."
+}
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Update notification frequency and channel preferences
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/notifications/preferences
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "notify_invitations": true,
+    "notify_discussions": true,
+    "notify_tasks": true,
+    "notify_mentions": true,
+    "notify_exports": false,
+    "notify_reviews": true,
+    "email_digest": "daily"
+}
+}

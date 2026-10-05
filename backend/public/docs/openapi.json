@@ -159,6 +159,26 @@
         {
             "name": "Notification Center",
             "description": "In-app notification alerts, digest frequencies, and preferences (Module 14 / R1b)"
+        },
+        {
+            "name": "Argumentation Graph",
+            "description": "Dialectical debate trees, nodes, premises, rebuttals, and directed epistemic edges (Module 8 / R2b)"
+        },
+        {
+            "name": "Historical Assertions",
+            "description": "Historical assertions, certainty degrees, and empirical citations (Module 6 / R2b)"
+        },
+        {
+            "name": "Project Templates",
+            "description": "Preconfigured research templates and workflow scaffolding (Module 4 / R2b)"
+        },
+        {
+            "name": "Geospatial Network",
+            "description": "Historical transmission geography, narrator travel itineraries, and transmission flow arcs (Module 15 / R2b)"
+        },
+        {
+            "name": "Search Monitoring",
+            "description": "Automated search query subscriptions and corpus diffing (Module 5 / R2b)"
         }
     ],
     "paths": {
@@ -4043,7 +4063,7 @@
         },
         "/projects/{projectId}/families": {
             "get": {
-                "summary": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                "summary": "List Hadith families (canonical text clusters)",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4093,7 +4113,7 @@
                 ]
             },
             "post": {
-                "summary": "Create a new canonical Hadith family cluster",
+                "summary": "Create a new Hadith family cluster",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4148,20 +4168,21 @@
                             "schema": {
                                 "type": "object",
                                 "required": [
-                                    "canonical_title"
+                                    "canonical_hadith_id",
+                                    "title"
                                 ],
                                 "properties": {
-                                    "canonical_title": {
-                                        "type": "string",
-                                        "example": "Hadith of Actions and Intentions (Innama al-A'mal)"
+                                    "canonical_hadith_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     },
-                                    "root_companion": {
+                                    "title": {
                                         "type": "string",
-                                        "example": "Umar ibn al-Khattab"
+                                        "example": "Hadith of Intentions (Innama al-A'mal) Family"
                                     },
-                                    "core_theme": {
+                                    "notes": {
                                         "type": "string",
-                                        "example": "Sincerity and intentionality in religious acts"
+                                        "example": "Canonical cluster spanning KTB-01, KTB-02 recensions."
                                     }
                                 }
                             }
@@ -4172,7 +4193,7 @@
         },
         "/projects/{projectId}/families/{familyId}/members": {
             "post": {
-                "summary": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                "summary": "Attach Hadith occurrence as member to family",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4236,20 +4257,13 @@
                             "schema": {
                                 "type": "object",
                                 "required": [
+                                    "hadith_id",
                                     "relationship_type"
                                 ],
                                 "properties": {
-                                    "evidence_id": {
+                                    "hadith_id": {
                                         "type": "integer",
-                                        "example": 1
-                                    },
-                                    "corpus_hadith_id": {
-                                        "type": "integer",
-                                        "example": 10
-                                    },
-                                    "corpus_sanad_id": {
-                                        "type": "integer",
-                                        "example": 20
+                                        "example": 2
                                     },
                                     "relationship_type": {
                                         "type": "string",
@@ -4257,21 +4271,13 @@
                                             "mutabaah_tammah",
                                             "mutabaah_qasirah",
                                             "shahid",
-                                            "candidate"
+                                            "shadh"
                                         ],
                                         "example": "mutabaah_tammah"
                                     },
-                                    "convergence_narrator": {
+                                    "notes": {
                                         "type": "string",
-                                        "example": "Yahya ibn Sa'id al-Ansari"
-                                    },
-                                    "convergence_depth": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "scholarly_notes": {
-                                        "type": "string",
-                                        "example": "Parallel transmission through Yahya"
+                                        "example": "Parallel transmission through Sufyan."
                                     }
                                 }
                             }
@@ -4282,7 +4288,7 @@
         },
         "/projects/{projectId}/families/{familyId}/members/{memberId}": {
             "delete": {
-                "summary": "Remove a member from the Hadith family cluster",
+                "summary": "Remove member occurrence from Hadith family",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4352,7 +4358,7 @@
         },
         "/projects/{projectId}/ilal-cases": {
             "get": {
-                "summary": "List structured ʿIlal (hidden defect) investigation dossiers",
+                "summary": "List 'Ilal cases (hidden defects and transmission anomalies)",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4398,24 +4404,11 @@
                             "type": "integer",
                             "example": 1
                         }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "under_investigation",
-                                "resolved_authentic",
-                                "resolved_defective",
-                                "inconclusive"
-                            ]
-                        }
                     }
                 ]
             },
             "post": {
-                "summary": "Open a structured ʿIlal investigation dossier",
+                "summary": "Register an 'Ilal case investigation",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4471,41 +4464,40 @@
                                 "type": "object",
                                 "required": [
                                     "title",
-                                    "discrepancy_category"
+                                    "defect_type"
                                 ],
                                 "properties": {
                                     "title": {
                                         "type": "string",
-                                        "example": "Discrepancy in Basran transmission of Hadith al-Niyyat"
+                                        "example": "Irsal Khafiyy between Thabit and Anas"
                                     },
-                                    "discrepancy_category": {
+                                    "defect_type": {
                                         "type": "string",
                                         "enum": [
-                                            "ikhtilaf_sanad",
-                                            "ikhtilaf_matn",
-                                            "ziyadah_thiqah",
                                             "idraj",
-                                            "inqita_khafi"
+                                            "irsal_khafiyy",
+                                            "waqf_raf",
+                                            "ziyadah_thiqah",
+                                            "qalb",
+                                            "idtirab"
                                         ],
-                                        "example": "ikhtilaf_sanad"
+                                        "example": "irsal_khafiyy"
                                     },
-                                    "competing_variants": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object"
-                                        },
-                                        "example": []
+                                    "affected_hadith_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     },
-                                    "critics_judgments": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object"
-                                        },
-                                        "example": []
+                                    "primary_narrator_id": {
+                                        "type": "integer",
+                                        "example": 10
                                     },
-                                    "resolution_notes": {
+                                    "secondary_narrator_id": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "scholar_verdict": {
                                         "type": "string",
-                                        "example": "Preliminary investigation underway"
+                                        "example": "Transmitted with hidden hiatus according to al-Daraqutni."
                                     }
                                 }
                             }
@@ -4516,7 +4508,7 @@
         },
         "/projects/{projectId}/ilal-cases/{caseId}": {
             "get": {
-                "summary": "Retrieve single ʿIlal investigation dossier",
+                "summary": "Retrieve 'Ilal case details",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4575,7 +4567,7 @@
                 ]
             },
             "patch": {
-                "summary": "Update or resolve ʿIlal investigation dossier",
+                "summary": "Update 'Ilal case verdict and status",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4639,23 +4631,18 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
+                                    "scholar_verdict": {
+                                        "type": "string",
+                                        "example": "Confirmed defective after comparing parallel paths."
+                                    },
                                     "status": {
                                         "type": "string",
                                         "enum": [
-                                            "under_investigation",
-                                            "resolved_authentic",
-                                            "resolved_defective",
-                                            "inconclusive"
+                                            "open",
+                                            "verified",
+                                            "dismissed"
                                         ],
-                                        "example": "resolved_authentic"
-                                    },
-                                    "preferred_version": {
-                                        "type": "string",
-                                        "example": "Muttasil chain of Hammad ibn Zayd"
-                                    },
-                                    "resolution_notes": {
-                                        "type": "string",
-                                        "example": "Resolved: The mursal transmission is an anomaly by a lesser student."
+                                        "example": "verified"
                                     }
                                 }
                             }
@@ -4666,7 +4653,7 @@
         },
         "/projects/{projectId}/narrator-assessments": {
             "get": {
-                "summary": "List critic assessments conditioned on specific teachers",
+                "summary": "List contextual narrator-teacher pair assessments",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4712,27 +4699,11 @@
                             "type": "integer",
                             "example": 1
                         }
-                    },
-                    {
-                        "name": "narrator_id",
-                        "in": "query",
-                        "schema": {
-                            "type": "integer",
-                            "example": 501
-                        }
-                    },
-                    {
-                        "name": "teacher_id",
-                        "in": "query",
-                        "schema": {
-                            "type": "integer",
-                            "example": 702
-                        }
                     }
                 ]
             },
             "post": {
-                "summary": "Record critic assessment conditioned on a specific teacher",
+                "summary": "Record specific narrator-teacher pairing appraisal",
                 "tags": [
                     "Analysis Workbench"
                 ],
@@ -4789,34 +4760,30 @@
                                 "required": [
                                     "narrator_id",
                                     "teacher_id",
-                                    "assessment_category"
+                                    "assessment"
                                 ],
                                 "properties": {
                                     "narrator_id": {
                                         "type": "integer",
-                                        "example": 501
+                                        "example": 1
                                     },
                                     "teacher_id": {
                                         "type": "integer",
-                                        "example": 702
+                                        "example": 2
                                     },
-                                    "assessment_category": {
+                                    "assessment": {
                                         "type": "string",
                                         "enum": [
-                                            "reliable_specifically",
-                                            "weakened_specifically",
-                                            "mixed_specifically",
-                                            "confused_after_event"
+                                            "thiqah_mutlaq",
+                                            "thiqah_fi_shaykhihi",
+                                            "daif_fi_shaykhihi",
+                                            "mudallis"
                                         ],
-                                        "example": "weakened_specifically"
+                                        "example": "thiqah_fi_shaykhihi"
                                     },
-                                    "critic_name": {
+                                    "notes": {
                                         "type": "string",
-                                        "example": "Ahmad ibn Hanbal"
-                                    },
-                                    "qawl_text": {
-                                        "type": "string",
-                                        "example": "His narrations from this specific teacher contain munkarat because his notes were lost."
+                                        "example": "His narrations specifically from al-Zuhri are sound and authenticated."
                                     }
                                 }
                             }
@@ -9224,6 +9191,2268 @@
                                             "none"
                                         ],
                                         "example": "daily"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analysis/collate": {
+            "get": {
+                "summary": "Algorithmic text collation (Needleman-Wunsch with affine gap penalty)",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "text1",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "انما الاعمال بالنيات وانما لكل امرئ ما نوى"
+                        }
+                    },
+                    {
+                        "name": "text2",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "الاعمال بالنية ولكل امرئ ما نوى فمن كانت هجرته"
+                        }
+                    }
+                ]
+            }
+        },
+        "/analysis/isnad-dag": {
+            "get": {
+                "summary": "Isnād topology DAG analysis and Madār al-Isnād (Common Link) detection",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "hadith_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "raw_sanad_ids",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "1,2,3"
+                        }
+                    }
+                ]
+            }
+        },
+        "/analysis/temporal-csp": {
+            "get": {
+                "summary": "Temporal constraint satisfaction verification (T_min=7 AH Tamyīz lower bound)",
+                "tags": [
+                    "Analysis Workbench"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "teacher_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ]
+            }
+        },
+        "/corpus/books/{bookId}/structure": {
+            "get": {
+                "summary": "Hierarchical Table of Contents (Kutub & Abwāb drill-down with occurrence counts)",
+                "tags": [
+                    "Corpus Adapter"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/corpus/books/{bookId}/concordance": {
+            "get": {
+                "summary": "Lexical concordance across classical book hadiths",
+                "tags": [
+                    "Corpus Adapter"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "term",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "نية"
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/argument-graph": {
+            "get": {
+                "summary": "Retrieve complete project argumentation graph (nodes and directed epistemic edges)",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/argument-nodes": {
+            "post": {
+                "summary": "Create argumentation node (premise, conclusion, objection, warrant)",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "node_type",
+                                    "claim_text"
+                                ],
+                                "properties": {
+                                    "node_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "premise",
+                                            "conclusion",
+                                            "objection",
+                                            "warrant",
+                                            "backing",
+                                            "rebuttal"
+                                        ],
+                                        "example": "premise"
+                                    },
+                                    "claim_text": {
+                                        "type": "string",
+                                        "example": "Al-Zuhri had an unbroken chain of transmission from Salim."
+                                    },
+                                    "confidence_level": {
+                                        "type": "string",
+                                        "enum": [
+                                            "qati",
+                                            "zanni_ghalib",
+                                            "muhtamal",
+                                            "daif"
+                                        ],
+                                        "example": "qati"
+                                    },
+                                    "source_type": {
+                                        "type": "string",
+                                        "example": "evidence"
+                                    },
+                                    "source_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/argument-nodes/{nodeId}": {
+            "patch": {
+                "summary": "Update argumentation node text or confidence",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "nodeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "claim_text": {
+                                        "type": "string",
+                                        "example": "Updated claim text with scholarly revision."
+                                    },
+                                    "confidence_level": {
+                                        "type": "string",
+                                        "example": "zanni_ghalib"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete argumentation node and connected edges",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "nodeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/argument-edges": {
+            "post": {
+                "summary": "Connect two argument nodes with directed relation",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "source_node_id",
+                                    "target_node_id",
+                                    "relation_type"
+                                ],
+                                "properties": {
+                                    "source_node_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "target_node_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "relation_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "supports",
+                                            "attacks",
+                                            "rebuts",
+                                            "qualifies",
+                                            "presupposes"
+                                        ],
+                                        "example": "supports"
+                                    },
+                                    "weight": {
+                                        "type": "number",
+                                        "example": 1
+                                    },
+                                    "rationale": {
+                                        "type": "string",
+                                        "example": "Sound transmission warrants the primary conclusion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/argument-edges/{edgeId}": {
+            "delete": {
+                "summary": "Remove directed argument edge",
+                "tags": [
+                    "Argumentation Graph"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "edgeId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/assertions": {
+            "get": {
+                "summary": "List historical assertions with certainty degrees and evidence",
+                "tags": [
+                    "Historical Assertions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Register historical assertion with citation grounding",
+                "tags": [
+                    "Historical Assertions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "assertion_type",
+                                    "subject_name",
+                                    "claim_statement"
+                                ],
+                                "properties": {
+                                    "assertion_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "biographical_fact",
+                                            "transmission_event",
+                                            "hearing_claim",
+                                            "chronological_anchor",
+                                            "textual_attribution"
+                                        ],
+                                        "example": "transmission_event"
+                                    },
+                                    "subject_name": {
+                                        "type": "string",
+                                        "example": "Sufyan ibn Uyaynah hearing from al-Zuhri"
+                                    },
+                                    "claim_statement": {
+                                        "type": "string",
+                                        "example": "Sufyan met and heard directly from al-Zuhri in Mecca in 123 AH."
+                                    },
+                                    "certainty_degree": {
+                                        "type": "string",
+                                        "enum": [
+                                            "certain",
+                                            "probable",
+                                            "disputed",
+                                            "rejected"
+                                        ],
+                                        "example": "certain"
+                                    },
+                                    "evidence_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/assertions/{id}": {
+            "get": {
+                "summary": "Retrieve historical assertion details",
+                "tags": [
+                    "Historical Assertions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "patch": {
+                "summary": "Update historical assertion claim or certainty",
+                "tags": [
+                    "Historical Assertions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "claim_statement": {
+                                        "type": "string",
+                                        "example": "Revised transmission statement with additional citations."
+                                    },
+                                    "certainty_degree": {
+                                        "type": "string",
+                                        "example": "probable"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete historical assertion",
+                "tags": [
+                    "Historical Assertions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/project-templates": {
+            "get": {
+                "summary": "List available research project templates",
+                "tags": [
+                    "Project Templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/project-templates/{id}": {
+            "get": {
+                "summary": "Retrieve template structure, milestones, and default tasks",
+                "tags": [
+                    "Project Templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/project-templates/{id}/instantiate": {
+            "post": {
+                "summary": "Instantiate a new project workspace pre-populated from template",
+                "tags": [
+                    "Project Templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Investigation into Basran Transmissions of Hadith al-Iftiraq"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Complete Takhrīj and Ilal study instantiated from template."
+                                    },
+                                    "visibility": {
+                                        "type": "string",
+                                        "enum": [
+                                            "private",
+                                            "institutional",
+                                            "public"
+                                        ],
+                                        "example": "private"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/collaboration-requests": {
+            "post": {
+                "summary": "Submit collaborative researcher request to join workspace",
+                "tags": [
+                    "Collaboration & Workflows"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "proposal_text"
+                                ],
+                                "properties": {
+                                    "requested_role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "contributor",
+                                            "reviewer",
+                                            "reader"
+                                        ],
+                                        "example": "contributor"
+                                    },
+                                    "proposal_text": {
+                                        "type": "string",
+                                        "example": "I offer to collate Syrian recensions and verify biographical death dates."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "List incoming collaboration requests for project",
+                "tags": [
+                    "Collaboration & Workflows"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/collaboration-requests/{requestId}": {
+            "patch": {
+                "summary": "Accept or reject collaboration request",
+                "tags": [
+                    "Collaboration & Workflows"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "accepted",
+                                            "rejected"
+                                        ],
+                                        "example": "accepted"
+                                    },
+                                    "review_notes": {
+                                        "type": "string",
+                                        "example": "Welcome to the project as a contributing researcher."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/geospatial/places": {
+            "get": {
+                "summary": "GeoJSON FeatureCollection of historical Islamic centers and cities",
+                "tags": [
+                    "Geospatial Network"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "example": "Hijaz"
+                        }
+                    }
+                ]
+            }
+        },
+        "/geospatial/narrators/{narratorId}/trajectory": {
+            "get": {
+                "summary": "Biographical travel itinerary (Rihlah) waypoints for narrator",
+                "tags": [
+                    "Geospatial Network"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "narratorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Record narrator travel waypoint or residence relocation",
+                "tags": [
+                    "Geospatial Network"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "narratorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "place_id",
+                                    "trajectory_type"
+                                ],
+                                "properties": {
+                                    "place_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "trajectory_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "birth",
+                                            "death",
+                                            "residence",
+                                            "rihla",
+                                            "hearing"
+                                        ],
+                                        "example": "rihla"
+                                    },
+                                    "year_ah": {
+                                        "type": "integer",
+                                        "example": 135
+                                    },
+                                    "duration_months": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Travel to Kufa to study with Sufyan al-Thawri."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/geospatial/isnad-flow": {
+            "get": {
+                "summary": "Geographic transmission flow arcs between transmitters for Hadith or Sanad",
+                "tags": [
+                    "Geospatial Network"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hadith_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "sanad_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "example": 539426
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/references/preview-bibtex": {
+            "post": {
+                "summary": "Parse and preview BibTeX or RIS bibliography content",
+                "tags": [
+                    "Evidence & Annotations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "@book{bukhari1997,\n  title={Sahih al-Bukhari},\n  author={Al-Bukhari, Muhammad},\n  year={1997}\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/references/import-bibtex": {
+            "post": {
+                "summary": "Ingest BibTeX / RIS bibliography into project library with deduplication",
+                "tags": [
+                    "Evidence & Annotations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "@book{bukhari1997,\n  title={Sahih al-Bukhari},\n  author={Al-Bukhari, Muhammad},\n  year={1997}\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/search-subscriptions": {
+            "get": {
+                "summary": "List automated search query alert subscriptions",
+                "tags": [
+                    "Search Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Create recurring search query subscription with change alert",
+                "tags": [
+                    "Search Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "query_string"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Weekly monitor for Basran mutabaat"
+                                    },
+                                    "query_string": {
+                                        "type": "string",
+                                        "example": "حماد بن سلمة"
+                                    },
+                                    "search_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "hadith",
+                                            "narrator",
+                                            "combined"
+                                        ],
+                                        "example": "hadith"
+                                    },
+                                    "frequency": {
+                                        "type": "string",
+                                        "enum": [
+                                            "daily",
+                                            "weekly",
+                                            "corpus_update"
+                                        ],
+                                        "example": "weekly"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/search-subscriptions/{id}/toggle": {
+            "patch": {
+                "summary": "Activate or pause automated search subscription",
+                "tags": [
+                    "Search Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/{projectId}/search-runs/compare": {
+            "post": {
+                "summary": "Diff two historical search runs to detect newly indexed records",
+                "tags": [
+                    "Search Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "run_a_id",
+                                    "run_b_id"
+                                ],
+                                "properties": {
+                                    "run_a_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "run_b_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{projectId}/exports/graph": {
+            "get": {
+                "summary": "Export project network / isnad topology as GraphML or Cytoscape JSON",
+                "tags": [
+                    "Exports & Collaboration"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "cytoscape",
+                                "graphml",
+                                "gephi"
+                            ],
+                            "default": "cytoscape"
+                        }
+                    }
+                ]
+            }
+        },
+        "/projects/import-package": {
+            "post": {
+                "summary": "Ingest research project package (.zip / .json)",
+                "tags": [
+                    "Exports & Collaboration"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized / Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StandardErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "package_file"
+                                ],
+                                "properties": {
+                                    "package_file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "ZIP archive created by research platform export"
                                     }
                                 }
                             }

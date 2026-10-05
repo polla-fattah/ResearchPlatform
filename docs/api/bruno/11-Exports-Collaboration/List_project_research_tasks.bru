@@ -1,0 +1,20 @@
+meta {
+  name: List project research tasks
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/projects/1/tasks
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

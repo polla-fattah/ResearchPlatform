@@ -1,0 +1,29 @@
+meta {
+  name: Record new research finding or claim
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/findings
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "question": "What explains the grammatical bifurcation between singular and plural?",
+    "claim": "The singular is the original Hijazi dialect preserved by Malik.",
+    "reasoning": "Collation of early Muwatta manuscripts shows universal retention.",
+    "status": "provisional"
+}
+}

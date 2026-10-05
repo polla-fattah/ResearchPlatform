@@ -1,0 +1,16 @@
+meta {
+  name: Retrieve template structure, milestones, and default tasks
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/project-templates/1
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

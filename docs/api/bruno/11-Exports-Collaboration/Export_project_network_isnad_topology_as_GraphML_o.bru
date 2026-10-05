@@ -1,0 +1,20 @@
+meta {
+  name: Export project network / isnad topology as GraphML or Cytoscape JSON
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{base_url}}/projects/1/exports/graph
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

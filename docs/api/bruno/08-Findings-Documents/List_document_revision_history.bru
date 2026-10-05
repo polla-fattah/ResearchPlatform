@@ -1,0 +1,20 @@
+meta {
+  name: List document revision history
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/projects/1/documents/1/versions
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

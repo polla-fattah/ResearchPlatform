@@ -1,0 +1,30 @@
+meta {
+  name: Create scholarly annotation on evidence text span
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/projects/1/evidence/1/annotations
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "span_start": 0,
+    "span_end": 85,
+    "annotation_kind": "scholarly_judgment",
+    "visibility": "project_shared",
+    "body": "Tafarrada bihi Umar according to Ali ibn al-Madini."
+}
+}

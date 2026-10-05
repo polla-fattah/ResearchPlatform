@@ -1,0 +1,27 @@
+meta {
+  name: Submit collaborative researcher request to join workspace
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{base_url}}/projects/1/collaboration-requests
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "requested_role": "contributor",
+    "proposal_text": "I offer to collate Syrian recensions and verify biographical death dates."
+}
+}

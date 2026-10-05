@@ -1,0 +1,26 @@
+meta {
+  name: Ingest BibTeX / RIS bibliography into project library with deduplication
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/projects/1/references/import-bibtex
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "content": "@book{bukhari1997,\n  title={Sahih al-Bukhari},\n  author={Al-Bukhari, Muhammad},\n  year={1997}\n}"
+}
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Retract publication with formal public rationale
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/editor/publications/1/retract
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "reason": "Irreproducible textual collation due to contaminated primary source manuscript."
+}
+}

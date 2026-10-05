@@ -1,0 +1,26 @@
+meta {
+  name: Parse and preview BibTeX or RIS bibliography content
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{base_url}}/projects/1/references/preview-bibtex
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "content": "@book{bukhari1997,\n  title={Sahih al-Bukhari},\n  author={Al-Bukhari, Muhammad},\n  year={1997}\n}"
+}
+}

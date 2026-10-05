@@ -1,0 +1,28 @@
+meta {
+  name: Create a new Hadith family cluster
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/projects/1/families
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "canonical_hadith_id": 1,
+    "title": "Hadith of Intentions (Innama al-A'mal) Family",
+    "notes": "Canonical cluster spanning KTB-01, KTB-02 recensions."
+}
+}

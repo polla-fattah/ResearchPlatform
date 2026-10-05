@@ -1,0 +1,29 @@
+meta {
+  name: Release approved submission to Public Research Portal
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/editor/submissions/1/release
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "public_slug": "the-niyyah-tradition-critical-monograph",
+    "version_string": "1.0.0",
+    "doi": "10.5555/hadith.2026.0001",
+    "license": "CC-BY-4.0"
+}
+}

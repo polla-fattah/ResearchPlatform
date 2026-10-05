@@ -1,0 +1,16 @@
+meta {
+  name: Export formatted academic citations (bibtex, ris, apa)
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/public/research/{slug}/cite
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

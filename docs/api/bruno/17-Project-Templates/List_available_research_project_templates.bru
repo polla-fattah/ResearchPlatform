@@ -1,0 +1,16 @@
+meta {
+  name: List available research project templates
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/project-templates
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

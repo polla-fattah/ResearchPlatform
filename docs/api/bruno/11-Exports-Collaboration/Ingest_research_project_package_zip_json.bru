@@ -1,0 +1,26 @@
+meta {
+  name: Ingest research project package (.zip / .json)
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{base_url}}/projects/import-package
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "package_file": ""
+}
+}

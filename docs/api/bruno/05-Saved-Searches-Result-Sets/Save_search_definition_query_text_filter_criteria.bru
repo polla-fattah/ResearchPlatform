@@ -1,0 +1,31 @@
+meta {
+  name: Save search definition (query text + filter criteria)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/searches
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "name": "Niyyah Hadith Variants",
+    "query_text": "الاعمال بالنيات",
+    "search_mode": "fts",
+    "filter_criteria": {
+        "type": "marfu"
+    }
+}
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Add comment to discussion thread
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/projects/1/threads/1/comments
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "content": "I verified Musnad al-Humaydi (#3)."
+}
+}

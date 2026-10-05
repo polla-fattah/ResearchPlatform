@@ -1,0 +1,27 @@
+meta {
+  name: Accept or reject corpus correction proposal
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/admin/corpus/proposals/1/decide
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "status": "accepted",
+    "decision_notes": "Corroborated by manuscript collation."
+}
+}

@@ -1,0 +1,16 @@
+meta {
+  name: List students of narrator
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{base_url}}/corpus/narrators/1/students
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

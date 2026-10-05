@@ -1,0 +1,30 @@
+meta {
+  name: Register historical assertion with citation grounding
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/assertions
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "assertion_type": "transmission_event",
+    "subject_name": "Sufyan ibn Uyaynah hearing from al-Zuhri",
+    "claim_statement": "Sufyan met and heard directly from al-Zuhri in Mecca in 123 AH.",
+    "certainty_degree": "certain",
+    "evidence_id": 1
+}
+}

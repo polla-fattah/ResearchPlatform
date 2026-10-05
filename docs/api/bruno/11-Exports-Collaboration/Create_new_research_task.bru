@@ -1,0 +1,29 @@
+meta {
+  name: Create new research task
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/projects/1/tasks
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Collate Musnad Ahmad variants",
+    "description": "Extract all occurrences of Yahya ibn Sa'id.",
+    "assignee_id": 2,
+    "due_date": "2026-10-15"
+}
+}

@@ -1,0 +1,28 @@
+meta {
+  name: Instantiate a new project workspace pre-populated from template
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/project-templates/1/instantiate
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Investigation into Basran Transmissions of Hadith al-Iftiraq",
+    "description": "Complete Takhrīj and Ilal study instantiated from template.",
+    "visibility": "private"
+}
+}

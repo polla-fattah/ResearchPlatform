@@ -1,0 +1,20 @@
+meta {
+  name: Retrieve complete project argumentation graph (nodes and directed epistemic edges)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/projects/1/argument-graph
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

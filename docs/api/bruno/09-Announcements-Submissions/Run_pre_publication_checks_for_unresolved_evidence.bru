@@ -1,0 +1,20 @@
+meta {
+  name: Run pre-publication checks for unresolved evidence, private links, and suspended co-authors
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/projects/1/validate-pre-publication
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

@@ -1,0 +1,30 @@
+meta {
+  name: Capture evidence passage with exact locator and SHA-256 hash
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/projects/1/evidence
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "resource_id": 1,
+    "captured_text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى...",
+    "locator": "Sahih al-Bukhari, Hadith 1",
+    "source_version": "Sultaniyyah Edition",
+    "state": "candidate"
+}
+}

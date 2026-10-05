@@ -253,4 +253,33 @@ class CorpusController extends ApiController
 
         return $this->successResponse($sanad);
     }
+
+    /**
+     * ANA-12: Hierarchical collection structure & occurrence counts.
+     */
+    public function bookStructure(int $id, \App\Services\BookStructureService $structureService): JsonResponse
+    {
+        $data = $structureService->getCollectionStructure($id);
+        return $this->successResponse($data, 'Collection structure and scoped counts retrieved.');
+    }
+
+    /**
+     * ANA-12: Lexical concordance across corpus occurrences.
+     */
+    public function concordance(Request $request, \App\Services\BookStructureService $structureService): JsonResponse
+    {
+        $validated = $request->validate([
+            'q' => 'required|string|min:2|max:100',
+            'book_id' => 'nullable|integer',
+            'limit' => 'nullable|integer|min:1|max:200',
+        ]);
+
+        $data = $structureService->lexicalConcordance(
+            $validated['q'],
+            $validated['book_id'] ?? null,
+            $validated['limit'] ?? 50
+        );
+
+        return $this->successResponse($data, 'Lexical concordance completed.');
+    }
 }

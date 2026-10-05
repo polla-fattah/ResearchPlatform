@@ -1,0 +1,20 @@
+meta {
+  name: List pending researcher vetting applications
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/admin/applications
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

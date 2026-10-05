@@ -1,0 +1,20 @@
+meta {
+  name: List contextual narrator-teacher pair assessments
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{base_url}}/projects/1/narrator-assessments
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

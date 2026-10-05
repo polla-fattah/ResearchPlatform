@@ -1,0 +1,20 @@
+meta {
+  name: Direct-publish announcement to public site
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/projects/1/announcement/publish
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

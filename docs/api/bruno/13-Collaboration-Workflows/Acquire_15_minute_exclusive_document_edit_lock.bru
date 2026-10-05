@@ -1,0 +1,20 @@
+meta {
+  name: Acquire 15-minute exclusive document edit lock
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{base_url}}/projects/1/documents/1/lock
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

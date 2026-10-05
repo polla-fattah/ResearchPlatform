@@ -1,0 +1,29 @@
+meta {
+  name: Peer reviewer submits evaluation verdict & critical notes
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/editor/submissions/1/review
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "recommendation": "approve",
+    "reviewer_notes": "Exemplary methodological contribution.",
+    "score": 92,
+    "coi_confirmed": true
+}
+}

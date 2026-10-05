@@ -1,0 +1,20 @@
+meta {
+  name: View saved search query with historical runs
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/projects/1/searches/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

@@ -1,0 +1,20 @@
+meta {
+  name: List bibliography resources attached to project
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/projects/1/resources
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

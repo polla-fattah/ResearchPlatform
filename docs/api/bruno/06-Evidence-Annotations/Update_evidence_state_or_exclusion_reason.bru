@@ -1,0 +1,27 @@
+meta {
+  name: Update evidence state or exclusion reason
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{base_url}}/projects/1/evidence/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "state": "included",
+    "exclusion_reason": ""
+}
+}

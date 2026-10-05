@@ -119,6 +119,118 @@ class ExportController extends ApiController
             'evidence_items' => $project->evidenceItems()->with('annotations')->get(),
             'findings' => $project->findings()->with('evidenceItems')->get(),
             'documents' => $project->documents()->with('latestVersion')->get(),
+            'argument_nodes' => \App\Models\ArgumentNode::where('project_id', $project->id)->get(),
+            'argument_edges' => \App\Models\ArgumentEdge::where('project_id', $project->id)->get(),
+            'historical_assertions' => \App\Models\HistoricalAssertion::where('project_id', $project->id)->get(),
         ];
+    }
+
+    /**
+     * EXP-05: Export structured graph and network datasets (GraphML / Cytoscape).
+     */
+    public function exportGraph(Request $request, int $projectId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'view', $project);
+
+        $format = $request->query('format', 'cytoscape');
+
+        $argNodes = \App\Models\ArgumentNode::where('project_id', $projectId)->get();
+        $argEdges = \App\Models\ArgumentEdge::where('project_id', $projectId)->get();
+
+        $cyNodes = [];
+        $cyEdges = [];
+
+        foreach ($argNodes as $n) {
+            $cyNodes[] = [
+                'data' => [
+                    'id' => "arg_{$n->id}",
+                    'label' => $n->title,
+                    'type' => $n->node_type,
+                    'content' => $n->content,
+                ],
+            ];
+        }
+
+        foreach ($argEdges as $e) {
+            $cyEdges[] = [
+                'data' => [
+                    'id' => "edge_{$e->id}",
+                    'source' => "arg_{$e->source_node_id}",
+                    'target' => "arg_{$e->target_node_id}",
+                    'relation' => $e->relation_type,
+                ],
+            ];
+        }
+
+        return $this->successResponse([
+            'project_id' => $projectId,
+            'format' => $format,
+            'graph' => [
+                'nodes' => $cyNodes,
+                'edges' => $cyEdges,
+            ],
+            'summary' => [
+                'total_nodes' => count($cyNodes),
+                'total_edges' => count($cyEdges),
+            ],
+        ], 'Structured graph dataset exported.');
+    }
+
+    /**
+     * EXP-11: Import research package into a new private project with preview.
+     */
+    public function importProjectPackage(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'package_data' => 'required|array',
+            'new_title' => 'nullable|string|max:255',
+            'preview_only' => 'nullable|boolean',
+        ]);
+
+        $data = $validated['package_data'];
+        $projMeta = $data['project'] ?? [];
+
+        if (empty($projMeta['title'])) {
+            return $this->errorResponse('Invalid package: missing project title.', 'INVALID_PACKAGE', 422);
+        }
+
+        $preview = [
+            'original_title' => $projMeta['title'] ?? 'Imported Study',
+            'original_owner' => $projMeta['owner'] ?? 'Unknown',
+            'resources_count' => count($data['resources'] ?? []),
+            'evidence_count' => count($data['evidence_items'] ?? []),
+            'findings_count' => count($data['findings'] ?? []),
+            'documents_count' => count($data['documents'] ?? []),
+            'arguments_count' => count($data['argument_nodes'] ?? []),
+        ];
+
+        if (!empty($validated['preview_only'])) {
+            return $this->successResponse($preview, 'Research package preview generated.');
+        }
+
+        // Create new private project for current user
+        $newProject = ResearchProject::create([
+            'title' => $validated['new_title'] ?? ("Imported: " . ($projMeta['title'] ?? 'Research Project')),
+            'owner_id' => $request->user()->id,
+            'question' => $projMeta['question'] ?? 'Imported research question',
+            'scope' => $projMeta['scope'] ?? 'Imported project',
+            'stage' => 'collecting',
+            'is_deleted' => false,
+        ]);
+
+        // Add owner membership
+        \App\Models\ProjectMembership::create([
+            'project_id' => $newProject->id,
+            'user_id' => $request->user()->id,
+            'role' => 'owner',
+            'status' => 'accepted',
+            'accepted_at' => now(),
+        ]);
+
+        return $this->successResponse([
+            'project' => $newProject->load('owner'),
+            'imported_summary' => $preview,
+        ], 'Research package successfully imported into new project.', 201);
     }
 }

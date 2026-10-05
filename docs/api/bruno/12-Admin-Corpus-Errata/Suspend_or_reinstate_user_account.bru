@@ -1,0 +1,27 @@
+meta {
+  name: Suspend or reinstate user account
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{base_url}}/admin/users/1/status
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "status": "suspended",
+    "reason": "Security review."
+}
+}

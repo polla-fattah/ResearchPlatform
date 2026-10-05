@@ -1,0 +1,20 @@
+meta {
+  name: Retrieve user notification digest preferences
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/notifications/preferences
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

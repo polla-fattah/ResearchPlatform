@@ -1,0 +1,29 @@
+meta {
+  name: Create recurring search query subscription with change alert
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/search-subscriptions
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Weekly monitor for Basran mutabaat",
+    "query_string": "حماد بن سلمة",
+    "search_type": "hadith",
+    "frequency": "weekly"
+}
+}

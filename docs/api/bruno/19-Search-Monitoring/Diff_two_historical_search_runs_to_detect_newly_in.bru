@@ -1,0 +1,27 @@
+meta {
+  name: Diff two historical search runs to detect newly indexed records
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/projects/1/search-runs/compare
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "run_a_id": 1,
+    "run_b_id": 2
+}
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Jarḥ wa Taʿdīl cross-tabulated matrix across classical scholars
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/criticism-matrix
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "narrator_ids": [
+        1,
+        2
+    ],
+    "scholar_ids": [],
+    "save_run": true
+}
+}

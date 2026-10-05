@@ -1,0 +1,27 @@
+meta {
+  name: Assign peer reviewer (with conflict-of-interest check)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/editor/submissions/1/assign
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "reviewer_id": 3,
+    "due_date": "2026-11-01"
+}
+}

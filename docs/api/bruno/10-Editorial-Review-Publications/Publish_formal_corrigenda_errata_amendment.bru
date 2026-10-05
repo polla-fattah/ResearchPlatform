@@ -1,0 +1,28 @@
+meta {
+  name: Publish formal corrigenda / errata amendment
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/editor/publications/1/corrigenda
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Correction in Basran chain attribution",
+    "content": "Amended narrator identity in section 3.2.",
+    "affected_section": "Section 3.2 - Basran Isnād Analysis"
+}
+}

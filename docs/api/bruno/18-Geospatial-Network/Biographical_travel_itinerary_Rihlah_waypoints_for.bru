@@ -1,0 +1,16 @@
+meta {
+  name: Biographical travel itinerary (Rihlah) waypoints for narrator
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/geospatial/narrators/1/trajectory
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

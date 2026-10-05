@@ -1,0 +1,20 @@
+meta {
+  name: Retrieve frozen members and snapshot data
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/projects/1/result-sets/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

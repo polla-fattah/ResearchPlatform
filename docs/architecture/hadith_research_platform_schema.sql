@@ -603,3 +603,129 @@ CREATE INDEX idx_ilal_cases_project ON ilal_cases(project_id);
 CREATE INDEX idx_narrator_teacher_project ON narrator_teacher_assessments(project_id);
 CREATE INDEX idx_narrator_teacher_pair ON narrator_teacher_assessments(narrator_id, teacher_id);
 
+-- ----------------------------------------------------------------------------
+-- 14. RELEASE 2b & RELEASE 3: ADVANCED CAPABILITIES SCHEMA
+-- ----------------------------------------------------------------------------
+
+-- Historical Assertions (EVI-08)
+CREATE TABLE historical_assertions (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    subject_type VARCHAR(50) NOT NULL, -- narrator, event, report, text_reading
+    subject_id BIGINT NULL,
+    subject_name VARCHAR(255) NOT NULL,
+    assertion_claim TEXT NOT NULL,
+    uncertainty_level VARCHAR(50) DEFAULT 'probable', -- certain, highly_probable, probable, contested, speculative
+    competing_alternatives JSONB DEFAULT '[]'::jsonb,
+    adjudication_notes TEXT NULL,
+    created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_hist_assertions_project ON historical_assertions(project_id);
+CREATE INDEX idx_hist_assertions_subject ON historical_assertions(subject_type, subject_id);
+
+-- Structured Argumentation Graph (WRT-08)
+CREATE TABLE argument_nodes (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    node_type VARCHAR(50) NOT NULL, -- premise, claim, objection, reply, qualification, alternative_conclusion
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    evidence_id BIGINT REFERENCES evidence_items(id) ON DELETE SET NULL,
+    finding_id BIGINT REFERENCES findings(id) ON DELETE SET NULL,
+    order_index INT DEFAULT 0,
+    created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_arg_nodes_project ON argument_nodes(project_id);
+
+CREATE TABLE argument_edges (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    source_node_id BIGINT NOT NULL REFERENCES argument_nodes(id) ON DELETE CASCADE,
+    target_node_id BIGINT NOT NULL REFERENCES argument_nodes(id) ON DELETE CASCADE,
+    relation_type VARCHAR(50) NOT NULL, -- supports, refutes, qualifies, replies_to, alternative_to
+    notes TEXT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_arg_edges_project ON argument_edges(project_id);
+CREATE INDEX idx_arg_edges_endpoints ON argument_edges(source_node_id, target_node_id);
+
+-- Project Creation Templates (PRJ-08)
+CREATE TABLE project_templates (
+    id BIGSERIAL PRIMARY KEY,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    default_question TEXT NOT NULL,
+    recommended_stages JSONB DEFAULT '[]'::jsonb,
+    default_tasks JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Verified Collaboration-Interest Requests (ANN-06)
+CREATE TABLE collaboration_requests (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    requester_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL,
+    contact_email VARCHAR(255) NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending', -- pending, accepted, declined
+    decision_notes TEXT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_collab_req_project ON collaboration_requests(project_id);
+CREATE INDEX idx_collab_req_requester ON collaboration_requests(requester_id);
+
+-- Geographical Places & Narrator Trajectories (ANA-13)
+CREATE TABLE geographical_places (
+    id BIGSERIAL PRIMARY KEY,
+    canonical_name_ar VARCHAR(255) NOT NULL,
+    canonical_name_en VARCHAR(255) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    latitude DECIMAL(10, 7) NULL,
+    longitude DECIMAL(10, 7) NULL,
+    historical_notes TEXT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE narrator_trajectories (
+    id BIGSERIAL PRIMARY KEY,
+    narrator_id BIGINT NOT NULL,
+    place_id BIGINT NOT NULL REFERENCES geographical_places(id) ON DELETE CASCADE,
+    trajectory_type VARCHAR(50) NOT NULL, -- birth, death, residence, rihlah, audition
+    year_hijri_start INT NULL,
+    year_hijri_end INT NULL,
+    evidence_text TEXT NULL,
+    is_inferred BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_trajectories_narrator ON narrator_trajectories(narrator_id);
+CREATE INDEX idx_trajectories_place ON narrator_trajectories(place_id);
+
+-- Scheduled Search Subscriptions (SEA-10)
+CREATE TABLE search_subscriptions (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    saved_query_id BIGINT NOT NULL REFERENCES saved_queries(id) ON DELETE CASCADE,
+    frequency VARCHAR(50) DEFAULT 'weekly', -- daily, weekly, monthly
+    is_active BOOLEAN DEFAULT TRUE,
+    last_run_at TIMESTAMP WITH TIME ZONE NULL,
+    last_result_count INT DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_search_sub_user ON search_subscriptions(user_id);
+CREATE INDEX idx_search_sub_project ON search_subscriptions(project_id);
+
+

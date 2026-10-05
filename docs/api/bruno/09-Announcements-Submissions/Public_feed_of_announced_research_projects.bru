@@ -1,0 +1,16 @@
+meta {
+  name: Public feed of announced research projects
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/public/announcements
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

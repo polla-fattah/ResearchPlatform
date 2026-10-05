@@ -1,0 +1,30 @@
+meta {
+  name: Submit corpus errata or textual correction proposal
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/corpus/proposals
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "corpus_table": "hadiths",
+    "corpus_id": 1,
+    "current_value": "Misspelled token",
+    "proposed_value": "Corrected token",
+    "evidence_notes": "Confirmed in Sultaniyyah edition."
+}
+}

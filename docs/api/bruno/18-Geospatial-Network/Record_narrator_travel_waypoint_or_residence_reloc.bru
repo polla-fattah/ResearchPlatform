@@ -1,0 +1,30 @@
+meta {
+  name: Record narrator travel waypoint or residence relocation
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/geospatial/narrators/1/trajectory
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "place_id": 2,
+    "trajectory_type": "rihla",
+    "year_ah": 135,
+    "duration_months": 6,
+    "notes": "Travel to Kufa to study with Sufyan al-Thawri."
+}
+}

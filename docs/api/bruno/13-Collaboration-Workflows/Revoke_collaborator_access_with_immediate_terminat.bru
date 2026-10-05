@@ -1,0 +1,20 @@
+meta {
+  name: Revoke collaborator access with immediate termination
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}/projects/1/members/{userId}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

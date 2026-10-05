@@ -1,0 +1,20 @@
+meta {
+  name: List historical assertions with certainty degrees and evidence
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/projects/1/assertions
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

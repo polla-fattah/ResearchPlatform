@@ -1,0 +1,32 @@
+meta {
+  name: Explicitly archive an analysis run
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/save
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "analysis_type": "ilal_case",
+    "input_params": {
+        "hadith_id": 10
+    },
+    "output_data": {
+        "verdict": "acceptable_addition"
+    }
+}
+}

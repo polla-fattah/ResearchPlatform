@@ -1,0 +1,20 @@
+meta {
+  name: Soft-delete project (30-day recovery window)
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/projects/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

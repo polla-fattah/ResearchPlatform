@@ -1,0 +1,32 @@
+meta {
+  name: Create contextual discussion or scholarly dispute thread
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{base_url}}/projects/1/discussions
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Dispute on Yahya ibn Sa'id Madar attribution",
+    "thread_type": "dispute_review",
+    "target_type": "evidence",
+    "target_id": 1,
+    "context_quote": "Yahya ibn Sa'id transmits from Muhammad ibn Ibrahim",
+    "context_locator": "Sahih al-Bukhari #1",
+    "initial_comment": "Is there any secondary Basran path bypassing Yahya?"
+}
+}

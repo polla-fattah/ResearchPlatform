@@ -1,0 +1,16 @@
+meta {
+  name: View public announcement details and project scope
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/public/announcements/{slug}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

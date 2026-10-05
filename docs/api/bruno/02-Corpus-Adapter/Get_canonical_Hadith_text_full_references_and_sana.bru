@@ -1,0 +1,16 @@
+meta {
+  name: Get canonical Hadith text, full references, and sanad chains
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/corpus/hadiths/1
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+

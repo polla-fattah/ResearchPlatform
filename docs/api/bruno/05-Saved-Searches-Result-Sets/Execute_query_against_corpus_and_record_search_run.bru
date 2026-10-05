@@ -1,0 +1,20 @@
+meta {
+  name: Execute query against corpus and record search_run duration
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/projects/1/searches/1/run
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

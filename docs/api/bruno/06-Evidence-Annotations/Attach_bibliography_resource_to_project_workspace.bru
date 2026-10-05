@@ -1,0 +1,31 @@
+meta {
+  name: Attach bibliography resource to project workspace
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/projects/1/resources
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "resource_id": 1,
+    "inclusion_rationale": "Baseline canonical witness.",
+    "tags": [
+        "Canonical",
+        "Hijazi"
+    ]
+}
+}

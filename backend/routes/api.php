@@ -20,6 +20,13 @@ use App\Http\Controllers\Api\EditorialController;
 use App\Http\Controllers\Api\HadithFamilyController;
 use App\Http\Controllers\Api\IlalCaseController;
 use App\Http\Controllers\Api\TeacherAssessmentController;
+use App\Http\Controllers\Api\HistoricalAssertionController;
+use App\Http\Controllers\Api\ArgumentationController;
+use App\Http\Controllers\Api\ProjectTemplateController;
+use App\Http\Controllers\Api\CollaborationRequestController;
+use App\Http\Controllers\Api\GeospatialController;
+use App\Http\Controllers\Api\ReferenceImportController;
+use App\Http\Controllers\Api\SearchSubscriptionController;
 
 Route::prefix('v1')->group(function () {
 
@@ -47,6 +54,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/narrators/{id}/students', [CorpusController::class, 'getNarratorStudents']);
         Route::get('/books', [CorpusController::class, 'getBooks']);
         Route::get('/books/{id}', [CorpusController::class, 'getBook']);
+        Route::get('/books/{id}/structure', [CorpusController::class, 'bookStructure']);
+        Route::get('/concordance', [CorpusController::class, 'concordance']);
         Route::get('/sanads/{id}', [CorpusController::class, 'getSanad']);
     });
 
@@ -87,12 +96,32 @@ Route::prefix('v1')->group(function () {
             Route::post('/collections', [LibraryController::class, 'storeCollection']);
             Route::post('/collections/{id}/items', [LibraryController::class, 'addToCollection']);
             Route::delete('/collections/{id}/items/{resourceId}', [LibraryController::class, 'removeFromCollection']);
+
+            // BibTeX / RIS Ingestion (LIB-10)
+            Route::post('/bibtex/preview', [ReferenceImportController::class, 'previewBibTeX']);
+            Route::post('/bibtex/import', [ReferenceImportController::class, 'importBibTeX']);
+        });
+
+        // PRJ-08: Project Templates
+        Route::prefix('project-templates')->group(function () {
+            Route::get('/', [ProjectTemplateController::class, 'index']);
+            Route::get('/{id}', [ProjectTemplateController::class, 'show']);
+            Route::post('/{id}/instantiate', [ProjectTemplateController::class, 'instantiate']);
+        });
+
+        // ANA-13: Geospatial Networks & Trajectories
+        Route::prefix('geospatial')->group(function () {
+            Route::get('/places', [GeospatialController::class, 'getPlaces']);
+            Route::get('/narrators/{id}/trajectory', [GeospatialController::class, 'getNarratorTrajectory']);
+            Route::post('/trajectories', [GeospatialController::class, 'recordTrajectory']);
+            Route::post('/isnad-flow', [GeospatialController::class, 'getIsnadGeographicFlow']);
         });
 
         // Module 4: Research Projects & Workspace
         Route::prefix('projects')->group(function () {
             Route::get('/', [ProjectController::class, 'index']);
             Route::post('/', [ProjectController::class, 'store']);
+            Route::post('/import-package', [ExportController::class, 'importProjectPackage']); // EXP-11
             Route::get('/{id}', [ProjectController::class, 'show']);
             Route::match(['put', 'patch'], '/{id}', [ProjectController::class, 'update']);
             Route::patch('/{id}/stage', [ProjectController::class, 'updateStage']);
@@ -115,6 +144,12 @@ Route::prefix('v1')->group(function () {
             Route::get('/result-sets', [SearchWorkspaceController::class, 'listResultSets']);
             Route::post('/result-sets', [SearchWorkspaceController::class, 'storeResultSet']);
             Route::get('/result-sets/{setId}', [SearchWorkspaceController::class, 'getResultSet']);
+
+            // SEA-09 & SEA-10: Search Subscriptions & Comparisons
+            Route::get('/search-subscriptions', [SearchSubscriptionController::class, 'index']);
+            Route::post('/search-subscriptions', [SearchSubscriptionController::class, 'store']);
+            Route::patch('/search-subscriptions/{id}/toggle', [SearchSubscriptionController::class, 'toggle']);
+            Route::post('/search-runs/compare', [SearchSubscriptionController::class, 'compareRuns']);
 
             // Module 7 (Analysis Workbench & R2a Algorithmic Engines)
             Route::post('/analyses/matn-compare', [AnalysisController::class, 'matnCompare']);
@@ -143,10 +178,33 @@ Route::prefix('v1')->group(function () {
             Route::get('/narrator-assessments', [TeacherAssessmentController::class, 'index']);
             Route::post('/narrator-assessments', [TeacherAssessmentController::class, 'store']);
 
+            // EVI-08: Historical Assertions
+            Route::get('/assertions', [HistoricalAssertionController::class, 'index']);
+            Route::post('/assertions', [HistoricalAssertionController::class, 'store']);
+            Route::get('/assertions/{id}', [HistoricalAssertionController::class, 'show']);
+            Route::match(['put', 'patch'], '/assertions/{id}', [HistoricalAssertionController::class, 'update']);
+            Route::delete('/assertions/{id}', [HistoricalAssertionController::class, 'destroy']);
+
+            // WRT-08: Structured Argumentation Graph
+            Route::get('/argument-graph', [ArgumentationController::class, 'getGraph']);
+            Route::post('/argument-nodes', [ArgumentationController::class, 'createNode']);
+            Route::match(['put', 'patch'], '/argument-nodes/{nodeId}', [ArgumentationController::class, 'updateNode']);
+            Route::delete('/argument-nodes/{nodeId}', [ArgumentationController::class, 'deleteNode']);
+            Route::post('/argument-edges', [ArgumentationController::class, 'createEdge']);
+            Route::delete('/argument-edges/{edgeId}', [ArgumentationController::class, 'deleteEdge']);
+
+            // ANN-06: Collaboration Interest Requests
+            Route::post('/collaboration-requests', [CollaborationRequestController::class, 'store']);
+            Route::get('/collaboration-requests', [CollaborationRequestController::class, 'index']);
+            Route::patch('/collaboration-requests/{requestId}', [CollaborationRequestController::class, 'updateStatus']);
+
             // Project Resources (Bibliography)
             Route::get('/resources', [EvidenceController::class, 'listResources']);
             Route::post('/resources', [EvidenceController::class, 'attachResource']);
             Route::delete('/resources/{resourceId}', [EvidenceController::class, 'detachResource']);
+
+            // EXP-05: Graph Network Export
+            Route::get('/exports/graph', [ExportController::class, 'exportGraph']);
 
             // Evidence Items & Annotations
             Route::get('/evidence', [EvidenceController::class, 'index']);

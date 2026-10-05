@@ -1,0 +1,27 @@
+meta {
+  name: Update historical assertion claim or certainty
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/projects/1/assertions/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "claim_statement": "Revised transmission statement with additional citations.",
+    "certainty_degree": "probable"
+}
+}

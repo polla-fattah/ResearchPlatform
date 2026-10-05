@@ -1,0 +1,27 @@
+meta {
+  name: Submit application for approved researcher credentials
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/applications
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "research_statement": "Proposal for algorithmic collation of early Basran transmission recensions.",
+    "sample_publications": "Fattah, P. (2024). Evaluation Metrics in Low-Resource MT."
+}
+}

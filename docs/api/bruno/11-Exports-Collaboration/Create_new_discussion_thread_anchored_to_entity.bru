@@ -1,0 +1,28 @@
+meta {
+  name: Create new discussion thread anchored to entity
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/projects/1/threads
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Evaluation of the Basran Variant",
+    "target_type": "evidence",
+    "target_id": 1
+}
+}

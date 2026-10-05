@@ -1,0 +1,28 @@
+meta {
+  name: Sequence collation across Classical Arabic witnesses (Needleman-Wunsch with affine gaps)
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/projects/1/analyses/collate
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "baseline_text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+    "variants": "",
+    "save_run": true
+}
+}

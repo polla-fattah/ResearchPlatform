@@ -1,0 +1,26 @@
+meta {
+  name: Add scholarly comment or citation to thread
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/discussions/1/comments
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "content": "All classical routes converge upon Yahya; no sound mutaba'ah bypasses him."
+}
+}

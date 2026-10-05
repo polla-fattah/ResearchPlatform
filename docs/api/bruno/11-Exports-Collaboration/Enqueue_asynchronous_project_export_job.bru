@@ -1,0 +1,27 @@
+meta {
+  name: Enqueue asynchronous project export job
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/projects/1/exports
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "format": "zip",
+    "scope": "project"
+}
+}

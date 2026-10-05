@@ -1,0 +1,31 @@
+meta {
+  name: Register an 'Ilal case investigation
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{base_url}}/projects/1/ilal-cases
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "Irsal Khafiyy between Thabit and Anas",
+    "defect_type": "irsal_khafiyy",
+    "affected_hadith_id": 1,
+    "primary_narrator_id": 10,
+    "secondary_narrator_id": 20,
+    "scholar_verdict": "Transmitted with hidden hiatus according to al-Daraqutni."
+}
+}

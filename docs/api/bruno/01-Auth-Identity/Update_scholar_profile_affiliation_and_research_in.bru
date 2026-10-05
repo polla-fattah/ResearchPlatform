@@ -1,0 +1,32 @@
+meta {
+  name: Update scholar profile, affiliation, and research interests
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/auth/profile
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "affiliation": "Salahaddin University-Erbil (SUE)",
+    "biography": "Specialist in computational Hadith studies.",
+    "research_interests": [
+        "Isnād Topology",
+        "NLP"
+    ],
+    "is_public": true
+}
+}

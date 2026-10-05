@@ -1,0 +1,30 @@
+meta {
+  name: Connect two argument nodes with directed relation
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/projects/1/argument-edges
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "source_node_id": 1,
+    "target_node_id": 2,
+    "relation_type": "supports",
+    "weight": 1,
+    "rationale": "Sound transmission warrants the primary conclusion."
+}
+}

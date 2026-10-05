@@ -1,0 +1,26 @@
+meta {
+  name: Update task status or completion state
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{base_url}}/projects/1/tasks/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "status": "done"
+}
+}

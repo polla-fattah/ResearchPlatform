@@ -1,0 +1,27 @@
+meta {
+  name: Update 'Ilal case verdict and status
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{base_url}}/projects/1/ilal-cases/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "scholar_verdict": "Confirmed defective after comparing parallel paths.",
+    "status": "verified"
+}
+}

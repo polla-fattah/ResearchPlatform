@@ -1,0 +1,20 @@
+meta {
+  name: List frozen result sets
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/projects/1/result-sets
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

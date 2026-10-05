@@ -1,0 +1,20 @@
+meta {
+  name: List pending corpus errata proposals
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/admin/corpus/proposals
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

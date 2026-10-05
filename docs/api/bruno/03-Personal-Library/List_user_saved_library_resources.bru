@@ -1,0 +1,20 @@
+meta {
+  name: List user saved library resources
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/library/items
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+

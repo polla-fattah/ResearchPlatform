@@ -1,7 +1,7 @@
 {
     "info": {
         "name": "Open Hadith Research Platform API Collection",
-        "description": "Comprehensive Postman collection for all 12 modules of the Open Hadith Research Platform.",
+        "description": "Comprehensive Postman collection for all modules of the Open Hadith Research Platform.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "variable": [
@@ -528,6 +528,58 @@
                             ]
                         },
                         "description": "Reconstruct ordered narrator transmission chain with connectors"
+                    }
+                },
+                {
+                    "name": "Hierarchical Table of Contents (Kutub & Abwāb drill-down with occurrence counts)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/books/{bookId}/structure",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "books",
+                                "{bookId}",
+                                "structure"
+                            ]
+                        },
+                        "description": "Hierarchical Table of Contents (Kutub & Abwāb drill-down with occurrence counts)"
+                    }
+                },
+                {
+                    "name": "Lexical concordance across classical book hadiths",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/books/{bookId}/concordance",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "books",
+                                "{bookId}",
+                                "concordance"
+                            ]
+                        },
+                        "description": "Lexical concordance across classical book hadiths"
                     }
                 }
             ]
@@ -1830,6 +1882,96 @@
                             }
                         }
                     }
+                },
+                {
+                    "name": "Parse and preview BibTeX or RIS bibliography content",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/references/preview-bibtex",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "references",
+                                "preview-bibtex"
+                            ]
+                        },
+                        "description": "Parse and preview BibTeX or RIS bibliography content",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"@book{bukhari1997,\\n  title={Sahih al-Bukhari},\\n  author={Al-Bukhari, Muhammad},\\n  year={1997}\\n}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Ingest BibTeX / RIS bibliography into project library with deduplication",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/references/import-bibtex",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "references",
+                                "import-bibtex"
+                            ]
+                        },
+                        "description": "Ingest BibTeX / RIS bibliography into project library with deduplication",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"content\": \"@book{bukhari1997,\\n  title={Sahih al-Bukhari},\\n  author={Al-Bukhari, Muhammad},\\n  year={1997}\\n}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
@@ -2223,7 +2365,7 @@
                     }
                 },
                 {
-                    "name": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                    "name": "List Hadith families (canonical text clusters)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -2244,7 +2386,7 @@
                                 "families"
                             ]
                         },
-                        "description": "List Hadith family clusters with Mutābaʿah and Shāhid members",
+                        "description": "List Hadith families (canonical text clusters)",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2258,7 +2400,7 @@
                     }
                 },
                 {
-                    "name": "Create a new canonical Hadith family cluster",
+                    "name": "Create a new Hadith family cluster",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -2279,7 +2421,7 @@
                                 "families"
                             ]
                         },
-                        "description": "Create a new canonical Hadith family cluster",
+                        "description": "Create a new Hadith family cluster",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2292,7 +2434,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"canonical_title\": \"Hadith of Actions and Intentions (Innama al-A'mal)\",\n    \"root_companion\": \"Umar ibn al-Khattab\",\n    \"core_theme\": \"Sincerity and intentionality in religious acts\"\n}",
+                            "raw": "{\n    \"canonical_hadith_id\": 1,\n    \"title\": \"Hadith of Intentions (Innama al-A'mal) Family\",\n    \"notes\": \"Canonical cluster spanning KTB-01, KTB-02 recensions.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2302,7 +2444,7 @@
                     }
                 },
                 {
-                    "name": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                    "name": "Attach Hadith occurrence as member to family",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -2325,7 +2467,7 @@
                                 "members"
                             ]
                         },
-                        "description": "Attach a transmission member (Mutābaʿah Tāmmah, Qāṣirah, Shāhid) to family",
+                        "description": "Attach Hadith occurrence as member to family",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2338,7 +2480,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"evidence_id\": 1,\n    \"corpus_hadith_id\": 10,\n    \"corpus_sanad_id\": 20,\n    \"relationship_type\": \"mutabaah_tammah\",\n    \"convergence_narrator\": \"Yahya ibn Sa'id al-Ansari\",\n    \"convergence_depth\": 1,\n    \"scholarly_notes\": \"Parallel transmission through Yahya\"\n}",
+                            "raw": "{\n    \"hadith_id\": 2,\n    \"relationship_type\": \"mutabaah_tammah\",\n    \"notes\": \"Parallel transmission through Sufyan.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2348,7 +2490,7 @@
                     }
                 },
                 {
-                    "name": "Remove a member from the Hadith family cluster",
+                    "name": "Remove member occurrence from Hadith family",
                     "request": {
                         "method": "DELETE",
                         "header": [
@@ -2372,7 +2514,7 @@
                                 "{memberId}"
                             ]
                         },
-                        "description": "Remove a member from the Hadith family cluster",
+                        "description": "Remove member occurrence from Hadith family",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2386,7 +2528,7 @@
                     }
                 },
                 {
-                    "name": "List structured ʿIlal (hidden defect) investigation dossiers",
+                    "name": "List 'Ilal cases (hidden defects and transmission anomalies)",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -2407,7 +2549,7 @@
                                 "ilal-cases"
                             ]
                         },
-                        "description": "List structured ʿIlal (hidden defect) investigation dossiers",
+                        "description": "List 'Ilal cases (hidden defects and transmission anomalies)",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2421,7 +2563,7 @@
                     }
                 },
                 {
-                    "name": "Open a structured ʿIlal investigation dossier",
+                    "name": "Register an 'Ilal case investigation",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -2442,7 +2584,7 @@
                                 "ilal-cases"
                             ]
                         },
-                        "description": "Open a structured ʿIlal investigation dossier",
+                        "description": "Register an 'Ilal case investigation",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2455,7 +2597,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"title\": \"Discrepancy in Basran transmission of Hadith al-Niyyat\",\n    \"discrepancy_category\": \"ikhtilaf_sanad\",\n    \"competing_variants\": [],\n    \"critics_judgments\": [],\n    \"resolution_notes\": \"Preliminary investigation underway\"\n}",
+                            "raw": "{\n    \"title\": \"Irsal Khafiyy between Thabit and Anas\",\n    \"defect_type\": \"irsal_khafiyy\",\n    \"affected_hadith_id\": 1,\n    \"primary_narrator_id\": 10,\n    \"secondary_narrator_id\": 20,\n    \"scholar_verdict\": \"Transmitted with hidden hiatus according to al-Daraqutni.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2465,7 +2607,7 @@
                     }
                 },
                 {
-                    "name": "Retrieve single ʿIlal investigation dossier",
+                    "name": "Retrieve 'Ilal case details",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -2487,7 +2629,7 @@
                                 "{caseId}"
                             ]
                         },
-                        "description": "Retrieve single ʿIlal investigation dossier",
+                        "description": "Retrieve 'Ilal case details",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2501,7 +2643,7 @@
                     }
                 },
                 {
-                    "name": "Update or resolve ʿIlal investigation dossier",
+                    "name": "Update 'Ilal case verdict and status",
                     "request": {
                         "method": "PATCH",
                         "header": [
@@ -2523,7 +2665,7 @@
                                 "{caseId}"
                             ]
                         },
-                        "description": "Update or resolve ʿIlal investigation dossier",
+                        "description": "Update 'Ilal case verdict and status",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2536,7 +2678,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"status\": \"resolved_authentic\",\n    \"preferred_version\": \"Muttasil chain of Hammad ibn Zayd\",\n    \"resolution_notes\": \"Resolved: The mursal transmission is an anomaly by a lesser student.\"\n}",
+                            "raw": "{\n    \"scholar_verdict\": \"Confirmed defective after comparing parallel paths.\",\n    \"status\": \"verified\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2546,7 +2688,7 @@
                     }
                 },
                 {
-                    "name": "List critic assessments conditioned on specific teachers",
+                    "name": "List contextual narrator-teacher pair assessments",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -2567,7 +2709,7 @@
                                 "narrator-assessments"
                             ]
                         },
-                        "description": "List critic assessments conditioned on specific teachers",
+                        "description": "List contextual narrator-teacher pair assessments",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2581,7 +2723,7 @@
                     }
                 },
                 {
-                    "name": "Record critic assessment conditioned on a specific teacher",
+                    "name": "Record specific narrator-teacher pairing appraisal",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -2602,7 +2744,7 @@
                                 "narrator-assessments"
                             ]
                         },
-                        "description": "Record critic assessment conditioned on a specific teacher",
+                        "description": "Record specific narrator-teacher pairing appraisal",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -2615,12 +2757,114 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"narrator_id\": 501,\n    \"teacher_id\": 702,\n    \"assessment_category\": \"weakened_specifically\",\n    \"critic_name\": \"Ahmad ibn Hanbal\",\n    \"qawl_text\": \"His narrations from this specific teacher contain munkarat because his notes were lost.\"\n}",
+                            "raw": "{\n    \"narrator_id\": 1,\n    \"teacher_id\": 2,\n    \"assessment\": \"thiqah_fi_shaykhihi\",\n    \"notes\": \"His narrations specifically from al-Zuhri are sound and authenticated.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "Algorithmic text collation (Needleman-Wunsch with affine gap penalty)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/analysis/collate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "analysis",
+                                "collate"
+                            ]
+                        },
+                        "description": "Algorithmic text collation (Needleman-Wunsch with affine gap penalty)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Isnād topology DAG analysis and Madār al-Isnād (Common Link) detection",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/analysis/isnad-dag",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "analysis",
+                                "isnad-dag"
+                            ]
+                        },
+                        "description": "Isnād topology DAG analysis and Madār al-Isnād (Common Link) detection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Temporal constraint satisfaction verification (T_min=7 AH Tamyīz lower bound)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/analysis/temporal-csp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "analysis",
+                                "temporal-csp"
+                            ]
+                        },
+                        "description": "Temporal constraint satisfaction verification (T_min=7 AH Tamyīz lower bound)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
                         }
                     }
                 }
@@ -4096,6 +4340,85 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Export project network / isnad topology as GraphML or Cytoscape JSON",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/exports/graph",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "exports",
+                                "graph"
+                            ]
+                        },
+                        "description": "Export project network / isnad topology as GraphML or Cytoscape JSON",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ingest research project package (.zip / .json)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/import-package",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "import-package"
+                            ]
+                        },
+                        "description": "Ingest research project package (.zip / .json)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"package_file\": \"\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
@@ -5011,6 +5334,130 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Submit collaborative researcher request to join workspace",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/collaboration-requests",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "collaboration-requests"
+                            ]
+                        },
+                        "description": "Submit collaborative researcher request to join workspace",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"requested_role\": \"contributor\",\n    \"proposal_text\": \"I offer to collate Syrian recensions and verify biographical death dates.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List incoming collaboration requests for project",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/collaboration-requests",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "collaboration-requests"
+                            ]
+                        },
+                        "description": "List incoming collaboration requests for project",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Accept or reject collaboration request",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/collaboration-requests/{requestId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "collaboration-requests",
+                                "{requestId}"
+                            ]
+                        },
+                        "description": "Accept or reject collaboration request",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"accepted\",\n    \"review_notes\": \"Welcome to the project as a contributing researcher.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
@@ -5188,6 +5635,838 @@
                         "body": {
                             "mode": "raw",
                             "raw": "{\n    \"notify_invitations\": true,\n    \"notify_discussions\": true,\n    \"notify_tasks\": true,\n    \"notify_mentions\": true,\n    \"notify_exports\": false,\n    \"notify_reviews\": true,\n    \"email_digest\": \"daily\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Argumentation Graph",
+            "item": [
+                {
+                    "name": "Retrieve complete project argumentation graph (nodes and directed epistemic edges)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-graph",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-graph"
+                            ]
+                        },
+                        "description": "Retrieve complete project argumentation graph (nodes and directed epistemic edges)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create argumentation node (premise, conclusion, objection, warrant)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-nodes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-nodes"
+                            ]
+                        },
+                        "description": "Create argumentation node (premise, conclusion, objection, warrant)",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"node_type\": \"premise\",\n    \"claim_text\": \"Al-Zuhri had an unbroken chain of transmission from Salim.\",\n    \"confidence_level\": \"qati\",\n    \"source_type\": \"evidence\",\n    \"source_id\": 1,\n    \"metadata\": \"\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Update argumentation node text or confidence",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-nodes/{nodeId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-nodes",
+                                "{nodeId}"
+                            ]
+                        },
+                        "description": "Update argumentation node text or confidence",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"claim_text\": \"Updated claim text with scholarly revision.\",\n    \"confidence_level\": \"zanni_ghalib\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete argumentation node and connected edges",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-nodes/{nodeId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-nodes",
+                                "{nodeId}"
+                            ]
+                        },
+                        "description": "Delete argumentation node and connected edges",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Connect two argument nodes with directed relation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-edges",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-edges"
+                            ]
+                        },
+                        "description": "Connect two argument nodes with directed relation",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"source_node_id\": 1,\n    \"target_node_id\": 2,\n    \"relation_type\": \"supports\",\n    \"weight\": 1,\n    \"rationale\": \"Sound transmission warrants the primary conclusion.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Remove directed argument edge",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/argument-edges/{edgeId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "argument-edges",
+                                "{edgeId}"
+                            ]
+                        },
+                        "description": "Remove directed argument edge",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Historical Assertions",
+            "item": [
+                {
+                    "name": "List historical assertions with certainty degrees and evidence",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/assertions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "assertions"
+                            ]
+                        },
+                        "description": "List historical assertions with certainty degrees and evidence",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Register historical assertion with citation grounding",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/assertions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "assertions"
+                            ]
+                        },
+                        "description": "Register historical assertion with citation grounding",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"assertion_type\": \"transmission_event\",\n    \"subject_name\": \"Sufyan ibn Uyaynah hearing from al-Zuhri\",\n    \"claim_statement\": \"Sufyan met and heard directly from al-Zuhri in Mecca in 123 AH.\",\n    \"certainty_degree\": \"certain\",\n    \"evidence_id\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Retrieve historical assertion details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/assertions/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "assertions",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Retrieve historical assertion details",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update historical assertion claim or certainty",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/assertions/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "assertions",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Update historical assertion claim or certainty",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"claim_statement\": \"Revised transmission statement with additional citations.\",\n    \"certainty_degree\": \"probable\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete historical assertion",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/assertions/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "assertions",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Delete historical assertion",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Project Templates",
+            "item": [
+                {
+                    "name": "List available research project templates",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/project-templates",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "project-templates"
+                            ]
+                        },
+                        "description": "List available research project templates"
+                    }
+                },
+                {
+                    "name": "Retrieve template structure, milestones, and default tasks",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/project-templates/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "project-templates",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Retrieve template structure, milestones, and default tasks"
+                    }
+                },
+                {
+                    "name": "Instantiate a new project workspace pre-populated from template",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/project-templates/{id}/instantiate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "project-templates",
+                                "{id}",
+                                "instantiate"
+                            ]
+                        },
+                        "description": "Instantiate a new project workspace pre-populated from template",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Investigation into Basran Transmissions of Hadith al-Iftiraq\",\n    \"description\": \"Complete Takhrīj and Ilal study instantiated from template.\",\n    \"visibility\": \"private\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Geospatial Network",
+            "item": [
+                {
+                    "name": "GeoJSON FeatureCollection of historical Islamic centers and cities",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/geospatial/places",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "geospatial",
+                                "places"
+                            ]
+                        },
+                        "description": "GeoJSON FeatureCollection of historical Islamic centers and cities"
+                    }
+                },
+                {
+                    "name": "Biographical travel itinerary (Rihlah) waypoints for narrator",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/geospatial/narrators/{narratorId}/trajectory",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "geospatial",
+                                "narrators",
+                                "{narratorId}",
+                                "trajectory"
+                            ]
+                        },
+                        "description": "Biographical travel itinerary (Rihlah) waypoints for narrator"
+                    }
+                },
+                {
+                    "name": "Record narrator travel waypoint or residence relocation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/geospatial/narrators/{narratorId}/trajectory",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "geospatial",
+                                "narrators",
+                                "{narratorId}",
+                                "trajectory"
+                            ]
+                        },
+                        "description": "Record narrator travel waypoint or residence relocation",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"place_id\": 2,\n    \"trajectory_type\": \"rihla\",\n    \"year_ah\": 135,\n    \"duration_months\": 6,\n    \"notes\": \"Travel to Kufa to study with Sufyan al-Thawri.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Geographic transmission flow arcs between transmitters for Hadith or Sanad",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/geospatial/isnad-flow",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "geospatial",
+                                "isnad-flow"
+                            ]
+                        },
+                        "description": "Geographic transmission flow arcs between transmitters for Hadith or Sanad"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Search Monitoring",
+            "item": [
+                {
+                    "name": "List automated search query alert subscriptions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/search-subscriptions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "search-subscriptions"
+                            ]
+                        },
+                        "description": "List automated search query alert subscriptions",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create recurring search query subscription with change alert",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/search-subscriptions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "search-subscriptions"
+                            ]
+                        },
+                        "description": "Create recurring search query subscription with change alert",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Weekly monitor for Basran mutabaat\",\n    \"query_string\": \"حماد بن سلمة\",\n    \"search_type\": \"hadith\",\n    \"frequency\": \"weekly\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Activate or pause automated search subscription",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/search-subscriptions/{id}/toggle",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "search-subscriptions",
+                                "{id}",
+                                "toggle"
+                            ]
+                        },
+                        "description": "Activate or pause automated search subscription",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Diff two historical search runs to detect newly indexed records",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/search-runs/compare",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "search-runs",
+                                "compare"
+                            ]
+                        },
+                        "description": "Diff two historical search runs to detect newly indexed records",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"run_a_id\": 1,\n    \"run_b_id\": 2\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"

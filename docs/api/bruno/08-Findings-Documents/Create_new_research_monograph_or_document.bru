@@ -1,0 +1,28 @@
+meta {
+  name: Create new research monograph or document
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/projects/1/documents
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+{
+    "title": "The Anatomy of a Gharīb Bottleneck",
+    "document_type": "article",
+    "language": "ar"
+}
+}
