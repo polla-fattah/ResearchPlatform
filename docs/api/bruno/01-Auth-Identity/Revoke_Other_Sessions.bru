@@ -1,11 +1,11 @@
 meta {
-  name: List custom personal collections
+  name: Revoke Other Sessions
   type: http
-  seq: 7
+  seq: 17
 }
 
-get {
-  url: {{base_url}}/library/collections
+delete {
+  url: {{base_url}}/auth/sessions
   body: none
   auth: bearer
 }

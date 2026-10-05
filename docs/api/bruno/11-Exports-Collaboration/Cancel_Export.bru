@@ -1,11 +1,11 @@
 meta {
-  name: List custom personal collections
+  name: Cancel Export
   type: http
-  seq: 7
+  seq: 16
 }
 
-get {
-  url: {{base_url}}/library/collections
+post {
+  url: {{base_url}}/exports/1/cancel
   body: none
   auth: bearer
 }

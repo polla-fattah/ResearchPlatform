@@ -1,11 +1,11 @@
 meta {
-  name: List custom personal collections
+  name: Mfa Disable
   type: http
-  seq: 7
+  seq: 21
 }
 
-get {
-  url: {{base_url}}/library/collections
+post {
+  url: {{base_url}}/auth/mfa/disable
   body: none
   auth: bearer
 }

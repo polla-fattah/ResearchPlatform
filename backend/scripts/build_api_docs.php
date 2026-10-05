@@ -1522,6 +1522,94 @@ makePath($paths, '/projects/import-package', 'POST', 'Ingest research project pa
     ],
 ]);
 
+// ----------------------------------------------------------------------------
+// DYNAMIC SYNCHRONIZATION WITH LIVE LARAVEL ROUTES (DEF-10)
+// Prune stale routes and automatically include all 300+ live registered routes
+// ----------------------------------------------------------------------------
+$registeredRoutes = [];
+if (class_exists(\Illuminate\Support\Facades\Route::class)) {
+    foreach (\Illuminate\Support\Facades\Route::getRoutes()->getRoutes() as $r) {
+        $uri = $r->uri();
+        if (str_starts_with($uri, 'api/v1/')) {
+            $cleanUri = substr($uri, strlen('api/v1'));
+            if (!str_starts_with($cleanUri, '/')) {
+                $cleanUri = '/' . $cleanUri;
+            }
+            $methods = array_diff($r->methods(), ['HEAD']);
+            foreach ($methods as $m) {
+                $registeredRoutes[strtolower($m) . ' ' . $cleanUri] = $r;
+            }
+        }
+    }
+}
+
+// 1. Remove stale paths that do not exist in live routes
+foreach ($paths as $uri => $methods) {
+    foreach ($methods as $method => $op) {
+        $key = strtolower($method) . ' ' . $uri;
+        if (!empty($registeredRoutes) && !isset($registeredRoutes[$key])) {
+            unset($paths[$uri][$method]);
+        }
+    }
+    if (empty($paths[$uri])) {
+        unset($paths[$uri]);
+    }
+}
+
+// 2. Add any live routes that were missing from manual list
+foreach ($registeredRoutes as $key => $route) {
+    [$method, $uri] = explode(' ', $key, 2);
+    if (!isset($paths[$uri][strtolower($method)])) {
+        $action = $route->getActionName();
+        $controllerName = class_basename(explode('@', $action)[0] ?? 'Platform');
+        $methodName = explode('@', $action)[1] ?? 'handle';
+
+        $summary = ucfirst(trim(preg_replace('/(?<!\ )[A-Z]/', ' $0', $methodName)));
+
+        $tag = match (true) {
+            str_contains($controllerName, 'Auth') => 'Auth & Identity',
+            str_contains($controllerName, 'Corpus') => 'Corpus Adapter',
+            str_contains($controllerName, 'Library') => 'Personal Library',
+            str_contains($controllerName, 'Project') => 'Project Workspace',
+            str_contains($controllerName, 'Evidence') => 'Evidence Management',
+            str_contains($controllerName, 'Finding') => 'Findings & Claims',
+            str_contains($controllerName, 'Document') => 'Document Studio',
+            str_contains($controllerName, 'Publishing') => 'Publishing & Public Portal',
+            str_contains($controllerName, 'Editorial') => 'Editorial & Review',
+            str_contains($controllerName, 'Export') => 'Exports & Collaboration',
+            str_contains($controllerName, 'Admin') => 'Administration & Governance',
+            str_contains($controllerName, 'Notification') => 'Notifications & Activity',
+            str_contains($controllerName, 'Search') => 'Search & Analysis Workspace',
+            str_contains($controllerName, 'Geospatial') => 'Geospatial & Historical Intelligence',
+            str_contains($controllerName, 'Ilal') || str_contains($controllerName, 'HadithFamily') || str_contains($controllerName, 'Teacher') => 'Critical Ilal & Reasoning Studio',
+            default => 'Platform API',
+        };
+
+        preg_match_all('/\{([^}]+)\}/', $uri, $paramMatches);
+        $parameters = [];
+        if (!empty($paramMatches[1])) {
+            foreach ($paramMatches[1] as $pName) {
+                $parameters[] = [
+                    'name' => $pName,
+                    'in' => 'path',
+                    'required' => true,
+                    'schema' => [
+                        'type' => str_contains(strtolower($pName), 'id') ? 'integer' : 'string',
+                    ],
+                ];
+            }
+        }
+
+        $requiresAuth = !str_starts_with($uri, '/public/') && !in_array($uri, [
+            '/auth/login', '/auth/register', '/auth/email/verify', '/auth/verify-email',
+            '/auth/email/resend', '/auth/password/forgot', '/auth/password/reset',
+            '/auth/mfa/challenge', '/applications', '/invitations/{token}'
+        ]);
+
+        makePath($paths, $uri, strtoupper($method), $summary, $tag, $requiresAuth, null, $parameters);
+    }
+}
+
 // Final Assembly
 require __DIR__ . '/openapi_base.php';
 $openApi['paths'] = $paths;

@@ -23,6 +23,12 @@ class ExportJob extends Model
         'download_url',
         'file_size',
         'checksum',
+        'progress',
+        'parts',
+        'exclusions',
+        'failure_reason',
+        'manifest',
+        'scope_ids',
         'expires_at',
         'completed_at',
         'created_at',
@@ -32,6 +38,10 @@ class ExportJob extends Model
     {
         return [
             'file_size' => 'integer',
+            'parts' => 'array',
+            'exclusions' => 'array',
+            'manifest' => 'array',
+            'scope_ids' => 'array',
             'expires_at' => 'datetime',
             'completed_at' => 'datetime',
             'created_at' => 'datetime',

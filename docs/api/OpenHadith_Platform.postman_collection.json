@@ -164,6 +164,40 @@
                     }
                 },
                 {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "profile"
+                            ]
+                        },
+                        "description": "Update Profile",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Revoke active authentication token",
                     "request": {
                         "method": "POST",
@@ -261,6 +295,433 @@
                             ]
                         },
                         "description": "Check application vetting status",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/email/verify",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "email",
+                                "verify"
+                            ]
+                        },
+                        "description": "Verify Email"
+                    }
+                },
+                {
+                    "name": "Verify Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/verify-email",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "verify-email"
+                            ]
+                        },
+                        "description": "Verify Email"
+                    }
+                },
+                {
+                    "name": "Resend Verification",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/email/resend",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "email",
+                                "resend"
+                            ]
+                        },
+                        "description": "Resend Verification"
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/password/forgot",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "password",
+                                "forgot"
+                            ]
+                        },
+                        "description": "Forgot Password"
+                    }
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/password/reset",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "password",
+                                "reset"
+                            ]
+                        },
+                        "description": "Reset Password"
+                    }
+                },
+                {
+                    "name": "Mfa Challenge",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/mfa/challenge",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "mfa",
+                                "challenge"
+                            ]
+                        },
+                        "description": "Mfa Challenge"
+                    }
+                },
+                {
+                    "name": "Change Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/password/change",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "password",
+                                "change"
+                            ]
+                        },
+                        "description": "Change Password",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Sessions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/sessions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "sessions"
+                            ]
+                        },
+                        "description": "List Sessions",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Revoke Other Sessions",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/sessions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "sessions"
+                            ]
+                        },
+                        "description": "Revoke Other Sessions",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Revoke Session",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/sessions/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "sessions",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Revoke Session",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mfa Enroll",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/mfa/enroll",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "mfa",
+                                "enroll"
+                            ]
+                        },
+                        "description": "Mfa Enroll",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mfa Confirm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/mfa/confirm",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "mfa",
+                                "confirm"
+                            ]
+                        },
+                        "description": "Mfa Confirm",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mfa Disable",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/mfa/disable",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "mfa",
+                                "disable"
+                            ]
+                        },
+                        "description": "Mfa Disable",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Close Account",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/account/close",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "account",
+                                "close"
+                            ]
+                        },
+                        "description": "Close Account",
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -531,7 +992,7 @@
                     }
                 },
                 {
-                    "name": "Hierarchical Table of Contents (Kutub & Abwāb drill-down with occurrence counts)",
+                    "name": "Filter Coverage",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -542,22 +1003,31 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/corpus/books/{bookId}/structure",
+                            "raw": "{{base_url}}/corpus/filters/coverage",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "corpus",
-                                "books",
-                                "{bookId}",
-                                "structure"
+                                "filters",
+                                "coverage"
                             ]
                         },
-                        "description": "Hierarchical Table of Contents (Kutub & Abwāb drill-down with occurrence counts)"
+                        "description": "Filter Coverage",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
                     }
                 },
                 {
-                    "name": "Lexical concordance across classical book hadiths",
+                    "name": "List Narrators",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -568,18 +1038,234 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/corpus/books/{bookId}/concordance",
+                            "raw": "{{base_url}}/corpus/narrators",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "narrators"
+                            ]
+                        },
+                        "description": "List Narrators",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Authors",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/authors",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "authors"
+                            ]
+                        },
+                        "description": "List Authors",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Hukms",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/hukms",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "hukms"
+                            ]
+                        },
+                        "description": "List Hukms",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Critics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/critics",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "critics"
+                            ]
+                        },
+                        "description": "List Critics",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Book Structure",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/books/{id}/structure",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "corpus",
                                 "books",
-                                "{bookId}",
+                                "{id}",
+                                "structure"
+                            ]
+                        },
+                        "description": "Book Structure",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Book Chapters",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/books/{id}/chapters",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
+                                "books",
+                                "{id}",
+                                "chapters"
+                            ]
+                        },
+                        "description": "List Book Chapters",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Concordance",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/corpus/concordance",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "corpus",
                                 "concordance"
                             ]
                         },
-                        "description": "Lexical concordance across classical book hadiths"
+                        "description": "Concordance",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
                     }
                 }
             ]
@@ -779,6 +1465,41 @@
                     }
                 },
                 {
+                    "name": "Update",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/items/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "items",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Update",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "List custom personal collections",
                     "request": {
                         "method": "GET",
@@ -897,6 +1618,471 @@
                                     "language": "json"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "Tags",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/tags",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "tags"
+                            ]
+                        },
+                        "description": "Tags",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Tags",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/items/{id}/tags",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "items",
+                                "{id}",
+                                "tags"
+                            ]
+                        },
+                        "description": "Update Tags",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Share Preview",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/items/{id}/share-preview",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "items",
+                                "{id}",
+                                "share-preview"
+                            ]
+                        },
+                        "description": "Share Preview",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add To Projects",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/items/{id}/add-to-projects",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "items",
+                                "{id}",
+                                "add-to-projects"
+                            ]
+                        },
+                        "description": "Add To Projects",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Collection",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/collections/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "collections",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Update Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Collection",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/collections/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "collections",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Update Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Destroy Collection",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/collections/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "collections",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Destroy Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Remove From Collection",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/library/collections/{id}/items/{resourceId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "library",
+                                "collections",
+                                "{id}",
+                                "items",
+                                "{resourceId}"
+                            ]
+                        },
+                        "description": "Remove From Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Project Collections",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/resource-collections",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "resource-collections"
+                            ]
+                        },
+                        "description": "List Project Collections",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Store Project Collection",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/resource-collections",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "resource-collections"
+                            ]
+                        },
+                        "description": "Store Project Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Item To Project Collection",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/resource-collections/{collectionId}/items",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "resource-collections",
+                                "{collectionId}",
+                                "items"
+                            ]
+                        },
+                        "description": "Add Item To Project Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Remove Item From Project Collection",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/resource-collections/{collectionId}/items/{resourceId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "resource-collections",
+                                "{collectionId}",
+                                "items",
+                                "{resourceId}"
+                            ]
+                        },
+                        "description": "Remove Item From Project Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Destroy Project Collection",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/projects/{projectId}/resource-collections/{collectionId}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "projects",
+                                "{projectId}",
+                                "resource-collections",
+                                "{collectionId}"
+                            ]
+                        },
+                        "description": "Destroy Project Collection",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
                         }
                     }
                 }
@@ -2765,108 +3951,6 @@
                             }
                         }
                     }
-                },
-                {
-                    "name": "Algorithmic text collation (Needleman-Wunsch with affine gap penalty)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/analysis/collate",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "analysis",
-                                "collate"
-                            ]
-                        },
-                        "description": "Algorithmic text collation (Needleman-Wunsch with affine gap penalty)",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Isnād topology DAG analysis and Madār al-Isnād (Common Link) detection",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/analysis/isnad-dag",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "analysis",
-                                "isnad-dag"
-                            ]
-                        },
-                        "description": "Isnād topology DAG analysis and Madār al-Isnād (Common Link) detection",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Temporal constraint satisfaction verification (T_min=7 AH Tamyīz lower bound)",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/analysis/temporal-csp",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "analysis",
-                                "temporal-csp"
-                            ]
-                        },
-                        "description": "Temporal constraint satisfaction verification (T_min=7 AH Tamyīz lower bound)",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
                 }
             ]
         },
@@ -4064,125 +5148,6 @@
                     }
                 },
                 {
-                    "name": "Get discussion thread with comments",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/projects/{projectId}/threads/{id}",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "projects",
-                                "{projectId}",
-                                "threads",
-                                "{id}"
-                            ]
-                        },
-                        "description": "Get discussion thread with comments",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Add comment to discussion thread",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/projects/{projectId}/threads/{id}/comments",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "projects",
-                                "{projectId}",
-                                "threads",
-                                "{id}",
-                                "comments"
-                            ]
-                        },
-                        "description": "Add comment to discussion thread",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"content\": \"I verified Musnad al-Humaydi (#3).\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "Mark discussion thread as resolved",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/projects/{projectId}/threads/{id}/resolve",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "projects",
-                                "{projectId}",
-                                "threads",
-                                "{id}",
-                                "resolve"
-                            ]
-                        },
-                        "description": "Mark discussion thread as resolved",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
                     "name": "List project research tasks",
                     "request": {
                         "method": "GET",
@@ -4253,51 +5218,6 @@
                         "body": {
                             "mode": "raw",
                             "raw": "{\n    \"title\": \"Collate Musnad Ahmad variants\",\n    \"description\": \"Extract all occurrences of Yahya ibn Sa'id.\",\n    \"assignee_id\": 2,\n    \"due_date\": \"2026-10-15\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "Update task status or completion state",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/projects/{projectId}/tasks/{id}",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "projects",
-                                "{projectId}",
-                                "tasks",
-                                "{id}"
-                            ]
-                        },
-                        "description": "Update task status or completion state",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"status\": \"done\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -4417,6 +5337,316 @@
                                     "language": "json"
                                 }
                             }
+                        }
+                    }
+                },
+                {
+                    "name": "List All Exports",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports"
+                            ]
+                        },
+                        "description": "List All Exports",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Export",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports"
+                            ]
+                        },
+                        "description": "Create Export",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Export Preview",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/preview",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "preview"
+                            ]
+                        },
+                        "description": "Export Preview",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Quota",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/quota",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "quota"
+                            ]
+                        },
+                        "description": "Get Quota",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Export",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/{id}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "{id}"
+                            ]
+                        },
+                        "description": "Get Export",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Cancel Export",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/{id}/cancel",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "{id}",
+                                "cancel"
+                            ]
+                        },
+                        "description": "Cancel Export",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Retry Export",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/{id}/retry",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "{id}",
+                                "retry"
+                            ]
+                        },
+                        "description": "Retry Export",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Manifest",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/{id}/manifest",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "{id}",
+                                "manifest"
+                            ]
+                        },
+                        "description": "Get Manifest",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Download Part",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/exports/{id}/parts/{partId}/download",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "exports",
+                                "{id}",
+                                "parts",
+                                "{partId}",
+                                "download"
+                            ]
+                        },
+                        "description": "Download Part",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{auth_token}}",
+                                    "type": "string"
+                                }
+                            ]
                         }
                     }
                 }
@@ -6212,101 +7442,6 @@
                             ]
                         },
                         "description": "GeoJSON FeatureCollection of historical Islamic centers and cities"
-                    }
-                },
-                {
-                    "name": "Biographical travel itinerary (Rihlah) waypoints for narrator",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/geospatial/narrators/{narratorId}/trajectory",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "geospatial",
-                                "narrators",
-                                "{narratorId}",
-                                "trajectory"
-                            ]
-                        },
-                        "description": "Biographical travel itinerary (Rihlah) waypoints for narrator"
-                    }
-                },
-                {
-                    "name": "Record narrator travel waypoint or residence relocation",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/geospatial/narrators/{narratorId}/trajectory",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "geospatial",
-                                "narrators",
-                                "{narratorId}",
-                                "trajectory"
-                            ]
-                        },
-                        "description": "Record narrator travel waypoint or residence relocation",
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{auth_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"place_id\": 2,\n    \"trajectory_type\": \"rihla\",\n    \"year_ah\": 135,\n    \"duration_months\": 6,\n    \"notes\": \"Travel to Kufa to study with Sufyan al-Thawri.\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "Geographic transmission flow arcs between transmitters for Hadith or Sanad",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/geospatial/isnad-flow",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "geospatial",
-                                "isnad-flow"
-                            ]
-                        },
-                        "description": "Geographic transmission flow arcs between transmitters for Hadith or Sanad"
                     }
                 }
             ]

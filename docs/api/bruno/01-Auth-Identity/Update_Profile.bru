@@ -1,11 +1,11 @@
 meta {
-  name: List custom personal collections
+  name: Update Profile
   type: http
-  seq: 7
+  seq: 5
 }
 
-get {
-  url: {{base_url}}/library/collections
+put {
+  url: {{base_url}}/auth/profile
   body: none
   auth: bearer
 }

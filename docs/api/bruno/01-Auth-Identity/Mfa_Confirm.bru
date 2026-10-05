@@ -1,11 +1,11 @@
 meta {
-  name: List custom personal collections
+  name: Mfa Confirm
   type: http
-  seq: 7
+  seq: 20
 }
 
-get {
-  url: {{base_url}}/library/collections
+post {
+  url: {{base_url}}/auth/mfa/confirm
   body: none
   auth: bearer
 }
