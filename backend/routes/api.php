@@ -198,10 +198,12 @@ Route::prefix('v1')->group(function () {
             Route::get('/collaboration-requests', [CollaborationRequestController::class, 'index']);
             Route::patch('/collaboration-requests/{requestId}', [CollaborationRequestController::class, 'updateStatus']);
 
-            // Project Resources (Bibliography)
+            // Project Resources (Bibliography) & BibTeX/RIS Import (LIB-10)
             Route::get('/resources', [EvidenceController::class, 'listResources']);
             Route::post('/resources', [EvidenceController::class, 'attachResource']);
             Route::delete('/resources/{resourceId}', [EvidenceController::class, 'detachResource']);
+            Route::post('/references/preview-bibtex', [ReferenceImportController::class, 'previewBibTeX']);
+            Route::post('/references/import-bibtex', [ReferenceImportController::class, 'importBibTeX']);
 
             // EXP-05: Graph Network Export
             Route::get('/exports/graph', [ExportController::class, 'exportGraph']);

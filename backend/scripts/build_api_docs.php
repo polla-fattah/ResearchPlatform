@@ -1687,7 +1687,10 @@ foreach ($openApi['tags'] as $tag) {
             $urlPath = preg_replace('/\{docId\}/', '1', $urlPath);
             $urlPath = preg_replace('/\{queryId\}/', '1', $urlPath);
             $urlPath = preg_replace('/\{setId\}/', '1', $urlPath);
+            $urlPath = preg_replace('/\{userId\}/', '2', $urlPath);
+            $urlPath = preg_replace('/\{analysisId\}/', '1', $urlPath);
             $urlPath = preg_replace('/\{id\}/', '1', $urlPath);
+            $urlPath = preg_replace('/\{[a-zA-Z0-9_]+\}/', '1', $urlPath);
 
             $hasAuth = !empty($op['security']);
             $hasJsonBody = !empty($op['requestBody']['content']['application/json']['schema']['properties']);
