@@ -105,7 +105,7 @@ class FindingController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $finding = Finding::where('project_id', $projectId)
-            ->with(['evidenceItems.resource', 'evidenceItems.collector'])
+            ->with(['evidenceItems.resource', 'evidenceItems.collector', 'documents'])
             ->find($id);
 
         if (!$finding) {
@@ -128,17 +128,39 @@ class FindingController extends ApiController
             return $this->errorResponse('Finding not found.', 'NOT_FOUND', 404);
         }
 
+        // DEF-8 Optimistic concurrency check
+        $expectedVersion = $request->input('expected_version') ?? $request->header('If-Match');
+        if ($expectedVersion !== null) {
+            $expectedVersionClean = trim($expectedVersion, '"');
+            if (is_numeric($expectedVersionClean) && (int)$expectedVersionClean !== (int)$finding->version) {
+                return $this->errorResponse(
+                    'Finding version conflict. Finding has been updated by another action.',
+                    'CONFLICT',
+                    409,
+                    [
+                        'current_version' => $finding->version,
+                        'updated_at' => $finding->updated_at?->toIso8601String(),
+                    ]
+                );
+            }
+        }
+
         $validated = $request->validate([
             'question' => 'sometimes|required|string',
             'claim' => 'sometimes|required|string',
             'reasoning' => 'sometimes|required|string',
             'limitations' => 'nullable|string',
             'status' => 'nullable|string|in:provisional,supported,inconclusive,disputed',
+            'contributors' => 'nullable|array',
+            'expected_version' => 'nullable|integer',
         ]);
+
+        unset($validated['expected_version']);
+        $validated['version'] = ($finding->version ?? 1) + 1;
 
         $finding->update($validated);
 
-        return $this->successResponse($finding->fresh('evidenceItems.resource'), 'Finding updated.');
+        return $this->successResponse($finding->fresh(['evidenceItems.resource', 'documents']), 'Finding updated.');
     }
 
     /**

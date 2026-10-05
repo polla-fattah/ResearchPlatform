@@ -22,12 +22,13 @@ class EditorialController extends ApiController
     ) {}
 
     /**
-     * Enforce editor/administrative privilege check.
+     * Enforce editor/administrative privilege check (DEF-7).
      */
     private function checkEditor(Request $request): ?JsonResponse
     {
         $user = $request->user();
-        if (!$user || (!$user->is_admin && $user->status !== 'approved')) {
+        $isEditor = $user && ($user->is_admin || in_array('editor', $user->roles ?? []));
+        if (!$isEditor) {
             return $this->errorResponse('Editorial privileges required.', 'FORBIDDEN', 403);
         }
         return null;
@@ -448,12 +449,215 @@ class EditorialController extends ApiController
     }
 
     /**
-     * Public Research Portal: Browse peer-reviewed publications (PUB-08, PUB-09).
+     * Get single submission details for editor (API-14).
+     */
+    public function getSubmission(Request $request, int $id): JsonResponse
+    {
+        if ($res = $this->checkEditor($request)) return $res;
+
+        $submission = Submission::with([
+            'project.owner:id,display_name',
+            'submitter:id,display_name',
+            'reviews.reviewer:id,display_name',
+            'decision.editor:id,display_name',
+            'publication',
+        ])->findOrFail($id);
+
+        return $this->successResponse($submission);
+    }
+
+    /**
+     * Get candidate peer reviewers with COI analysis (API-14).
+     */
+    public function getReviewerCandidates(Request $request, int $id): JsonResponse
+    {
+        if ($res = $this->checkEditor($request)) return $res;
+
+        $submission = Submission::with('project.memberships')->findOrFail($id);
+        $project = $submission->project;
+
+        $teamUserIds = $project ? $project->memberships()->pluck('user_id')->toArray() : [];
+        if ($project) {
+            $teamUserIds[] = $project->owner_id;
+        }
+        $teamUserIds[] = $submission->submitted_by;
+        $teamUserIds = array_unique($teamUserIds);
+
+        // Fetch approved scholars
+        $scholars = User::where('status', 'approved')->get();
+        $candidates = [];
+
+        foreach ($scholars as $sch) {
+            $isConflicted = in_array($sch->id, $teamUserIds);
+            $priorReviewCount = ReviewAssignment::where('reviewer_id', $sch->id)->count();
+
+            $candidates[] = [
+                'id' => $sch->id,
+                'display_name' => $sch->display_name,
+                'affiliation' => $sch->profile?->affiliation ?? 'Scholar',
+                'prior_reviews_count' => $priorReviewCount,
+                'coi' => [
+                    'blocked' => $isConflicted,
+                    'reason' => $isConflicted ? "Conflict: author or project team member on PRJ-{$submission->project_id}" : null,
+                ],
+            ];
+        }
+
+        return $this->successResponse($candidates);
+    }
+
+    /**
+     * Reviewer side: list assigned review assignments (API-14).
+     */
+    public function listReviewerAssignments(Request $request): JsonResponse
+    {
+        $assignments = ReviewAssignment::where('reviewer_id', $request->user()->id)
+            ->with(['submission:id,title,abstract,version_number,project_id,status'])
+            ->latest('created_at')
+            ->get();
+
+        return $this->successResponse($assignments);
+    }
+
+    /**
+     * Reviewer side: get single assignment with frozen research package (API-14).
+     */
+    public function getReviewerAssignment(Request $request, int $id): JsonResponse
+    {
+        $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)
+            ->with(['submission'])
+            ->findOrFail($id);
+
+        return $this->successResponse($assignment);
+    }
+
+    /**
+     * Reviewer side: declare COI status (API-14).
+     */
+    public function declareCoi(Request $request, int $id): JsonResponse
+    {
+        $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)->findOrFail($id);
+
+        $validated = $request->validate([
+            'coi_confirmed' => 'required|boolean',
+            'coi_notes' => 'nullable|string',
+        ]);
+
+        $assignment->update([
+            'coi_confirmed' => $validated['coi_confirmed'],
+        ]);
+
+        return $this->successResponse($assignment, 'Conflict of interest declaration recorded.');
+    }
+
+    /**
+     * Reviewer side: accept review assignment (API-14).
+     */
+    public function acceptAssignment(Request $request, int $id): JsonResponse
+    {
+        $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)->findOrFail($id);
+        $assignment->update(['coi_confirmed' => true]);
+
+        return $this->successResponse($assignment, 'Review assignment accepted.');
+    }
+
+    /**
+     * Reviewer side: decline review assignment (API-14).
+     */
+    public function declineAssignment(Request $request, int $id): JsonResponse
+    {
+        $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)->findOrFail($id);
+        $assignment->delete();
+
+        return $this->successResponse(null, 'Review assignment declined.');
+    }
+
+    /**
+     * Helper to format public publication with whitelisted fields only (DEF-5).
+     */
+    private function formatPublicPublication(Publication $pub): array
+    {
+        $owner = $pub->project?->owner;
+        $profile = $owner?->profile;
+        $publicFields = $profile?->public_fields ?? [];
+
+        $ownerData = null;
+        if ($owner) {
+            $ownerData = [
+                'id' => $owner->id,
+                'display_name' => $owner->display_name,
+            ];
+            if (!empty($publicFields['affiliation']) && !empty($profile->affiliation)) {
+                $ownerData['affiliation'] = $profile->affiliation;
+            }
+            if (!empty($publicFields['biography']) && !empty($profile->biography)) {
+                $ownerData['biography'] = $profile->biography;
+            }
+        }
+
+        $releaserData = null;
+        if ($pub->releaser) {
+            $releaserData = [
+                'id' => $pub->releaser->id,
+                'display_name' => $pub->releaser->display_name,
+            ];
+        }
+
+        $submissionData = null;
+        if ($pub->submission) {
+            $submissionData = [
+                'id' => $pub->submission->id,
+                'version_number' => $pub->submission->version_number,
+                'reviews' => $pub->submission->reviews ? $pub->submission->reviews->map(function ($r) {
+                    return [
+                        'id' => $r->id,
+                        'reviewer_alias' => $r->reviewer_alias ?? ('Reviewer ' . $r->id),
+                        'recommendation' => $r->recommendation,
+                        'review_comments' => $r->review_comments,
+                        'submitted_at' => $r->submitted_at?->toIso8601String(),
+                    ];
+                }) : [],
+                'decision' => $pub->submission->decision ? [
+                    'decision' => $pub->submission->decision->decision,
+                    'editorial_notes' => $pub->submission->decision->editorial_notes,
+                    'decided_at' => $pub->submission->decision->decided_at?->toIso8601String(),
+                ] : null,
+            ];
+        }
+
+        return [
+            'id' => $pub->id,
+            'public_slug' => $pub->public_slug,
+            'doi' => $pub->doi,
+            'title' => $pub->title,
+            'abstract' => $pub->abstract,
+            'version_string' => $pub->version_string,
+            'license' => $pub->license,
+            'status' => $pub->status,
+            'retraction_reason' => $pub->retraction_reason,
+            'retracted_at' => $pub->retracted_at?->toIso8601String(),
+            'corrigenda' => $pub->corrigenda ?? [],
+            'released_at' => $pub->released_at?->toIso8601String(),
+            'project' => $pub->project ? [
+                'id' => $pub->project->id,
+                'title' => $pub->project->title,
+                'scope' => $pub->project->scope,
+                'stage' => $pub->project->stage,
+                'owner' => $ownerData,
+            ] : null,
+            'submission' => $submissionData,
+            'releaser' => $releaserData,
+            'published_content' => $pub->published_content,
+        ];
+    }
+
+    /**
+     * Public Research Portal: Browse peer-reviewed publications (PUB-08, PUB-09, DEF-5).
      */
     public function listPublicResearch(Request $request): JsonResponse
     {
         $query = Publication::where('status', '!=', 'hidden')
-            ->with(['project.owner', 'releaser']);
+            ->with(['project.owner.profile', 'releaser']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
@@ -472,22 +676,22 @@ class EditorialController extends ApiController
         $perPage = min((int) ($request->input('per_page', 20)), 100);
         $publications = $query->latest('released_at')->paginate($perPage);
 
-        return $this->paginatedResponse($submissions = $publications);
+        return $this->paginatedResponse($publications, 'Success', fn($p) => $this->formatPublicPublication($p));
     }
 
     /**
-     * Public Research Portal: View published monograph/study details by slug.
+     * Public Research Portal: View published monograph/study details by slug (DEF-5).
      */
     public function getPublicResearch(string $slug): JsonResponse
     {
         $publication = Publication::where('public_slug', $slug)
-            ->with(['project.owner', 'submission.reviews.reviewer', 'submission.decision.editor', 'releaser'])
+            ->with(['project.owner.profile', 'submission.reviews.reviewer', 'submission.decision.editor', 'releaser'])
             ->first();
 
         if (!$publication) {
             return $this->errorResponse('Publication not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($publication);
+        return $this->successResponse($this->formatPublicPublication($publication));
     }
 }

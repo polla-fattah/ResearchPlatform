@@ -82,12 +82,118 @@ class PublishingController extends ApiController
     }
 
     /**
+     * Unpublish an announcement (API-13).
+     */
+    public function unpublishAnnouncement(Request $request, int $projectId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'publish_announcement', $project);
+
+        $announcement = Announcement::where('project_id', $projectId)->first();
+        if (!$announcement) {
+            return $this->errorResponse('Announcement not found.', 'NOT_FOUND', 404);
+        }
+
+        $announcement->update([
+            'status' => 'unpublished',
+        ]);
+
+        \App\Models\ProjectActivity::create([
+            'project_id' => $projectId,
+            'actor_id' => $request->user()->id,
+            'action' => 'announcement_unpublished',
+            'object_type' => 'announcement',
+            'object_id' => $announcement->id,
+            'summary' => "Unpublished research announcement '{$announcement->title}'",
+            'created_at' => now(),
+        ]);
+
+        return $this->successResponse($announcement, 'Announcement unpublished.');
+    }
+
+    /**
+     * Get announcement history (API-13).
+     */
+    public function announcementHistory(Request $request, int $projectId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'view', $project);
+
+        $announcement = Announcement::where('project_id', $projectId)->first();
+        if (!$announcement) {
+            return $this->errorResponse('Announcement not found.', 'NOT_FOUND', 404);
+        }
+
+        $activities = \App\Models\ProjectActivity::where('project_id', $projectId)
+            ->where('object_type', 'announcement')
+            ->with('actor:id,display_name')
+            ->latest('created_at')
+            ->get();
+
+        return $this->successResponse([
+            'announcement' => $announcement,
+            'history' => $activities,
+        ]);
+    }
+
+    /**
+     * Helper to format public announcement with whitelisted fields only (DEF-5).
+     */
+    private function formatPublicAnnouncement(Announcement $a): array
+    {
+        $owner = $a->project?->owner;
+        $profile = $owner?->profile;
+        $publicFields = $profile?->public_fields ?? [];
+
+        $ownerData = null;
+        if ($owner) {
+            $ownerData = [
+                'id' => $owner->id,
+                'display_name' => $owner->display_name,
+            ];
+            if (!empty($publicFields['affiliation']) && !empty($profile->affiliation)) {
+                $ownerData['affiliation'] = $profile->affiliation;
+            }
+            if (!empty($publicFields['biography']) && !empty($profile->biography)) {
+                $ownerData['biography'] = $profile->biography;
+            }
+            if (!empty($publicFields['research_interests']) && !empty($profile->research_interests)) {
+                $ownerData['research_interests'] = $profile->research_interests;
+            }
+        }
+
+        $projectData = null;
+        if ($a->project) {
+            $projectData = [
+                'id' => $a->project->id,
+                'title' => $a->project->title,
+                'scope' => $a->project->scope,
+                'stage' => $a->project->stage,
+                'owner' => $ownerData,
+            ];
+        }
+
+        return [
+            'id' => $a->id,
+            'project_id' => $a->project_id,
+            'public_slug' => $a->public_slug,
+            'title' => $a->title,
+            'summary' => $a->summary,
+            'research_stage' => $a->research_stage,
+            'keywords' => $a->keywords ?? [],
+            'status' => $a->status,
+            'published_at' => $a->published_at?->toIso8601String(),
+            'project' => $projectData,
+        ];
+    }
+
+    /**
      * Public portal: list published research announcements.
      */
     public function listPublicAnnouncements(Request $request): JsonResponse
     {
         $query = Announcement::where('status', 'published')
-            ->with(['project.owner']);
+            ->with(['project.owner.profile']);
 
         if ($request->filled('research_stage')) {
             $query->where('research_stage', $request->input('research_stage'));
@@ -104,7 +210,7 @@ class PublishingController extends ApiController
         $perPage = min((int) ($request->input('per_page', 20)), 100);
         $announcements = $query->latest('published_at')->paginate($perPage);
 
-        return $this->paginatedResponse($announcements);
+        return $this->paginatedResponse($announcements, 'Success', fn($a) => $this->formatPublicAnnouncement($a));
     }
 
     /**
@@ -114,14 +220,14 @@ class PublishingController extends ApiController
     {
         $announcement = Announcement::where('public_slug', $slug)
             ->where('status', 'published')
-            ->with(['project.owner'])
+            ->with(['project.owner.profile'])
             ->first();
 
         if (!$announcement) {
             return $this->errorResponse('Announcement not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($announcement);
+        return $this->successResponse($this->formatPublicAnnouncement($announcement));
     }
 
     /**
@@ -254,5 +360,75 @@ class PublishingController extends ApiController
         }
 
         return $this->successResponse($submission);
+    }
+
+    /**
+     * Public researcher directory exposing only whitelisted public_fields (API-13).
+     */
+    public function listPublicResearchers(Request $request): JsonResponse
+    {
+        $perPage = min((int)$request->input('per_page', 20), 100);
+
+        $researchers = \App\Models\User::where('status', 'approved')
+            ->whereHas('profile', fn($q) => $q->where('is_public', true))
+            ->with('profile')
+            ->paginate($perPage);
+
+        $formatted = $researchers->getCollection()->map(function ($u) {
+            $p = $u->profile;
+            $publicFields = $p?->public_fields ?? ['affiliation', 'research_interests'];
+
+            return [
+                'id' => $u->id,
+                'display_name' => $u->display_name,
+                'affiliation' => in_array('affiliation', $publicFields) ? $p?->affiliation : null,
+                'research_interests' => in_array('research_interests', $publicFields) ? ($p?->research_interests ?? []) : [],
+                'biography' => in_array('biography', $publicFields) ? $p?->biography : null,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Success',
+            'data' => $formatted,
+            'meta' => [
+                'timestamp' => now()->toIso8601String(),
+                'version' => 'v1',
+                'pagination' => [
+                    'current_page' => $researchers->currentPage(),
+                    'per_page' => $researchers->perPage(),
+                    'total_items' => $researchers->total(),
+                    'total_pages' => $researchers->lastPage(),
+                    'has_more' => $researchers->hasMorePages(),
+                ],
+            ],
+        ], 200);
+    }
+
+    /**
+     * Public researcher profile by id (API-13).
+     */
+    public function getPublicResearcher(int $id): JsonResponse
+    {
+        $user = \App\Models\User::where('status', 'approved')
+            ->whereHas('profile', fn($q) => $q->where('is_public', true))
+            ->with('profile')
+            ->find($id);
+
+        if (!$user) {
+            return $this->errorResponse('Researcher profile not found or private.', 'NOT_FOUND', 404);
+        }
+
+        $p = $user->profile;
+        $publicFields = $p?->public_fields ?? ['affiliation', 'research_interests', 'biography'];
+
+        return $this->successResponse([
+            'id' => $user->id,
+            'display_name' => $user->display_name,
+            'affiliation' => in_array('affiliation', $publicFields) ? $p?->affiliation : null,
+            'research_interests' => in_array('research_interests', $publicFields) ? ($p?->research_interests ?? []) : [],
+            'biography' => in_array('biography', $publicFields) ? $p?->biography : null,
+            'email' => in_array('email', $publicFields) ? $user->email : null,
+        ]);
     }
 }

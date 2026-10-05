@@ -89,4 +89,32 @@ class CollaborationRequestController extends ApiController
 
         return $this->successResponse($collabRequest->fresh('requester'), 'Collaboration request status updated.');
     }
+
+    /**
+     * Submit public collaboration request from public announcement page (API-13 / screen 40).
+     */
+    public function storePublic(Request $request, string $slug): JsonResponse
+    {
+        $announcement = \App\Models\ProjectAnnouncement::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'affiliation' => 'nullable|string|max:255',
+            'message' => 'required|string|min:10',
+            'consent' => 'required|boolean|accepted',
+        ]);
+
+        $collabRequest = CollaborationRequest::create([
+            'project_id' => $announcement->project_id,
+            'requester_id' => $request->user()?->id,
+            'message' => $validated['message'] . " [From: {$validated['name']} ({$validated['email']})]",
+            'contact_email' => $validated['email'],
+            'status' => 'pending',
+        ]);
+
+        return $this->successResponse($collabRequest, 'Collaboration interest request submitted.', 202);
+    }
 }

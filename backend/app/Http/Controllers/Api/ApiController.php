@@ -29,14 +29,35 @@ class ApiController extends Controller
     /**
      * Return a standardized JSON error response.
      */
-    protected function errorResponse(string $message, string $errorCode = 'ERROR', int $statusCode = 400, $details = []): JsonResponse
+    protected function errorResponse(string $message, string|int $errorCode = 'ERROR', int|array $statusCode = 400, $details = []): JsonResponse
     {
+        if (is_int($errorCode)) {
+            $actualStatusCode = $errorCode;
+            $actualErrorCode = match ($actualStatusCode) {
+                400 => 'BAD_REQUEST',
+                401 => 'UNAUTHENTICATED',
+                403 => 'FORBIDDEN',
+                404 => 'NOT_FOUND',
+                409 => 'CONFLICT',
+                410 => 'GONE',
+                422 => 'VALIDATION_ERROR',
+                423 => 'LOCKED',
+                429 => 'RATE_LIMITED',
+                default => 'ERROR',
+            };
+            $actualDetails = is_array($statusCode) ? $statusCode : $details;
+        } else {
+            $actualErrorCode = $errorCode;
+            $actualStatusCode = is_int($statusCode) ? $statusCode : 400;
+            $actualDetails = is_array($details) ? $details : (is_array($statusCode) ? $statusCode : []);
+        }
+
         $payload = [
             'success' => false,
             'error' => [
-                'code' => $errorCode,
+                'code' => $actualErrorCode,
                 'message' => $message,
-                'details' => $details,
+                'details' => $actualDetails,
             ],
             'meta' => [
                 'timestamp' => now()->toIso8601String(),
@@ -44,7 +65,7 @@ class ApiController extends Controller
             ],
         ];
 
-        return response()->json($payload, $statusCode);
+        return response()->json($payload, $actualStatusCode);
     }
 
     /**
@@ -56,27 +77,31 @@ class ApiController extends Controller
     }
 
     /**
-     * Alias for errorResponse supporting both ($msg, $statusCode) and ($msg, $errorCode, $statusCode).
+     * Alias for errorResponse supporting both ($msg, $statusCode, $details) and ($msg, $errorCode, $statusCode, $details).
      */
-    protected function error(string $message, string|int $errorCodeOrStatus = 'ERROR', int $statusCode = 400, $details = []): JsonResponse
+    protected function error(string $message, string|int $errorCodeOrStatus = 'ERROR', int|array $statusCodeOrDetails = 400, $details = []): JsonResponse
     {
         if (is_int($errorCodeOrStatus)) {
-            $statusCode = $errorCodeOrStatus;
-            $errorCode = match ($statusCode) {
+            $actualStatusCode = $errorCodeOrStatus;
+            $actualErrorCode = match ($actualStatusCode) {
                 400 => 'BAD_REQUEST',
-                401 => 'UNAUTHORIZED',
+                401 => 'UNAUTHENTICATED',
                 403 => 'FORBIDDEN',
                 404 => 'NOT_FOUND',
+                409 => 'CONFLICT',
                 410 => 'GONE',
-                422 => 'UNPROCESSABLE_ENTITY',
+                422 => 'VALIDATION_ERROR',
                 423 => 'LOCKED',
+                429 => 'RATE_LIMITED',
                 default => 'ERROR',
             };
-        } else {
-            $errorCode = $errorCodeOrStatus;
+            $actualDetails = is_array($statusCodeOrDetails) ? $statusCodeOrDetails : $details;
+            return $this->errorResponse($message, $actualErrorCode, $actualStatusCode, $actualDetails);
         }
 
-        return $this->errorResponse($message, $errorCode, $statusCode, $details);
+        $actualStatusCode = is_int($statusCodeOrDetails) ? $statusCodeOrDetails : 400;
+        $actualDetails = is_array($details) ? $details : (is_array($statusCodeOrDetails) ? $statusCodeOrDetails : []);
+        return $this->errorResponse($message, $errorCodeOrStatus, $actualStatusCode, $actualDetails);
     }
 
     /**

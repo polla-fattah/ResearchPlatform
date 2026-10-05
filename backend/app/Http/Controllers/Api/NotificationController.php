@@ -9,24 +9,59 @@ use Illuminate\Http\Request;
 
 class NotificationController extends ApiController
 {
+    /**
+     * List user notifications (API-12 / DEF-12).
+     */
     public function index(Request $request): JsonResponse
     {
         $userId = $request->user()->id;
 
-        $notifications = Notification::where('user_id', $userId)
-            ->orderBy('is_read', 'asc')
+        $query = Notification::where('user_id', $userId);
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->query('type'));
+        }
+
+        $perPage = min((int)$request->input('per_page', 20), 100);
+        $notifications = $query->orderBy('is_read', 'asc')
             ->orderBy('created_at', 'desc')
-            ->limit(50)
-            ->get();
+            ->paginate($perPage);
 
         $unreadCount = Notification::where('user_id', $userId)
             ->where('is_read', false)
             ->count();
 
-        return $this->success([
-            'unread_count' => $unreadCount,
-            'notifications' => $notifications,
+        return response()->json([
+            'success' => true,
+            'message' => 'Success',
+            'data' => [
+                'unread_count' => $unreadCount,
+                'notifications' => $notifications->items(),
+            ],
+            'meta' => [
+                'timestamp' => now()->toIso8601String(),
+                'version' => 'v1',
+                'pagination' => [
+                    'current_page' => $notifications->currentPage(),
+                    'per_page' => $notifications->perPage(),
+                    'total_items' => $notifications->total(),
+                    'total_pages' => $notifications->lastPage(),
+                    'has_more' => $notifications->hasMorePages(),
+                ],
+            ],
         ]);
+    }
+
+    /**
+     * Get unread notifications count (API-12).
+     */
+    public function unreadCount(Request $request): JsonResponse
+    {
+        $unreadCount = Notification::where('user_id', $request->user()->id)
+            ->where('is_read', false)
+            ->count();
+
+        return $this->success(['unread_count' => $unreadCount]);
     }
 
     public function markAsRead(Request $request, int $id): JsonResponse
@@ -64,6 +99,10 @@ class NotificationController extends ApiController
                 'notify_assignments' => true,
                 'notify_reviews' => true,
                 'notify_exports' => true,
+                'notify_search_runs' => true,
+                'notify_source_changes' => true,
+                'notify_corpus_proposals' => true,
+                'channels' => ['in_app' => true, 'email' => true],
                 'email_digest' => 'instant',
             ]
         );
@@ -79,6 +118,10 @@ class NotificationController extends ApiController
             'notify_assignments' => 'sometimes|boolean',
             'notify_reviews' => 'sometimes|boolean',
             'notify_exports' => 'sometimes|boolean',
+            'notify_search_runs' => 'sometimes|boolean',
+            'notify_source_changes' => 'sometimes|boolean',
+            'notify_corpus_proposals' => 'sometimes|boolean',
+            'channels' => 'sometimes|array',
             'email_digest' => 'sometimes|string|in:instant,daily,weekly,never',
         ]);
 
