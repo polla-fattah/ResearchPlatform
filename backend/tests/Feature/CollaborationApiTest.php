@@ -60,13 +60,13 @@ class CollaborationApiTest extends TestCase
         // 1. Send invitation
         $res = $this->postJson("/api/v1/projects/{$this->project->id}/invitations", [
             'email' => $this->colleague->email,
-            'role' => 'co_investigator',
+            'role' => 'researcher',
             'expires_days' => 7,
         ]);
 
         $res->assertStatus(201)
             ->assertJsonPath('success', true)
-            ->assertJsonPath('data.role', 'co_investigator')
+            ->assertJsonPath('data.role', 'researcher')
             ->assertJsonPath('data.status', 'pending');
 
         $token = $res->json('data.token');
@@ -83,13 +83,13 @@ class CollaborationApiTest extends TestCase
         $acceptRes->assertStatus(200)
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.status', 'accepted')
-            ->assertJsonPath('data.role', 'co_investigator');
+            ->assertJsonPath('data.role', 'researcher');
 
         // Verify membership created
         $this->assertDatabaseHas('project_memberships', [
             'project_id' => $this->project->id,
             'user_id' => $this->colleague->id,
-            'role' => 'co_investigator',
+            'role' => 'researcher',
             'status' => 'accepted',
         ]);
 
@@ -102,10 +102,10 @@ class CollaborationApiTest extends TestCase
 
     public function test_col_02_member_role_update_and_revocation(): void
     {
-        // Add colleague as contributor first
+        // Add colleague as researcher first
         ProjectMembership::updateOrCreate(
             ['project_id' => $this->project->id, 'user_id' => $this->colleague->id],
-            ['role' => 'contributor', 'status' => 'accepted']
+            ['role' => 'researcher', 'status' => 'accepted']
         );
 
         Sanctum::actingAs($this->owner);

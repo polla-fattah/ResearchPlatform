@@ -83,6 +83,7 @@ class AdminApiTest extends TestCase
             ]);
 
         // 5. Researcher submits a corpus correction proposal
+        $applicant->refresh();
         Sanctum::actingAs($applicant);
         $proposalRes = $this->postJson('/api/v1/corpus/proposals', [
             'corpus_table' => 'hadiths',

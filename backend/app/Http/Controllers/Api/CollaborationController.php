@@ -29,27 +29,30 @@ class CollaborationController extends ApiController
 
     public function listInvitations(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'manage_members', $project);
 
+        $perPage = min((int)$request->input('per_page', 20), 100);
         $invitations = ProjectInvitation::where('project_id', $project->id)
             ->with(['inviter:id,display_name,email'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($perPage);
 
-        return $this->success($invitations);
+        return $this->paginatedResponse($invitations);
     }
 
     public function createInvitation(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'invite', $project);
 
         $validated = $request->validate([
             'email' => 'required|email|max:255',
-            'role' => 'required|string|in:co_investigator,contributor,reviewer,observer',
+            'role' => 'required|string|in:researcher,reviewer,viewer',
             'expires_days' => 'nullable|integer|min:1|max:30',
         ]);
+
+        $role = $validated['role'];
 
         $invitedUser = User::where('email', $validated['email'])->first();
 
@@ -61,8 +64,18 @@ class CollaborationController extends ApiController
                 ->first();
 
             if ($existing) {
-                return $this->error('This researcher is already an active member of this project.', 422);
+                return $this->errorResponse('This researcher is already an active member of this project.', 'CONFLICT', 409);
             }
+        }
+
+        // Check for pending invitation conflict (API-11)
+        $pendingInvite = ProjectInvitation::where('project_id', $project->id)
+            ->where('email', $validated['email'])
+            ->where('status', 'pending')
+            ->first();
+
+        if ($pendingInvite && !$pendingInvite->isExpired()) {
+            return $this->errorResponse('This researcher already has a pending invitation for this project.', 'CONFLICT', 409);
         }
 
         $days = $validated['expires_days'] ?? 7;
@@ -70,7 +83,7 @@ class CollaborationController extends ApiController
             'project_id' => $project->id,
             'email' => $validated['email'],
             'invited_user_id' => $invitedUser?->id,
-            'role' => $validated['role'],
+            'role' => $role,
             'token' => Str::random(64),
             'status' => 'pending',
             'expires_at' => now()->addDays($days),
@@ -85,7 +98,7 @@ class CollaborationController extends ApiController
             'action' => 'invitation_created',
             'object_type' => 'invitation',
             'object_id' => $invitation->id,
-            'summary' => "Invited {$validated['email']} as " . ucfirst($validated['role']),
+            'summary' => "Invited {$validated['email']} as " . ucfirst($role),
             'created_at' => now(),
         ]);
 
@@ -95,7 +108,7 @@ class CollaborationController extends ApiController
                 'user_id' => $invitedUser->id,
                 'type' => 'invitation',
                 'title' => 'Project Invitation Received',
-                'message' => "You have been invited to join '{$project->title}' as {$validated['role']}.",
+                'message' => "You have been invited to join '{$project->title}' as {$role}.",
                 'target_type' => 'project',
                 'target_id' => $project->id,
                 'created_at' => now(),
@@ -172,6 +185,55 @@ class CollaborationController extends ApiController
         return $this->success($membership, 'You have successfully joined the research project.');
     }
 
+    public function getInvitationPreview(string $token): JsonResponse
+    {
+        $invitation = ProjectInvitation::with(['project', 'inviter:id,display_name'])
+            ->where('token', $token)
+            ->first();
+
+        if (!$invitation) {
+            return $this->errorResponse('Invitation not found.', 'NOT_FOUND', 404);
+        }
+
+        return $this->success([
+            'token' => $invitation->token,
+            'project_id' => $invitation->project_id,
+            'project_title' => $invitation->project?->title,
+            'inviter' => $invitation->inviter?->display_name ?? 'A researcher',
+            'role' => $invitation->role,
+            'status' => $invitation->status,
+            'expires_at' => $invitation->expires_at?->toIso8601String(),
+            'is_expired' => $invitation->isExpired(),
+        ]);
+    }
+
+    public function resendInvitation(Request $request, int $projectId, int $invitationId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policy->authorizeProject($request->user(), 'manage_members', $project);
+
+        $invitation = ProjectInvitation::where('project_id', $project->id)->findOrFail($invitationId);
+
+        $invitation->update([
+            'token' => Str::random(64),
+            'status' => 'pending',
+            'expires_at' => now()->addDays(7),
+        ]);
+
+        return $this->success($invitation, 'Invitation resent successfully.');
+    }
+
+    public function destroyInvitation(Request $request, int $projectId, int $invitationId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policy->authorizeProject($request->user(), 'manage_members', $project);
+
+        $invitation = ProjectInvitation::where('project_id', $project->id)->findOrFail($invitationId);
+        $invitation->delete();
+
+        return $this->success(null, 'Invitation withdrawn.');
+    }
+
     public function declineInvitation(Request $request, string $token): JsonResponse
     {
         $invitation = ProjectInvitation::where('token', $token)->firstOrFail();
@@ -186,7 +248,7 @@ class CollaborationController extends ApiController
 
     public function updateMemberRole(Request $request, int $projectId, int $userId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'manage_members', $project);
 
         if ($userId === $project->owner_id) {
@@ -194,8 +256,14 @@ class CollaborationController extends ApiController
         }
 
         $validated = $request->validate([
-            'role' => 'required|string|in:co_investigator,contributor,reviewer,observer',
+            'role' => 'required|string|in:owner,researcher,reviewer,viewer,co_investigator,contributor,observer',
         ]);
+
+        $role = match ($validated['role']) {
+            'co_investigator', 'contributor' => 'researcher',
+            'observer' => 'viewer',
+            default => $validated['role'],
+        };
 
         $membership = ProjectMembership::where('project_id', $project->id)
             ->where('user_id', $userId)
@@ -203,7 +271,7 @@ class CollaborationController extends ApiController
 
         $oldRole = $membership->role;
         $membership->update([
-            'role' => $validated['role'],
+            'role' => $role,
             'status' => 'accepted',
         ]);
 
@@ -214,7 +282,7 @@ class CollaborationController extends ApiController
             'action' => 'role_changed',
             'object_type' => 'membership',
             'object_id' => $membership->id,
-            'summary' => "Changed role of {$membership->user->display_name} from {$oldRole} to {$validated['role']}",
+            'summary' => "Changed role of {$membership->user->display_name} from {$oldRole} to {$role}",
             'created_at' => now(),
         ]);
 
@@ -222,7 +290,7 @@ class CollaborationController extends ApiController
             'user_id' => $userId,
             'type' => 'role_updated',
             'title' => 'Project Role Updated',
-            'message' => "Your role in '{$project->title}' was changed to {$validated['role']}.",
+            'message' => "Your role in '{$project->title}' was changed to {$role}.",
             'target_type' => 'project',
             'target_id' => $project->id,
             'created_at' => now(),
@@ -268,7 +336,7 @@ class CollaborationController extends ApiController
 
     public function listDiscussions(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'view', $project);
 
         $query = DiscussionThread::where('project_id', $project->id)
@@ -288,13 +356,14 @@ class CollaborationController extends ApiController
             $query->where('is_resolved', filter_var($request->query('is_resolved'), FILTER_VALIDATE_BOOLEAN));
         }
 
-        $threads = $query->orderBy('updated_at', 'desc')->get();
-        return $this->success($threads);
+        $perPage = min((int)$request->input('per_page', 20), 100);
+        $threads = $query->orderBy('updated_at', 'desc')->paginate($perPage);
+        return $this->paginatedResponse($threads);
     }
 
     public function createDiscussion(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'discuss', $project);
 
         $validated = $request->validate([
@@ -343,15 +412,13 @@ class CollaborationController extends ApiController
         $thread = DiscussionThread::with('project')->findOrFail($threadId);
         $this->policy->authorizeProject($request->user(), 'view', $thread->project);
 
+        $perPage = min((int)$request->input('per_page', 20), 100);
         $comments = Comment::where('thread_id', $thread->id)
             ->with(['author:id,display_name'])
             ->orderBy('created_at', 'asc')
-            ->get();
+            ->paginate($perPage);
 
-        return $this->success([
-            'thread' => $thread,
-            'comments' => $comments,
-        ]);
+        return $this->paginatedResponse($comments);
     }
 
     public function addComment(Request $request, int $threadId): JsonResponse
@@ -411,7 +478,7 @@ class CollaborationController extends ApiController
 
     public function listTasks(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'view', $project);
 
         $query = Task::where('project_id', $project->id)
@@ -425,8 +492,9 @@ class CollaborationController extends ApiController
             $query->where('assignee_id', $request->query('assignee_id'));
         }
 
-        $tasks = $query->orderBy('created_at', 'desc')->get();
-        return $this->success($tasks);
+        $perPage = min((int)$request->input('per_page', 20), 100);
+        $tasks = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return $this->paginatedResponse($tasks);
     }
 
     public function createTask(Request $request, int $projectId): JsonResponse
@@ -543,42 +611,79 @@ class CollaborationController extends ApiController
 
     public function listActivity(Request $request, int $projectId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'view', $project);
 
         $query = ProjectActivity::where('project_id', $project->id)
             ->with(['actor:id,display_name']);
 
-        if ($request->has('action')) {
+        if ($request->filled('action')) {
             $query->where('action', $request->query('action'));
         }
 
-        if ($request->has('actor_id')) {
+        if ($request->filled('actor_id')) {
             $query->where('actor_id', $request->query('actor_id'));
         }
 
-        $activities = $query->orderBy('created_at', 'desc')->limit(100)->get();
+        if ($request->filled('object_type')) {
+            $query->where('object_type', $request->query('object_type'));
+        }
 
-        if ($activities->isEmpty()) {
+        if ($request->filled('from')) {
+            $query->where('created_at', '>=', $request->query('from'));
+        }
+
+        if ($request->filled('to')) {
+            $query->where('created_at', '<=', $request->query('to'));
+        }
+
+        $perPage = min((int)$request->input('per_page', 20), 100);
+        $activities = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        if ($activities->total() === 0) {
             $auditLogs = \App\Models\AuditEvent::where(function ($q) use ($project) {
                 $q->where(fn($sub) => $sub->where('object_type', 'project')->where('object_id', $project->id))
                   ->orWhereRaw("details->>'project_id' = ?", [(string) $project->id]);
-            })->with('actor:id,display_name')->latest('created_at')->limit(100)->get();
+            })->with('actor:id,display_name')->latest('created_at')->paginate($perPage);
 
-            $activities = $auditLogs->map(function ($log) use ($project) {
-                return [
-                    'id' => $log->id,
-                    'project_id' => $project->id,
-                    'actor_id' => $log->actor_id,
-                    'actor' => $log->actor,
-                    'action' => $log->action,
-                    'summary' => "Action {$log->action} on {$log->object_type}",
-                    'created_at' => $log->created_at,
-                ];
-            });
+            if ($auditLogs->total() > 0) {
+                $mapped = $auditLogs->getCollection()->map(function ($log) {
+                    return [
+                        'id' => $log->id,
+                        'project_id' => $log->object_id,
+                        'actor_id' => $log->actor_id,
+                        'action' => $log->action,
+                        'object_type' => $log->object_type,
+                        'object_id' => $log->object_id,
+                        'summary' => $log->details['summary'] ?? "Action: {$log->action}",
+                        'created_at' => $log->created_at?->toIso8601String(),
+                        'actor' => $log->actor ? [
+                            'id' => $log->actor->id,
+                            'display_name' => $log->actor->display_name,
+                        ] : null,
+                    ];
+                });
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Success',
+                    'data' => $mapped,
+                    'meta' => [
+                        'timestamp' => now()->toIso8601String(),
+                        'version' => 'v1',
+                        'pagination' => [
+                            'current_page' => $auditLogs->currentPage(),
+                            'per_page' => $auditLogs->perPage(),
+                            'total_items' => $auditLogs->total(),
+                            'total_pages' => $auditLogs->lastPage(),
+                            'has_more' => $auditLogs->hasMorePages(),
+                        ],
+                    ],
+                ]);
+            }
         }
 
-        return $this->success($activities);
+        return $this->paginatedResponse($activities);
     }
 
     public function listThreads(Request $request, int $projectId): JsonResponse
@@ -591,13 +696,51 @@ class CollaborationController extends ApiController
         return $this->createDiscussion($request, $projectId);
     }
 
+    public function getProjectRoles(Request $request, int $projectId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policy->authorizeProject($request->user(), 'view', $project);
+
+        return $this->success($this->policy->getRoleCapabilities());
+    }
+
+    /**
+     * Search users for invitation without leaking emails (API-11).
+     */
+    public function searchUsers(Request $request): JsonResponse
+    {
+        $q = trim((string)$request->query('q', ''));
+        if (mb_strlen($q) < 3) {
+            return $this->errorResponse('Search query must be at least 3 characters.', 'VALIDATION_ERROR', 422);
+        }
+
+        $users = User::where('status', 'approved')
+            ->where(function ($query) use ($q) {
+                $query->where('display_name', 'ilike', "%{$q}%")
+                      ->orWhere('email', '=', $q); // Only match exact email
+            })
+            ->with('profile')
+            ->limit(20)
+            ->get()
+            ->map(function ($u) use ($q) {
+                return [
+                    'id' => $u->id,
+                    'display_name' => $u->display_name,
+                    'affiliation' => $u->profile?->affiliation,
+                    'email' => strtolower($u->email) === strtolower($q) ? $u->email : null,
+                ];
+            });
+
+        return $this->success($users);
+    }
+
     // ------------------------------------------------------------------------
     // 5. CONCURRENT EDIT LOCKING (COL-06)
     // ------------------------------------------------------------------------
 
     public function acquireDocumentLock(Request $request, int $projectId, int $docId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'acquire_lock', $project);
 
         $document = Document::where('project_id', $project->id)->findOrFail($docId);
@@ -608,7 +751,17 @@ class CollaborationController extends ApiController
 
         if ($document->locked_by && $document->locked_by !== $userId && !$lockExpired) {
             $lockedUser = User::find($document->locked_by);
-            return $this->error("Document is currently locked by {$lockedUser?->display_name}. Lock expires at " . $document->locked_at->addMinutes(15)->toIso8601String(), 423);
+            $expiresAt = $document->locked_at->addMinutes(15)->toIso8601String();
+            return $this->errorResponse(
+                "Document is currently locked by {$lockedUser?->display_name}. Lock expires at {$expiresAt}",
+                'LOCKED',
+                423,
+                [
+                    'locked_by' => $document->locked_by,
+                    'locked_by_name' => $lockedUser?->display_name ?? 'Unknown',
+                    'expires_at' => $expiresAt,
+                ]
+            );
         }
 
         $document->update([
@@ -627,7 +780,7 @@ class CollaborationController extends ApiController
 
     public function releaseDocumentLock(Request $request, int $projectId, int $docId): JsonResponse
     {
-        $project = ResearchProject::findOrFail($projectId);
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policy->authorizeProject($request->user(), 'view', $project);
 
         $document = Document::where('project_id', $project->id)->findOrFail($docId);
