@@ -14,12 +14,25 @@ class ResearcherProfile extends Model
         'research_interests',
         'is_public',
         'public_fields',
+        'mfa_secret',
+        'recovery_codes',
+        'display_preferences',
+        'roles',
+    ];
+
+    protected $hidden = [
+        'mfa_secret',
+        'recovery_codes',
     ];
 
     protected $casts = [
         'research_interests' => 'array',
         'is_public' => 'boolean',
         'public_fields' => 'array',
+        'mfa_secret' => 'encrypted',
+        'recovery_codes' => 'array',
+        'display_preferences' => 'array',
+        'roles' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

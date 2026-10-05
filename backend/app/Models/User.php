@@ -20,11 +20,19 @@ class User extends Authenticatable
         'preferred_language',
         'status',
         'is_admin',
+        'password_reset_token',
+        'password_reset_expires_at',
+        'closure_requested_at',
+        'closure_reason',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'password_reset_token',
+        'password_reset_expires_at',
+        'closure_requested_at',
+        'closure_reason',
     ];
 
     protected function casts(): array
@@ -35,6 +43,37 @@ class User extends Authenticatable
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    protected $appends = [
+        'roles',
+        'mfa_enabled',
+    ];
+
+    public function getRolesAttribute(): array
+    {
+        $roles = [];
+        if ($this->is_admin) {
+            $roles[] = 'admin';
+            $roles[] = 'editor';
+            $roles[] = 'corpus_editor';
+        }
+        if ($this->status === 'approved') {
+            $roles[] = 'researcher';
+        }
+        $stored = $this->profile?->roles ?? [];
+        if (is_array($stored)) {
+            $roles = array_merge($roles, $stored);
+        }
+        if (empty($roles)) {
+            $roles[] = 'applicant';
+        }
+        return array_values(array_unique($roles));
+    }
+
+    public function getMfaEnabledAttribute(): bool
+    {
+        return !empty($this->profile?->mfa_secret);
     }
 
     public function profile(): HasOne
@@ -60,5 +99,10 @@ class User extends Authenticatable
     public function libraryItems(): HasMany
     {
         return $this->hasMany(LibraryItem::class);
+    }
+
+    public function reviewAssignments(): HasMany
+    {
+        return $this->hasMany(ReviewAssignment::class, 'reviewer_id');
     }
 }
