@@ -55,4 +55,9 @@ class Document extends Model
         return $this->hasOne(DocumentVersion::class, 'document_id')
                     ->latestOfMany('version_number');
     }
+
+    public function findings(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Finding::class, 'document_findings', 'document_id', 'finding_id')->withTimestamps();
+    }
 }

@@ -19,6 +19,10 @@ class NotificationPreference extends Model
         'notify_assignments',
         'notify_reviews',
         'notify_exports',
+        'notify_search_runs',
+        'notify_source_changes',
+        'notify_corpus_proposals',
+        'channels',
         'email_digest',
     ];
 
@@ -30,6 +34,10 @@ class NotificationPreference extends Model
             'notify_assignments' => 'boolean',
             'notify_reviews' => 'boolean',
             'notify_exports' => 'boolean',
+            'notify_search_runs' => 'boolean',
+            'notify_source_changes' => 'boolean',
+            'notify_corpus_proposals' => 'boolean',
+            'channels' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

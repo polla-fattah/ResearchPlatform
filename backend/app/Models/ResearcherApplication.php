@@ -12,12 +12,15 @@ class ResearcherApplication extends Model
         'status',
         'research_statement',
         'sample_publications',
+        'reference',
+        'information_request',
         'decision_reason',
         'decided_by',
         'decided_at',
     ];
 
     protected $casts = [
+        'information_request' => 'array',
         'decided_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -31,5 +34,10 @@ class ResearcherApplication extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'decided_by');
+    }
+
+    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ApplicationReply::class, 'application_id');
     }
 }

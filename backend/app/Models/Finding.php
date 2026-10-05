@@ -40,4 +40,9 @@ class Finding extends Model
         return $this->belongsToMany(EvidenceItem::class, 'finding_evidence', 'finding_id', 'evidence_id')
                     ->withPivot('relation_type', 'interpretation', 'created_at');
     }
+
+    public function documents(): BelongsToMany
+    {
+        return $this->belongsToMany(Document::class, 'document_findings', 'finding_id', 'document_id')->withTimestamps();
+    }
 }
