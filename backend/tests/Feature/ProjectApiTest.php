@@ -56,10 +56,10 @@ class ProjectApiTest extends TestCase
                 ]
             ]);
 
-        // 3. Outsider cannot view project
+        // 3. Outsider cannot view project (DEF-2: returns 404 to avoid disclosing existence)
         Sanctum::actingAs($outsider);
         $outsiderRes = $this->getJson("/api/v1/projects/{$projectId}");
-        $outsiderRes->assertStatus(403);
+        $outsiderRes->assertStatus(404);
 
         // 4. Update project details (as Owner)
         Sanctum::actingAs($owner);

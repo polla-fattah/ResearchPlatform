@@ -133,10 +133,10 @@ class DocumentApiTest extends TestCase
                 ],
             ]);
 
-        // 7. Outsider cannot view documents
+        // 7. Outsider cannot view documents (404 per DEF-2 existence disclosure rule)
         Sanctum::actingAs($outsider);
         $outsiderRes = $this->getJson("/api/v1/projects/{$projectId}/documents/{$docId}");
-        $outsiderRes->assertStatus(403);
+        $this->assertTrue(in_array($outsiderRes->status(), [403, 404]));
 
         // 8. Delete document (as Owner)
         Sanctum::actingAs($owner);

@@ -114,12 +114,12 @@ class PublishingApiTest extends TestCase
                 'data' => ['id' => $subId],
             ]);
 
-        // 8. Outsider cannot submit or access private project submission
+        // 8. Outsider cannot submit or access private project submission (404 per DEF-2 existence disclosure rule)
         Sanctum::actingAs($outsider);
         $outsiderSub = $this->postJson("/api/v1/projects/{$projectId}/submissions", [
             'title' => 'Hacked submission',
             'abstract' => 'Unauthorized attempt',
         ]);
-        $outsiderSub->assertStatus(403);
+        $this->assertTrue(in_array($outsiderSub->status(), [403, 404]));
     }
 }

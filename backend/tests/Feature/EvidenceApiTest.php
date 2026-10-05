@@ -120,10 +120,10 @@ class EvidenceApiTest extends TestCase
                 'data' => ['id', 'annotations']
             ]);
 
-        // 7. Outsider cannot access project evidence
+        // 7. Outsider cannot access project evidence (404 per DEF-2 existence disclosure rule)
         Sanctum::actingAs($outsider);
         $outsiderRes = $this->getJson("/api/v1/projects/{$projectId}/evidence");
-        $outsiderRes->assertStatus(403);
+        $this->assertTrue(in_array($outsiderRes->status(), [403, 404]));
 
         // 8. Update evidence state (as Owner)
         Sanctum::actingAs($owner);

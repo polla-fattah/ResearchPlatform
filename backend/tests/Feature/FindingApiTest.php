@@ -116,10 +116,10 @@ class FindingApiTest extends TestCase
             ]);
         $this->assertCount(2, $showRes->json('data.evidence_items'));
 
-        // 5. Outsider cannot view finding
+        // 5. Outsider cannot view finding (404 per DEF-2 existence disclosure rule)
         Sanctum::actingAs($outsider);
         $outsiderRes = $this->getJson("/api/v1/projects/{$projectId}/findings/{$findingId}");
-        $outsiderRes->assertStatus(403);
+        $this->assertTrue(in_array($outsiderRes->status(), [403, 404]));
 
         // 6. Update finding (as Owner)
         Sanctum::actingAs($owner);

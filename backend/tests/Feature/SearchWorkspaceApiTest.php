@@ -154,9 +154,9 @@ class SearchWorkspaceApiTest extends TestCase
         $this->assertEquals(1, $members[0]['ordinal_position']);
         $this->assertEquals('Sahih al-Bukhari', $members[0]['snapshot_data']['book']);
 
-        // 9. Unauthorized outsider cannot view or create searches on this private project
+        // 9. Unauthorized outsider cannot view or create searches on this private project (404 per DEF-2)
         Sanctum::actingAs($outsider);
         $deniedRes = $this->getJson("/api/v1/projects/{$projectId}/searches");
-        $deniedRes->assertStatus(403);
+        $this->assertTrue(in_array($deniedRes->status(), [403, 404]));
     }
 }

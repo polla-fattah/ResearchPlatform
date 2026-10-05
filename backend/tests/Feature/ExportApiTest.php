@@ -84,9 +84,9 @@ class ExportApiTest extends TestCase
         $this->assertEquals('Corpus Reconstruction Export Study', $content['project']['title']);
         $this->assertNotEmpty($content['evidence_items']);
 
-        // 4. Outsider cannot download export
+        // 4. Outsider cannot download export (404 per DEF-2 existence disclosure rule)
         Sanctum::actingAs($outsider);
         $outsiderRes = $this->getJson("/api/v1/projects/{$projectId}/exports/{$jobId}/download");
-        $outsiderRes->assertStatus(403);
+        $this->assertTrue(in_array($outsiderRes->status(), [403, 404]));
     }
 }

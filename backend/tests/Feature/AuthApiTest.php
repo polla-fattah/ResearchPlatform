@@ -26,7 +26,7 @@ class AuthApiTest extends TestCase
                 'data' => [
                     'user' => [
                         'display_name' => 'Dr. Researcher',
-                        'status' => 'pending',
+                        'status' => 'unverified',
                         'preferred_language' => 'ar',
                     ],
                 ],
