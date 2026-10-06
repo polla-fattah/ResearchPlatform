@@ -30,6 +30,8 @@ import { WritingPage } from '@/features/writing/WritingPage'
 import { InvitationPage } from '@/features/members/InvitationPage'
 import { MembersPage } from '@/features/members/MembersPage'
 import { NotificationsPage } from '@/features/notifications/NotificationsPage'
+import { AnnouncementPublicPage } from '@/features/publicAnnouncements/AnnouncementPublicPage'
+import { AnnouncementsListPage } from '@/features/publicAnnouncements/AnnouncementsListPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -71,6 +73,8 @@ const BUILT: Record<string, ReactElement> = {
   '17': <NotificationsPage />,
   '18': <ActivityPage />,
   '19': <AnnouncementPage />,
+  '20l': <AnnouncementsListPage />,
+  '20': <AnnouncementPublicPage />,
   '07p': <ResourcePickerPage />,
 }
 

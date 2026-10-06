@@ -129,6 +129,12 @@ export const qk = {
   /** An invitation seen by the person it was sent to, read by its token. */
   invitation: (token: string) => ['invitations', token] as const,
 
+  /** What a visitor sees: no sign-in, so nothing here belongs to a person. */
+  public: {
+    announcements: (query: unknown) => ['public', 'announcements', query] as const,
+    announcement: (slug: string) => ['public', 'announcement', slug] as const,
+  },
+
   library: {
     all: ['library'] as const,
     /** The first page of saved items, used to mark what is already saved. */

@@ -15,6 +15,7 @@ export function PublicLayout() {
           {t('app.name')}
         </Link>
         <nav className={styles.publicNav}>
+          <Link to="/announcements">{t('nav.announcements')}</Link>
           <LanguageSwitcher />
           {status === 'authenticated' ? (
             <Link to="/home">{t('nav.home')}</Link>

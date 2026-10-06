@@ -13,7 +13,8 @@
     "settings": "Profile & Settings",
     "account": "Account navigation",
     "skip": "Skip to content",
-    "administration": "Administration"
+    "administration": "Administration",
+    "announcements": "Announcements"
   },
   "release": {
     "R1a": "R1a",
@@ -3142,6 +3143,45 @@
       "none": "Nothing recorded yet.",
       "failed": "The history could not be loaded.",
       "note": "Only taking the announcement down is recorded today. Earlier versions are not kept: the public page is the current version."
+    }
+  },
+  "publicAnnouncements": {
+    "title": "Research announcements",
+    "intro": "Projects that are under way, announced by their researchers. Announcements describe questions and scope. They are not reviewed findings.",
+    "tag": "Announcement · ongoing · not peer-reviewed",
+    "published": "Published {{date}}",
+    "filters": {
+      "label": "Find announcements",
+      "search": "Search",
+      "stage": "Stage",
+      "anyStage": "Any stage",
+      "clear": "Clear filters"
+    },
+    "noneTitle": "No announcements yet",
+    "noneBody": "When researchers announce their work, it will be listed here.",
+    "noneFiltered": "No announcements match “{{q}}”",
+    "noneFilteredBody": "Try a broader word, or clear the filters.",
+    "gone": {
+      "title": "This announcement is no longer available",
+      "body": "It may have been taken down, or the address may be wrong. Private research is not reachable from the public site.",
+      "browse": "Browse research announcements"
+    },
+    "page": {
+      "label": "Project announcement · ongoing research.",
+      "notice": "This is the researchers' own description of work in progress. It has not been peer-reviewed, and it is not a finding.",
+      "project": "Project",
+      "scope": "Scope",
+      "stage": "Stage",
+      "keywords": "Keywords",
+      "researchers": "Researchers",
+      "published": "Published {{date}}",
+      "foot": "This page shows only what the owner chose to publish. Notes, evidence, discussions and the member list are not public, and having this address does not give access to the project."
+    },
+    "collab": {
+      "title": "Interested in collaborating?",
+      "body": "Send the researchers a short message. You need a verified account. Your message shares only what you write. Joining always needs a separate invitation from the project owner.",
+      "ask": "Ask to collaborate",
+      "signIn": "Sign in to ask"
     }
   }
 }
