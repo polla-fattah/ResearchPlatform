@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { evidenceKeys, getDependencies, getEvidence } from '@/api/evidence'
+import { getDependencies, getEvidence } from '@/api/evidence'
 import { usePreferences } from '@/app/preferencesContext'
 import { NeutralState, ProvenanceTag, VisibilityBadge } from '@/components/Badges'
 import { BidiText } from '@/components/BidiText'
@@ -16,6 +16,7 @@ import { FindingsPanel } from './FindingsPanel'
 import { StateBadge } from './StateBadge'
 import { StatePanel } from './StatePanel'
 import styles from './Evidence.module.css'
+import { qk } from '@/api/queryKeys'
 
 interface Props {
   projectId: number
@@ -33,11 +34,11 @@ export function Inspector({ projectId, id, canEdit, canAnnotate, onRemoved }: Pr
   const [notice, setNotice] = useState<string | null>(null)
 
   const detail = useQuery({
-    queryKey: evidenceKeys.item(projectId, id),
+    queryKey: qk.project(projectId).evidence.item(id),
     queryFn: ({ signal }) => getEvidence(projectId, id, signal),
   })
   const deps = useQuery({
-    queryKey: evidenceKeys.deps(projectId, id),
+    queryKey: qk.project(projectId).evidence.deps(id),
     queryFn: ({ signal }) => getDependencies(projectId, id, signal),
   })
 

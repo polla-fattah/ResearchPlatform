@@ -2,8 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { evidenceKeys, linkFinding, listFindingOptions, unlinkFinding } from '@/api/evidence'
-import { userMessage } from '@/api/errors'
+import { linkFinding, listFindingOptions, unlinkFinding } from '@/api/evidence'
 import { RELATIONS, type Dependencies, type Relation } from '@/api/schemas/evidence'
 import { BidiText } from '@/components/BidiText'
 import { Button } from '@/components/Button'
@@ -12,6 +11,9 @@ import { Modal } from '@/components/Modal'
 import { formatCode } from '@/domain/codes'
 import { evidenceCode } from './evidenceModel'
 import styles from './Evidence.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 interface Props {
   projectId: number
@@ -29,15 +31,14 @@ export function FindingsPanel({ projectId, evidenceId, deps, depsFailed, canEdit
   const [findingId, setFindingId] = useState('')
   const [relation, setRelation] = useState<Relation>('supporting')
   const [interpretation, setInterpretation] = useState('')
-  const [error, setError] = useState<string | null>(null)
 
   const options = useQuery({
-    queryKey: evidenceKeys.findings(projectId),
+    queryKey: qk.project(projectId).evidence.findingOptions,
     queryFn: ({ signal }) => listFindingOptions(projectId, signal),
     enabled: open,
   })
 
-  const refresh = () => qc.invalidateQueries({ queryKey: evidenceKeys.deps(projectId, evidenceId) })
+  const refresh = () => invalidate.evidenceLinksChanged(qc, projectId, evidenceId)
 
   const link = useMutation({
     mutationFn: () => linkFinding(projectId, Number(findingId), evidenceId, relation, interpretation.trim()),
@@ -50,9 +51,7 @@ export function FindingsPanel({ projectId, evidenceId, deps, depsFailed, canEdit
   })
   const unlink = useMutation({
     mutationFn: (fid: number) => unlinkFinding(projectId, fid, evidenceId),
-    onMutate: () => setError(null),
     onSuccess: () => refresh(),
-    onError: (err) => setError(`${t('evidence.findings.unlinkFailed')}. ${userMessage(err, t('states.error.body'))}`),
   })
 
   const submit = (e: FormEvent) => {
@@ -68,11 +67,7 @@ export function FindingsPanel({ projectId, evidenceId, deps, depsFailed, canEdit
       <section className={styles.section} aria-label={t('evidence.findings.heading')}>
         <h3>{t('evidence.findings.heading')}</h3>
         {depsFailed ? <p role="alert">{t('evidence.findings.loadFailed')}</p> : null}
-        {error ? (
-          <p role="alert" className={styles.bad}>
-            {error}
-          </p>
-        ) : null}
+        <MutationNotice error={unlink.error} title={t('evidence.findings.unlinkFailed')} />
         {deps && deps.findings.length === 0 ? <p className={styles.hint}>{t('evidence.findings.none')}</p> : null}
         <ul className={styles.plainList}>
           {(deps?.findings ?? []).map((f) => (
@@ -149,11 +144,7 @@ export function FindingsPanel({ projectId, evidenceId, deps, depsFailed, canEdit
               </>
             ) : null}
             <p className={styles.hint}>{t('evidence.findings.note')}</p>
-            {link.isError ? (
-              <p role="alert" className={styles.bad}>
-                <strong>{t('evidence.findings.failed')}.</strong> {userMessage(link.error, t('states.error.body'))}
-              </p>
-            ) : null}
+            <MutationNotice error={link.error} title={t('evidence.findings.failed')} />
             <div className={styles.dialogActions}>
               <Button onClick={() => setOpen(false)} disabled={link.isPending}>
                 {t('common.cancel')}

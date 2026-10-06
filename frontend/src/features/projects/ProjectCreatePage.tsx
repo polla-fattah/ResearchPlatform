@@ -5,9 +5,9 @@ import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
-import { ApiError, userMessage } from '@/api/errors'
+import { ApiError } from '@/api/errors'
 import { createProject } from '@/api/projectDetail'
-import { listProjects, projectKeys } from '@/api/projects'
+import { listProjects } from '@/api/projects'
 import type { ProjectDetail } from '@/api/schemas/projectDetail'
 import { usePreferences } from '@/app/preferencesContext'
 import { VisibilityBadge } from '@/components/Badges'
@@ -17,6 +17,9 @@ import { ErrorSummary, Field } from '@/components/Field'
 import { formatCode } from '@/domain/codes'
 import { PROJECT_STAGES } from '@/domain/vocab'
 import styles from './Projects.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { errorMessage } from '@/api/errorMessage'
 
 const LANGS = ['ar', 'ckb', 'en'] as const
 type Dir = 'auto' | 'rtl' | 'ltr'
@@ -33,7 +36,7 @@ export function ProjectCreatePage() {
 
   // Titles must be unique among your projects. The API doesn't check (request file C-12), so we do.
   const owned = useQuery({
-    queryKey: projectKeys.list({ scope: 'owned', per_page: 100 }),
+    queryKey: qk.projects.list({ scope: 'owned', per_page: 100 }),
     queryFn: ({ signal }) => listProjects({ scope: 'owned', per_page: 100 }, signal),
   })
   const existing = owned.data?.items ?? []
@@ -76,8 +79,8 @@ export function ProjectCreatePage() {
   const create = useMutation({
     mutationFn: createProject,
     onSuccess: (project) => {
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
-      setCreatedAt(new Date())
+      void invalidate.projectLifecycle(qc)
+      setCreatedAt(new Date()) // audit-ok: event handler
       setCreated(project)
     },
     onError: (err) => {
@@ -158,7 +161,7 @@ export function ProjectCreatePage() {
   })
   const serverMessage =
     create.error instanceof ApiError && Object.keys(create.error.fields).length === 0
-      ? userMessage(create.error, t('states.error.body'))
+      ? errorMessage(create.error, t)
       : null
 
   const resolvedDir: 'ltr' | 'rtl' | undefined = dir === 'auto' ? detectDirection(questionText) : dir

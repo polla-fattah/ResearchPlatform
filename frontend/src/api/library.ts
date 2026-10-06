@@ -3,11 +3,6 @@ import { ApiError } from './errors'
 import { api } from './http'
 import { libraryItemSchema, type LibraryItem, type SaveLibraryInput } from './schemas/library'
 
-export const libraryKeys = {
-  all: ['library'] as const,
-  index: ['library', 'index'] as const,
-}
-
 /** The first 100 saved items. The picker uses it to mark corpus results that are already saved. */
 export async function listLibraryItems(signal?: AbortSignal) {
   const { data } = await api('/library/items', {

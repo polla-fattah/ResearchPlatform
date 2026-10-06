@@ -16,11 +16,6 @@ export interface ListProjectsParams {
   per_page?: number
 }
 
-export const projectKeys = {
-  all: ['projects'] as const,
-  list: (p: ListProjectsParams) => ['projects', 'list', p] as const,
-}
-
 export async function listProjects(params: ListProjectsParams = {}, signal?: AbortSignal) {
   const res = await api('/projects', {
     query: { ...params },

@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router-dom'
 import { AccountShell } from '@/layouts/AccountShell'
+import { AdminShell } from '@/layouts/AdminShell'
 import { ProjectShell } from '@/layouts/ProjectShell'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { HomePage } from '@/features/home/HomePage'
@@ -12,11 +13,20 @@ import { ResetPasswordPage } from '@/features/registration/ResetPasswordPage'
 import { SignInPage } from '@/features/registration/SignInPage'
 import { StatusPage } from '@/features/registration/StatusPage'
 import { VerifyEmailPage } from '@/features/registration/VerifyEmailPage'
+import { AccountsPage } from '@/features/admin/AccountsPage'
+import { ApplicationsPage } from '@/features/admin/ApplicationsPage'
+import { AuditPage } from '@/features/admin/AuditPage'
+import { LimitsPage } from '@/features/admin/LimitsPage'
+import { OperationsPage } from '@/features/admin/OperationsPage'
+import { ProposalsPage } from '@/features/admin/ProposalsPage'
+import { SupportPage } from '@/features/admin/SupportPage'
 import { ComparisonPage } from '@/features/comparison/ComparisonPage'
 import { EvidencePage } from '@/features/evidence/EvidencePage'
-import { FindingEditorPage } from '@/features/findings/FindingEditorPage'
+import { DownloadsPage } from '@/features/downloads/DownloadsPage'
+import { WritingPage } from '@/features/writing/WritingPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
+import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
 import { SearchPage } from '@/features/search/SearchPage'
 import { ResourcePickerPage } from '@/features/picker/ResourcePickerPage'
 import { ProjectCopyPage } from '@/features/projects/ProjectCopyPage'
@@ -43,9 +53,11 @@ const BUILT: Record<string, ReactElement> = {
   '03b': <ProjectResourcesPage />,
   '07': <ResourcePickerPage />,
   '08': <SearchPage />,
+  '08s': <SavedSearchesPage />,
   '09': <EvidencePage />,
   '10': <ComparisonPage />,
-  '11': <FindingEditorPage />,
+  '11': <WritingPage />,
+  '12': <DownloadsPage />,
   '07p': <ResourcePickerPage />,
 }
 
@@ -104,10 +116,25 @@ export const routes: RouteObject[] = [
                 ],
               },
               ...(import.meta.env.DEV ? [{ path: 'dev/kit', element: <ComponentKit /> }] : []),
+            ],
+          },
+          {
+            // Screen 13: its own shell and rail, only for administrators.
+            path: 'admin',
+            element: <RequireAdmin />,
+            children: [
               {
-                path: 'admin',
-                element: <RequireAdmin />,
-                children: screensIn('admin').map(pending),
+                element: <AdminShell />,
+                children: [
+                  { index: true, element: <Navigate to="applications" replace /> },
+                  { path: 'applications', element: <ApplicationsPage /> },
+                  { path: 'accounts', element: <AccountsPage /> },
+                  { path: 'proposals', element: <ProposalsPage /> },
+                  { path: 'limits', element: <LimitsPage /> },
+                  { path: 'support', element: <SupportPage /> },
+                  { path: 'audit', element: <AuditPage /> },
+                  { path: 'operations', element: <OperationsPage /> },
+                ],
               },
             ],
           },

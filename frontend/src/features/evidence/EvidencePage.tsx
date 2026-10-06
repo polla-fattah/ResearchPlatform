@@ -1,9 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
-import { evidenceKeys, listEvidence, type EvidenceQuery } from '@/api/evidence'
-import { getProjectSummary, projectDetailKeys } from '@/api/projectDetail'
+import { listEvidence, type EvidenceQuery } from '@/api/evidence'
+import { getProjectSummary } from '@/api/projectDetail'
 import { usePreferences } from '@/app/preferencesContext'
 import { BidiText } from '@/components/BidiText'
 import { Button, ButtonLink } from '@/components/Button'
@@ -12,11 +10,12 @@ import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import { EVIDENCE_STATES } from '@/domain/vocab'
 import { useProject } from '@/features/projects/useProject'
-import { useDebounced } from '../picker/useDebounced'
 import { evidenceCode, stateOf } from './evidenceModel'
 import { Inspector } from './Inspector'
 import { StateBadge } from './StateBadge'
 import styles from './Evidence.module.css'
+import { qk } from '@/api/queryKeys'
+import { useDraftParam, useQueryParams } from '@/hooks/useQueryParams'
 
 const excerpt = (s: string) => (s.length > 90 ? `${s.slice(0, 90).trimEnd()}…` : s)
 
@@ -25,42 +24,26 @@ export function EvidencePage() {
   const { n } = usePreferences()
   const { id, can } = useProject()
   const projectId = id ?? 0
-  const [params, setParams] = useSearchParams()
+  const url = useQueryParams()
+  const update = url.set
 
-  const stateParam = params.get('state') ?? ''
-  const state = stateOf(stateParam) ? stateParam : ''
-  const q = params.get('q') ?? ''
-  const page = Number(params.get('page')) || 1
-  const selectedId = Number(params.get('item')) || undefined
+  const state = stateOf(url.text('state')) ? url.text('state') : ''
+  const q = url.text('q')
+  const page = url.page
+  const selectedId = url.id('item')
 
-  const update = (changes: Record<string, string | null>, keepPage = false) => {
-    const next = new URLSearchParams(params)
-    for (const [k, v] of Object.entries(changes)) {
-      if (v) next.set(k, v)
-      else next.delete(k)
-    }
-    if (!keepPage) next.delete('page')
-    setParams(next, { replace: true })
-  }
-
-  const [typed, setTyped] = useState(q)
-  useEffect(() => setTyped(q), [q])
-  const debounced = useDebounced(typed, 300)
-  useEffect(() => {
-    if (debounced !== q) update({ q: debounced || null })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounced])
+  const search = useDraftParam('q', { delay: 300 })
 
   const query: EvidenceQuery = { state: state || undefined, q: q || undefined, page, per_page: 20 }
   const list = useQuery({
-    queryKey: evidenceKeys.list(projectId, query),
+    queryKey: qk.project(projectId).evidence.list(query),
     queryFn: ({ signal }) => listEvidence(projectId, query, signal),
     enabled: id !== null,
     placeholderData: keepPreviousData,
   })
   // Counts per state come from the project summary (the list endpoint pages and filters).
   const summary = useQuery({
-    queryKey: projectDetailKeys.summary(projectId),
+    queryKey: qk.project(projectId).summary,
     queryFn: ({ signal }) => getProjectSummary(projectId, signal),
     enabled: id !== null,
   })
@@ -102,10 +85,10 @@ export function EvidencePage() {
             <div className={styles.filters}>
               <input
                 type="search"
-                value={typed}
+                value={search.text}
                 aria-label={t('evidence.list.search')}
                 placeholder={t('evidence.list.search')}
-                onChange={(e) => setTyped(e.target.value)}
+                onChange={(e) => search.setText(e.target.value)}
               />
               <div role="group" aria-label={t('evidence.state.heading')} className={styles.chips}>
                 <button
@@ -154,7 +137,7 @@ export function EvidencePage() {
                       type="button"
                       className={[styles.item, e.id === selectedId ? styles.itemOn : ''].join(' ')}
                       aria-current={e.id === selectedId ? 'true' : undefined}
-                      onClick={() => update({ item: String(e.id) }, true)}
+                      onClick={() => update({ item: String(e.id) }, { keepPage: true })}
                     >
                       <span className={styles.itemTop}>
                         <StateBadge state={e.state} />
@@ -171,7 +154,7 @@ export function EvidencePage() {
                 ))}
               </ul>
               {list.data?.pagination ? (
-                <Pagination pagination={list.data.pagination} onPage={(p) => update({ page: String(p) }, true)} />
+                <Pagination pagination={list.data.pagination} onPage={(p) => update({ page: String(p) }, { keepPage: true })} />
               ) : null}
             </StateBoundary>
           </div>
@@ -184,7 +167,7 @@ export function EvidencePage() {
                 id={selectedId}
                 canEdit={canEdit}
                 canAnnotate={canAnnotate}
-                onRemoved={() => update({ item: null }, true)}
+                onRemoved={() => update({ item: null }, { keepPage: true })}
               />
             ) : (
               <p className={styles.hint}>{t('evidence.inspector.pick')}</p>

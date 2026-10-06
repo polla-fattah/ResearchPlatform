@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { evidenceKeys, proposeCorrection, removeEvidence, type RemoveOutcome } from '@/api/evidence'
-import { userMessage } from '@/api/errors'
+import { proposeCorrection, removeEvidence, type RemoveOutcome } from '@/api/evidence'
 import type { EvidenceItem } from '@/api/schemas/evidence'
-import { projectKeys } from '@/api/projects'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { Field } from '@/components/Field'
 import { Modal } from '@/components/Modal'
 import { correctionTarget, evidenceCode } from './evidenceModel'
 import styles from './Evidence.module.css'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 const FIELDS = ['page', 'volume', 'matn', 'chain_narrator', 'chain_order', 'other'] as const
 
@@ -84,11 +84,7 @@ export function CorrectionDialog({
             <textarea rows={3} value={explanation} onChange={(e) => setExplanation(e.target.value)} />
           </Field>
           <p className={styles.hint}>{t('evidence.correction.note')}</p>
-          {send.isError ? (
-            <p role="alert" className={styles.bad}>
-              <strong>{t('evidence.correction.failed')}.</strong> {userMessage(send.error, t('states.error.body'))}
-            </p>
-          ) : null}
+          <MutationNotice error={send.error} title={t('evidence.correction.failed')} />
           <div className={styles.dialogActions}>
             <Button onClick={onClose} disabled={send.isPending}>
               {t('common.cancel')}
@@ -139,9 +135,7 @@ export function RemoveDialog({
         setInUse(outcome)
         return
       }
-      await qc.invalidateQueries({ queryKey: evidenceKeys.all(projectId) })
-      void qc.invalidateQueries({ queryKey: ['project', projectId] })
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
+      await invalidate.evidenceChanged(qc, projectId)
       onRemoved()
     },
   })
@@ -173,11 +167,7 @@ export function RemoveDialog({
       ) : (
         <p>{t('evidence.remove.plain')}</p>
       )}
-      {run.isError ? (
-        <p role="alert" className={styles.bad}>
-          <strong>{t('evidence.remove.failed')}.</strong> {userMessage(run.error, t('states.error.body'))}
-        </p>
-      ) : null}
+      <MutationNotice error={run.error} title={t('evidence.remove.failed')} />
       <div className={styles.dialogActions}>
         <Button onClick={onClose} disabled={run.isPending}>
           {t('common.cancel')}

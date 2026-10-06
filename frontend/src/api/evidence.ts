@@ -19,15 +19,6 @@ export interface EvidenceQuery {
   per_page?: number
 }
 
-export const evidenceKeys = {
-  all: (projectId: number) => ['project', projectId, 'evidence'] as const,
-  list: (projectId: number, q: EvidenceQuery) => ['project', projectId, 'evidence', 'list', q] as const,
-  item: (projectId: number, id: number) => ['project', projectId, 'evidence', 'item', id] as const,
-  history: (projectId: number, id: number) => ['project', projectId, 'evidence', 'history', id] as const,
-  deps: (projectId: number, id: number) => ['project', projectId, 'evidence', 'deps', id] as const,
-  findings: (projectId: number) => ['project', projectId, 'evidence', 'findings'] as const,
-}
-
 export async function listEvidence(projectId: number, query: EvidenceQuery, signal?: AbortSignal) {
   const res = await api(`/projects/${projectId}/evidence`, {
     query: { ...query },

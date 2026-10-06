@@ -9,13 +9,15 @@ interface Props {
   release?: Release
   tabStyle?: boolean
   end?: boolean
+  /** A number (or short word) shown at the end of the item: waiting applications, alerts. */
+  count?: string | number | null
 }
 
 /**
  * Link that is shown disabled, with its release tag, until that release is enabled
  * (as in the mockups: "Notifications [R1b]").
  */
-export function NavItem({ to, label, release = 'R1a', tabStyle, end }: Props) {
+export function NavItem({ to, label, release = 'R1a', tabStyle, end, count }: Props) {
   const { t } = useTranslation()
   const base = tabStyle ? styles.tab : styles.navItem
   const activeClass = tabStyle ? styles.tabActive : styles.active
@@ -40,6 +42,7 @@ export function NavItem({ to, label, release = 'R1a', tabStyle, end }: Props) {
       className={({ isActive }) => [base, isActive ? activeClass : ''].join(' ')}
     >
       {label}
+      {count !== undefined && count !== null && count !== '' ? <span className={styles.count}>{count}</span> : null}
     </NavLink>
   )
 }

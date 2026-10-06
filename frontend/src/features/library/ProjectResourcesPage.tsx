@@ -1,15 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
-import { listLibraryItems, libraryKeys } from '@/api/library'
-import {
-  createProjectCollection,
-  listProjectCollections,
-  listProjectResources,
-  projectResourceKeys,
-  removeProjectResource,
-} from '@/api/projectResources'
+import { listLibraryItems } from '@/api/library'
+import { createProjectCollection, listProjectCollections, listProjectResources, removeProjectResource } from '@/api/projectResources'
 import type { ProjectResource } from '@/api/schemas/projectResources'
 import { usePreferences } from '@/app/preferencesContext'
 import { NeutralState } from '@/components/Badges'
@@ -23,8 +16,11 @@ import { formatCode } from '@/domain/codes'
 import { kindOf } from '@/domain/libraryItem'
 import { useProject } from '@/features/projects/useProject'
 import { AddFromLibraryDialog } from './AddFromLibraryDialog'
-import { writeErrorMessage } from './writeError'
 import styles from './Library.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { MutationNotice } from '@/components/MutationNotice'
 
 /** Display code of a project resource: the corpus code when it points into the corpus, else RES-<id>. */
 function resourceCode(r: ProjectResource): string {
@@ -41,26 +37,26 @@ export function ProjectResourcesPage() {
   const { date, n } = usePreferences()
   const qc = useQueryClient()
   const { id, can } = useProject()
-  const [params, setParams] = useSearchParams()
+  const url = useQueryParams()
   const projectId = id ?? 0
   const code = formatCode('PRJ', projectId)
-  const page = Number(params.get('page')) || 1
-  const selectedId = Number(params.get('resource')) || undefined
+  const page = url.page
+  const selectedId = url.id('resource')
   const canEdit = can('addShared')
 
   const list = useQuery({
-    queryKey: projectResourceKeys.list(projectId, page),
+    queryKey: qk.project(projectId).resources.list(page),
     queryFn: ({ signal }) => listProjectResources(projectId, page, signal),
     enabled: id !== null,
   })
   const collections = useQuery({
-    queryKey: projectResourceKeys.collections(projectId),
+    queryKey: qk.project(projectId).resources.collections,
     queryFn: ({ signal }) => listProjectCollections(projectId, signal),
     enabled: id !== null,
   })
   // Whether the same source is on your personal shelf (the "Elsewhere" panel).
   const library = useQuery({
-    queryKey: libraryKeys.index,
+    queryKey: qk.library.index,
     queryFn: ({ signal }) => listLibraryItems(signal),
     enabled: id !== null,
   })
@@ -70,18 +66,9 @@ export function ProjectResourcesPage() {
   const selected = items.find((r) => r.id === selectedId)
   const unavailable = !!selectedId && !selected && !!list.data
 
-  const select = (rid: number | null) => {
-    const next = new URLSearchParams(params)
-    if (rid) next.set('resource', String(rid))
-    else next.delete('resource')
-    setParams(next, { replace: true })
-  }
-  const goPage = (p: number) => {
-    const next = new URLSearchParams(params)
-    next.set('page', String(p))
-    next.delete('resource')
-    setParams(next, { replace: true })
-  }
+  const select = (rid: number | null) => url.set({ resource: rid }, { keepPage: true })
+  // Another page of resources has different rows, so the selection is dropped.
+  const goPage = (p: number) => url.set({ page: p, resource: null }, { keepPage: true })
 
   // ---- collections ----
   const [creating, setCreating] = useState(false)
@@ -91,7 +78,7 @@ export function ProjectResourcesPage() {
     onSuccess: () => {
       setCreating(false)
       setColName('')
-      void qc.invalidateQueries({ queryKey: projectResourceKeys.collections(projectId) })
+      void invalidate.resourceCollectionsChanged(qc, projectId)
     },
   })
   const submitCollection = (e: FormEvent) => {
@@ -102,20 +89,14 @@ export function ProjectResourcesPage() {
   // ---- remove ----
   const [fromLibrary, setFromLibrary] = useState(false)
   const [confirm, setConfirm] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const remove = useMutation({
     mutationFn: (rid: number) => removeProjectResource(projectId, rid),
     onSuccess: async () => {
       setConfirm(false)
-      setError(null)
       select(null)
-      await qc.invalidateQueries({ queryKey: ['project', projectId] })
-      void qc.invalidateQueries({ queryKey: ['projects'] })
+      await invalidate.resourcesChanged(qc, projectId)
     },
-    onError: (err) => {
-      setConfirm(false)
-      setError(writeErrorMessage(err, t))
-    },
+    onError: () => setConfirm(false),
   })
 
   const total = list.data?.pagination?.total_items ?? items.length
@@ -161,12 +142,7 @@ export function ProjectResourcesPage() {
         </div>
       ) : null}
 
-      {error ? (
-        <div className={styles.banner} role="alert" style={{ marginBlockEnd: '1rem' }}>
-          <h3>{t('library.projectResources.removeFailed')}</h3>
-          <p>{error}</p>
-        </div>
-      ) : null}
+      <MutationNotice error={remove.error} title={t('library.projectResources.removeFailed')} />
 
       <div className={[styles.resLayout, selected ? '' : styles.resLayoutNoDetail].join(' ')}>
         <aside className={styles.sidebar} aria-label={t('library.projectResources.collections')}>
@@ -369,7 +345,6 @@ export function ProjectResourcesPage() {
       </div>
       {fromLibrary ? (
         <AddFromLibraryDialog
-          open
           projectId={projectId}
           existing={new Set(items.map((r) => r.id))}
           onClose={() => setFromLibrary(false)}

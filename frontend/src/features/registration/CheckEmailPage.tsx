@@ -3,12 +3,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { resendVerification } from '@/api/auth'
-import { ApiError, retryAfterSeconds, userMessage } from '@/api/errors'
+import { ApiError, retryAfterSeconds } from '@/api/errors'
 import { useAuth } from '@/app/authContext'
 import { Notice } from '@/components/Field'
 import { RegistrationPage } from './RegistrationPage'
 import { formatClock, useCountdown } from './useCountdown'
 import styles from './Registration.module.css'
+import { errorMessage } from '@/api/errorMessage'
 
 /** Where a freshly applied (or still unverified) account waits for the verification link. */
 export function CheckEmailPage() {
@@ -85,7 +86,7 @@ export function CheckEmailCard({ email, initialWait = 60 }: { email: string; ini
       {resend.isSuccess ? <Notice>{t('registration.checkEmail.sent')}</Notice> : null}
       {resend.isError && !limitReached ? (
         <Notice dashed>
-          {userMessage(resend.error, t('states.error.body'))}
+          {errorMessage(resend.error, t)}
         </Notice>
       ) : null}
       {limitReached ? <Notice dashed>{t('registration.checkEmail.dailyLimit')}</Notice> : null}

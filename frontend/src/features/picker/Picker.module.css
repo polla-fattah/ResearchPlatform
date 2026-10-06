@@ -115,7 +115,7 @@
 }
 .resultOn {
   border-inline-start-color: var(--accent);
-  background: #fbf8f1;
+  background: var(--surface-warm);
 }
 .resultTop {
   display: flex;
@@ -253,7 +253,7 @@
   margin-block-end: 1rem;
   border: 1px solid var(--warn-rule);
   background: var(--warn-soft);
-  color: #5c2a1c;
+  color: var(--warn-ink);
 }
 .banner h2 {
   margin: 0 0 0.25rem;

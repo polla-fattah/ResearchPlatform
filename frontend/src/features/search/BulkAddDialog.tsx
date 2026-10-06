@@ -2,8 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { libraryKeys, saveLibraryItem } from '@/api/library'
-import { userMessage } from '@/api/errors'
+import { saveLibraryItem } from '@/api/library'
 import type { CorpusOccurrence, CorpusSearchHit } from '@/api/schemas/corpus'
 import { bulkAddEvidence, bulkAddResources, type EvidenceDraft } from '@/api/searchWorkspace'
 import { usePreferences } from '@/app/preferencesContext'
@@ -13,6 +12,8 @@ import { Modal } from '@/components/Modal'
 import { formatCode } from '@/domain/codes'
 import { pickableFromOccurrence, type Pickable } from '@/domain/pickable'
 import styles from './Search.module.css'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 export interface Pick {
   hit: CorpusSearchHit
@@ -91,9 +92,9 @@ export function BulkAddDialog({ kind, projectId, picks, runId, onClose, onDone }
     },
     onSuccess: (out) => {
       setRows(out)
-      void qc.invalidateQueries({ queryKey: libraryKeys.all })
-      void qc.invalidateQueries({ queryKey: ['project', projectId] })
-      void qc.invalidateQueries({ queryKey: ['projects'] })
+      void invalidate.libraryChanged(qc)
+      void invalidate.resourcesChanged(qc, projectId)
+      if (kind === 'evidence') void invalidate.evidenceChanged(qc, projectId)
     },
   })
 
@@ -149,11 +150,7 @@ export function BulkAddDialog({ kind, projectId, picks, runId, onClose, onDone }
               )
             })}
           </ul>
-          {run.isError ? (
-            <p role="alert" className={styles.bad}>
-              {userMessage(run.error, t('states.error.body'))}
-            </p>
-          ) : null}
+          <MutationNotice error={run.error} />
           <div className={styles.dialogActions}>
             <Button onClick={onClose} disabled={run.isPending}>
               {t('common.cancel')}

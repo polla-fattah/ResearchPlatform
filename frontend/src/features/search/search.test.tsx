@@ -79,6 +79,7 @@ function mockSearch(o: Apis = {}) {
   const calls = {
     searches: [] as URLSearchParams[],
     posted: [] as Record<string, unknown>[],
+    personal: [] as Record<string, unknown>[],
     resultSets: [] as Record<string, unknown>[],
     bulk: [] as { kind: string; body: Record<string, unknown> }[],
     library: [] as Record<string, unknown>[],
@@ -107,6 +108,11 @@ function mockSearch(o: Apis = {}) {
       const body = (await request.json()) as Record<string, unknown>
       calls.posted.push(body)
       return HttpResponse.json(envelope(savedQuery({ id: 40, ...body })), { status: 201 })
+    }),
+    http.post('*/api/v1/saved-searches', async ({ request }) => {
+      const body = (await request.json()) as Record<string, unknown>
+      calls.personal.push(body)
+      return HttpResponse.json(envelope(savedQuery({ id: 77, owner_type: 'user', ...body })), { status: 201 })
     }),
     http.delete('*/api/v1/projects/12/searches/:id', ({ params }) => {
       calls.deleted.push(String(params.id))
@@ -387,15 +393,48 @@ describe('Search workspace', () => {
     expect(body.items.map((i) => i.captured_text)).toEqual([MATN, MATN])
   })
 
-  it('shows results to a viewer but no way to add, save or delete', async () => {
+  it('shows results to a viewer but no way to add to the project or delete its searches', async () => {
     mockMe()
     mockSearch({ role: 'viewer', queries: [savedQuery()] })
     renderApp('/projects/12/searches?q=وضوء', { signedIn: true })
     expect(await screen.findByText('Report record · REP-000088')).toBeInTheDocument()
     expect(screen.queryByRole('checkbox', { name: /Select occurrence in/ })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Save search' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Delete/ })).not.toBeInTheDocument()
     expect(screen.getByText(/can read results but not add to it/)).toBeInTheDocument()
+  })
+
+  it('lets a viewer save a search for themselves, but not into the project', async () => {
+    mockMe()
+    const calls = mockSearch({ role: 'viewer' })
+    renderApp('/projects/12/searches?q=وضوء&mode=exact', { signedIn: true })
+    await screen.findByText('Report record · REP-000088')
+    await userEvent.click(screen.getByRole('button', { name: 'Save search' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Save search' })
+    expect(within(dialog).getByRole('radio', { name: /This project/ })).toBeDisabled()
+    expect(within(dialog).getByRole('radio', { name: /Only me/ })).toBeChecked()
+    expect(within(dialog).getByText('Your role in this project cannot add to it.')).toBeInTheDocument()
+    await userEvent.type(within(dialog).getByLabelText(/Name/), 'mine')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Save search' }))
+    await waitFor(() => expect(calls.personal).toHaveLength(1))
+    expect(calls.posted).toHaveLength(0)
+  })
+
+  it('saves for the account only when asked, says where it went, and does not open it as a project search', async () => {
+    mockMe()
+    const calls = mockSearch()
+    const { router } = renderApp('/projects/12/searches?q=وضوء&mode=exact&hukm=6', { signedIn: true })
+    await screen.findByText('Report record · REP-000088')
+    await userEvent.click(screen.getByRole('button', { name: 'Save search' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Save search' })
+    expect(within(dialog).getByRole('radio', { name: /This project/ })).toBeChecked()
+    await userEvent.click(within(dialog).getByRole('radio', { name: /Only me/ }))
+    await userEvent.type(within(dialog).getByLabelText(/Name/), 'wudu for me')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Save search' }))
+    await waitFor(() => expect(calls.personal).toEqual([{ name: 'wudu for me', query_text: 'وضوء', search_mode: 'exact', filter_criteria: { hukm_id: 6 } }]))
+    expect(calls.posted).toHaveLength(0)
+    const notice = await screen.findByText(/Saved to your Saved searches as SQ-0077\./)
+    expect(within(notice).getByRole('link', { name: 'See Saved searches' })).toHaveAttribute('href', '/searches')
+    expect(router.state.location.search).not.toContain('query=')
   })
 
   it('deletes a saved search only after confirmation', async () => {

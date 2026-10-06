@@ -1,115 +1,50 @@
 import { z } from 'zod'
 import { api } from './http'
-import {
-  analysisRunSchema,
-  criticismMatrixResultSchema,
-  isnadCompareResultSchema,
-  matnCompareResultSchema,
-  type AnalysisRun,
-} from './schemas/analyses'
+import { analysisRunSchema, criticismMatrixResultSchema, isnadCompareResultSchema, matnCompareResultSchema, type AnalysisRun } from './schemas/analyses'
 
-export type {
-  AnalysisRun,
-  CriticismMatrixResult,
-  IsnadCompareResult,
-  MatnCompareResult,
-} from './schemas/analyses'
+export type { CriticismMatrixResult, IsnadCompareResult, MatnCompareResult } from './schemas/analyses'
 
-export const analysisKeys = {
-  all: (projectId: number) => ['projects', projectId, 'analyses'] as const,
-  list: (projectId: number, type?: string) => ['projects', projectId, 'analyses', { type }] as const,
-  detail: (projectId: number, id: number) => ['projects', projectId, 'analyses', id] as const,
-}
-
-export async function listAnalyses(projectId: number, type?: string, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/analyses`, {
-    query: type ? { type } : undefined,
-    schema: z.array(analysisRunSchema),
-    signal,
-  })
+export async function listAnalyses(projectId: number, signal?: AbortSignal) {
+  const { data } = await api(`/projects/${projectId}/analyses`, { schema: z.array(analysisRunSchema), signal })
   return data
 }
 
 export async function getAnalysis(projectId: number, analysisId: number, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/analyses/${analysisId}`, {
-    schema: analysisRunSchema,
-    signal,
-  })
+  const { data } = await api(`/projects/${projectId}/analyses/${analysisId}`, { schema: analysisRunSchema, signal })
   return data
 }
 
-export interface MatnComparePayload {
-  hadith_ids?: number[]
-  baseline_id?: number | null
-  custom_texts?: Array<{ id?: string; label?: string; text: string }>
-  save_run?: boolean
-}
-
-export async function runMatnCompare(projectId: number, payload: MatnComparePayload, signal?: AbortSignal) {
-  const schema = z.object({
-    analysis: matnCompareResultSchema,
-    saved_run: analysisRunSchema.nullable().optional(),
-  })
-  const { data } = await api(`/projects/${projectId}/analyses/matn-compare`, {
+/**
+ * The three comparisons. Without `save` they only compute (nothing is stored, any member may run them); with `save`
+ * the server stores the inputs and the result as the next version of that kind of analysis in the project.
+ */
+async function post<S extends z.ZodType>(
+  projectId: number,
+  kind: string,
+  result: S,
+  body: Record<string, unknown>,
+  save: boolean,
+  signal?: AbortSignal,
+) {
+  const { data } = await api(`/projects/${projectId}/analyses/${kind}`, {
     method: 'POST',
-    body: payload,
-    schema,
+    body: save ? { ...body, save_run: true } : body,
+    schema: z.object({ analysis: result, saved_run: analysisRunSchema.nullable().optional() }),
     signal,
   })
-  return data
+  const answer = data as { analysis: z.infer<S>; saved_run?: AnalysisRun | null }
+  return { result: answer.analysis, saved: answer.saved_run ?? null }
 }
 
-export interface IsnadComparePayload {
-  sanad_ids: number[]
-  save_run?: boolean
+export interface MatnInputs {
+  hadith_ids: number[]
+  baseline_id?: number
 }
+export const compareMatn = (projectId: number, inputs: MatnInputs, save = false, signal?: AbortSignal) =>
+  post(projectId, 'matn-compare', matnCompareResultSchema, { ...inputs }, save, signal)
 
-export async function runIsnadCompare(projectId: number, payload: IsnadComparePayload, signal?: AbortSignal) {
-  const schema = z.object({
-    analysis: isnadCompareResultSchema,
-    saved_run: analysisRunSchema.nullable().optional(),
-  })
-  const { data } = await api(`/projects/${projectId}/analyses/isnad-compare`, {
-    method: 'POST',
-    body: payload,
-    schema,
-    signal,
-  })
-  return data
-}
+export const compareIsnads = (projectId: number, sanadIds: number[], save = false, signal?: AbortSignal) =>
+  post(projectId, 'isnad-compare', isnadCompareResultSchema, { sanad_ids: sanadIds }, save, signal)
 
-export interface CriticismMatrixPayload {
-  narrator_ids: number[]
-  scholar_ids?: number[]
-  save_run?: boolean
-}
-
-export async function runCriticismMatrix(projectId: number, payload: CriticismMatrixPayload, signal?: AbortSignal) {
-  const schema = z.object({
-    analysis: criticismMatrixResultSchema,
-    saved_run: analysisRunSchema.nullable().optional(),
-  })
-  const { data } = await api(`/projects/${projectId}/analyses/criticism-matrix`, {
-    method: 'POST',
-    body: payload,
-    schema,
-    signal,
-  })
-  return data
-}
-
-export interface SaveAnalysisPayload {
-  analysis_type: 'matn_comparison' | 'isnad_comparison' | 'narrator_dossier' | 'criticism_matrix' | 'ilal_case'
-  input_params: Record<string, unknown>
-  output_data: Record<string, unknown>
-}
-
-export async function saveAnalysis(projectId: number, payload: SaveAnalysisPayload, signal?: AbortSignal): Promise<AnalysisRun> {
-  const { data } = await api(`/projects/${projectId}/analyses/save`, {
-    method: 'POST',
-    body: payload,
-    schema: analysisRunSchema,
-    signal,
-  })
-  return data
-}
+export const criticismMatrix = (projectId: number, narratorIds: number[], save = false, signal?: AbortSignal) =>
+  post(projectId, 'criticism-matrix', criticismMatrixResultSchema, { narrator_ids: narratorIds }, save, signal)

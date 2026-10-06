@@ -1,127 +1,63 @@
 import { z } from 'zod'
+import { ApiError } from './errors'
 import { api } from './http'
-import {
-  findingSchema,
-  type FindingItem,
-  type FindingStatus,
-} from './schemas/findings'
+import { findingSchema, type FindingStatus } from './schemas/writing'
 
-export type { FindingItem, FindingStatus }
-
-export const findingKeys = {
-  all: (projectId: number) => ['projects', projectId, 'findings'] as const,
-  list: (projectId: number, query?: { status?: string; q?: string }) =>
-    ['projects', projectId, 'findings', query] as const,
-  detail: (projectId: number, id: number) => ['projects', projectId, 'findings', id] as const,
+export interface FindingQuery {
+  status?: string
+  q?: string
+  page?: number
 }
 
-export interface CreateFindingPayload {
-  question: string
-  claim: string
-  reasoning: string
-  limitations?: string
-  status?: FindingStatus
-  evidence_links?: Array<{
-    evidence_id: number
-    relation_type: 'supporting' | 'opposing' | 'contextual' | 'unresolved'
-    interpretation?: string
-  }>
-}
-
-export interface UpdateFindingPayload {
-  question?: string
-  claim?: string
-  reasoning?: string
-  limitations?: string
-  status?: FindingStatus
-  contributors?: string[]
-  expected_version?: number
-}
-
-export async function listFindings(
-  projectId: number,
-  params?: { status?: string; q?: string; per_page?: number },
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/findings`, {
-    query: params,
+export async function listFindings(projectId: number, query: FindingQuery = {}, signal?: AbortSignal) {
+  const res = await api(`/projects/${projectId}/findings`, {
+    query: { per_page: 100, ...query },
     schema: z.array(findingSchema),
     signal,
   })
-  return data
+  return { items: res.data, pagination: res.pagination }
 }
 
 export async function getFinding(projectId: number, id: number, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/findings/${id}`, {
-    schema: findingSchema,
-    signal,
-  })
+  const { data } = await api(`/projects/${projectId}/findings/${id}`, { schema: findingSchema, signal })
   return data
 }
 
-export async function createFinding(
-  projectId: number,
-  payload: CreateFindingPayload,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/findings`, {
-    method: 'POST',
-    body: payload,
-    schema: findingSchema,
-    signal,
-  })
+export interface FindingFields {
+  question: string
+  claim: string
+  reasoning: string
+  limitations: string | null
+  status: FindingStatus
+}
+
+export async function createFinding(projectId: number, fields: FindingFields) {
+  const { data } = await api(`/projects/${projectId}/findings`, { method: 'POST', body: fields, schema: findingSchema })
   return data
 }
 
-export async function updateFinding(
-  projectId: number,
-  id: number,
-  payload: UpdateFindingPayload,
-  signal?: AbortSignal,
-) {
+/**
+ * Edits a finding. `expected_version` is sent so the server can refuse a stale save, but the server does not count
+ * versions today (request file C-18), so every field is also compared with what came back: a change the server
+ * accepted and did not keep is reported instead of shown.
+ */
+export async function updateFinding(projectId: number, id: number, fields: Partial<FindingFields>, expectedVersion?: number | null) {
   const { data } = await api(`/projects/${projectId}/findings/${id}`, {
     method: 'PATCH',
-    body: payload,
+    body: { ...fields, expected_version: expectedVersion ?? undefined },
     schema: findingSchema,
-    signal,
   })
+  for (const key of ['question', 'claim', 'reasoning', 'status'] as const) {
+    if (fields[key] !== undefined && data[key] !== fields[key]) throw notKept(key)
+  }
+  if (fields.limitations !== undefined && (data.limitations ?? null) !== (fields.limitations || null)) throw notKept('limitations')
   return data
 }
 
-export async function deleteFinding(projectId: number, id: number, signal?: AbortSignal) {
-  await api(`/projects/${projectId}/findings/${id}`, {
-    method: 'DELETE',
-    signal,
-  })
+export async function deleteFinding(projectId: number, id: number) {
+  await api(`/projects/${projectId}/findings/${id}`, { method: 'DELETE' })
 }
 
-export async function linkEvidenceToFinding(
-  projectId: number,
-  id: number,
-  payload: {
-    evidence_id: number
-    relation_type: 'supporting' | 'opposing' | 'contextual' | 'unresolved'
-    interpretation?: string
-  },
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/findings/${id}/evidence`, {
-    method: 'POST',
-    body: payload,
-    schema: findingSchema,
-    signal,
-  })
-  return data
-}
-
-export async function unlinkEvidenceFromFinding(
-  projectId: number,
-  id: number,
-  evidenceId: number,
-  signal?: AbortSignal,
-) {
-  await api(`/projects/${projectId}/findings/${id}/evidence/${evidenceId}`, {
-    method: 'DELETE',
-    signal,
-  })
+function notKept(what: string): ApiError {
+  return new ApiError({ status: 200, code: 'NOT_PERSISTED', message: `The server did not keep the ${what}.`, details: { what } })
 }

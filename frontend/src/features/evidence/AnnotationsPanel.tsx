@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { addAnnotation, deleteAnnotation, evidenceKeys, setAnnotationVisibility } from '@/api/evidence'
+import { addAnnotation, deleteAnnotation, setAnnotationVisibility } from '@/api/evidence'
 import type { Annotation } from '@/api/schemas/evidence'
 import { useAuth } from '@/app/authContext'
 import { usePreferences } from '@/app/preferencesContext'
@@ -10,8 +10,9 @@ import { BidiText } from '@/components/BidiText'
 import { Button } from '@/components/Button'
 import { ConfirmAction } from '@/components/ConfirmAction'
 import { Field } from '@/components/Field'
-import { writeError } from './evidenceModel'
 import styles from './Evidence.module.css'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 const KINDS = ['interpretation', 'source_quotation', 'scholarly_judgment'] as const
 const PROVENANCE: Record<string, ProvenanceKind> = {
@@ -34,8 +35,6 @@ export function AnnotationsPanel({ projectId, evidenceId, annotations, canAnnota
   const { date } = usePreferences()
   const { user } = useAuth()
   const qc = useQueryClient()
-  const [error, setError] = useState<string | null>(null)
-  const [warning, setWarning] = useState<string | null>(null)
   const [kind, setKind] = useState<(typeof KINDS)[number]>('interpretation')
   const [visibility, setVisibility] = useState<'private' | 'project_shared'>('private')
   const [body, setBody] = useState('')
@@ -44,7 +43,7 @@ export function AnnotationsPanel({ projectId, evidenceId, annotations, canAnnota
   const [needAttribution, setNeedAttribution] = useState(false)
   const [removing, setRemoving] = useState<Annotation | null>(null)
 
-  const refresh = () => qc.invalidateQueries({ queryKey: evidenceKeys.item(projectId, evidenceId) })
+  const refresh = () => invalidate.annotationsChanged(qc, projectId, evidenceId)
 
   const add = useMutation({
     mutationFn: () =>
@@ -54,26 +53,19 @@ export function AnnotationsPanel({ projectId, evidenceId, annotations, canAnnota
         visibility,
         ...(kind === 'scholarly_judgment' ? { attributed_to: attributedTo.trim(), source_locator: sourceLocator.trim() } : {}),
       }),
-    onMutate: () => {
-      setError(null)
-      setWarning(null)
-    },
-    onSuccess: async (saved) => {
-      if (kind === 'scholarly_judgment' && !saved.attributed_to) setWarning(t('evidence.annotations.attributionLost'))
+    
+    onSuccess: async () => {
       setBody('')
       setAttributedTo('')
       setSourceLocator('')
       await refresh()
     },
-    onError: (err) => setError(`${t('evidence.annotations.failed2')}. ${writeError(err, t, 'annotations')}`),
   })
 
   const promote = useMutation({
     mutationFn: ({ a, to }: { a: Annotation; to: 'private' | 'project_shared' }) =>
       setAnnotationVisibility(projectId, evidenceId, a.id, to),
-    onMutate: () => setError(null),
     onSuccess: () => refresh(),
-    onError: (err) => setError(`${t('evidence.annotations.promoteFailed')}. ${writeError(err, t, 'annotations')}`),
   })
 
   const remove = useMutation({
@@ -82,10 +74,7 @@ export function AnnotationsPanel({ projectId, evidenceId, annotations, canAnnota
       setRemoving(null)
       await refresh()
     },
-    onError: (err) => {
-      setRemoving(null)
-      setError(`${t('evidence.annotations.deleteFailed')}. ${writeError(err, t, 'annotations')}`)
-    },
+    onError: () => setRemoving(null),
   })
 
   const submit = (e: FormEvent) => {
@@ -106,12 +95,13 @@ export function AnnotationsPanel({ projectId, evidenceId, annotations, canAnnota
       </h3>
       <p className={styles.hint}>{t('evidence.annotations.privacy')}</p>
 
-      {error ? (
-        <p role="alert" className={styles.bad}>
-          {error}
-        </p>
+      <MutationNotice error={add.error} title={t('evidence.annotations.failed2')} />
+      <MutationNotice error={promote.error} title={t('evidence.annotations.promoteFailed')} />
+      <MutationNotice error={remove.error} title={t('evidence.annotations.deleteFailed')} />
+      {/* The server may keep the body of a judgment but drop who it is attributed to (request file C-16). */}
+      {add.data?.annotation_kind === 'scholarly_judgment' && !add.data.attributed_to ? (
+        <p role="status">{t('evidence.annotations.attributionLost')}</p>
       ) : null}
-      {warning ? <p role="status">{warning}</p> : null}
 
       {annotations.length === 0 ? <p className={styles.hint}>{t('evidence.annotations.none')}</p> : null}
       <ul className={styles.annotations}>

@@ -11,17 +11,6 @@ import {
   type SearchFilters,
 } from './schemas/search'
 
-export const searchKeys = {
-  all: (projectId: number) => ['project', projectId, 'search'] as const,
-  queries: (projectId: number) => ['project', projectId, 'search', 'queries'] as const,
-  runs: (projectId: number) => ['project', projectId, 'search', 'runs'] as const,
-  resultSets: (projectId: number) => ['project', projectId, 'search', 'result-sets'] as const,
-  compare: (projectId: number, a: number, b: number) =>
-    ['project', projectId, 'search', 'compare', a, b] as const,
-  hukms: ['corpus', 'hukms'] as const,
-  personal: ['saved-searches'] as const,
-}
-
 export interface QueryDefinition {
   name: string
   query_text: string

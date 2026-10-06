@@ -5,8 +5,9 @@ import { ApiError } from '@/api/errors'
 import { session } from '@/api/http'
 import { asAccountStatus } from '@/api/schemas/auth'
 import { AuthContext, type AuthState } from './authContext'
+import { invalidate } from '@/api/invalidate'
+import { qk } from '@/api/queryKeys'
 
-const ME_KEY = ['auth', 'me'] as const
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient()
@@ -22,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [qc])
 
   const me = useQuery({
-    queryKey: ME_KEY,
+    queryKey: qk.auth.me,
     queryFn: ({ signal }) => authApi.fetchMe(signal),
     enabled: hasToken,
     retry: (count, err) => !(err instanceof ApiError && err.status === 401) && count < 1,
@@ -33,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (token: string) => {
       session.set(token)
       setHasToken(true)
-      await qc.invalidateQueries({ queryKey: ME_KEY })
+      await invalidate.me(qc)
     },
     [qc],
   )
@@ -41,9 +42,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = useCallback(
     async (email: string, password: string) => {
       const result = await authApi.login(email, password)
-      if (result.kind === 'mfa') return 'mfa' as const
+      if (result.kind === 'mfa') return { kind: 'mfa', challengeToken: result.challengeToken } as const
       await startSession(result.token)
-      return 'session' as const
+      return { kind: 'session' } as const
+    },
+    [startSession],
+  )
+
+  const completeMfa = useCallback(
+    async (challengeToken: string, code: string) => {
+      await startSession(await authApi.completeMfa(challengeToken, code))
     },
     [startSession],
   )
@@ -76,10 +84,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isApproved: accountStatus === 'approved',
       isAdmin: user?.is_admin === true,
       signIn,
+      completeMfa,
       startSession,
       signOut,
     }
-  }, [hasToken, me.data, me.isPending, signIn, startSession, signOut])
+  }, [hasToken, me.data, me.isPending, signIn, completeMfa, startSession, signOut])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

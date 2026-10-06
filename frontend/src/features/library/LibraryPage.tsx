@@ -1,16 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
-import {
-  createCollection,
-  getLibraryItem,
-  libraryManageKeys,
-  listCollections,
-  listLibrary,
-  listTags,
-  type LibraryQuery,
-} from '@/api/libraryManage'
+import { createCollection, getLibraryItem, listCollections, listLibrary, listTags, type LibraryQuery } from '@/api/libraryManage'
 import type { LibraryItem } from '@/api/schemas/library'
 import { usePreferences } from '@/app/preferencesContext'
 import { BidiText } from '@/components/BidiText'
@@ -20,8 +11,10 @@ import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import { FILTER_TYPES, kindOf, libraryCode, shortLocator } from '@/domain/libraryItem'
 import { LibraryDetail } from './LibraryDetail'
-import { useDebounced } from '../picker/useDebounced'
 import styles from './Library.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { useDraftParam, useQueryParams } from '@/hooks/useQueryParams'
 
 const SAVED = ['7', '30'] as const
 
@@ -34,35 +27,20 @@ export function LibraryPage() {
   const { t } = useTranslation()
   const { n } = usePreferences()
   const qc = useQueryClient()
-  const [params, setParams] = useSearchParams()
-  const [now] = useState(() => new Date())
+  const url = useQueryParams()
+  const update = url.set
+  const [now] = useState(() => new Date()) // audit-ok: initialiser, read once
 
-  const scope = params.get('scope') === 'favourites' ? 'favourites' : 'all'
-  const collection = Number(params.get('collection')) || undefined
-  const tag = params.get('tag') ?? ''
-  const type = params.get('type') ?? ''
-  const saved = params.get('saved') ?? ''
-  const q = params.get('q') ?? ''
-  const page = Number(params.get('page')) || 1
-  const selectedId = Number(params.get('item')) || undefined
+  const scope = url.oneOf('scope', ['all', 'favourites'] as const, 'all')
+  const collection = url.id('collection')
+  const tag = url.text('tag')
+  const type = url.text('type')
+  const saved = url.text('saved')
+  const q = url.text('q')
+  const page = url.page
+  const selectedId = url.id('item')
 
-  const update = (changes: Record<string, string | null>, keepPage = false) => {
-    const next = new URLSearchParams(params)
-    for (const [k, v] of Object.entries(changes)) {
-      if (v) next.set(k, v)
-      else next.delete(k)
-    }
-    if (!keepPage) next.delete('page')
-    setParams(next, { replace: true })
-  }
-
-  const [typed, setTyped] = useState(q)
-  useEffect(() => setTyped(q), [q])
-  const debounced = useDebounced(typed, 300)
-  useEffect(() => {
-    if (debounced !== q) update({ q: debounced || null })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounced])
+  const search = useDraftParam('q', { delay: 300 })
 
   const query: LibraryQuery = {
     q: q || undefined,
@@ -75,12 +53,12 @@ export function LibraryPage() {
     per_page: 20,
   }
   const list = useQuery({
-    queryKey: libraryManageKeys.list(query),
+    queryKey: qk.library.list(query),
     queryFn: ({ signal }) => listLibrary(query, signal),
     placeholderData: keepPreviousData,
   })
-  const collections = useQuery({ queryKey: libraryManageKeys.collections, queryFn: ({ signal }) => listCollections(signal) })
-  const tags = useQuery({ queryKey: libraryManageKeys.tags, queryFn: ({ signal }) => listTags(signal) })
+  const collections = useQuery({ queryKey: qk.library.collections, queryFn: ({ signal }) => listCollections(signal) })
+  const tags = useQuery({ queryKey: qk.library.tags, queryFn: ({ signal }) => listTags(signal) })
 
   const filtered = !!(q || tag || type || saved || collection || scope === 'favourites')
   const state = viewStateOf(list, { isEmpty: (d) => (d as { items: unknown[] }).items.length === 0 })
@@ -88,7 +66,7 @@ export function LibraryPage() {
   // The selected item usually is in the loaded page; otherwise ask for it directly (it may not be ours).
   const inPage = list.data?.items.find((i) => i.id === selectedId)
   const direct = useQuery({
-    queryKey: libraryManageKeys.item(selectedId ?? 0),
+    queryKey: qk.library.item(selectedId ?? 0),
     queryFn: ({ signal }) => getLibraryItem(selectedId!, signal),
     enabled: !!selectedId && !!list.data && !inPage,
     retry: false,
@@ -104,7 +82,7 @@ export function LibraryPage() {
     onSuccess: () => {
       setCreating(false)
       setColName('')
-      void qc.invalidateQueries({ queryKey: ['library'] })
+      void invalidate.libraryChanged(qc)
     },
   })
   const submitCollection = (e: FormEvent) => {
@@ -256,8 +234,8 @@ export function LibraryPage() {
                 type="search"
                 aria-label={t('library.filters.search')}
                 placeholder={t('library.filters.search')}
-                value={typed}
-                onChange={(e) => setTyped(e.target.value)}
+                value={search.text}
+                onChange={(e) => search.setText(e.target.value)}
               />
               <select
                 aria-label={t('library.filters.typeLabel')}
@@ -309,7 +287,7 @@ export function LibraryPage() {
                       type="button"
                       className={[styles.item, it.id === selected?.id ? styles.itemActive : ''].join(' ')}
                       aria-current={it.id === selected?.id ? 'true' : undefined}
-                      onClick={() => update({ item: String(it.id) }, true)}
+                      onClick={() => update({ item: String(it.id) }, { keepPage: true })}
                     >
                       <span className={styles.itemTop}>
                         <span>{t(`library.type.${kindOf(it.resource.resource_type)}`)}</span>
@@ -341,7 +319,7 @@ export function LibraryPage() {
                 ))}
               </ul>
               {list.data?.pagination ? (
-                <Pagination pagination={list.data.pagination} onPage={(p) => update({ page: String(p) }, true)} />
+                <Pagination pagination={list.data.pagination} onPage={(p) => update({ page: String(p) }, { keepPage: true })} />
               ) : null}
             </StateBoundary>
           </div>
@@ -351,7 +329,7 @@ export function LibraryPage() {
               key={selected.id}
               item={selected}
               collections={collections.data ?? []}
-              onRemoved={() => update({ item: null }, true)}
+              onRemoved={() => update({ item: null }, { keepPage: true })}
             />
           ) : null}
         </div>

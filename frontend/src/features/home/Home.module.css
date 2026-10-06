@@ -185,7 +185,7 @@
 }
 .panel p {
   margin: 0 0 0.75rem;
-  color: #5c2a1c;
+  color: var(--warn-ink);
 }
 .dashed {
   padding: 1rem 1.25rem;

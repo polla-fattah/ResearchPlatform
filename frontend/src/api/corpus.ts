@@ -20,15 +20,6 @@ export interface CorpusSearchParams {
   per_page?: number
 }
 
-export const corpusKeys = {
-  all: ['corpus'] as const,
-  search: (p: CorpusSearchParams) => ['corpus', 'search', p] as const,
-  hadith: (id: number) => ['corpus', 'hadith', id] as const,
-  narrator: (id: number) => ['corpus', 'narrator', id] as const,
-  criticism: (id: number, page: number) => ['corpus', 'narrator', id, 'criticism', page] as const,
-  books: (page: number) => ['corpus', 'books', page] as const,
-}
-
 export async function searchCorpus(params: CorpusSearchParams, signal?: AbortSignal) {
   return api('/corpus/search', {
     query: { ...params },
@@ -53,6 +44,11 @@ export async function getNarratorCriticism(id: number, page = 1, signal?: AbortS
     schema: z.array(corpusCriticismSchema),
     signal,
   })
+}
+
+/** The narrator's teachers (shyookh) or students, one page of the corpus's recorded links. */
+export async function getNarratorLinks(id: number, kind: 'teachers' | 'students', signal?: AbortSignal) {
+  return api(`/corpus/narrators/${id}/${kind}`, { query: { per_page: 8 }, schema: z.array(corpusNarratorSchema), signal })
 }
 
 export async function listBooks(page = 1, per_page = 20, signal?: AbortSignal) {

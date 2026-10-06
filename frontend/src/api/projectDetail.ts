@@ -12,14 +12,6 @@ import {
   type MilestoneInput,
 } from './schemas/projectDetail'
 
-export const projectDetailKeys = {
-  detail: (id: number) => ['projects', 'detail', id] as const,
-  summary: (id: number) => ['projects', 'summary', id] as const,
-  milestones: (id: number) => ['projects', 'milestones', id] as const,
-  questions: (id: number) => ['projects', 'questions', id] as const,
-  picker: (id: number, kind: string) => ['projects', 'copy-picker', id, kind] as const,
-}
-
 export async function getProject(id: number, signal?: AbortSignal) {
   const { data } = await api(`/projects/${id}`, { schema: projectDetailSchema, signal })
   return data

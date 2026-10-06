@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { getProject, projectDetailKeys } from '@/api/projectDetail'
+import { getProject } from '@/api/projectDetail'
 import { useAuth } from '@/app/authContext'
 import { can, normalizeRole, type ProjectAction, type ProjectRole } from '@/domain/roles'
+import { qk } from '@/api/queryKeys'
 
 /** Numeric id of the project in the URL, or null when it is not a number. */
 export function useProjectId(): number | null {
@@ -15,7 +16,7 @@ export function useProjectId(): number | null {
 export function useProject() {
   const id = useProjectId()
   const query = useQuery({
-    queryKey: projectDetailKeys.detail(id ?? 0),
+    queryKey: qk.project(id ?? 0).detail,
     queryFn: ({ signal }) => getProject(id!, signal),
     enabled: id !== null,
   })

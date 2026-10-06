@@ -5,12 +5,15 @@ export interface DisplayPreferences {
   numerals: 'eastern_arabic' | 'western'
   calendar: 'gregorian_hijri' | 'hijri_gregorian' | 'gregorian'
   timeZone: string
+  /** The language new notes and blocks start in. Saved with the account; display code does not use it. */
+  contentLanguage: LanguageCode
 }
 
 export const DEFAULT_PREFERENCES: DisplayPreferences = {
   numerals: 'western',
   calendar: 'gregorian_hijri',
   timeZone: 'UTC',
+  contentLanguage: 'ar',
 }
 
 function locale(lang: LanguageCode, prefs: DisplayPreferences, calendar?: 'gregory' | 'islamic-umalqura') {
@@ -89,7 +92,8 @@ export function formatRelative(
   value: Date | string,
   lang: LanguageCode,
   prefs: DisplayPreferences,
-  now: Date = new Date(),
+  /** The time to measure from. The caller supplies it (the app clock), so this stays a pure function. */
+  now: Date,
 ): string {
   const date = typeof value === 'string' ? new Date(value) : value
   if (Number.isNaN(date.getTime())) return ''

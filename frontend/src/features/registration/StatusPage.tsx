@@ -2,8 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import { applicationKeys, getMyStatus, respondToApplication } from '@/api/applications'
-import { userMessage } from '@/api/errors'
+import { getMyStatus, respondToApplication } from '@/api/applications'
 
 import type { MyStatus } from '@/api/schemas/application'
 import type { Me } from '@/api/schemas/auth'
@@ -17,6 +16,9 @@ import { viewStateOf } from '@/components/viewState'
 import { CheckEmailCard } from './CheckEmailPage'
 import { RegistrationPage, type ReviewOutcome } from './RegistrationPage'
 import styles from './Registration.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { errorMessage } from '@/api/errorMessage'
 
 /** First path segment -> nav label key, for "You tried to open Projects". */
 const AREA_LABEL: Record<string, string> = {
@@ -36,7 +38,7 @@ export function StatusPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const location = useLocation()
-  const query = useQuery({ queryKey: applicationKeys.status, queryFn: ({ signal }) => getMyStatus(signal) })
+  const query = useQuery({ queryKey: qk.application.status, queryFn: ({ signal }) => getMyStatus(signal) })
   const state = viewStateOf(query)
 
   const blockedSegment = (location.state as { blocked?: string } | null)?.blocked
@@ -77,7 +79,16 @@ function StatusBody({
   const { t } = useTranslation()
   const { date } = usePreferences()
   const app = status.application
-  const kind = status.user_status === 'suspended' ? 'suspended' : (app?.status ?? 'none')
+  const kind = status.user_status === 'suspended' ? 'suspended' : status.user_status === 'closure_requested' ? 'closure' : (app?.status ?? 'none')
+
+  if (kind === 'closure') {
+    return (
+      <RegistrationPage step={4}>
+        <h1>{t('registration.status.closureTitle')}</h1>
+        <p className={styles.lead}>{t('registration.status.closureBody')}</p>
+      </RegistrationPage>
+    )
+  }
 
   if (kind === 'approved' || status.user_status === 'approved') {
     return (
@@ -202,7 +213,7 @@ function ReplyForm({ label, submitLabel }: { label: string; submitLabel: string 
   const [text, setText] = useState('')
   const send = useMutation({
     mutationFn: () => respondToApplication(text.trim()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: applicationKeys.status }),
+    onSuccess: () => invalidate.applicationStatus(qc),
   })
   const tooShort = text.trim().length < 5
 
@@ -217,7 +228,7 @@ function ReplyForm({ label, submitLabel }: { label: string; submitLabel: string 
       {send.isError ? (
         <ErrorSummary
           title={t('registration.status.replyFailed')}
-          items={[userMessage(send.error, t('states.error.body'))]}
+          items={[errorMessage(send.error, t)]}
           footer={t('registration.status.replyKept')}
         />
       ) : null}

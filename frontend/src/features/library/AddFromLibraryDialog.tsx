@@ -1,16 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { attachResourceToProject, libraryKeys, listLibraryItems } from '@/api/library'
+import { attachResourceToProject, listLibraryItems } from '@/api/library'
 import { usePreferences } from '@/app/preferencesContext'
 import { BidiText } from '@/components/BidiText'
 import { Button } from '@/components/Button'
 import { kindOf, libraryCode } from '@/domain/libraryItem'
-import { writeErrorMessage } from './writeError'
 import styles from './Library.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { Modal } from '@/components/Modal'
+import { MutationNotice } from '@/components/MutationNotice'
 
 interface Props {
-  open: boolean
   projectId: number
   /** Resource ids already in the project. */
   existing: Set<number>
@@ -18,24 +20,15 @@ interface Props {
 }
 
 /** "Add from My Library…": copies the chosen sources into this project's own resource list. */
-export function AddFromLibraryDialog({ open, projectId, existing, onClose }: Props) {
+export function AddFromLibraryDialog({ projectId, existing, onClose }: Props) {
   const { t } = useTranslation()
   const { n } = usePreferences()
   const qc = useQueryClient()
-  const ref = useRef<HTMLDialogElement>(null)
   const [picked, setPicked] = useState<number[]>([])
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (open && !el.open) el.showModal()
-    if (!open && el.open) el.close()
-  }, [open])
-
   const library = useQuery({
-    queryKey: libraryKeys.index,
+    queryKey: qk.library.index,
     queryFn: ({ signal }) => listLibraryItems(signal),
-    enabled: open,
   })
   const available = (library.data ?? []).filter((i) => !existing.has(i.resource_id))
 
@@ -44,8 +37,7 @@ export function AddFromLibraryDialog({ open, projectId, existing, onClose }: Pro
       for (const rid of picked) await attachResourceToProject(projectId, rid)
     },
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ['project', projectId] })
-      void qc.invalidateQueries({ queryKey: ['projects'] })
+      await invalidate.resourcesChanged(qc, projectId)
       close()
     },
   })
@@ -59,16 +51,8 @@ export function AddFromLibraryDialog({ open, projectId, existing, onClose }: Pro
     setPicked((cur) => (cur.includes(rid) ? cur.filter((x) => x !== rid) : [...cur, rid]))
 
   return (
-    <dialog
-      ref={ref}
-      className={styles.wideDialog}
-      aria-labelledby="from-library-title"
-      onCancel={(e) => {
-        e.preventDefault()
-        close()
-      }}
-    >
-      <h2 id="from-library-title">{t('library.fromLibrary.title')}</h2>
+    <Modal title={t('library.fromLibrary.title')} onClose={close} wide>
+      <div className={styles.dialogBody}>
       <p>{t('library.fromLibrary.body')}</p>
       {library.isPending ? <p role="status">{t('states.loading.label')}</p> : null}
       {library.isError ? <p role="alert">{t('library.loadFailed.body')}</p> : null}
@@ -88,11 +72,7 @@ export function AddFromLibraryDialog({ open, projectId, existing, onClose }: Pro
           </label>
         ))}
       </fieldset>
-      {add.isError ? (
-        <p role="alert" className={styles.resultBad}>
-          {writeErrorMessage(add.error, t)}
-        </p>
-      ) : null}
+      <MutationNotice error={add.error} />
       <div className={styles.dialogActions}>
         <Button onClick={close} disabled={add.isPending}>
           {t('common.cancel')}
@@ -101,6 +81,7 @@ export function AddFromLibraryDialog({ open, projectId, existing, onClose }: Pro
           {t('library.fromLibrary.add', { count: picked.length, formattedCount: n(picked.length) })}
         </Button>
       </div>
-    </dialog>
+      </div>
+    </Modal>
   )
 }

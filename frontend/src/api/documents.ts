@@ -1,228 +1,149 @@
 import { z } from 'zod'
+import { ApiError } from './errors'
 import { api } from './http'
 import {
   citePreviewSchema,
+  conflictSchema,
   documentSchema,
-  documentVersionSchema,
-  draftResponseSchema,
-  type CitePreview,
-  type DocumentItem,
-  type DocumentVersion,
-  type DraftResponse,
-} from './schemas/documents'
+  draftSavedSchema,
+  draftSchema,
+  lockSchema,
+  versionSchema,
+  type CitationMode,
+  type DocumentType,
+  type SaveConflict,
+} from './schemas/writing'
 
-export type { CitePreview, DocumentItem, DocumentVersion, DraftResponse }
-
-export const documentKeys = {
-  all: (projectId: number) => ['projects', projectId, 'documents'] as const,
-  list: (projectId: number, q?: string) => ['projects', projectId, 'documents', { q }] as const,
-  detail: (projectId: number, id: number) => ['projects', projectId, 'documents', id] as const,
-  draft: (projectId: number, id: number) => ['projects', projectId, 'documents', id, 'draft'] as const,
-  versions: (projectId: number, id: number) => ['projects', projectId, 'documents', id, 'versions'] as const,
-  version: (projectId: number, id: number, v: number) =>
-    ['projects', projectId, 'documents', id, 'versions', v] as const,
-}
-
-export interface CreateDocumentPayload {
-  title: string
-  content: string
-  document_type?: 'article' | 'dossier' | 'dataset_note'
-  language?: string
-  change_summary?: string
-}
-
-export interface CreateVersionPayload {
-  content: string
-  change_summary?: string
-  expected_version?: number
-  citations?: Array<{
-    resource_id: number
-    evidence_id?: number
-    locator?: string
-    citation_type?: 'direct_quotation' | 'paraphrase' | 'reference'
-    formatted_citation: string
-  }>
-}
-
-export interface CiteEvidencePayload {
-  evidence_id: number
-  mode?: 'direct_quotation' | 'paraphrase' | 'reference'
-  style?: string
-}
-
-export async function listDocuments(
-  projectId: number,
-  params?: { q?: string; per_page?: number },
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents`, {
-    query: params,
+export async function listDocuments(projectId: number, q?: string, signal?: AbortSignal) {
+  const res = await api(`/projects/${projectId}/documents`, {
+    query: { per_page: 100, q },
     schema: z.array(documentSchema),
     signal,
   })
-  return data
+  return res.data
 }
 
 export async function getDocument(projectId: number, id: number, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}`, {
-    schema: documentSchema,
-    signal,
-  })
+  const { data } = await api(`/projects/${projectId}/documents/${id}`, { schema: documentSchema, signal })
   return data
 }
 
-export async function createDocument(
-  projectId: number,
-  payload: CreateDocumentPayload,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents`, {
-    method: 'POST',
-    body: payload,
-    schema: documentSchema,
-    signal,
-  })
+export interface NewDocument {
+  title: string
+  document_type: DocumentType
+  language: string
+  content: string
+}
+
+export async function createDocument(projectId: number, input: NewDocument) {
+  const { data } = await api(`/projects/${projectId}/documents`, { method: 'POST', body: input, schema: documentSchema })
   return data
 }
 
-export async function updateDocument(
-  projectId: number,
-  id: number,
-  payload: { title?: string; document_type?: string; language?: string },
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}`, {
-    method: 'PUT',
-    body: payload,
-    schema: documentSchema,
-    signal,
-  })
+export async function updateDocument(projectId: number, id: number, patch: { title?: string; document_type?: DocumentType; language?: string }) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}`, { method: 'PATCH', body: patch, schema: documentSchema })
+  if (patch.title !== undefined && data.title !== patch.title) throw notKept('title')
   return data
 }
 
-export async function deleteDocument(projectId: number, id: number, signal?: AbortSignal) {
-  await api(`/projects/${projectId}/documents/${id}`, {
-    method: 'DELETE',
-    signal,
-  })
+export async function deleteDocument(projectId: number, id: number) {
+  await api(`/projects/${projectId}/documents/${id}`, { method: 'DELETE' })
 }
 
-export async function saveDocumentDraft(
-  projectId: number,
-  id: number,
-  payload: { content: string; base_version?: number },
-  signal?: AbortSignal,
-) {
+export async function getDraft(projectId: number, id: number, signal?: AbortSignal) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/draft`, { schema: draftSchema, signal })
+  return data
+}
+
+/** Autosave: the text so far, stored per person, never as a version. */
+export async function saveDraft(projectId: number, id: number, content: string, baseVersion: number | null) {
   const { data } = await api(`/projects/${projectId}/documents/${id}/draft`, {
     method: 'PUT',
-    body: payload,
-    schema: z.object({
-      last_saved_at: z.string().nullable().optional(),
-      saved_by: z.string().optional(),
-      draft_base_version: z.number().nullable().optional(),
-    }),
-    signal,
+    body: { content, base_version: baseVersion },
+    schema: draftSavedSchema,
   })
   return data
 }
 
-export async function getDocumentDraft(projectId: number, id: number, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/draft`, {
-    schema: draftResponseSchema,
-    signal,
-  })
+export async function listVersions(projectId: number, id: number, signal?: AbortSignal) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/versions`, { schema: z.array(versionSchema), signal })
   return data
 }
 
-export async function createDocumentVersion(
-  projectId: number,
-  id: number,
-  payload: CreateVersionPayload,
-  signal?: AbortSignal,
-) {
+export async function getVersion(projectId: number, id: number, version: number, signal?: AbortSignal) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/versions/${version}`, { schema: versionSchema, signal })
+  return data
+}
+
+export interface NewVersion {
+  content: string
+  change_summary?: string
+  /** The version this text was written on top of. The server refuses the save if a newer one exists. */
+  expected_version: number
+  citations?: {
+    resource_id: number
+    evidence_id?: number
+    locator?: string
+    citation_type?: CitationMode
+    formatted_citation: string
+  }[]
+}
+
+/** Saves a version. A newer version on the server answers 409; `saveConflict` reads that answer. */
+export async function createVersion(projectId: number, id: number, input: NewVersion) {
   const { data } = await api(`/projects/${projectId}/documents/${id}/versions`, {
     method: 'POST',
-    body: payload,
-    schema: documentVersionSchema,
-    signal,
+    body: input,
+    schema: versionSchema,
   })
+  if (data.content !== input.content) throw notKept('text')
   return data
 }
 
-export async function restoreDocumentVersion(
-  projectId: number,
-  id: number,
-  versionNumber: number,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/versions/${versionNumber}/restore`, {
+/** The newer version behind a refused save, or null when the error is something else. */
+export function saveConflict(err: unknown): SaveConflict | null {
+  if (!(err instanceof ApiError) || err.status !== 409 || err.code !== 'CONFLICT') return null
+  const parsed = conflictSchema.safeParse(err.details)
+  return parsed.success ? parsed.data : null
+}
+
+export async function restoreVersion(projectId: number, id: number, version: number) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/versions/${version}/restore`, {
     method: 'POST',
-    schema: documentVersionSchema,
-    signal,
+    schema: versionSchema,
   })
   return data
 }
 
-export async function listDocumentVersions(projectId: number, id: number, signal?: AbortSignal) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/versions`, {
-    schema: z.array(documentVersionSchema),
-    signal,
-  })
-  return data
-}
-
-export async function getDocumentVersion(
-  projectId: number,
-  id: number,
-  versionNumber: number,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/versions/${versionNumber}`, {
-    schema: documentVersionSchema,
-    signal,
-  })
-  return data
-}
-
-export async function citeEvidence(
-  projectId: number,
-  id: number,
-  payload: CiteEvidencePayload,
-  signal?: AbortSignal,
-) {
+export async function previewCitation(projectId: number, id: number, evidenceId: number, mode: CitationMode) {
   const { data } = await api(`/projects/${projectId}/documents/${id}/cite`, {
     method: 'POST',
-    body: payload,
+    body: { evidence_id: evidenceId, mode },
     schema: citePreviewSchema,
-    signal,
   })
   return data
 }
 
-export async function linkFindingToDocument(
-  projectId: number,
-  id: number,
-  findingId: number,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/findings/${findingId}`, {
-    method: 'POST',
-    schema: documentSchema,
-    signal,
-  })
+export async function linkFindingToDocument(projectId: number, id: number, findingId: number) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/findings/${findingId}`, { method: 'POST', schema: documentSchema })
+  if (!data.findings?.some((f) => f.id === findingId)) throw notKept('link')
   return data
 }
 
-export async function unlinkFindingFromDocument(
-  projectId: number,
-  id: number,
-  findingId: number,
-  signal?: AbortSignal,
-) {
-  const { data } = await api(`/projects/${projectId}/documents/${id}/findings/${findingId}`, {
-    method: 'DELETE',
-    schema: documentSchema,
-    signal,
-  })
+export async function unlinkFindingFromDocument(projectId: number, id: number, findingId: number) {
+  await api(`/projects/${projectId}/documents/${id}/findings/${findingId}`, { method: 'DELETE' })
+}
+
+export async function acquireLock(projectId: number, id: number) {
+  const { data } = await api(`/projects/${projectId}/documents/${id}/lock`, { method: 'POST', schema: lockSchema })
   return data
+}
+
+export async function releaseLock(projectId: number, id: number) {
+  await api(`/projects/${projectId}/documents/${id}/unlock`, { method: 'POST' })
+}
+
+/** A write the server accepted but did not keep (found by reading the answer back). */
+function notKept(what: string): ApiError {
+  return new ApiError({ status: 200, code: 'NOT_PERSISTED', message: `The server did not keep the ${what}.`, details: { what } })
 }

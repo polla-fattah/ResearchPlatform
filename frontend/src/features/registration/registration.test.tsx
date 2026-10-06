@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { session } from '@/api/http'
-import { envelope, mockMe, renderApp } from '@/test/helpers'
+import { envelope, mockHomeApis, mockMe, renderApp } from '@/test/helpers'
 import { server } from '@/test/server'
 
 const errorBody = (code: string, message: string, details: unknown = []) => ({
@@ -240,16 +240,42 @@ describe('Sign in', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(/account is suspended/i)
   })
 
-  it('does not pretend to support two-factor sign-in (request file C-4)', async () => {
-    server.use(
-      http.post('*/api/v1/auth/login', () =>
-        HttpResponse.json(envelope({ mfa_required: true, challenge_token: 'c' })),
-      ),
-    )
-    renderApp('/sign-in')
-    await signIn()
-    expect(await screen.findByRole('alert')).toHaveTextContent(/two-factor sign-in, which isn't available/i)
-    expect(session.get()).toBeNull()
+  describe('two-step sign-in', () => {
+    const challenge = () => server.use(http.post('*/api/v1/auth/login', () => HttpResponse.json(envelope({ mfa_required: true, challenge_token: 'chal' }))))
+
+    it('asks for the code after the password, and signs in with it', async () => {
+      challenge()
+      let sent: Record<string, unknown> | null = null
+      server.use(
+        http.post('*/api/v1/auth/mfa/challenge', async ({ request }) => {
+          sent = (await request.json()) as Record<string, unknown>
+          return HttpResponse.json(envelope({ user: { id: 1, display_name: 'Shilan Rashid', email: 'shilan@example.org', status: 'approved' }, token: 'tok2' }))
+        }),
+      )
+      mockMe()
+      mockHomeApis()
+      renderApp('/sign-in')
+      await signIn()
+      expect(await screen.findByRole('heading', { name: 'Confirm it’s you' })).toBeInTheDocument()
+      expect(session.get()).toBeNull()
+      await userEvent.type(screen.getByLabelText(/Code/), ' 123456 ')
+      await userEvent.click(screen.getByRole('button', { name: 'Verify and sign in' }))
+      await waitFor(() => expect(sent).toEqual({ challenge_token: 'chal', code: '123456' }))
+      await waitFor(() => expect(session.get()).toBe('tok2'))
+    })
+
+    it('says the code did not work, keeps the step open, and lets the person start again', async () => {
+      challenge()
+      server.use(http.post('*/api/v1/auth/mfa/challenge', () => HttpResponse.json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Invalid MFA verification code or recovery code.' } }, { status: 401 })))
+      renderApp('/sign-in')
+      await signIn()
+      await userEvent.type(await screen.findByLabelText(/Code/), '000000')
+      await userEvent.click(screen.getByRole('button', { name: 'Verify and sign in' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent("That code didn't work")
+      expect(session.get()).toBeNull()
+      await userEvent.click(screen.getByRole('button', { name: 'Start again' }))
+      expect(await screen.findByRole('heading', { name: 'Sign in' })).toBeInTheDocument()
+    })
   })
 
   it('signs in and returns to the page the visitor wanted', async () => {

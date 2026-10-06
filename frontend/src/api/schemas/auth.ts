@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /** Backend values today: unverified | pending | approved | suspended (rejected is requested, DEF-6). */
-export type AccountStatus = 'unverified' | 'pending' | 'approved' | 'rejected' | 'suspended'
+export type AccountStatus = 'unverified' | 'pending' | 'approved' | 'rejected' | 'suspended' | 'closure_requested'
 
 const ACCOUNT_STATUSES: readonly string[] = [
   'unverified',
@@ -9,6 +9,7 @@ const ACCOUNT_STATUSES: readonly string[] = [
   'approved',
   'rejected',
   'suspended',
+  'closure_requested',
 ]
 
 export function asAccountStatus(value: string): AccountStatus | 'unknown' {
@@ -57,6 +58,16 @@ export const meSchema = userSchema.extend({
       /** The backend returns either a list or a map of booleans (request file C-10). */
       public_fields: z
         .union([z.array(z.string()), z.record(z.string(), z.boolean())])
+        .nullable()
+        .optional(),
+      /** What the person chose; null until they do (the top-level `display_preferences` then holds server defaults). */
+      display_preferences: z
+        .object({
+          default_content_language: z.string().nullable().optional(),
+          numerals: z.string().nullable().optional(),
+          calendar: z.string().nullable().optional(),
+          time_zone: z.string().nullable().optional(),
+        })
         .nullable()
         .optional(),
     })

@@ -6,12 +6,6 @@ import { exportJobSchema } from './schemas/exports'
  * Home is assembled from endpoints that work today. GET /home itself returns HTTP 500
  * (request file C-5) and its `updates` feed is invented (C-9), so it is not used.
  */
-export const homeKeys = {
-  exports: ['home', 'exports'] as const,
-  openTasks: ['home', 'open-tasks'] as const,
-  unread: ['home', 'unread'] as const,
-}
-
 export async function listMyExports(signal?: AbortSignal) {
   const { data } = await api('/me/exports', {
     query: { per_page: 3 },

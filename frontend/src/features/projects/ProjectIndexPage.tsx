@@ -1,9 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useSearchParams } from 'react-router-dom'
-import { listProjects, projectKeys, type ListProjectsParams } from '@/api/projects'
-import { userMessage } from '@/api/errors'
+import { Link } from 'react-router-dom'
+import { listProjects, type ListProjectsParams } from '@/api/projects'
 import {
   leaveProject,
   restoreProject,
@@ -21,13 +20,15 @@ import { formatCode } from '@/domain/codes'
 import { PROJECT_STAGES } from '@/domain/vocab'
 import { ProjectRow, type RowAction } from './ProjectRow'
 import styles from './Projects.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { useDraftParam, useQueryParams } from '@/hooks/useQueryParams'
+import { useLastLoaded } from '@/hooks/useLastLoaded'
+import { MutationNotice } from '@/components/MutationNotice'
 
-const SCOPES: ProjectScope[] = ['owned', 'shared', 'archived', 'trash']
+const SCOPES = ['owned', 'shared', 'archived', 'trash'] as const satisfies readonly ProjectScope[]
 const SORTS = ['recent', 'title', 'created'] as const
 type Sort = (typeof SORTS)[number]
-
-const isScope = (v: string | null): v is ProjectScope => !!v && (SCOPES as string[]).includes(v)
-const isSort = (v: string | null): v is Sort => !!v && (SORTS as readonly string[]).includes(v)
 
 /** Applies the chosen order to the loaded page (the API has no `sort` yet, request file C-12). */
 function sortRows(rows: ProjectListItem[], sort: Sort): ProjectListItem[] {
@@ -41,34 +42,17 @@ export function ProjectIndexPage() {
   const { t } = useTranslation()
   const { n, date } = usePreferences()
   const qc = useQueryClient()
-  const [params, setParams] = useSearchParams()
+  const url = useQueryParams()
+  const update = url.set
 
-  const scope: ProjectScope = isScope(params.get('scope')) ? (params.get('scope') as ProjectScope) : 'owned'
-  const q = params.get('q') ?? ''
-  const stage = params.get('stage') ?? ''
-  const tag = params.get('tag') ?? ''
-  const sort: Sort = isSort(params.get('sort')) ? (params.get('sort') as Sort) : 'recent'
-  const page = Number(params.get('page')) || 1
+  const scope: ProjectScope = url.oneOf('scope', SCOPES, 'owned')
+  const q = url.text('q')
+  const stage = url.text('stage')
+  const tag = url.text('tag')
+  const sort: Sort = url.oneOf('sort', SORTS, 'recent')
+  const page = url.page
 
-  const update = (changes: Record<string, string | null>, keepPage = false) => {
-    const next = new URLSearchParams(params)
-    for (const [k, v] of Object.entries(changes)) {
-      if (v) next.set(k, v)
-      else next.delete(k)
-    }
-    if (!keepPage) next.delete('page')
-    setParams(next, { replace: true })
-  }
-
-  // The search box is typed into freely and applied to the URL a moment later.
-  const [typed, setTyped] = useState(q)
-  useEffect(() => setTyped(q), [q])
-  useEffect(() => {
-    if (typed === q) return
-    const id = setTimeout(() => update({ q: typed || null }), 300)
-    return () => clearTimeout(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [typed])
+  const search = useDraftParam('q', { delay: 300 })
 
   const listParams: ListProjectsParams = {
     scope,
@@ -79,32 +63,25 @@ export function ProjectIndexPage() {
     per_page: 20,
   }
   const query = useQuery({
-    queryKey: projectKeys.list(listParams),
+    queryKey: qk.projects.list(listParams),
     queryFn: ({ signal }) => listProjects(listParams, signal),
     placeholderData: keepPreviousData,
   })
-  // A failed refetch keeps showing the last good list, dimmed, under a banner
-  // (design: "Projects couldn't be filtered"). TanStack drops placeholder data on error, so remember it.
-  const [lastGood, setLastGood] = useState<typeof query.data>(undefined)
-  useEffect(() => {
-    if (query.data && !query.isPlaceholderData) setLastGood(query.data)
-  }, [query.data, query.isPlaceholderData])
-  const data = query.data ?? (query.isError ? lastGood : undefined)
+  // A failed refetch keeps showing the last list that loaded, dimmed, under a banner (design: "Projects couldn't be
+  // filtered"). TanStack drops placeholder data on error, so the list is read back from the cache.
+  const previous = useLastLoaded<NonNullable<typeof query.data>>(qk.projects.lists)
+  const data = query.data ?? (query.isError ? previous : undefined)
   const filtered = !!(q || stage || tag)
   const state = viewStateOf(
     query.isError && data ? { ...query, isError: false, data } : query,
     { isEmpty: (d) => (d as { items: unknown[] }).items.length === 0 },
   )
 
-  const rows = useMemo(() => sortRows(data?.items ?? [], sort), [data, sort])
-  const tags = useMemo(
-    () => [...new Set((data?.items ?? []).flatMap((p) => p.tags ?? []).concat(tag ? [tag] : []))].sort(),
-    [data, tag],
-  )
+  const rows = sortRows(data?.items ?? [], sort)
+  const tags = [...new Set((data?.items ?? []).flatMap((p) => p.tags ?? []).concat(tag ? [tag] : []))].sort()
 
   // ---- row actions ----
-  const [pending, setPending] = useState<{ action: 'trash' | 'leave'; project: ProjectListItem } | null>(null)
-  const [actionError, setActionError] = useState<string | null>(null)
+  const [pending, setPending] = useState<{ action: 'trash' | 'leave'; project: ProjectListItem; restoreBy: Date } | null>(null)
 
   const act = useMutation({
     mutationFn: async ({ action, project }: { action: RowAction; project: ProjectListItem }) => {
@@ -114,18 +91,15 @@ export function ProjectIndexPage() {
       return leaveProject(project.id)
     },
     onSuccess: () => {
-      setActionError(null)
       setPending(null)
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
+      void invalidate.projectLifecycle(qc)
     },
-    onError: (err) => {
-      setPending(null)
-      setActionError(userMessage(err, t('states.error.body')))
-    },
+    onError: () => setPending(null),
   })
 
   const onAction = (action: RowAction, project: ProjectListItem) => {
-    if (action === 'trash' || action === 'leave') setPending({ action, project })
+    // The recovery deadline is worked out when the dialog is opened, not on every render.
+    if (action === 'trash' || action === 'leave') setPending({ action, project, restoreBy: new Date(Date.now() + 30 * 86_400_000) }) // audit-ok: event handler
     else act.mutate({ action, project })
   }
 
@@ -142,7 +116,6 @@ export function ProjectIndexPage() {
             trash: n(counts.trash),
           })
 
-  const restoreDate = date(new Date(Date.now() + 30 * 86_400_000))
 
   return (
     <section>
@@ -178,8 +151,8 @@ export function ProjectIndexPage() {
             className={styles.search}
             aria-label={t('projects.index.filters.search')}
             placeholder={t('projects.index.filters.search')}
-            value={typed}
-            onChange={(e) => setTyped(e.target.value)}
+            value={search.text}
+            onChange={(e) => search.setText(e.target.value)}
           />
           <select
             aria-label={t('projects.index.filters.stage')}
@@ -208,7 +181,7 @@ export function ProjectIndexPage() {
           <select
             aria-label={t('projects.index.filters.sort')}
             value={sort}
-            onChange={(e) => update({ sort: e.target.value === 'recent' ? null : e.target.value }, true)}
+            onChange={(e) => update({ sort: e.target.value === 'recent' ? null : e.target.value }, { keepPage: true })}
           >
             <option value="recent">{t('projects.index.filters.recent')}</option>
             <option value="title">{t('projects.index.filters.title')}</option>
@@ -217,12 +190,7 @@ export function ProjectIndexPage() {
         </div>
       ) : null}
 
-      {actionError ? (
-        <div className={styles.banner} role="alert">
-          <h2>{t('projects.index.actionFailed')}</h2>
-          <p>{actionError}</p>
-        </div>
-      ) : null}
+      <MutationNotice error={act.error} title={t('projects.index.actionFailed')} />
 
       {query.isError && data ? (
         <div className={styles.banner} role="alert">
@@ -251,7 +219,7 @@ export function ProjectIndexPage() {
         </ul>
         {data?.pagination ? (
           <div style={{ marginBlockStart: '1.25rem' }}>
-            <Pagination pagination={data.pagination} onPage={(p) => update({ page: String(p) }, true)} />
+            <Pagination pagination={data.pagination} onPage={(p) => update({ page: String(p) }, { keepPage: true })} />
           </div>
         ) : null}
       </StateBoundary>
@@ -271,7 +239,7 @@ export function ProjectIndexPage() {
               {t('projects.index.trashDialog.kicker', { code: formatCode('PRJ', pending.project.id) })}
             </p>
             <p>{t('projects.index.trashDialog.readOnly')}</p>
-            <p>{t('projects.index.trashDialog.restore', { date: restoreDate })}</p>
+            <p>{t('projects.index.trashDialog.restore', { date: date(pending.restoreBy) })}</p>
             <p>
               {t('projects.index.trashDialog.goesWith', {
                 evidence: t('units.evidence', { count: pending.project.evidence_count ?? 0, formattedCount: n(pending.project.evidence_count ?? 0) }),

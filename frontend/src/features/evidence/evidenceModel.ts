@@ -1,5 +1,3 @@
-import type { TFunction } from 'i18next'
-import { ApiError, userMessage } from '@/api/errors'
 import type { EvidenceItem } from '@/api/schemas/evidence'
 import { formatCode } from '@/domain/codes'
 import type { EvidenceState } from '@/domain/vocab'
@@ -44,11 +42,3 @@ export function correctionTarget(r: Resource | null | undefined): { corpus_table
 export const stateOf = (s: string): EvidenceState | null =>
   (['candidate', 'included', 'reviewed', 'excluded', 'unresolved'] as const).find((x) => x === s) ?? null
 
-/** Text for a failed write. A change the server accepted but did not keep gets its own wording. */
-export function writeError(err: unknown, t: TFunction, ns: 'state' | 'annotations'): string {
-  if (err instanceof ApiError && err.code === 'NOT_PERSISTED') {
-    const what = (err.details as { what?: string } | undefined)?.what ?? 'change'
-    return t(`evidence.${ns}.notPersisted`, { what: t(`evidence.what.${what}`, { defaultValue: what }) })
-  }
-  return userMessage(err, t('states.error.body'))
-}

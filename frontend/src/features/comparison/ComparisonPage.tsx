@@ -1,407 +1,170 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useSearchParams } from 'react-router-dom'
+import { usePreferences } from '@/app/preferencesContext'
+import { Button } from '@/components/Button'
+import { StateBoundary } from '@/components/StateBoundary'
+import { viewStateOf } from '@/components/viewState'
+import { useQueryParams } from '@/hooks/useQueryParams'
 import { useProject } from '@/features/projects/useProject'
 import { ChainsView } from './ChainsView'
-import { OccurrencesView } from './OccurrencesView'
-import { AnnotateModal, SelectInputsModal } from './ComparisonDialogs'
-import {
-  DEFAULT_CHAINS,
-  DEFAULT_OCC_COLUMNS,
-  type ComparisonViewMode,
-  type OccurrenceColumn,
-  type SavedAnalysisInfo,
-} from './comparisonModel'
+import { analysisCode, idsParam, MAX_NARRATORS, MAX_REPORTS, parseIds, runTitle, VIEWS, type View } from './comparisonModel'
 import { CriticismView } from './CriticismView'
 import { DossierView } from './DossierView'
+import { OccurrencesView } from './OccurrencesView'
+import { RunHeader } from './RunHeader'
+import { SelectReportsDialog } from './SelectReportsDialog'
+import { StoredRunView } from './StoredRunView'
+import { useRun, useRuns } from './useComparison'
 import styles from './Comparison.module.css'
 
+/**
+ * Screen 10. The address holds everything that defines what is on screen, so Back, a reload and a pasted link land on
+ * the same comparison:  ?view=occ|chains|dossier|crit  &h=<report ids>  &base=<baseline report>  &narrator=<id>  &n=<ids>
+ * and  ?run=<id>  for a stored analysis. The only local state is the dialog that chooses the reports.
+ */
 export function ComparisonPage() {
   const { t } = useTranslation()
-  const { id, can } = useProject()
-  const projectId = id ?? 0
-  const canEdit = can('editShared')
+  const { date } = usePreferences()
+  const { id: projectId, can } = useProject()
+  const url = useQueryParams()
+  const [selecting, setSelecting] = useState(false)
 
-  const [params, setParams] = useSearchParams()
-  const tabParam = (params.get('tab') as ComparisonViewMode) || 'occ'
-  const stateParam = params.get('st') || 'normal'
+  const pid = projectId ?? 0
+  const canEdit = can('addShared')
+  const runId = url.id('run')
+  const view = url.oneOf('view', VIEWS, 'occ')
+  const reportIds = parseIds(url.text('h'), MAX_REPORTS)
+  const narratorIds = parseIds(url.text('n'), MAX_NARRATORS)
 
-  const [view, setView] = useState<ComparisonViewMode>(
-    ['occ', 'chains', 'dossier', 'crit'].includes(tabParam) ? tabParam : 'occ',
-  )
-  const [st, setSt] = useState<string>(stateParam)
-  const [diff, setDiff] = useState(true)
+  const runs = useRuns(pid)
+  const run = useRun(pid, runId)
 
-  // Modals state
-  const [selectInputsOpen, setSelectInputsOpen] = useState(false)
-  const [annotateOpen, setAnnotateOpen] = useState(false)
-  const [annotateTargetCol, setAnnotateTargetCol] = useState<number | string>()
+  if (projectId === null) return null
 
-  // Columns & chains state
-  const [occCols, setOccCols] = useState<OccurrenceColumn[]>(DEFAULT_OCC_COLUMNS)
-  const [savedAnalysis, setSavedAnalysis] = useState<SavedAnalysisInfo>({
-    name: 'Kufan chains side by side',
-    id: 'AN-0003 · v2',
-    meta: 'Inputs: OCC-ABD-000106, OCC-TIR-000044, OCC-NAS-000084 (corpus v2026.08) · settings: align by matn, show formulas · Shilan Rashid · saved 25 Sep 2026 14:10',
-    version: 2,
-    rerunLabel: 'Rerun as v3',
-    changed: true,
-  })
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
-
-  const handleTabChange = (newView: ComparisonViewMode) => {
-    setView(newView)
-    const next = new URLSearchParams(params)
-    next.set('tab', newView)
-    setParams(next, { replace: true })
-  }
-
-  const handleStateChange = (newSt: string) => {
-    setSt(newSt)
-    const next = new URLSearchParams(params)
-    next.set('st', newSt)
-    setParams(next, { replace: true })
-  }
-
-  const handleRerun = () => {
-    const nextVersion = savedAnalysis.version + 1
-    setSavedAnalysis({
-      ...savedAnalysis,
-      id: `AN-0003 · v${nextVersion}`,
-      version: nextVersion,
-      rerunLabel: `Rerun as v${nextVersion + 1}`,
-      changed: false,
-    })
-    setToastMessage(`Rerun completed as v${nextVersion}`)
-    setTimeout(() => setToastMessage(null), 3000)
-  }
-
-  const handleSaveAnalysis = () => {
-    setSavedAnalysis({
-      ...savedAnalysis,
-      changed: false,
-    })
-    setToastMessage(t('comparison.bar.savedToast', { code: savedAnalysis.id }))
-    setTimeout(() => setToastMessage(null), 3000)
-  }
-
-  const handleAnnotate = (colId: number | string) => {
-    setAnnotateTargetCol(colId)
-    setAnnotateOpen(true)
-  }
-
-  const handleSaveAnnotation = (noteText: string) => {
-    if (!annotateTargetCol) return
-    setOccCols((prev) =>
-      prev.map((col) => {
-        if (col.id === annotateTargetCol) {
-          return {
-            ...col,
-            notes: [...col.notes, { vis: 'Project', text: noteText }],
-          }
-        }
-        return col
-      }),
-    )
-  }
-
-  // Derive effective columns based on error state
-  const effectiveOccCols = occCols.map((col) => {
-    if (st === 'error' && col.id === 'occ-3') {
-      return { ...col, limited: true, hasText: false }
-    }
-    return col
-  })
-
-  // Empty state copy per view
-  const emptyTitle =
-    view === 'occ'
-      ? t('comparison.states.emptyOccTitle')
-      : view === 'chains'
-        ? t('comparison.states.emptyChainsTitle')
-        : t('comparison.states.emptyCritTitle')
-
-  const emptyBody =
-    view === 'occ'
-      ? t('comparison.states.emptyOccBody')
-      : view === 'chains'
-        ? t('comparison.states.emptyChainsBody')
-        : t('comparison.states.emptyCritBody')
+  const go = (changes: Record<string, string | number | null>) => url.set(changes, { push: true, keepPage: true })
+  const openDossier = (id: number) => go({ run: null, view: 'dossier', narrator: id })
 
   return (
-    <div className={styles.page}>
-      {/* Review bar for development/testing */}
-      <div data-screen-label="10 review bar" className={styles.reviewBar}>
-        <div className={styles.reviewMeta}>
-          <span className={styles.reviewTitle}>10 · {t('comparison.title')}</span>
-          <span className={styles.reviewReqs}>{t('comparison.reqs')}</span>
-          <span className={styles.reviewNotice}>{t('comparison.sampleNotice')}</span>
+    <section aria-label={t('comparison.title')}>
+      <div className={styles.bar}>
+        <div className={styles.barText}>
+          <h1>{run.data ? runTitle(t, run.data) : t('comparison.bar.untitled')}</h1>
+          {run.data ? (
+            <RunHeader
+              run={run.data}
+              projectId={projectId}
+              canEdit={canEdit}
+              onOpenInWorkspace={(inputs) =>
+                url.replaceAll(
+                  inputs.kind === 'matn' ? { view: 'occ', h: idsParam(inputs.hadithIds) } : { view: 'crit', n: idsParam(inputs.kind === 'criticism' ? inputs.narratorIds : []) },
+                  { push: true },
+                )
+              }
+              onRunAgain={(newId) => url.replaceAll({ run: newId }, { push: true })}
+            />
+          ) : (
+            <p className={styles.hint}>
+              {view === 'dossier'
+                ? t('comparison.bar.dossierNote')
+                : reportIds.length > 0 || narratorIds.length > 0
+                  ? t('comparison.bar.notSaved')
+                  : t('comparison.bar.metaNone')}
+            </p>
+          )}
         </div>
 
-        <div className={styles.chipsRow}>
-          <span className={styles.chipsLabel}>View</span>
-          {(['occ', 'chains', 'dossier', 'crit'] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => handleTabChange(v)}
-              className={[
-                styles.chip,
-                view === v ? styles.chipActive : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              {t(`comparison.modes.${v}`)}
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.chipsRow}>
-          <span className={styles.chipsLabel}>State</span>
-          {['normal', 'empty', 'loading', 'error', 'forbidden'].map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => handleStateChange(s)}
-              className={[
-                styles.chip,
-                st === s ? styles.chipStateActive : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
-          ))}
+        <div className={styles.barActions}>
+          <select
+            className={styles.picker}
+            aria-label={t('comparison.bar.open')}
+            value={runId ?? ''}
+            disabled={!runs.data || runs.data.length === 0}
+            onChange={(e) => go({ run: e.target.value || null })}
+          >
+            <option value="">{t('comparison.bar.openPrompt', { count: runs.data?.length ?? 0 })}</option>
+            {(runs.data ?? []).map((r) => (
+              <option key={r.id} value={r.id}>
+                {analysisCode(r.id)} · {runTitle(t, r)}
+                {r.created_at ? ` · ${date(r.created_at)}` : ''}
+              </option>
+            ))}
+          </select>
+          {run.data ? (
+            <Button onClick={() => go({ run: null })}>{t('comparison.bar.close')}</Button>
+          ) : view === 'occ' || view === 'chains' ? (
+            <Button variant="primary" onClick={() => setSelecting(true)}>
+              {t('comparison.bar.select')}
+            </Button>
+          ) : null}
         </div>
       </div>
 
-      {st === 'forbidden' ? (
-        <div className={styles.stateContainer}>
-          <div className={styles.forbiddenCard}>
-            <h1 className={styles.forbiddenTitle}>{t('comparison.states.forbiddenTitle')}</h1>
-            <p className={styles.forbiddenText}>{t('comparison.states.forbiddenBody')}</p>
-            <Link
-              to={`/projects/${projectId}/analysis`}
-              onClick={() => setSt('normal')}
-              className={styles.chip}
-              style={{
-                alignSelf: 'flex-start',
-                background: 'var(--surface-white)',
-                color: 'var(--ink)',
-                border: '1px solid var(--rule-strong)',
-                textDecoration: 'none',
-              }}
-            >
-              {t('comparison.states.seeAnalyses')}
-            </Link>
-          </div>
-        </div>
+      {runId !== undefined ? (
+        <StateBoundary
+          state={viewStateOf(run)}
+          errorValue={run.error}
+          onRetry={() => void run.refetch()}
+          forbidden={
+            <div className={styles.notice} role="status">
+              <h2>{t('comparison.run.unavailable.title')}</h2>
+              <p>{t('comparison.run.unavailable.body')}</p>
+              <Button onClick={() => go({ run: null })}>{t('comparison.run.unavailable.action')}</Button>
+            </div>
+          }
+        >
+          {run.data ? <StoredRunView run={run.data} onOpenDossier={openDossier} /> : null}
+        </StateBoundary>
       ) : (
         <>
-          {/* Saved analysis bar */}
-          <div role="region" aria-label="Saved analysis" className={styles.analysisBar}>
-            <div className={styles.analysisMeta}>
-              <div className={styles.analysisTitleRow}>
-                <span className={styles.analysisTitle}>
-                  {st === 'empty' ? t('comparison.bar.untitled') : savedAnalysis.name}
-                </span>
-                <span className={styles.analysisId}>
-                  {st === 'empty' ? t('comparison.bar.notSaved') : savedAnalysis.id}
-                </span>
-              </div>
-              <span className={styles.analysisSub}>
-                {st === 'empty' ? t('comparison.bar.noInputs') : savedAnalysis.meta}
-              </span>
-            </div>
-
-            <div className={styles.analysisActions}>
-              <button
-                type="button"
-                onClick={() => setSelectInputsOpen(true)}
-                className={styles.chip}
-                style={{
-                  background: 'var(--surface-white)',
-                  color: 'var(--ink)',
-                  border: '1px solid var(--rule-strong)',
-                }}
-              >
-                {t('comparison.bar.selectInputs')}
-              </button>
-              {st !== 'empty' ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleRerun}
-                    className={styles.chip}
-                    style={{
-                      background: 'var(--surface-white)',
-                      color: 'var(--ink)',
-                      border: '1px solid var(--rule-strong)',
-                    }}
-                  >
-                    {savedAnalysis.rerunLabel}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSaveAnalysis}
-                    disabled={!canEdit}
-                    className={styles.chip}
-                    style={{
-                      background: 'var(--accent)',
-                      color: '#ffffff',
-                      border: 'none',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {t('comparison.bar.saveAnalysis')}
-                  </button>
-                </>
-              ) : null}
-            </div>
-
-            {savedAnalysis.changed && st !== 'empty' ? (
-              <div className={styles.inputsChangedNotice}>
-                <span className={styles.inputsChangedBadge}>
-                  {t('comparison.bar.inputsChangedTitle')}
-                </span>
-                {t('comparison.bar.inputsChangedBody', {
-                  item: 'OCC-TIR-000044',
-                  version: 'v2026.09',
-                  oldVersion: '2',
-                  newVersion: '3',
-                })}
-              </div>
-            ) : null}
-
-            {toastMessage ? (
-              <div
-                style={{
-                  flex: '1 1 100%',
-                  padding: '6px 10px',
-                  background: 'var(--accent-soft)',
-                  color: 'var(--accent-dark)',
-                  fontSize: '12px',
-                  borderRadius: '2px',
-                }}
-              >
-                {toastMessage}
-              </div>
-            ) : null}
-          </div>
-
-          {/* Mode tab list */}
-          <div role="tablist" aria-label="Comparison mode" className={styles.tabList}>
-            {(['occ', 'chains', 'dossier', 'crit'] as const).map((m) => (
-              <button
-                key={m}
-                role="tab"
-                aria-selected={view === m}
-                onClick={() => handleTabChange(m)}
-                className={[
-                  styles.tabBtn,
-                  view === m ? styles.tabBtnActive : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                {t(`comparison.modes.${m}`)}
+          <div role="tablist" aria-label={t('comparison.views.label')} className={styles.tabs}>
+            {VIEWS.map((v: View) => (
+              <button key={v} type="button" role="tab" className={styles.tab} aria-selected={view === v} onClick={() => go({ view: v })}>
+                {t(`comparison.views.${v}`)}
               </button>
             ))}
           </div>
-
-          {/* View body */}
-          {st === 'loading' ? (
-            <div aria-busy="true" className={styles.skeletonGrid}>
-              <div className={styles.skeletonCard} />
-              <div className={styles.skeletonCard} />
-              <div className={styles.skeletonCard} />
-            </div>
-          ) : st === 'empty' ? (
-            <div className={styles.stateContainer}>
-              <div className={styles.emptyCard}>
-                <h2 className={styles.emptyTitle}>{emptyTitle}</h2>
-                <p className={styles.emptyText}>{emptyBody}</p>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <button
-                    type="button"
-                    onClick={() => setSelectInputsOpen(true)}
-                    className={styles.chip}
-                    style={{
-                      background: 'var(--accent)',
-                      color: '#ffffff',
-                      border: 'none',
-                      fontWeight: 500,
-                      padding: '9px 14px',
-                      fontSize: '14px',
-                    }}
-                  >
-                    {t('comparison.states.selectInputs')}
-                  </button>
-                  <Link
-                    to={`/projects/${projectId}/evidence`}
-                    className={styles.chip}
-                    style={{
-                      background: 'var(--surface-white)',
-                      color: 'var(--ink)',
-                      border: '1px solid var(--rule-strong)',
-                      padding: '9px 14px',
-                      fontSize: '14px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {t('comparison.states.pickFromEvidence')}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              {view === 'occ' ? (
-                <OccurrencesView
-                  columns={effectiveOccCols}
-                  showDiff={diff}
-                  onToggleDiff={() => setDiff(!diff)}
-                  onAnnotate={handleAnnotate}
-                  projectId={projectId}
-                />
-              ) : null}
-
-              {view === 'chains' ? (
-                <ChainsView
-                  chains={DEFAULT_CHAINS}
-                  onOpenDossier={() => handleTabChange('dossier')}
-                />
-              ) : null}
-
-              {view === 'dossier' ? (
-                <DossierView onGoCriticism={() => handleTabChange('crit')} />
-              ) : null}
-
-              {view === 'crit' ? <CriticismView /> : null}
-            </>
-          )}
+          <div role="tabpanel">
+            {view === 'occ' ? (
+              <OccurrencesView
+                projectId={projectId}
+                reportIds={reportIds}
+                baseline={url.id('base')}
+                canEdit={canEdit}
+                onBaseline={(id) => url.set({ base: id })}
+                onSelect={() => setSelecting(true)}
+              />
+            ) : null}
+            {view === 'chains' ? (
+              <ChainsView projectId={projectId} reportIds={reportIds} canEdit={canEdit} onSelect={() => setSelecting(true)} onOpenDossier={openDossier} />
+            ) : null}
+            {view === 'dossier' ? (
+              <DossierView
+                projectId={projectId}
+                narratorId={url.id('narrator')}
+                reportIds={reportIds}
+                onPick={(id) => url.set({ narrator: id })}
+                onCompareCriticism={(id) => go({ view: 'crit', n: idsParam([id]) })}
+              />
+            ) : null}
+            {view === 'crit' ? (
+              <CriticismView projectId={projectId} narratorIds={narratorIds} canEdit={canEdit} onChange={(ids) => url.set({ n: idsParam(ids) })} />
+            ) : null}
+          </div>
         </>
       )}
 
-      {/* Modals */}
-      {selectInputsOpen ? (
-        <SelectInputsModal
-          onClose={() => setSelectInputsOpen(false)}
-          onApply={() => {
-            setSt('normal')
+      {selecting ? (
+        <SelectReportsDialog
+          projectId={projectId}
+          initial={reportIds}
+          onClose={() => setSelecting(false)}
+          onApply={(ids) => {
+            const base = url.id('base')
+            url.set({ h: idsParam(ids), base: base !== undefined && ids.includes(base) ? base : null })
+            setSelecting(false)
           }}
         />
       ) : null}
-
-      {annotateOpen ? (
-        <AnnotateModal
-          colId={annotateTargetCol}
-          onClose={() => setAnnotateOpen(false)}
-          onSave={handleSaveAnnotation}
-        />
-      ) : null}
-    </div>
+    </section>
   )
 }

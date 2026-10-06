@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { corpusKeys, getHadith } from '@/api/corpus'
+import { getHadith } from '@/api/corpus'
 import type { CorpusNarrator } from '@/api/schemas/corpus'
 import { usePreferences } from '@/app/preferencesContext'
 import { NeutralState } from '@/components/Badges'
 import { BidiText } from '@/components/BidiText'
 import styles from './Evidence.module.css'
+import { qk } from '@/api/queryKeys'
 
 type Tab = 'chain' | 'narrators' | 'judgments'
 
@@ -17,7 +18,7 @@ export function CorpusTabs({ hadithId }: { hadithId: number | null }) {
   const [tab, setTab] = useState<Tab>('chain')
 
   const hadith = useQuery({
-    queryKey: corpusKeys.hadith(hadithId ?? 0),
+    queryKey: qk.corpus.hadith(hadithId ?? 0),
     queryFn: ({ signal }) => getHadith(hadithId!, signal),
     enabled: hadithId !== null,
   })

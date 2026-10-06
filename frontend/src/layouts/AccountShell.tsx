@@ -9,7 +9,7 @@ import styles from './Shell.module.css'
 /** Left account rail from the navigation map: Home · My Library · Projects · Saved Searches · Notifications · Downloads · Profile/Settings. */
 export function AccountShell() {
   const { t } = useTranslation()
-  const { user, signOut } = useAuth()
+  const { user, signOut, isAdmin } = useAuth()
 
   return (
     <>
@@ -30,6 +30,7 @@ export function AccountShell() {
             <NavItem to="/notifications" label={t('nav.notifications')} release="R1b" />
             <NavItem to="/downloads" label={t('nav.downloads')} />
             <NavItem to="/settings" label={t('nav.settings')} />
+            {isAdmin ? <NavItem to="/admin/applications" label={t('nav.administration')} /> : null}
           </nav>
           <div className={styles.railFooter}>
             {user ? <div>{t('shell.signedInAs', { name: user.display_name })}</div> : null}

@@ -18,6 +18,15 @@
   --warn: #9a3b24; /* real errors only */
   --warn-soft: #f6e5df;
   --warn-rule: #d9a898;
+  --warn-ink: #5c2a1c; /* text on the warn background */
+
+  --on-accent: #ffffff; /* text on the accent colour */
+  --accent-darker: #174744; /* pressed accent */
+  --surface-sunk: #ede6d8; /* chips and wells */
+  --surface-warm: #fbf8f1;
+  --faint: #b1a898; /* disabled and placeholder text */
+  --bar-included: #6e9c97; /* evidence state bars */
+  --bar-excluded: #b9b0a0;
 
   /* Provenance (always text + icon, never colour alone) */
   --note: #2f4e7a;

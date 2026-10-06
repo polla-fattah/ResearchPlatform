@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { applyForAccess } from '@/api/applications'
-import { ApiError, userMessage } from '@/api/errors'
+import { ApiError } from '@/api/errors'
 import { useAuth } from '@/app/authContext'
 import { Button } from '@/components/Button'
 import { ErrorSummary, Field } from '@/components/Field'
@@ -13,6 +13,7 @@ import { setLanguage } from '@/i18n'
 import { isLanguage } from '@/i18n/languages'
 import { RegistrationPage } from './RegistrationPage'
 import styles from './Registration.module.css'
+import { errorMessage } from '@/api/errorMessage'
 
 const FIELDS = [
   'display_name',
@@ -86,7 +87,7 @@ export function ApplyPage() {
   })
   const serverMessage =
     apply.error instanceof ApiError && Object.keys(apply.error.fields).length === 0
-      ? userMessage(apply.error, t('states.error.body'))
+      ? errorMessage(apply.error, t)
       : null
   const locked = isSubmitting || apply.isPending
 
@@ -154,6 +155,7 @@ export function ApplyPage() {
             type="email"
             disabled={locked}
             autoComplete="email"
+            // audit-ok: an example address, not a sentence
             placeholder="name@example.org"
             aria-invalid={errors.email ? true : undefined}
             {...register('email')}
@@ -217,6 +219,7 @@ export function ApplyPage() {
             <option value="">{t('registration.apply.chooseLanguage')}</option>
             <option value="ckb">Sorani · کوردی</option>
             <option value="ar">Arabic · العربية</option>
+            {/* audit-ok: a language is named in its own language */}
             <option value="en">English</option>
           </select>
         </Field>

@@ -305,7 +305,7 @@ describe('Evidence inspector', () => {
     await userEvent.click(await screen.findByRole('radio', { name: 'Reviewed' }))
     const dialog = await screen.findByRole('dialog')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Change state' }))
-    expect(await within(dialog).findByText(/did not keep the new state/)).toBeInTheDocument()
+    expect(await within(dialog).findByText(/did not keep your state/)).toBeInTheDocument()
   })
 
   it('says how many findings keep the link when the state changes', async () => {

@@ -18,8 +18,9 @@ import { Button } from '@/components/Button'
 import { ConfirmAction } from '@/components/ConfirmAction'
 import { kindOf, libraryCode, snapshotText } from '@/domain/libraryItem'
 import { AddToProjectDialog } from './AddToProjectDialog'
-import { writeErrorMessage } from './writeError'
 import styles from './Library.module.css'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 interface Props {
   item: LibraryItem
@@ -32,7 +33,6 @@ export function LibraryDetail({ item, collections, onRemoved }: Props) {
   const { date } = usePreferences()
   const { user } = useAuth()
   const qc = useQueryClient()
-  const [error, setError] = useState<string | null>(null)
   const [tagText, setTagText] = useState('')
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteText, setNoteText] = useState('')
@@ -45,13 +45,11 @@ export function LibraryDetail({ item, collections, onRemoved }: Props) {
   const inCollections = item.resource.collections ?? []
   const text = snapshotText(item)
   const kind = kindOf(item.resource.resource_type)
-  const refresh = () => qc.invalidateQueries({ queryKey: ['library'] })
+  const refresh = () => invalidate.libraryChanged(qc)
 
   const run = useMutation({
     mutationFn: (job: () => Promise<unknown>) => job(),
-    onMutate: () => setError(null),
     onSuccess: () => refresh(),
-    onError: (err) => setError(writeErrorMessage(err, t)),
   })
 
   const submitTag = (e: FormEvent) => {
@@ -65,7 +63,7 @@ export function LibraryDetail({ item, collections, onRemoved }: Props) {
     e.preventDefault()
     const body = noteText.trim()
     if (!body) return
-    const next = [...notes, { text: body, created_at: new Date().toISOString() }]
+    const next = [...notes, { text: body, created_at: new Date().toISOString() }] // audit-ok: event handler
     run.mutate(() => setNotes(item.id, next), {
       onSuccess: () => {
         setNoteText('')
@@ -81,22 +79,14 @@ export function LibraryDetail({ item, collections, onRemoved }: Props) {
       await refresh()
       onRemoved()
     },
-    onError: (err) => {
-      setConfirmRemove(false)
-      setError(writeErrorMessage(err, t))
-    },
+    onError: () => setConfirmRemove(false),
   })
 
   const availableCollections = collections.filter((c) => !inCollections.some((x) => x.id === c.id))
 
   return (
     <article className={styles.detail} aria-label={item.resource.title}>
-      {error ? (
-        <div className={styles.banner} role="alert">
-          <h3>{t('library.actionFailed')}</h3>
-          <p>{error}</p>
-        </div>
-      ) : null}
+      <MutationNotice error={run.error ?? remove.error} title={t('library.actionFailed')} />
 
       <header className={styles.detailHead}>
         <div className={styles.detailKicker}>
@@ -329,7 +319,7 @@ export function LibraryDetail({ item, collections, onRemoved }: Props) {
         <p>{t('library.remove.kept')}</p>
       </ConfirmAction>
 
-      {projectDialog ? <AddToProjectDialog open item={item} onClose={() => setProjectDialog(false)} /> : null}
+      {projectDialog ? <AddToProjectDialog item={item} onClose={() => setProjectDialog(false)} /> : null}
     </article>
   )
 }

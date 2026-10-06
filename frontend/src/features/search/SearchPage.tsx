@@ -1,18 +1,12 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useMemo, useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
-import { corpusKeys, searchCorpus, type CorpusSearchParams } from '@/api/corpus'
-import { ApiError, userMessage } from '@/api/errors'
-import { listProjectResources, projectResourceKeys } from '@/api/projectResources'
-import type { SearchFilters as Filters, SearchRun } from '@/api/schemas/search'
-import {
-  deleteSavedQuery,
-  listRuns,
-  listSavedQueries,
-  runSavedQuery,
-  searchKeys,
-} from '@/api/searchWorkspace'
+import { Link } from 'react-router-dom'
+import { searchCorpus, type CorpusSearchParams } from '@/api/corpus'
+import { ApiError } from '@/api/errors'
+import { listProjectResources } from '@/api/projectResources'
+import type { SearchFilters as Filters } from '@/api/schemas/search'
+import { deleteSavedQuery, listRuns, listSavedQueries, runSavedQuery } from '@/api/searchWorkspace'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { ConfirmAction } from '@/components/ConfirmAction'
@@ -28,17 +22,20 @@ import { SaveSearchDialog, ResultSetDialog, type ResultSetSource } from './Searc
 import { SearchFilters } from './SearchFilters'
 import {
   definitionOf,
-  isMode,
   MIN_QUERY_LENGTH,
   occKey,
+  queryCode,
   runCode,
   runOrdinal,
   type Definition,
   type SearchMode,
 } from './searchModel'
 import styles from './Search.module.css'
-
-const EMPTY = new Set<string>()
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { useDraftParam, useQueryParams } from '@/hooks/useQueryParams'
+import { MutationNotice } from '@/components/MutationNotice'
+import { useKeyedSelection } from '@/hooks/useKeyedSelection'
 
 type Dialog = null | 'save' | 'evidence' | 'resources' | { set: ResultSetSource } | { remove: number }
 
@@ -49,52 +46,38 @@ export function SearchPage() {
   const { id, can } = useProject()
   const projectId = id ?? 0
   const canAdd = can('addShared')
-  const [params, setParams] = useSearchParams()
+  const url = useQueryParams()
+  const update = url.set
+  // The search text is applied when the form is submitted, so it has no pause.
+  const search = useDraftParam('q')
 
   // The whole definition lives in the URL, so a search can be shared, reloaded and reopened.
-  const q = params.get('q') ?? ''
-  const mode: SearchMode = isMode(params.get('mode')) ? (params.get('mode') as SearchMode) : 'normalized'
-  const num = (key: string) => Number(params.get(key)) || undefined
+  const q = url.text('q')
+  const mode: SearchMode = url.oneOf('mode', ['exact', 'normalized'] as const, 'normalized')
   const filters: Filters = {
-    hukm_id: num('hukm'),
-    narrator_id: num('narrator'),
-    narrator_label: params.get('nlabel') ?? undefined,
+    hukm_id: url.id('hukm'),
+    narrator_id: url.id('narrator'),
+    narrator_label: url.text('nlabel') || undefined,
   }
-  const page = Number(params.get('page')) || 1
-  const queryId = num('query')
-  const view = params.get('view') === 'history' ? 'history' : 'search'
+  const page = url.page
+  const queryId = url.id('query')
+  const view = url.oneOf('view', ['search', 'history'] as const, 'search')
 
-  const update = (changes: Record<string, string | number | undefined | null>, keepPage = false) => {
-    const next = new URLSearchParams(params)
-    for (const [k, v] of Object.entries(changes)) {
-      if (v === undefined || v === null || v === '') next.delete(k)
-      else next.set(k, String(v))
-    }
-    if (!keepPage) next.delete('page')
-    setParams(next, { replace: true })
-  }
   const setFilters = (f: Filters) =>
     update({ hukm: f.hukm_id, narrator: f.narrator_id, nlabel: f.narrator_id ? f.narrator_label : undefined })
 
   const definition: Definition = { q, mode, filters }
-  const [typed, setTyped] = useState(q)
-  const [lastQ, setLastQ] = useState(q)
-  if (q !== lastQ) {
-    // The URL changed under us (open a saved search, back button): follow it.
-    setLastQ(q)
-    setTyped(q)
-  }
   const [tooShort, setTooShort] = useState(false)
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    const text = typed.trim()
+    const text = search.text.trim()
     if (text.length < MIN_QUERY_LENGTH) {
       setTooShort(true)
       return
     }
     setTooShort(false)
-    update({ q: text })
+    search.commit(text)
   }
 
   // ---- results ----
@@ -108,7 +91,7 @@ export function SearchPage() {
     per_page: 10,
   }
   const results = useQuery({
-    queryKey: corpusKeys.search(searchParams),
+    queryKey: qk.corpus.search(searchParams),
     queryFn: ({ signal }) => searchCorpus(searchParams, signal),
     enabled: ready && view === 'search',
     placeholderData: keepPreviousData,
@@ -121,11 +104,11 @@ export function SearchPage() {
     : viewStateOf(results, { isEmpty: (d) => (d as { data: unknown[] }).data.length === 0 })
 
   const [dialog, setDialog] = useState<Dialog>(null)
-  const [notice, setNotice] = useState<string | null>(null)
+  const [notice, setNotice] = useState<ReactNode>(null)
 
   // ---- saved searches and runs ----
   const saved = useQuery({
-    queryKey: searchKeys.queries(projectId),
+    queryKey: qk.project(projectId).search.queries,
     queryFn: ({ signal }) => listSavedQueries(projectId, signal),
     enabled: id !== null,
   })
@@ -148,47 +131,34 @@ export function SearchPage() {
     })
   }
 
-  const [lastRun, setLastRun] = useState<SearchRun | null>(null)
-  const [runError, setRunError] = useState<string | null>(null)
-  const [busyId, setBusyId] = useState<number | undefined>()
   const record = useMutation({
     mutationFn: (sqId: number) => runSavedQuery(projectId, sqId),
-    onMutate: (sqId) => {
-      setBusyId(sqId)
-      setRunError(null)
-    },
-    onSuccess: (run) => {
-      setLastRun(run)
-      void qc.invalidateQueries({ queryKey: searchKeys.all(projectId) })
-    },
-    onError: (err) => setRunError(userMessage(err, t('states.error.body'))),
-    onSettled: () => setBusyId(undefined),
+    
+    onSuccess: () => invalidate.searchChanged(qc, projectId),
   })
+  // The run just recorded is the mutation's own result, and "busy" is its pending state: nothing is copied into state.
+  const lastRun = record.data ?? null
+  const busyId = record.isPending ? record.variables : undefined
   const runList = useQuery({
-    queryKey: searchKeys.runs(projectId),
+    queryKey: qk.project(projectId).search.runs,
     queryFn: ({ signal }) => listRuns(projectId, signal),
     enabled: id !== null && !!lastRun,
   })
   const runNumber = lastRun && openQuery ? runOrdinal(runList.data ?? [], openQuery.id, lastRun.id) : 0
 
-  const [deleteError, setDeleteError] = useState<string | null>(null)
   const remove = useMutation({
     mutationFn: (sqId: number) => deleteSavedQuery(projectId, sqId),
     onSuccess: (_d, sqId) => {
       setDialog(null)
-      setDeleteError(null)
       if (queryId === sqId) update({ query: undefined })
-      void qc.invalidateQueries({ queryKey: searchKeys.all(projectId) })
+      void invalidate.searchChanged(qc, projectId)
     },
-    onError: (err) => {
-      setDialog(null)
-      setDeleteError(userMessage(err, t('states.error.body')))
-    },
+    onError: () => setDialog(null),
   })
 
   // ---- resources already in the project ----
   const resources = useQuery({
-    queryKey: projectResourceKeys.list(projectId, 1),
+    queryKey: qk.project(projectId).resources.list(1),
     queryFn: ({ signal }) => listProjectResources(projectId, 1, signal),
     enabled: id !== null && canAdd,
   })
@@ -197,27 +167,8 @@ export function SearchPage() {
     [resources.data],
   )
 
-  // ---- selection (per result page: it resets when the search or page changes) ----
-  const resultsKey = JSON.stringify(searchParams)
-  const [selection, setSelection] = useState<{ key: string; keys: Set<string> }>({ key: '', keys: EMPTY })
-  const selected = selection.key === resultsKey ? selection.keys : EMPTY
-  const setSelected = (fn: (cur: Set<string>) => Set<string>) =>
-    setSelection({ key: resultsKey, keys: fn(selected) })
-  const toggle = (key: string) =>
-    setSelected((cur) => {
-      const next = new Set(cur)
-      if (!next.delete(key)) next.add(key)
-      return next
-    })
-  const toggleGroup = (keys: string[], on: boolean) =>
-    setSelected((cur) => {
-      const next = new Set(cur)
-      for (const k of keys) {
-        if (on) next.add(k)
-        else next.delete(k)
-      }
-      return next
-    })
+  // ---- selection (belongs to this page of these results: it is empty again when the search or page changes) ----
+  const { selected, toggle, setMany, clear } = useKeyedSelection(JSON.stringify(searchParams))
 
   const picks: Pick[] = hits.flatMap((hit) =>
     (hit.occurrences ?? []).filter((o) => selected.has(occKey(o.id))).map((occ) => ({ hit, occ })),
@@ -241,16 +192,14 @@ export function SearchPage() {
           <h1>{t('search.title')}</h1>
           <p className={styles.hint}>{t('search.intro')}</p>
         </div>
-        {canAdd ? (
-          <Button
-            onClick={() => {
-              if (ready) setDialog('save')
-              else setTooShort(true)
-            }}
-          >
-            {t('search.save.button')}
-          </Button>
-        ) : null}
+        <Button
+          onClick={() => {
+            if (ready) setDialog('save')
+            else setTooShort(true)
+          }}
+        >
+          {t('search.save.button')}
+        </Button>
       </div>
 
       {queryUnavailable ? (
@@ -270,11 +219,7 @@ export function SearchPage() {
           {t('search.saved.heading')} · {t('search.saved.count', { count: queries.length })}
         </summary>
         {saved.isError ? <p role="alert">{t('search.saved.loadFailed')}</p> : null}
-        {deleteError ? (
-          <p role="alert" className={styles.bad}>
-            <strong>{t('search.saved.deleteFailed')}.</strong> {deleteError}
-          </p>
-        ) : null}
+        <MutationNotice error={remove.error} title={t('search.saved.deleteFailed')} />
         {saved.data ? (
           <SavedQueries
             queries={queries}
@@ -302,9 +247,9 @@ export function SearchPage() {
             id="search-text"
             className={styles.queryInput}
             dir="auto"
-            value={typed}
+            value={search.text}
             placeholder={t('search.form.placeholder')}
-            onChange={(e) => setTyped(e.target.value)}
+            onChange={(e) => search.setText(e.target.value)}
             aria-invalid={tooShort || undefined}
           />
           <Button type="submit" variant="primary">
@@ -319,10 +264,10 @@ export function SearchPage() {
             <Button
               variant="ghost"
               onClick={() => {
-                setTyped('')
+                search.reset()
                 setTooShort(false)
-                setLastRun(null)
-                setParams({}, { replace: true })
+                record.reset()
+                url.replaceAll()
               }}
             >
               {t('search.form.clear')}
@@ -348,12 +293,7 @@ export function SearchPage() {
         <SearchFilters filters={filters} onChange={setFilters} />
       </form>
 
-      {runError ? (
-        <div className={styles.banner} role="alert">
-          <strong>{t('search.run.failed')}</strong>
-          <p>{runError}</p>
-        </div>
-      ) : null}
+      <MutationNotice error={record.error} title={t('search.run.failed')} />
 
       {lastRun && openQuery ? (
         <div className={styles.runBox} role="status">
@@ -409,7 +349,7 @@ export function SearchPage() {
                 {t('search.run.saveAll')}
               </Button>
               {!runOk ? <span className={styles.hint}>{t('search.run.saveAllOff')}</span> : null}
-              <Button variant="ghost" onClick={() => update({ view: 'history' }, true)}>
+              <Button variant="ghost" onClick={() => update({ view: 'history' }, { keepPage: true })}>
                 {t('search.run.history')}
               </Button>
             </div>
@@ -445,7 +385,7 @@ export function SearchPage() {
             {t('search.selection.saveSet')}
           </Button>
           {selected.size > 0 ? (
-            <Button variant="ghost" onClick={() => setSelected(() => new Set())}>
+            <Button variant="ghost" onClick={clear}>
               {t('search.selection.clear')}
             </Button>
           ) : null}
@@ -508,10 +448,10 @@ export function SearchPage() {
               inResources={inResources}
               canSelect={canAdd}
               onToggle={toggle}
-              onToggleGroup={toggleGroup}
+              onToggleGroup={setMany}
             />
             {results.data?.pagination ? (
-              <Pagination pagination={results.data.pagination} onPage={(p) => update({ page: p }, true)} />
+              <Pagination pagination={results.data.pagination} onPage={(p) => update({ page: p }, { keepPage: true })} />
             ) : null}
           </div>
         </StateBoundary>
@@ -521,11 +461,21 @@ export function SearchPage() {
         <SaveSearchDialog
           projectId={projectId}
           definition={definition}
+          canAddToProject={canAdd}
           onClose={() => setDialog(null)}
-          onSaved={(sqId) => {
+          onSaved={(scope, sqId) => {
             setDialog(null)
-            setNotice(t('search.save.saved', { code: `SQ-${String(sqId).padStart(4, '0')}` }))
-            update({ query: sqId }, true)
+            const code = queryCode(sqId)
+            if (scope === 'me') {
+              setNotice(
+                <>
+                  {t('search.save.savedMine', { code })} <Link to="/searches">{t('search.save.openMine')}</Link>
+                </>,
+              )
+              return
+            }
+            setNotice(t('search.save.saved', { code }))
+            update({ query: sqId }, { keepPage: true })
           }}
         />
       ) : null}
@@ -538,8 +488,8 @@ export function SearchPage() {
           runId={lastRun?.id}
           onClose={() => setDialog(null)}
           onDone={() => {
-            setSelected(() => new Set())
-            void qc.invalidateQueries({ queryKey: projectResourceKeys.all(projectId) })
+            clear()
+            void invalidate.resourcesChanged(qc, projectId)
           }}
         />
       ) : null}

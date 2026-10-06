@@ -1,17 +1,10 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { userMessage } from '@/api/errors'
 
-import {
-  copyItems,
-  copyPreview,
-  listCopyableResources,
-  listCopyableSearches,
-  projectDetailKeys,
-} from '@/api/projectDetail'
-import { listProjects, projectKeys } from '@/api/projects'
+import { copyItems, copyPreview, listCopyableResources, listCopyableSearches } from '@/api/projectDetail'
+import { listProjects } from '@/api/projects'
 import type { CopyItem } from '@/api/schemas/projectDetail'
 import { BidiText } from '@/components/BidiText'
 import { Button } from '@/components/Button'
@@ -19,6 +12,9 @@ import { ErrorSummary, Field, Notice } from '@/components/Field'
 import { formatCode } from '@/domain/codes'
 import styles from './Projects.module.css'
 import { useProject } from './useProject'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { errorMessage } from '@/api/errorMessage'
 
 type Key = `${CopyItem['type']}:${number}`
 const keyOf = (type: CopyItem['type'], id: number): Key => `${type}:${id}`
@@ -31,16 +27,16 @@ export function ProjectCopyPage() {
   const [selected, setSelected] = useState<Set<Key>>(new Set())
 
   const destinations = useQuery({
-    queryKey: projectKeys.list({ scope: 'owned', per_page: 100 }),
+    queryKey: qk.projects.list({ scope: 'owned', per_page: 100 }),
     queryFn: ({ signal }) => listProjects({ scope: 'owned', per_page: 100 }, signal),
   })
   const resources = useQuery({
-    queryKey: projectDetailKeys.picker(id ?? 0, 'resources'),
+    queryKey: qk.project(id ?? 0).copyPicker('resources'),
     queryFn: ({ signal }) => listCopyableResources(id!, signal),
     enabled: id !== null,
   })
   const searches = useQuery({
-    queryKey: projectDetailKeys.picker(id ?? 0, 'searches'),
+    queryKey: qk.project(id ?? 0).copyPicker('searches'),
     queryFn: ({ signal }) => listCopyableSearches(id!, signal),
     enabled: id !== null,
   })
@@ -62,12 +58,17 @@ export function ProjectCopyPage() {
   }
 
   const preview = useQuery({
-    queryKey: ['projects', 'copy-preview', id, targetId, items],
+    queryKey: qk.project(id ?? 0).copyPreview(targetId, items),
     queryFn: () => copyPreview(id!, targetId!, items),
     enabled: id !== null && targetId !== null && items.length > 0,
     retry: false,
   })
-  const run = useMutation({ mutationFn: () => copyItems(id!, targetId!, items) })
+  const qc = useQueryClient()
+  const run = useMutation({
+    mutationFn: () => copyItems(id!, targetId!, items),
+    // What was copied lands in the target project: its resources and searches, and the counts that show them.
+    onSuccess: () => Promise.all([invalidate.resourcesChanged(qc, targetId!), invalidate.searchChanged(qc, targetId!)]),
+  })
 
   if (!project || id === null) return null
   const toggle = (k: Key) =>
@@ -146,7 +147,7 @@ export function ProjectCopyPage() {
       {run.isError ? (
         <ErrorSummary
           title={t('projects.copy.failed')}
-          items={[userMessage(run.error, t('states.error.body'))]}
+          items={[errorMessage(run.error, t)]}
         />
       ) : null}
 

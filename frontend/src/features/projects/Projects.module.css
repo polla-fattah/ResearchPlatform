@@ -148,7 +148,7 @@
   margin-block-end: 1rem;
   border: 1px solid var(--warn-rule);
   background: var(--warn-soft);
-  color: #5c2a1c;
+  color: var(--warn-ink);
 }
 .banner h2 {
   margin: 0 0 0.25rem;
@@ -359,10 +359,10 @@
   background: var(--accent);
 }
 .segReviewed {
-  background: #6e9c97;
+  background: var(--bar-included);
 }
 .segExcluded {
-  background: #b9b0a0;
+  background: var(--bar-excluded);
 }
 .segUnresolved {
   background: var(--surface);
@@ -407,7 +407,7 @@
   inline-size: 100%;
   block-size: 6px;
   margin-block-start: 0.5rem;
-  background: #ede6d8;
+  background: var(--surface-sunk);
 }
 .progressFill {
   display: block;

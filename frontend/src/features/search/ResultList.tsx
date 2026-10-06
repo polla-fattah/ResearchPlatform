@@ -10,9 +10,9 @@ import styles from './Search.module.css'
 
 interface Props {
   hits: CorpusSearchHit[]
-  selected: Set<string>
+  selected: ReadonlySet<string>
   /** `${resource_type}:${corpus_id}` of occurrences already in the project's resources. */
-  inResources: Set<string>
+  inResources: ReadonlySet<string>
   canSelect: boolean
   onToggle: (key: string) => void
   onToggleGroup: (keys: string[], on: boolean) => void

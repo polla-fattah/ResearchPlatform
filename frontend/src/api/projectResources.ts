@@ -2,12 +2,6 @@ import { z } from 'zod'
 import { api } from './http'
 import { projectCollectionSchema, projectResourceSchema } from './schemas/projectResources'
 
-export const projectResourceKeys = {
-  all: (projectId: number) => ['project', projectId, 'resources'] as const,
-  list: (projectId: number, page: number) => ['project', projectId, 'resources', 'list', page] as const,
-  collections: (projectId: number) => ['project', projectId, 'resource-collections'] as const,
-}
-
 export async function listProjectResources(projectId: number, page = 1, signal?: AbortSignal) {
   const res = await api(`/projects/${projectId}/resources`, {
     query: { page, per_page: 50 },

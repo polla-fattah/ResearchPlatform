@@ -44,12 +44,12 @@
 }
 .navPrimary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-radius: 2px;
 }
 .navPrimary:hover {
-  background: #174744;
-  color: #fff;
+  background: var(--accent-darker);
+  color: var(--on-accent);
   text-decoration: none;
 }
 .main {
@@ -85,7 +85,7 @@
 }
 .divider {
   block-size: 1px;
-  background: #ede6d8;
+  background: var(--surface-sunk);
 }
 .actions {
   display: flex;
@@ -114,7 +114,7 @@
 }
 .bar {
   block-size: 6px;
-  background: #ede6d8;
+  background: var(--surface-sunk);
 }
 .barFill {
   display: block;
@@ -170,7 +170,7 @@
   font-weight: 600;
 }
 .stepMark {
-  color: #b1a898;
+  color: var(--faint);
 }
 .stepDone .stepMark,
 .stepCurrent .stepMark {

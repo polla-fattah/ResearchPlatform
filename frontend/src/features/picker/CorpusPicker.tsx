@@ -14,6 +14,7 @@ import { SEARCHABLE, searchPickables } from './search'
 import type { PickerSelection } from './selection'
 import { useDebounced } from './useDebounced'
 import styles from './Picker.module.css'
+import { qk } from '@/api/queryKeys'
 
 const KINDS: { kind: PickableKind | 'book' | 'chapter' | 'section' | 'chain' | 'judgment' | 'passage'; key: string }[] = [
   { kind: 'book', key: 'book' },
@@ -49,7 +50,7 @@ export function CorpusPicker({ value, onChange, saved, duplicate, onAddExternal,
   const sourceRef = useRef<HTMLDivElement>(null)
 
   const search = useQuery({
-    queryKey: ['picker', 'search', term, kind, page],
+    queryKey: qk.corpus.picker(term, kind, page),
     queryFn: ({ signal }) => searchPickables({ q: term, kind, page }, signal),
     enabled: active,
     placeholderData: keepPreviousData,

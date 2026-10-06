@@ -2,16 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { userMessage } from '@/api/errors'
 
-import {
-  getProjectSummary,
-  projectDetailKeys,
-  toggleArchive,
-  trashProject,
-  updateProject,
-} from '@/api/projectDetail'
-import { projectKeys } from '@/api/projects'
+import { getProjectSummary, toggleArchive, trashProject, updateProject } from '@/api/projectDetail'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { ConfirmAction } from '@/components/ConfirmAction'
@@ -19,6 +11,9 @@ import { ErrorSummary, Field, Notice } from '@/components/Field'
 import { isProjectStage } from '@/domain/vocab'
 import styles from './Projects.module.css'
 import { useProject } from './useProject'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { errorMessage } from '@/api/errorMessage'
 
 /** Screen 06, Settings view. Only the owner can change anything here. */
 export function ProjectSettingsPage() {
@@ -35,26 +30,21 @@ export function ProjectSettingsPage() {
   const [confirmTrash, setConfirmTrash] = useState(false)
 
   const summary = useQuery({
-    queryKey: projectDetailKeys.summary(id ?? 0),
+    queryKey: qk.project(id ?? 0).summary,
     queryFn: ({ signal }) => getProjectSummary(id!, signal),
     enabled: id !== null,
     retry: false,
   })
 
-  const refresh = () => {
-    void qc.invalidateQueries({ queryKey: projectKeys.all })
-    void qc.invalidateQueries({ queryKey: projectDetailKeys.detail(id ?? 0) })
-  }
-
   const save = useMutation({
     mutationFn: () => updateProject(id!, { title: title.trim(), question: question.trim(), scope: scope.trim() }),
-    onSuccess: refresh,
+    onSuccess: () => invalidate.projectEdited(qc, id ?? 0),
   })
-  const archive = useMutation({ mutationFn: () => toggleArchive(id!), onSuccess: refresh })
+  const archive = useMutation({ mutationFn: () => toggleArchive(id!), onSuccess: () => invalidate.projectLifecycle(qc) })
   const trash = useMutation({
     mutationFn: () => trashProject(id!),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
+      void invalidate.projectLifecycle(qc)
       navigate('/projects?scope=trash', { replace: true })
     },
   })
@@ -74,7 +64,7 @@ export function ProjectSettingsPage() {
         {save.isError ? (
           <ErrorSummary
             title={t('projects.settings.saveFailed')}
-            items={[userMessage(save.error, t('states.error.body'))]}
+            items={[errorMessage(save.error, t)]}
           />
         ) : null}
         {save.isSuccess ? <Notice>{t('projects.settings.saved')}</Notice> : null}
@@ -114,7 +104,7 @@ export function ProjectSettingsPage() {
           </p>
           {archive.isError ? (
             <p role="alert" style={{ color: 'var(--warn)' }}>
-              {userMessage(archive.error, t('states.error.body'))}
+              {errorMessage(archive.error, t)}
             </p>
           ) : null}
         </div>
@@ -162,7 +152,7 @@ export function ProjectSettingsPage() {
         <p>{t('projects.index.recovery')}</p>
         {trash.isError ? (
           <p role="alert" style={{ color: 'var(--warn)' }}>
-            {userMessage(trash.error, t('states.error.body'))}
+            {errorMessage(trash.error, t)}
           </p>
         ) : null}
       </ConfirmAction>

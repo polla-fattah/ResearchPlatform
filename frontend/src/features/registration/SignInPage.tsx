@@ -1,23 +1,62 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { z } from 'zod'
-import { ApiError, retryAfterSeconds, userMessage } from '@/api/errors'
+import { ApiError, retryAfterSeconds } from '@/api/errors'
 import { session } from '@/api/http'
 import { useAuth } from '@/app/authContext'
 import { Button } from '@/components/Button'
 import { ErrorSummary, Field, Notice } from '@/components/Field'
 import { RegistrationPage } from './RegistrationPage'
 import styles from './Registration.module.css'
+import { errorMessage } from '@/api/errorMessage'
 
 type Problem =
   | { kind: 'credentials' }
   | { kind: 'paused'; minutes: number }
   | { kind: 'suspended' }
-  | { kind: 'mfa' }
   | { kind: 'other'; message: string }
+
+/** The second step for an account with two-step sign-in: the code from the authenticator app, or a recovery code. */
+function TwoStep({ challengeToken, onRestart }: { challengeToken: string; onRestart: () => void }) {
+  const { t } = useTranslation()
+  const { completeMfa } = useAuth()
+  const [code, setCode] = useState('')
+  const verify = useMutation({ mutationFn: () => completeMfa(challengeToken, code.trim()) })
+
+  return (
+    <RegistrationPage step={4}>
+      <div>
+        <h1>{t('registration.signIn.twoStep.title')}</h1>
+        <p>{t('registration.signIn.twoStep.body')}</p>
+      </div>
+      {verify.error ? <ErrorSummary title={t('registration.signIn.twoStep.wrong')} items={[t('registration.signIn.twoStep.wrongHint')]} /> : null}
+      <form
+        className={styles.form}
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (code.trim()) verify.mutate()
+        }}
+      >
+        <Field label={t('registration.signIn.twoStep.code')} hint={t('registration.signIn.twoStep.hint')}>
+          <input autoComplete="one-time-code" autoFocus value={code} disabled={verify.isPending} onChange={(e) => setCode(e.target.value)} />
+        </Field>
+        <div className={styles.actions}>
+          <Button type="submit" variant="primary" disabled={verify.isPending || !code.trim()}>
+            {verify.isPending ? t('registration.signIn.submitting') : t('registration.signIn.twoStep.verify')}
+          </Button>
+          <Button variant="ghost" onClick={onRestart}>
+            {t('registration.signIn.twoStep.restart')}
+          </Button>
+        </div>
+      </form>
+    </RegistrationPage>
+  )
+}
 
 export function SignInPage() {
   const { t } = useTranslation()
@@ -26,6 +65,7 @@ export function SignInPage() {
   // Read once: shown when the previous session ended with a 401.
   const [expired] = useState(() => session.consumeExpired())
   const [problem, setProblem] = useState<Problem | null>(null)
+  const [challenge, setChallenge] = useState<string | null>(null)
 
   const schema = z.object({
     email: z.email(t('registration.apply.errors.email')),
@@ -43,12 +83,13 @@ export function SignInPage() {
     const from = (location.state as { from?: string } | null)?.from ?? '/home'
     return <Navigate to={from} replace />
   }
+  if (challenge) return <TwoStep challengeToken={challenge} onRestart={() => setChallenge(null)} />
 
   const onSubmit = async (values: Values) => {
     setProblem(null)
     try {
       const outcome = await signIn(values.email, values.password)
-      if (outcome === 'mfa') setProblem({ kind: 'mfa' })
+      if (outcome.kind === 'mfa') setChallenge(outcome.challengeToken)
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.status === 429) {
@@ -57,7 +98,7 @@ export function SignInPage() {
         }
         if (err.code === 'ACCOUNT_SUSPENDED') return setProblem({ kind: 'suspended' })
         if (err.status === 401) return setProblem({ kind: 'credentials' })
-        return setProblem({ kind: 'other', message: userMessage(err, t('states.error.body')) })
+        return setProblem({ kind: 'other', message: errorMessage(err, t) })
       }
       setProblem({ kind: 'other', message: t('states.error.body') })
     }
@@ -89,9 +130,6 @@ export function SignInPage() {
       ) : null}
       {problem?.kind === 'suspended' ? (
         <ErrorSummary title={t('registration.signIn.suspended')} />
-      ) : null}
-      {problem?.kind === 'mfa' ? (
-        <ErrorSummary title={t('registration.signIn.mfaUnavailable')} />
       ) : null}
       {problem?.kind === 'other' ? (
         <ErrorSummary title={t('states.error.title')} items={[problem.message]} />

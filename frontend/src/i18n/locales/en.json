@@ -12,7 +12,8 @@
     "downloads": "Downloads",
     "settings": "Profile & Settings",
     "account": "Account navigation",
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "administration": "Administration"
   },
   "release": {
     "R1a": "R1a",
@@ -43,7 +44,25 @@
     "next": "Next",
     "pageOf": "Page {{page}} of {{total}}",
     "required": "Required",
-    "optional": "Optional"
+    "optional": "Optional",
+    "notPersisted": "The server accepted the request but did not keep your {{what}}. Nothing was changed.",
+    "what": {
+      "favourite": "favourite mark",
+      "tags": "tags",
+      "note": "note",
+      "state": "state",
+      "visibility": "visibility",
+      "change": "change",
+      "name": "name",
+      "roles": "roles",
+      "status": "status",
+      "decision": "decision"
+    },
+    "stored": {
+      "empty": "Nothing stored",
+      "more_one": "{{count}} more",
+      "more_other": "{{count}} more"
+    }
   },
   "states": {
     "empty": {
@@ -245,11 +264,20 @@
       "pausedBody_one": "Too many failed attempts. Try again in {{count}} minute.",
       "pausedBody_other": "Too many failed attempts. Try again in {{count}} minutes.",
       "suspended": "This account is suspended. Contact an administrator.",
-      "mfaUnavailable": "This account uses two-factor sign-in, which isn't available in this version yet.",
       "signedOut": "You were signed out.",
       "signedOutBody": "This session ended or expired. Sign in again to continue. Unsaved editor text is kept as a local draft.",
       "errors": {
         "password": "enter your password."
+      },
+      "twoStep": {
+        "title": "Confirm it’s you",
+        "body": "This account has two-step sign-in. Enter the 6-digit code from your authenticator app, or one of your recovery codes.",
+        "code": "Code",
+        "hint": "A recovery code works once.",
+        "verify": "Verify and sign in",
+        "restart": "Start again",
+        "wrong": "That code didn't work",
+        "wrongHint": "Check the code in your authenticator app, or use a recovery code. This step expires after five minutes: if it has, start again."
       }
     },
     "recover": {
@@ -300,7 +328,9 @@
       "goHome": "Go to your home",
       "suspendedTitle": "Your account is suspended",
       "suspendedBody": "You can't use researcher screens while the account is suspended. Contact an administrator to ask why.",
-      "notProvided": "Not provided (optional)"
+      "notProvided": "Not provided (optional)",
+      "closureTitle": "Your account closure request is with administrators",
+      "closureBody": "An administrator will confirm the closure. Until then your research is kept and your account is limited to this page. Contact an administrator if you changed your mind."
     }
   },
   "home": {
@@ -911,7 +941,6 @@
       "kept": "The corpus source and any project that already uses it stay as they are."
     },
     "actionFailed": "That change wasn't saved",
-    "notPersisted": "The server accepted the request but did not keep your {{what}}. Nothing was changed.",
     "addProject": {
       "title": "Add to project · {{id}}",
       "projects": "Projects",
@@ -1005,11 +1034,6 @@
         "confirm": "Remove from {{id}}"
       },
       "removeFailed": "The resource wasn't removed"
-    },
-    "what": {
-      "favourite": "favourite mark",
-      "tags": "tags",
-      "note": "note"
     },
     "fromLibrary": {
       "title": "Add from My Library",
@@ -1142,7 +1166,15 @@
       "submit": "Save search",
       "failed": "The search wasn't saved",
       "saved": "Saved as {{code}}.",
-      "needText": "Enter some text to search before saving it."
+      "needText": "Enter some text to search before saving it.",
+      "scope": {
+        "label": "Save to",
+        "project": "This project (its members can see it)",
+        "me": "Only me (listed in Saved searches)",
+        "projectUnavailable": "Your role in this project cannot add to it."
+      },
+      "savedMine": "Saved to your Saved searches as {{code}}.",
+      "openMine": "See Saved searches"
     },
     "run": {
       "record": "Run and record",
@@ -1296,7 +1328,6 @@
       "usedIn_other": "Used in {{formattedCount}} findings. They keep the link and will show this evidence as {{state}}.",
       "confirm": "Change state",
       "failed": "The state wasn't changed",
-      "notPersisted": "The server accepted the request but did not keep the new {{what}}. Nothing was changed.",
       "needReason": "Enter a reason.",
       "reasonShown": "Reason: {{reason}}",
       "readOnly": "Your role in this project can read evidence but not change its state."
@@ -1340,7 +1371,6 @@
       "attributionLost": "The annotation was saved, but the server did not keep who it is attributed to or where it is stated.",
       "promoteFailed": "The visibility wasn't changed",
       "deleteFailed": "The annotation wasn't deleted",
-      "notPersisted": "The server accepted the request but did not keep the new {{what}}. Nothing was changed.",
       "readOnly": "Your role in this project cannot add annotations."
     },
     "findings": {
@@ -1412,17 +1442,12 @@
       "excludeInstead": "Mark Excluded instead",
       "confirm": "Remove {{code}}",
       "failed": "The evidence wasn't removed"
-    },
-    "what": {
-      "state": "state",
-      "visibility": "visibility"
     }
   },
   "comparison": {
     "title": "Comparison workspace",
-    "reqs": "ANA-01 · 02 · 03 · 04 · 05",
-    "sampleNotice": "Sample texts and judgments are illustrative fixtures, pending specialist review",
-    "modes": {
+    "views": {
+      "label": "Views",
       "occ": "Occurrences",
       "chains": "Chains",
       "dossier": "Narrator dossier",
@@ -1430,186 +1455,1034 @@
     },
     "bar": {
       "untitled": "Untitled analysis",
-      "notSaved": "not saved",
-      "noInputs": "No inputs yet",
-      "selectInputs": "Select inputs…",
-      "rerun": "Rerun",
-      "rerunAs": "Rerun as v{{version}}",
-      "saveAnalysis": "Save analysis",
-      "savedToast": "Analysis {{code}} saved.",
-      "inputsChangedTitle": "Inputs changed",
-      "inputsChangedBody": "{{item}} was updated in corpus {{version}}. v{{oldVersion}} still shows what you saved. Rerunning creates v{{newVersion}} and leaves v{{oldVersion}} as it is."
+      "notSaved": "Not saved. Saving stores this comparison as a new version.",
+      "metaNone": "No inputs yet",
+      "select": "Select inputs…",
+      "save": "Save analysis",
+      "saving": "Saving…",
+      "saved": "Saved as {{title}} ({{code}}).",
+      "openSaved": "Open it",
+      "saveFailed": "The analysis wasn't saved",
+      "open": "Open a saved analysis",
+      "openPrompt": "Saved analyses · {{count}}",
+      "close": "Close analysis",
+      "dossierNote": "A dossier is read from the corpus and isn’t stored."
     },
-    "states": {
-      "forbiddenTitle": "Analysis not available",
-      "forbiddenBody": "This analysis doesn't exist in this project, or one of its inputs belongs to a project you can't open. We show the same message in both cases. Nothing about the other project is revealed.",
-      "seeAnalyses": "See this project's analyses",
-      "emptyOccTitle": "Select occurrences to compare",
-      "emptyOccBody": "Pick 2 to 6 occurrences from evidence or a result set. Each column shows its source header and original wording. Where wording is missing, you get a limitation notice, never invented variants.",
-      "emptyChainsTitle": "Select chains to compare",
-      "emptyChainsBody": "Pick chains from evidence or occurrences. They are shown as ordered lists with transmission formulas. Unresolved order is marked Uncertain, and unidentified narrators are marked Unknown.",
-      "emptyCritTitle": "Choose a narrator",
-      "emptyCritBody": "Pick a target narrator to compare what different critics said, with their exact words and sources.",
-      "selectInputs": "Select inputs",
-      "pickFromEvidence": "Pick from evidence"
+    "run": {
+      "title": "{{kind}} · v{{version}}",
+      "types": {
+        "matn_comparison": "Occurrence comparison",
+        "isnad_comparison": "Chain comparison",
+        "criticism_matrix": "Criticism matrix",
+        "narrator_dossier": "Narrator dossier",
+        "ilal_case": "ʿIlal case",
+        "sequence_collation": "Sequence collation",
+        "isnad_topology": "Chain topology",
+        "temporal_csp": "Chronology check"
+      },
+      "meta": "Saved by {{author}} · {{when}}",
+      "inputs": "Inputs: {{list}}",
+      "inputsUnreadable": "The inputs of this analysis aren't stored in a form this screen can use, so it can't be opened in the workspace or run again.",
+      "corpusNote": "The corpus can change after an analysis is stored. This server doesn't say whether it did, so to check, run it again and compare.",
+      "openInputs": "Open its inputs in the workspace",
+      "again": "Run again as v{{version}}",
+      "againNote": "Running it again stores a new version and leaves this one as it is.",
+      "againFailed": "It couldn't be run again",
+      "unavailable": {
+        "title": "Analysis not available",
+        "body": "This analysis doesn't exist in this project, or one of its inputs belongs to a project you can't open. We show the same message in both cases. Nothing about the other project is revealed.",
+        "action": "See this project's analyses"
+      }
+    },
+    "stored": {
+      "title": "Stored in another format",
+      "body": "This analysis was stored in a shape the comparison views don't draw. It is shown exactly as stored, and nothing has been added to it.",
+      "result": "Result as stored",
+      "inputs": "Inputs as stored"
+    },
+    "empty": {
+      "occ": {
+        "title": "Select occurrences to compare",
+        "body": "Pick 2 to 6 reports from this project's evidence or from the corpus. Each column shows its source and original wording. Where wording is missing, you get a limitation notice, never invented variants."
+      },
+      "chains": {
+        "title": "Select chains to compare",
+        "body": "Pick reports from evidence or the corpus. Their chains are shown side by side, from the compiler to the earliest source. Narrators who are in every chain are marked."
+      },
+      "dossier": {
+        "title": "Choose a narrator",
+        "body": "Find a narrator by name to see their record, who they heard from and taught, and what critics said."
+      },
+      "crit": {
+        "title": "Choose a narrator",
+        "body": "Pick a narrator to see what different critics said about them, in their exact words."
+      }
+    },
+    "select": {
+      "title": "Select inputs",
+      "hint": "Choose {{min}} to {{max}} reports. Chains are taken from the same reports.",
+      "fromEvidence": "From this project's evidence",
+      "noEvidence": "This project has no evidence from the corpus yet.",
+      "evidenceFailed": "Evidence couldn't be loaded.",
+      "fromCorpus": "From the corpus",
+      "search": "Search the corpus for a report",
+      "searchFailed": "The corpus couldn't be searched.",
+      "noResults": "Nothing found.",
+      "count": "{{picked}} of {{max}} chosen",
+      "apply": "Use these"
     },
     "occ": {
-      "summary": "{{count}} occurrences of {{report}}, compared on original wording",
-      "highlightDiff": "Highlight differences",
-      "limitationTitle": "Limitation notice",
-      "limitationBody": "The corpus has no occurrence-specific wording for this occurrence yet, only the report-level text. No variants are shown, because they would have to be invented. The chain is still available in Chains.",
-      "sourceHeader": "Source · original wording",
-      "annotateDiff": "+ Annotate difference",
-      "legendDiff": "Wording only in some occurrences",
-      "legendAnnotation": "Has an annotation"
+      "summaryLine_one": "{{formattedCount}} report, compared on original wording",
+      "summaryLine_other": "{{formattedCount}} reports, compared on original wording",
+      "highlight": "Highlight differences",
+      "legendSome": "Wording only in some texts",
+      "missing": "{{code}} isn't in the corpus, so it is left out.",
+      "tooFew": {
+        "title": "Two reports are needed",
+        "body": "Comparing needs at least two reports that the corpus has."
+      },
+      "limited": "The corpus has no wording for this report yet. No variants are shown, because they would have to be invented.",
+      "noMarks": "The wording couldn't be matched word by word with the comparison, so it is shown without marks.",
+      "words_one": "{{formattedCount}} word",
+      "words_other": "{{formattedCount}} words",
+      "onlyHere_one": "{{formattedCount}} word only here",
+      "onlyHere_other": "{{formattedCount}} words only here",
+      "baseline": "Baseline",
+      "makeBaseline": "Use as baseline",
+      "againstBaseline": "{{added}} words not in the baseline · {{missing}} baseline words missing",
+      "otherPlaces_one": "{{formattedCount}} other place",
+      "otherPlaces_other": "{{formattedCount}} other places",
+      "summary": "What the comparison counted",
+      "core_one": "{{formattedCount}} word is in every text.",
+      "core_other": "{{formattedCount}} words are in every text.",
+      "method": "The comparison looks at which words each text has, not where they stand, so it can mark a word that some texts lack but can't tell a change of order.",
+      "overlap": "Share of words two texts have in common",
+      "percent": "{{value}}%",
+      "notes": "Researcher notes",
+      "noNotes": "No notes yet.",
+      "notEvidence": "This report isn't evidence in the project yet. Add it as evidence to annotate it.",
+      "annotate": "+ Annotate"
+    },
+    "annotate": {
+      "title": "Note on {{about}}"
     },
     "chains": {
-      "summary": "{{count}} chains, from the compiler (top) to the Companion (bottom). Click a narrator to inspect.",
-      "narratorsCount_one": "{{count}} narrator",
-      "narratorsCount_other": "{{count}} narrators",
-      "uncertainCount": " · {{count}} uncertain",
-      "unknownCount": " · {{count}} unknown",
-      "uncertainOrder": "Uncertain order",
-      "unknownNarrator": "Unknown",
-      "inspectorTitle": "Inspector",
-      "ambiguityTitle": "Ambiguity record {{code}}",
-      "ambiguityBody": "This chain names only “{{name}}”. The corpus records two candidates and hasn't decided between them:",
-      "ambiguityNote": "Picking one here is your reading, recorded as a researcher note. It doesn't change the corpus.",
-      "identityRecord": "Identity record",
+      "caption_one": "{{formattedCount}} chain, from the narrator nearest the compiler (top) to the earliest source (bottom). Select a narrator to inspect.",
+      "caption_other": "{{formattedCount}} chains, from the narrator nearest the compiler (top) to the earliest source (bottom). Select a narrator to inspect.",
+      "length_one": "{{formattedCount}} narrator",
+      "length_other": "{{formattedCount}} narrators",
+      "divergence": "The chains first differ at position {{position}}.",
+      "noDivergence": "The chains don't differ.",
+      "inEvery": "In every chain",
+      "inSome": "In {{formattedCount}} of {{total}} chains",
+      "unreported": "This comparison doesn't report uncertain order, narrators whose name is not recorded, or names that fit more than one person, so none is marked. Nothing has been assumed.",
+      "tooMany": "Showing the first {{shown}} of {{total}} chains.",
+      "needTwo": {
+        "title": "Two chains are needed",
+        "body_one": "These reports have {{formattedCount}} chain. Pick reports with at least two.",
+        "body_other": "These reports have {{formattedCount}} chains. Pick reports with at least two."
+      },
+      "inspector": "Inspector",
+      "pick": "Select a narrator in a chain to see their details here.",
+      "appearsIn": "Appears in {{formattedCount}} of {{formattedTotal}} chains compared here",
+      "generation": "Generation",
       "openDossier": "Open narrator dossier"
+    },
+    "narrators": {
+      "search": "Find a narrator by name",
+      "searchButton": "Search",
+      "results": "Narrators found",
+      "none": "No narrator found.",
+      "failed": "Narrators couldn't be searched."
     },
     "dossier": {
       "kicker": "Narrator dossier · {{code}}",
       "identity": "Identity",
-      "teachersStudents": "Teachers and students",
-      "teachersCount": "Teachers · {{count}} recorded",
-      "studentsCount": "Students · {{count}} recorded",
-      "corpusListsNote": "Lists come from chains in the corpus. They are not complete biographies.",
-      "attributedCriticism": "Attributed criticism",
+      "fields": {
+        "name": "Name",
+        "kunya": "Kunya",
+        "laqab": "Epithet (laqab)",
+        "nasab": "Nisba",
+        "shohra": "Known as",
+        "birth": "Birth",
+        "death": "Death",
+        "generation": "Generation",
+        "rank": "Recorded rank",
+        "tadlis": "Tadlīs",
+        "ikhtilat": "Ikhtilāṭ"
+      },
+      "recorded": "Recorded",
+      "notRecorded": "Not recorded",
+      "links": "Teachers and students",
+      "teachers_one": "Teachers · {{formattedCount}} recorded",
+      "teachers_other": "Teachers · {{formattedCount}} recorded",
+      "students_one": "Students · {{formattedCount}} recorded",
+      "students_other": "Students · {{formattedCount}} recorded",
+      "more_one": "{{formattedCount}} more",
+      "more_other": "{{formattedCount}} more",
+      "linksFailed": "The list couldn't be loaded.",
+      "linksNote": "Lists come from chains in the corpus. They are not complete biographies, and dates are shown as the corpus records them.",
+      "criticism": "Attributed criticism",
+      "criticismFailed": "The statements couldn't be loaded.",
+      "noCriticism": "No statement recorded in the corpus",
       "compareCriticism": "Compare criticism →",
-      "attributedTo": "Attributed to {{critic}}",
-      "relatedReports": "Related reports in this project",
-      "relatedReportsBody": "Appears in {{chainsCount}} of {{totalChains}} chains compared here · {{evidenceCount}} evidence items · {{corpusCount}} occurrences across the corpus"
+      "related": "Related reports in this project",
+      "inChains": "Appears in {{formattedCount}} of {{formattedTotal}} chains compared here",
+      "noChains": "Pick reports in Chains to see in how many of their chains this narrator appears.",
+      "transmissions_one": "{{formattedCount}} transmission across the corpus",
+      "transmissions_other": "{{formattedCount}} transmissions across the corpus"
     },
     "crit": {
-      "targetNarrator": "Target narrator",
+      "chosen": "Narrators chosen",
+      "remove": "Remove {{name}}",
+      "max_one": "You can compare up to {{count}} narrator.",
+      "max_other": "You can compare up to {{count}} narrators.",
       "critic": "Critic",
-      "allCritics": "All critics",
-      "expression": "Expression",
-      "book": "Book",
-      "category": "Recorded category",
-      "any": "Any",
-      "note": "Each critic's exact wording is kept. The normalized label is shown separately to help filtering. It's not a score, and it never replaces the wording.",
-      "thCritic": "Critic",
-      "thQawl": "Exact qawl",
-      "thSource": "Source",
-      "thLabel": "Normalized label",
-      "attributed": "Attributed"
-    },
-    "dialog": {
-      "selectTitle": "Select inputs for comparison",
-      "selectPrompt": "Choose 2 to 6 occurrences from project evidence or corpus references:",
-      "cancel": "Cancel",
-      "apply": "Apply selection",
-      "annotateTitle": "Annotate difference",
-      "notePlaceholder": "Add your note on this variant...",
-      "saveNote": "Save note"
+      "died": "d. {{value}}",
+      "qawl": "Exact wording",
+      "source": "Source",
+      "label": "Normalized label",
+      "noSource": "No source recorded",
+      "noLabel": "Not provided",
+      "statementsHeading": "What critics said about",
+      "statementsOf": "Statements about {{name}}",
+      "wordingNote": "Each critic's exact wording is kept as the corpus has it. The normalized label would only help filtering. It's not a score, and it would never replace the wording. The corpus doesn't provide one yet, so none is shown.",
+      "matrixNote": "Who said something about whom. A cell says a statement is recorded; the wording is in the lists below.",
+      "statement": "Statement recorded",
+      "none": "No statement recorded",
+      "statements": "Statements recorded",
+      "noMatrix": "No statement about these narrators is recorded in the corpus."
     }
   },
-  "findingsEditor": {
-    "reviewTitle": "Finding and document editor",
-    "index": {
-      "heading": "Findings and documents",
-      "summaryCount": "{{docs}} documents · {{findings}} findings · {{links}} links between them",
-      "noneYet": "None yet",
-      "newFinding": "New finding",
-      "newDoc": "New document",
-      "emptyHeading": "Nothing written yet",
-      "emptyBody": "A finding is one claim with its reasoning and evidence. It can be provisional or inconclusive. A document is a piece of writing, such as an article or chain summary, that can draw on several findings. One finding can appear in several documents.",
-      "docsHeading": "Documents · {{count}}",
-      "findingsHeading": "Findings · {{count}}"
+  "downloads": {
+    "title": "Downloads",
+    "count_one": "{{formattedCount}} export",
+    "count_other": "{{formattedCount}} exports",
+    "activeLine": "{{count}} · {{running}} running · {{queued}} queued",
+    "newExport": "New export",
+    "bytes": {
+      "B": "{{value}} B",
+      "KB": "{{value}} KB",
+      "MB": "{{value}} MB",
+      "GB": "{{value}} GB",
+      "TB": "{{value}} TB"
     },
-    "editor": {
-      "backToIndex": "← Findings and documents",
-      "untitled": "Untitled document",
-      "insertCite": "Insert citation",
-      "versions": "Versions",
-      "commit": "Save revision",
-      "offlineStrong": "Not saved. You're offline.",
-      "offlineBody": "Your last {{count}} changes are kept as a local draft in this browser and will be sent when you reconnect. Don't clear browser data until then.",
-      "emptySourceHint": "Start writing in Markdown. Use # for headings, > for quotations, and Insert citation for sources.",
-      "emptyPreviewHint": "The preview appears here as you write.",
-      "paraphraseBadge": "Paraphrase",
-      "citationsFootnotesTitle": "Citations"
+    "storage": {
+      "heading": "Download storage",
+      "used": "{{used}} of {{limit}} used",
+      "running": "{{running}} of {{limit}} exports running at once",
+      "note": "Packages expire 7 days after they're generated. Your research itself never expires, and you can start the same export again at any time.",
+      "loadFailed": "Storage use couldn't be loaded."
     },
-    "save": {
-      "newNotSaved": "New document · not saved yet",
-      "saving": "Saving…",
-      "notSavedDraft": "Not saved · {{count}} changes in local draft",
-      "conflict": "Save rejected · conflict"
+    "state": {
+      "queued": "Queued",
+      "running": "Running",
+      "complete": "Complete",
+      "partial": "Partial",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "unknown": "Unknown"
     },
-    "layout": {
-      "source": "Source",
-      "split": "Split",
-      "preview": "Preview"
+    "job": {
+      "scopeAccount": "All research · account-wide",
+      "scopeProject": "Project ZIP · {{title}}",
+      "scopeOther": "{{scope}} export",
+      "format": "ZIP with Unicode JSON and a manifest",
+      "requested": "Requested {{when}}",
+      "generated": "Generated {{when}}",
+      "expires": "expires {{date}}",
+      "expiresIn_one": "expires in {{formattedCount}} day",
+      "expiresIn_other": "expires in {{formattedCount}} days",
+      "expired": "expired {{date}}",
+      "keepsRunning": "Keeps running if you close the browser.",
+      "failedReason": "It failed: {{reason}}",
+      "failedNoReason": "It failed, and the server gave no reason.",
+      "cancelledNote": "Cancelled. Nothing from this export can be downloaded.",
+      "expiredNote": "The package has expired. Starting it again re-checks your current access.",
+      "cancel": "Cancel",
+      "cancelling": "Cancelling…",
+      "download": "Download",
+      "downloadPart": "Download part {{n}}",
+      "partLabel": "Part {{n}} · {{size}}",
+      "partFailed": "Part {{n}} · failed",
+      "partBlocked": "Part {{n}} · blocked",
+      "manifest": "Manifest",
+      "again": "Start it again",
+      "noParts": "This package has no downloadable file.",
+      "partialNote": "Some parts are not ready. This package is not complete."
+    },
+    "blocked": {
+      "title": "Part of a package is blocked",
+      "body": "Access is checked again at download. Parts the server blocks can't be downloaded; the parts that are ready are still available. Start the export again to get a package that matches your current access."
+    },
+    "download": {
+      "failed": "The download didn't start",
+      "cancelFailed": "The export wasn't cancelled"
+    },
+    "loadFailed": {
+      "title": "Downloads couldn't be loaded",
+      "body": "Your exports are not affected. Try again in a moment."
     },
     "forbidden": {
+      "title": "Exports aren't available to your account",
+      "body": "Only approved researcher accounts can request exports."
+    },
+    "empty": {
+      "title": "No downloads yet",
+      "prompt": "You can download anything you're entitled to:",
+      "account": "All your research",
+      "accountBody": "Every project you can access, plus your My Library, in one package.",
+      "projects": "Selected projects",
+      "projectsBody": "One or more projects, with their resources, evidence and documents.",
+      "later": "A single document or a set of resources",
+      "laterBody": "These start from the document editor and from a project's Resources, which are not available yet.",
+      "note": "Finished packages stay available for 7 days.",
+      "start": "Start an export"
+    },
+    "new": {
+      "back": "← Downloads",
+      "title": "New export",
+      "scope": "1 · Scope",
+      "scopeAccount": "All my research",
+      "scopeAccountSub": "Every project you can access, plus My Library",
+      "scopeProjects": "Selected projects",
+      "scopeProjectsSub": "Choose which projects to include",
+      "scopeResources": "Selected resources",
+      "scopeDocument": "One document",
+      "scopeLater": "Start this from the project's Resources or the document editor. Not available yet.",
+      "projectsHeading": "Projects to include",
+      "noProjects": "You have no projects you can export yet.",
+      "projectsFailed": "Your projects couldn't be loaded.",
+      "includeLibrary": "Also include My Library",
+      "pickProject": "Choose at least one project.",
+      "formats": "2 · Formats",
+      "formatZip": "ZIP · Unicode JSON",
+      "formatZipSub": "One JSON file per project and a manifest, opens offline",
+      "formatLater": "HTML, CSV, BibTeX, RIS and PDF aren't produced yet, so they are not offered.",
+      "formatsNote": "Every reference keeps its stable ID.",
+      "preview": "3 · What will be included",
+      "previewLoading": "Counting…",
+      "previewFailed": "The preview couldn't be loaded. You can still start the export.",
+      "personal": "Personal",
+      "personalLine": "My Library items",
+      "project": "Project · shared research",
+      "counts": {
+        "projects": "Projects",
+        "resources": "Resources",
+        "evidence_items": "Evidence items",
+        "documents": "Documents"
+      },
+      "excluded": "Always excluded",
+      "excludedText": "Other members' personal libraries and private notes · passwords and security logs",
+      "rightsNote": "Rights restrictions on attachments are not checked yet.",
+      "estimate": "Estimated {{size}}. This is a rough estimate, not a measured size.",
+      "overQuota": "That is more than your remaining storage ({{remaining}}). Remove old packages or narrow the scope.",
+      "start": "Start export",
+      "starting": "Starting export…",
+      "failed": "The export wasn't started",
+      "started": "Export {{code}} {{state}}.",
+      "limit": "You can run {{limit}} exports at once. Wait for one to finish."
+    },
+    "manifest": {
+      "back": "← Downloads",
+      "title": "{{code}} · Package manifest",
+      "scopeLine": "{{scope}}",
+      "metadata": "Metadata",
+      "scope": "Scope",
+      "format": "Format",
+      "requestedBy": "Requested by",
+      "generated": "Generated",
+      "corpusVersion": "Corpus version",
+      "expires": "Download expires",
+      "notRecorded": "Not recorded",
+      "included": "Included objects",
+      "files": "Files in the package",
+      "countsNone": "The manifest doesn't list how many objects each file holds yet.",
+      "parts": "Parts and checksums",
+      "partsNone": "No parts are recorded for this package.",
+      "exclusions": "Not included, and why",
+      "exclusionsNone": "The manifest doesn't list what was left out, or why.",
+      "unavailable": {
+        "title": "That export isn't available",
+        "body": "The link points to an export that doesn't exist or isn't yours. Exports are personal, so other people's links never open."
+      },
+      "loadFailed": "The manifest couldn't be loaded."
+    }
+  },
+  "writing": {
+    "title": "Findings and documents",
+    "back": "← Findings and documents",
+    "newFinding": "New finding",
+    "newDocument": "New document",
+    "unavailable": {
       "title": "Document not available",
       "body": "This document or finding doesn't exist in this project, or you can't open it. A citation link from another project never opens content here."
     },
+    "loadFailed": {
+      "title": "Findings and documents couldn't be loaded",
+      "body": "Nothing has been changed. Try again in a moment."
+    },
+    "index": {
+      "count": "{{documents}} · {{findings}}",
+      "documentsHeading": "Documents · {{count}}",
+      "findingsHeading": "Findings · {{count}}",
+      "empty": {
+        "title": "Nothing written yet",
+        "body": "A finding is one claim with its reasoning and evidence. It can be provisional or inconclusive. A document is a piece of writing, such as an article or chain summary, that can draw on several findings. One finding can appear in several documents."
+      },
+      "noDocuments": "No documents yet.",
+      "noFindings": "No findings yet.",
+      "documentMeta": "Version {{version}} · {{author}} · {{when}}",
+      "documentMetaNoVersion": "No version saved",
+      "linkedFindings_one": "{{formattedCount}} finding",
+      "linkedFindings_other": "{{formattedCount}} findings",
+      "findingMeta": "{{evidence}} · {{when}}",
+      "evidenceCount_one": "{{formattedCount}} evidence item",
+      "evidenceCount_other": "{{formattedCount}} evidence items",
+      "search": "Search documents and findings",
+      "noMatch": "Nothing matches that search."
+    },
+    "types": {
+      "article": "Article",
+      "dossier": "Dossier",
+      "dataset_note": "Dataset note"
+    },
+    "newDoc": {
+      "title": "New document",
+      "name": "Title",
+      "type": "Kind",
+      "language": "Language",
+      "languages": {
+        "ar": "Arabic",
+        "ckb": "Sorani",
+        "en": "English"
+      },
+      "create": "Create document",
+      "failed": "The document wasn't created",
+      "starter": "Start writing in Markdown."
+    },
+    "status": {
+      "provisional": "Provisional",
+      "supported": "Supported",
+      "inconclusive": "Inconclusive",
+      "disputed": "Disputed",
+      "unknown": "Unknown",
+      "withdrawnUnavailable": "Withdrawing a finding isn't available yet."
+    },
+    "relation": {
+      "supporting": "Supporting",
+      "opposing": "Opposing",
+      "contextual": "Context",
+      "unresolved": "Unresolved"
+    },
     "finding": {
-      "badge": "finding",
-      "statusLabel": "Status",
-      "questionLabel": "Question",
-      "claimLabel": "Claim or conclusion",
-      "reasoningLabel": "Reasoning",
-      "evidenceLabel": "Evidence",
-      "noneLinked": "None linked",
-      "linkEvidenceAction": "Link evidence",
-      "limitationsLabel": "Limitations",
-      "limitationsPlaceholder": "What this finding can't show, and why",
-      "contributorsHeading": "Contributors",
-      "usedInHeading": "Used in documents",
-      "notUsedInDocs": "Not used in any document yet",
-      "submissionChecklistHeading": "Before public submission",
-      "submissionMissingNotice": "{{count}} fields are missing: {{fields}} considered. A provisional finding is fine for now. This is only checked if you submit it for publication.",
-      "submissionReadyNotice": "✓ All required public-submission fields are present: claim, reasoning, limitations, and corroborating/opposing evidence considered."
+      "kicker": "{{code}} · finding",
+      "kickerNew": "New finding",
+      "status": "Status",
+      "question": "Question",
+      "claim": "Claim or conclusion",
+      "reasoning": "Reasoning",
+      "limitations": "Limitations",
+      "limitationsHint": "What this conclusion does not cover.",
+      "required": "This is needed before the finding can be saved.",
+      "evidence": "Evidence",
+      "evidenceNone": "None linked",
+      "linkEvidence": "+ Link evidence",
+      "unlink": "Unlink",
+      "contributors": "Contributors",
+      "contributorsNone": "Not recorded",
+      "usedIn": "Used in documents",
+      "usedInNone": "Not used in any document.",
+      "save": "Save finding",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "unsaved": "Unsaved changes",
+      "create": "Create finding",
+      "delete": "Delete finding…",
+      "deleteTitle": "Delete this finding?",
+      "deleteBody": "The finding is removed. Evidence and documents stay; documents that used it lose the link.",
+      "deleteUsed_one": "It is used in {{formattedCount}} document.",
+      "deleteUsed_other": "It is used in {{formattedCount}} documents.",
+      "deleteConfirm": "Delete finding",
+      "failed": "The finding wasn't saved",
+      "deleteFailed": "The finding wasn't deleted",
+      "linkFailed": "The link wasn't changed",
+      "changedElsewhere": "This finding changed in another session.",
+      "reload": "Show the latest",
+      "submission": {
+        "title": "Before public submission",
+        "body_one": "{{formattedCount}} field is missing: {{fields}}. A provisional finding is fine for now. This is only checked if you submit it for publication.",
+        "body_other": "{{formattedCount}} fields are missing: {{fields}}. A provisional finding is fine for now. This is only checked if you submit it for publication.",
+        "limitations": "Limitations",
+        "counter": "at least one Opposing or Unresolved evidence item considered",
+        "ok": "Nothing is missing for a public submission."
+      },
+      "readOnly": "Your role in this project can read findings but not change them."
     },
-    "versions": {
-      "heading": "Version history",
-      "backToDoc": "← Back to {{title}}",
-      "comparingHeading": "Comparing {{from}} → {{to}}",
-      "restoreAction": "Restore {{from}} as {{as}}",
-      "restoreNotice": "Restoring never deletes later history. {{from}}'s text becomes a new {{as}}, and later versions stay listed with their authors."
+    "linkEvidence": {
+      "title": "Link evidence to {{code}}",
+      "evidence": "Evidence",
+      "relation": "Relation",
+      "interpretation": "How it bears on the finding (optional)",
+      "note": "The same evidence can support one finding and oppose another. Its source isn't duplicated.",
+      "none": "Every evidence item in this project is already linked, or there is none yet.",
+      "submit": "Link",
+      "loadFailed": "Evidence couldn't be loaded."
     },
-    "citeModal": {
+    "doc": {
+      "untitled": "Untitled document",
+      "rename": "Rename",
+      "renameTitle": "Rename document",
+      "renameFailed": "The document wasn't renamed",
+      "insertCitation": "Insert citation",
+      "versions": "Versions",
+      "save": "Save version",
+      "summary": "What changed (optional)",
+      "markdown": "Markdown source",
+      "preview": "Preview",
+      "previewEmpty": "The preview appears here as you write.",
+      "emptyPlaceholder": "Start writing in Markdown. Use # for headings, > for quotations, and Insert citation for sources.",
+      "citations": "Citations",
+      "citationsNone": "No citations yet.",
+      "unknownEvidence": "{{code}} is not evidence in this project.",
+      "incompleteLocator": "Incomplete citation · locator missing",
+      "incompleteParts": "Incomplete citation · {{parts}} missing",
+      "missing": {
+        "page_or_hadith_number": "locator",
+        "author": "author",
+        "year": "year"
+      },
+      "findings": "Findings in this document",
+      "findingsNone": "No finding is linked to this document.",
+      "linkFinding": "+ Link finding",
+      "unlinkFinding": "Unlink",
+      "linkFindingTitle": "Link a finding to this document",
+      "linkFindingNone": "Every finding in this project is already linked, or there is none yet.",
+      "linkFindingFailed": "The finding wasn't linked",
+      "delete": "Delete document…",
+      "deleteTitle": "Delete “{{title}}”?",
+      "deleteBody": "The document and every version of it are removed. Findings and evidence stay.",
+      "deleteConfirm": "Delete document",
+      "deleteFailed": "The document wasn't deleted",
+      "readOnly": "Your role in this project can read this document but not change it.",
+      "lockedBy": "{{who}} is editing this document until {{until}}. You can read it, but not change it until they finish.",
+      "lockedByUnknown": "someone",
+      "lockRetry": "Check again",
+      "lockFailed": "The edit lock couldn't be taken, so the document is read-only.",
+      "restoredDraft": "Your unsaved text from {{when}} was restored.",
+      "discardDraft": "Discard it",
+      "shelved": "Your earlier text",
+      "shelvedHint": "This is the text you had before opening the newer version. Copy from it into the editor, then save.",
+      "shelvedInsert": "Add to the end of the document",
+      "shelvedDismiss": "Dismiss",
+      "length": "{{count}} characters",
+      "findingLabel": "Finding"
+    },
+    "save": {
+      "idle": "Saved · v{{version}}",
+      "dirty": "Unsaved changes",
+      "savingDraft": "Saving draft…",
+      "draftSaved": "Draft saved {{when}}",
+      "savingVersion": "Saving version…",
+      "saved": "Saved · v{{version}}",
+      "error": "The draft couldn't be saved",
+      "offline": "Not saved. You're offline.",
+      "offlineBody": "Your last changes are kept as a local draft in this browser and will be sent when you reconnect. Don't clear browser data until then.",
+      "retry": "Retry now",
+      "conflict": "Save stopped · conflict"
+    },
+    "citation": {
       "title": "Insert citation",
-      "evidenceLabel": "Evidence",
+      "evidence": "Evidence",
+      "pick": "Choose evidence",
+      "none": "This project has no evidence to cite yet.",
       "insertAs": "Insert as",
-      "exactQuote": "Exact quotation",
-      "exactQuoteSub": "Inserts the original text unchanged, marked as Source.",
-      "paraphrase": "Paraphrase",
-      "paraphraseSub": "Your own wording. It is never shown as a quotation.",
-      "previewHeading": "Preview",
-      "notice": "Source numbers are the compiler’s own numbering, not the platform’s report ID. Bibliography entries used by citations can't be deleted without first listing the citations that depend on them.",
-      "insert": "Insert citation",
-      "insertWithFlag": "Insert with flag"
+      "modes": {
+        "exact": "Exact quotation",
+        "paraphrase": "Paraphrase",
+        "ref": "Reference"
+      },
+      "modeSub": {
+        "exact": "The captured wording, unchanged, marked as a quotation.",
+        "paraphrase": "Your own words, with the source attached.",
+        "ref": "Points to the source without quoting it."
+      },
+      "preview": "Preview",
+      "formatted": "Formatted citation",
+      "flags": "Incomplete citation",
+      "flagNote": "Missing details are flagged, never guessed. The citation can still be inserted.",
+      "insert": "Insert",
+      "insertFlag": "Insert with flag",
+      "failed": "The citation couldn't be previewed. It can still be inserted.",
+      "numbering": "Note: the number in the source is the source's own, not the platform's report ID."
     },
     "conflict": {
-      "sessionLabel": "Main article · save rejected",
-      "col06Label": "COL-06 · Main article §2 · your save was stopped",
-      "sessionTitle": "This document changed in another session",
-      "memberTitle": "Aras Kamal changed this paragraph while you were editing",
-      "sessionDesc": "You saved v15 from your laptop at 11:38. This tab was still on v14, so its save was stopped to avoid overwriting. Nothing is lost: both versions are below.",
-      "memberDesc": "Aras saved v16 at 11:51. Your changes were based on v15, so they weren’t saved over his. Both versions are kept with their authors. Choose how to continue.",
-      "colNotice": "There's no real-time co-editing in R1. Whatever you choose, nobody's text is thrown away, and every version keeps its author in the history.",
-      "copyAndOpen": "Copy my text and open v15",
-      "keepMember": "Keep Aras's version",
-      "compareDetail": "Compare in detail",
-      "mergeByHand": "Merge by hand",
-      "saveMineV16": "Save mine as v16",
-      "saveMineV17": "Save mine as v17"
+      "title": "Save stopped · conflict",
+      "heading": "{{who}} changed this document while you were editing",
+      "body": "{{who}} saved v{{version}} at {{when}}. Your changes were based on v{{base}}, so they weren't saved over it. Both versions are kept with their authors. Choose how to continue.",
+      "theirs": "v{{version}} · {{who}} · {{when}}",
+      "mine": "Your unsaved text",
+      "someone": "Someone else",
+      "noRealtime": "There's no real-time co-editing in this release. Whatever you choose, no saved version is lost, and every version keeps its author in the history.",
+      "copy": "Copy my text",
+      "copied": "Copied",
+      "openTheirs": "Open v{{version}} and keep my text beside it",
+      "saveMine": "Save mine as v{{version}}",
+      "cancel": "Decide later",
+      "failed": "That didn't work"
+    },
+    "versions": {
+      "title": "Version history",
+      "back": "← Back to {{title}}",
+      "empty": "No versions yet.",
+      "loadFailed": "Versions couldn't be loaded.",
+      "row": "v{{version}} · {{author}} · {{when}}",
+      "current": "current",
+      "view": "View",
+      "compare": "Compare with current",
+      "comparing": "Comparing v{{from}} → v{{to}} (current)",
+      "same": "These two versions are identical.",
+      "added": "added",
+      "removed": "removed",
+      "restore": "Restore v{{from}} as v{{to}}",
+      "restoreNote": "Restoring never deletes later history. v{{from}}'s text becomes a new v{{to}}, and the later versions stay listed with their authors.",
+      "restoreFailed": "The version wasn't restored",
+      "viewing": "Version {{version}}",
+      "citationsIn": "Citations in this version"
+    },
+    "draftNote": {
+      "unsupportedViewport": "The editor needs a wider window."
+    }
+  },
+  "savedSearches": {
+    "title": "Saved searches",
+    "intro": "Searches only you can see. They belong to your account, not to a project.",
+    "count_one": "{{formattedCount}} saved search",
+    "count_other": "{{formattedCount}} saved searches",
+    "saved": "Saved {{when}}",
+    "empty": {
+      "title": "No saved searches yet",
+      "body": "In a project's Search workspace, choose Save search and pick “Only me”. It is listed here, and you can open it in any of your projects."
+    },
+    "open": {
+      "action": "Open in a project…",
+      "title": "Open “{{name}}” in a project",
+      "body": "A search is run inside a project, because each run is recorded there. Choose a project to open its Search workspace with this search filled in. Nothing runs until you run it.",
+      "none": "You have no project to open it in yet.",
+      "failed": "Your projects couldn't be loaded."
+    },
+    "rename": {
+      "action": "Rename",
+      "title": "Rename saved search",
+      "name": "Name",
+      "failed": "The search wasn't renamed"
+    },
+    "delete": {
+      "action": "Delete",
+      "title": "Delete “{{name}}”?",
+      "body": "Only this saved search is removed. Searches saved in projects, and their runs, are not affected.",
+      "confirm": "Delete saved search",
+      "failed": "The saved search wasn't deleted"
+    },
+    "runNote": "A saved search can't be run on its own yet. Open it in a project to run it and keep the run there."
+  },
+  "admin": {
+    "tagline": "Administration",
+    "exit": "Exit to researcher view",
+    "nav": {
+      "label": "Administration navigation",
+      "applications": "Applications",
+      "accounts": "Accounts and roles",
+      "proposals": "Corpus corrections",
+      "limits": "Limits, quotas and jobs",
+      "support": "Support access",
+      "audit": "Audit log",
+      "operations": "Operations",
+      "alerts_one": "{{formattedCount}} alert",
+      "alerts_other": "{{formattedCount}} alerts"
+    },
+    "roles": {
+      "researcher": "Researcher",
+      "reviewer": "Reviewer",
+      "editor": "Editor",
+      "corpus_editor": "Corpus editor",
+      "admin": "Administrator"
+    },
+    "applications": {
+      "title": "Applications",
+      "subtitle_one": "{{formattedCount}} application in this list",
+      "subtitle_other": "{{formattedCount}} applications in this list",
+      "filter": "Applications by state",
+      "list": "Applications",
+      "status": {
+        "pending": "Waiting for a decision",
+        "information_requested": "Information requested",
+        "approved": "Approved",
+        "rejected": "Declined"
+      },
+      "empty": {
+        "pending": {
+          "title": "The queue is empty",
+          "body": "No verified applications are waiting. Unverified applications only enter the queue after the applicant confirms their email."
+        },
+        "information_requested": {
+          "title": "Nobody has been asked for more information",
+          "body": "Applications you ask more from wait here until the applicant answers."
+        },
+        "approved": {
+          "title": "No approved applications",
+          "body": "Approved applications are listed here with the reason you gave."
+        },
+        "rejected": {
+          "title": "No declined applications",
+          "body": "Declined applications are listed here with the reason you gave."
+        }
+      },
+      "unverified_one": "{{formattedCount}} person is waiting on email verification.",
+      "unverified_other": "{{formattedCount}} people are waiting on email verification.",
+      "waiting": "Applied {{when}}",
+      "hasReply": "Replied",
+      "pick": "Choose an application to read it and decide.",
+      "submitted": "applied {{when}}",
+      "email": "Email",
+      "interests": "Interests",
+      "language": "Language",
+      "affiliation": "Affiliation",
+      "notProvided": "Not provided (optional)",
+      "biography": "Biography",
+      "account": "Account",
+      "thread": "Conversation with the applicant",
+      "asked": "You asked",
+      "replied": "Applicant replied",
+      "deadline": "Answer wanted by {{when}}",
+      "decided": "Decision",
+      "decidedOn": "Decided by {{by}} on {{when}}.",
+      "reasonLabel": "Reason or message (required to decline or request information, and shown to the applicant)",
+      "reasonHint": "At least {{min}} characters.",
+      "needReason": "A reason or message of at least {{min}} characters is needed to decline or to ask for more information.",
+      "approve": "Approve",
+      "requestInfo": "Request more information",
+      "decline": "Decline with reason",
+      "recorded": "Every decision is recorded with your name and the time. Approving enables this same account. No new account is created.",
+      "approveTitle": "Approve {{name}}?",
+      "approveBody": "The account becomes a researcher account and can sign in to the platform. This is recorded in the audit log.",
+      "approveConfirm": "Approve",
+      "declineTitle": "Decline {{name}}?",
+      "declineBody": "The application is declined and the reason is shown to the applicant. This is recorded in the audit log.",
+      "declineConfirm": "Decline application",
+      "decision": {
+        "approved": "approved",
+        "rejected": "declined",
+        "information_requested": "more information requested"
+      },
+      "done": "Decision recorded: {{decision}}.",
+      "failed": "The decision wasn't recorded"
+    },
+    "accounts": {
+      "title": "Accounts and roles",
+      "subtitle_one": "{{formattedCount}} account in this list",
+      "subtitle_other": "{{formattedCount}} accounts in this list",
+      "noStepUp": "Changing a role or suspending an account doesn't ask for a second authentication step yet.",
+      "search": "Search by name or email",
+      "statusFilter": "State",
+      "anyStatus": "Any state",
+      "empty": {
+        "title": "No account matches",
+        "body": "Change the search or the state filter."
+      },
+      "account": "Account",
+      "statusColumn": "State",
+      "mfa": "Two-step sign-in",
+      "mfaOn": "On",
+      "mfaOff": "Off",
+      "actions": "Actions",
+      "you": "you",
+      "joined": "joined {{when}}",
+      "noRole": "None",
+      "ownRole": "You can't change your own role",
+      "openApplication": "Open application",
+      "status": {
+        "approved": "Active",
+        "pending": "Pending",
+        "unverified": "Email not verified",
+        "suspended": "Suspended",
+        "rejected": "Declined",
+        "closure_requested": "Closure requested"
+      },
+      "reason": "Reason",
+      "reasonHint": "At least 3 characters. It is recorded in the audit log.",
+      "role": {
+        "column": "Platform role",
+        "action": "Change role",
+        "title": "Roles for {{name}}",
+        "legend": "Platform roles",
+        "needOne": "An account needs at least one role.",
+        "adminWarning": "The Administrator role gives access to everything in this area, including other accounts and the audit log.",
+        "recorded": "The change is recorded with your name and the time.",
+        "failed": "The roles weren't changed"
+      },
+      "suspend": {
+        "action": "Suspend…",
+        "title": "Suspend {{name}}?",
+        "body": "A suspended account can't sign in, and what it owns can't be changed. Its data is kept. The reason is recorded in the audit log; it isn't sent to the researcher automatically yet.",
+        "confirm": "Suspend account",
+        "failed": "The account wasn't suspended"
+      },
+      "reactivate": {
+        "action": "Reactivate…",
+        "title": "Reactivate {{name}}?",
+        "body": "The account can sign in and work again. The reason is recorded in the audit log.",
+        "confirm": "Reactivate account",
+        "failed": "The account wasn't reactivated"
+      },
+      "closure": {
+        "heading_one": "Closure request · {{formattedCount}}",
+        "heading_other": "Closure requests · {{formattedCount}}",
+        "none": "No closure requests.",
+        "loadFailed": "Closure requests couldn't be loaded.",
+        "review": "Review closure",
+        "title": "Closure request from {{name}}",
+        "body": "Approving closes the account and signs it out. It doesn't decide what happens to the account's projects: settle that with the researcher first. The server doesn't keep the reason they gave.",
+        "reason": "Reason (optional)",
+        "approve": "Approve closure",
+        "reject": "Decline closure",
+        "failed": "The closure wasn't decided"
+      }
+    },
+    "proposals": {
+      "title": "Corpus corrections",
+      "subtitle_one": "{{formattedCount}} proposal in this list",
+      "subtitle_other": "{{formattedCount}} proposals in this list",
+      "note": "A decision here is recorded and audited. It doesn't change the corpus itself yet: nothing applies an accepted correction.",
+      "filter": "Proposals by state",
+      "status": {
+        "submitted": "Waiting for review",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "empty": {
+        "submitted": {
+          "title": "No proposals are waiting",
+          "body": "Researchers propose corrections from the evidence inspector. They wait here for a decision."
+        },
+        "accepted": {
+          "title": "No accepted proposals",
+          "body": "Accepted proposals are listed here."
+        },
+        "rejected": {
+          "title": "No rejected proposals",
+          "body": "Rejected proposals are listed here."
+        }
+      },
+      "tables": {
+        "hadiths": "Report",
+        "narrators": "Narrator",
+        "books": "Book",
+        "sanads": "Chain"
+      },
+      "proposed": "proposed {{when}}",
+      "current": "Current value",
+      "proposedValue": "Proposed value",
+      "evidence": "Evidence and explanation",
+      "by": "Proposed by",
+      "accept": "Accept",
+      "reject": "Reject",
+      "decided": {
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "decision": {
+        "accepted": "accepted",
+        "rejected": "rejected"
+      },
+      "done": "Decision recorded: {{decision}}.",
+      "failed": "The decision wasn't recorded",
+      "acceptTitle": "Accept {{code}}?",
+      "acceptBody": "The proposal is marked accepted and the decision is recorded. The corpus is not changed.",
+      "acceptConfirm": "Accept proposal",
+      "rejectTitle": "Reject {{code}}?",
+      "rejectBody": "The proposal is marked rejected and the decision is recorded.",
+      "rejectConfirm": "Reject proposal"
+    },
+    "limits": {
+      "title": "Limits, quotas and jobs",
+      "subtitle": "Platform-wide policies, and the export jobs they apply to",
+      "policies": "Limits and quotas",
+      "notApplied": "These are the values the server reports. The server doesn't apply them yet, and they can't be changed here, so nothing on this list limits anyone today.",
+      "groups": {
+        "access": "Applications and invitations",
+        "quotas": "Quotas",
+        "other": "Other limits",
+        "types": "Allowed file types",
+        "reports": "Reports and rights flags"
+      },
+      "names": {
+        "applications_per_email_per_day": "Applications per email per day",
+        "resend_verification_per_minute": "Verification resends per minute",
+        "resend_verification_per_day": "Verification resends per day",
+        "invitations_per_project_per_day": "Invitations per project per day",
+        "download_storage_limit_gb": "Download storage per researcher",
+        "package_part_size_gb": "Package part size",
+        "concurrent_export_jobs": "Concurrent export jobs",
+        "result_set_max_size": "Result set size"
+      },
+      "units": {
+        "download_storage_limit_gb": "{{value}} GB",
+        "package_part_size_gb": "{{value}} GB",
+        "concurrent_export_jobs": "{{value}} per researcher",
+        "result_set_max_size": "{{value}} members"
+      },
+      "uploads": "Uploads",
+      "uploadsValue": "Not available until release R2",
+      "exports": "Export formats",
+      "exportsValue": "ZIP with Unicode JSON (the only package the server makes)",
+      "reportsNone": "The server has no abuse reports or rights flags to show",
+      "jobs": "Export jobs",
+      "jobsNote": "Failed jobs are listed to find out why. A job can't be put back in the queue from here: the server would mark it queued and nothing would run it.",
+      "jobsFilter": "Jobs by state",
+      "jobStatus": {
+        "all": "All",
+        "failed": "Failed",
+        "queued": "Queued",
+        "running": "Running",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "noJobs": {
+        "title": "No jobs",
+        "body": "No export job is in this state."
+      },
+      "job": "Job",
+      "jobScope": "What was exported",
+      "jobState": "State",
+      "jobWhen": "Started",
+      "diagnosticOnly": "Diagnostic information only. Research content isn't shown."
+    },
+    "support": {
+      "title": "Support access",
+      "subtitle": "Time-limited, scoped and audited",
+      "how": "A researcher gives an administrator read-only access to one project or document from their own settings, for a limited time. This list shows those grants.",
+      "empty": {
+        "title": "No support grants",
+        "body": "When a researcher grants you access, it is listed here with its expiry."
+      },
+      "scope": "What it covers",
+      "scopes": {
+        "project": "Project · read-only",
+        "document": "Document · read-only"
+      },
+      "documentLabel": "Document {{id}}",
+      "who": "Granted by",
+      "grantedBy": "{{researcher}} to {{admin}}",
+      "reason": "Reason",
+      "state": "State",
+      "actions": "Actions",
+      "active": "Active · {{hours}} h left",
+      "expired": "Expired",
+      "until": "until {{when}}",
+      "revoke": "Give back",
+      "revokeTitle": "Give back access to {{object}}?",
+      "revokeBody": "The grant ends now. To see it again, the researcher has to grant access again.",
+      "revokeConfirm": "Give back access",
+      "revokeFailed": "The access wasn't given back",
+      "private": "Ordinary admin search never shows private evidence, notes or documents. Private content opens only through an active grant, within its scope."
+    },
+    "audit": {
+      "title": "Audit log",
+      "subtitle_one": "{{formattedCount}} entry · read-only",
+      "subtitle_other": "{{formattedCount}} entries · read-only",
+      "filters": "Filter the audit log",
+      "action": "Action",
+      "anyAction": "Any action",
+      "object": "Object type",
+      "anyObject": "Any object type",
+      "actor": "Actor (account number)",
+      "actorPlaceholder": "Any actor",
+      "window": "Time",
+      "anyTime": "Any time",
+      "windows": {
+        "day": "Last 24 hours",
+        "week": "Last 7 days",
+        "month": "Last 30 days"
+      },
+      "actions": {
+        "decide_application": "Decided an application",
+        "update_user_roles": "Changed roles",
+        "update_user_status": "Changed account state",
+        "update_own_role_refused": "Tried to change their own role",
+        "decide_corpus_proposal": "Decided a corpus correction",
+        "project_created": "Created a project",
+        "assign_reviewer": "Assigned a reviewer",
+        "submit_review": "Submitted a review",
+        "editorial_decision": "Made an editorial decision",
+        "release_publication": "Released a publication",
+        "add_corrigendum": "Added a corrigendum",
+        "retract_publication": "Retracted a publication"
+      },
+      "objects": {
+        "user": "Account",
+        "researcher_application": "Application",
+        "corpus_correction_proposal": "Corpus correction",
+        "project": "Project",
+        "submission": "Submission",
+        "publication": "Publication",
+        "review_assignment": "Review assignment"
+      },
+      "empty": {
+        "title": "Nothing recorded yet",
+        "body": "Actions that change accounts, applications and corrections are recorded here."
+      },
+      "noMatch": {
+        "title": "No entry matches",
+        "body": "Change or clear the filters. Admin search covers actors, actions and object numbers, never the text of private research."
+      },
+      "entry": "Entry",
+      "code": "AUD-{{id}}",
+      "time": "Time",
+      "actorColumn": "Actor",
+      "actionColumn": "Action",
+      "objectColumn": "Object",
+      "details": "Details as recorded",
+      "readOnly": "Read-only. Entries can't be edited or deleted here. The server doesn't record whether an action succeeded, so no outcome is shown."
+    },
+    "ops": {
+      "title": "Operations",
+      "subtitle": "Counts, timings and job numbers only",
+      "updated": "Last updated {{when}} · refreshes every minute",
+      "alerts": "Active alerts",
+      "severity": {
+        "warning": "Needs attention",
+        "info": "For your information"
+      },
+      "noAlerts": "No active alerts.",
+      "queue": "Export queue",
+      "queueNote": "Jobs queued or running",
+      "failures": "Failed jobs",
+      "needsReview": "Needs review",
+      "noFailures": "None failed",
+      "storage": "Export storage",
+      "size": "{{value}} {{unit}}",
+      "units": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB"
+      },
+      "storageNote": "Space used by export packages",
+      "failedJobs": "Failed jobs",
+      "failedLoad": "Failed jobs couldn't be loaded.",
+      "noFailedJobs": "No failed jobs.",
+      "allJobs": "All failed jobs",
+      "notReported": "Not reported by the server yet",
+      "missing": {
+        "indexing": "Indexing status",
+        "latency": "Export queue latency",
+        "errors": "Error rate",
+        "backup": "Last backup",
+        "completeness": "Export completeness"
+      },
+      "counts": "Dashboards use counts, timings and job numbers only. Investigating a failure never requires reading private research."
     }
   }
 }
-

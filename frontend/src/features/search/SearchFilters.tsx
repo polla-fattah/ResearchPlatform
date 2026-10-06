@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { corpusKeys, listNarrators } from '@/api/corpus'
+import { listNarrators } from '@/api/corpus'
 import type { SearchFilters as Filters } from '@/api/schemas/search'
-import { listHukms, searchKeys } from '@/api/searchWorkspace'
+import { listHukms } from '@/api/searchWorkspace'
 import { BidiText } from '@/components/BidiText'
 import { NeutralState } from '@/components/Badges'
 import { useDebounced } from '../picker/useDebounced'
 import styles from './Search.module.css'
+import { qk } from '@/api/queryKeys'
 
 interface Props {
   filters: Filters
@@ -20,9 +21,9 @@ export function SearchFilters({ filters, onChange }: Props) {
   const [typed, setTyped] = useState('')
   const term = useDebounced(typed.trim(), 300)
 
-  const hukms = useQuery({ queryKey: searchKeys.hukms, queryFn: ({ signal }) => listHukms(signal), staleTime: Infinity })
+  const hukms = useQuery({ queryKey: qk.corpus.hukms, queryFn: ({ signal }) => listHukms(signal), staleTime: Infinity })
   const narrators = useQuery({
-    queryKey: [...corpusKeys.all, 'narrator-lookup', term],
+    queryKey: qk.corpus.narratorLookup(term),
     queryFn: ({ signal }) => listNarrators(term, signal),
     enabled: term.length >= 2 && !filters.narrator_id,
   })

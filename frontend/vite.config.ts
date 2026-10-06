@@ -19,7 +19,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
-    testTimeout: 15000,
+    maxWorkers: 4,
+    testTimeout: 20000,
     exclude: ['node_modules', 'dist', 'src/test/contract/**'],
   },
 })

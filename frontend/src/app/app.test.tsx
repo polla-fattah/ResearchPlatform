@@ -43,7 +43,7 @@ describe('route guards', () => {
   it('opens /admin for admins', async () => {
     mockMe({ is_admin: true })
     renderApp('/admin/applications', { signedIn: true })
-    expect(await screen.findByRole('heading', { name: 'Administration' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Applications' })).toBeInTheDocument()
   })
 
   it('returns to sign-in when the session expires (401)', async () => {

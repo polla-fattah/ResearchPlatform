@@ -1,0 +1,103 @@
+.pageHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-end: 1.25rem;
+}
+.pageHead h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+.hint {
+  margin: 0.25rem 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.empty {
+  max-inline-size: 40rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--neutral);
+}
+.empty h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+.empty p {
+  margin: 0;
+  color: var(--ink-2);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--rule);
+  background: var(--surface-white);
+}
+.cardHead {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+.text {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-block-start: 0.5rem;
+}
+.dialogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-inline-size: min(30rem, 80vw);
+}
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.projects {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-block-size: 18rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.projectButton {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--rule);
+  background: var(--surface-white);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.projectButton:hover,
+.projectButton:focus-visible {
+  border-color: var(--accent);
+}

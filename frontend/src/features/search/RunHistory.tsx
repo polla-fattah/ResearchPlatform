@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { compareRuns, listResultSets, listRuns, searchKeys } from '@/api/searchWorkspace'
+import { compareRuns, listResultSets, listRuns } from '@/api/searchWorkspace'
 import type { SavedQuery } from '@/api/schemas/search'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
@@ -10,6 +10,7 @@ import { viewStateOf } from '@/components/viewState'
 import { formatCode } from '@/domain/codes'
 import { queryCode, runCode } from './searchModel'
 import styles from './Search.module.css'
+import { qk } from '@/api/queryKeys'
 
 /** Every run of one saved search, oldest numbered first, with a two-run comparison and the result sets saved from them. */
 export function RunHistory({
@@ -26,11 +27,11 @@ export function RunHistory({
   const [picked, setPicked] = useState<number[]>([])
 
   const runsQ = useQuery({
-    queryKey: searchKeys.runs(projectId),
+    queryKey: qk.project(projectId).search.runs,
     queryFn: ({ signal }) => listRuns(projectId, signal),
   })
   const setsQ = useQuery({
-    queryKey: searchKeys.resultSets(projectId),
+    queryKey: qk.project(projectId).search.resultSets,
     queryFn: ({ signal }) => listResultSets(projectId, signal),
   })
 

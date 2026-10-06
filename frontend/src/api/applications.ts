@@ -5,10 +5,6 @@ import {
   type ApplyInput,
 } from './schemas/application'
 
-export const applicationKeys = {
-  status: ['application', 'my-status'] as const,
-}
-
 /** Public: creates the account and the application in one call (no token needed). */
 export async function applyForAccess(input: ApplyInput) {
   const { data } = await api('/applications', {

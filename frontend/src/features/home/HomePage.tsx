@@ -2,8 +2,8 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { countMyOpenTasks, countUnreadNotifications, homeKeys, listMyExports } from '@/api/home'
-import { listProjects, projectKeys } from '@/api/projects'
+import { countMyOpenTasks, countUnreadNotifications, listMyExports } from '@/api/home'
+import { listProjects } from '@/api/projects'
 import { asExportState, type ExportJob } from '@/api/schemas/exports'
 import type { ProjectListItem } from '@/api/schemas/project'
 import { useAuth } from '@/app/authContext'
@@ -14,6 +14,7 @@ import { viewStateOf, type ViewState } from '@/components/viewState'
 import { formatCode } from '@/domain/codes'
 import { ProjectCard } from './ProjectCard'
 import styles from './Home.module.css'
+import { qk } from '@/api/queryKeys'
 
 /** How many recent projects Home shows; next actions come from the same list. */
 const RECENT = 5
@@ -23,10 +24,10 @@ export function HomePage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const { date } = usePreferences()
-  const [today] = useState(() => new Date()) // read once per visit, not on every render
+  const [today] = useState(() => new Date()) // audit-ok: read once per visit by the initialiser, not on every render
 
   const projects = useQuery({
-    queryKey: projectKeys.list(RECENT_PARAMS),
+    queryKey: qk.projects.list(RECENT_PARAMS),
     queryFn: ({ signal }) => listProjects(RECENT_PARAMS, signal),
   })
   const state: ViewState = viewStateOf(projects, { isEmpty: (d) => (d as { items: unknown[] }).items.length === 0 })
@@ -211,7 +212,7 @@ function NextActionsSection({
 function DownloadsSection() {
   const { t } = useTranslation()
   const query = useQuery({
-    queryKey: homeKeys.exports,
+    queryKey: qk.home.exports,
     queryFn: ({ signal }) => listMyExports(signal),
   })
   const state = viewStateOf(query, { isEmpty: (d) => (d as unknown[]).length === 0 })
@@ -288,8 +289,8 @@ function ExportRow({ job }: { job: ExportJob }) {
 function CountsLine() {
   const { t } = useTranslation()
   const { n } = usePreferences()
-  const tasks = useQuery({ queryKey: homeKeys.openTasks, queryFn: ({ signal }) => countMyOpenTasks(signal) })
-  const unread = useQuery({ queryKey: homeKeys.unread, queryFn: ({ signal }) => countUnreadNotifications(signal) })
+  const tasks = useQuery({ queryKey: qk.home.openTasks, queryFn: ({ signal }) => countMyOpenTasks(signal) })
+  const unread = useQuery({ queryKey: qk.home.unread, queryFn: ({ signal }) => countUnreadNotifications(signal) })
 
   const parts = [
     tasks.data !== undefined ? t('home.counts.tasks', { count: tasks.data, formatted: n(tasks.data) }) : null,

@@ -22,15 +22,6 @@ export interface LibraryQuery {
   per_page?: number
 }
 
-export const libraryManageKeys = {
-  list: (q: LibraryQuery) => ['library', 'list', q] as const,
-  item: (id: number) => ['library', 'item', id] as const,
-  collections: ['library', 'collections'] as const,
-  tags: ['library', 'tags'] as const,
-  preview: (id: number, projects: number[], share: ShareOptions) =>
-    ['library', 'share-preview', id, projects, share] as const,
-}
-
 export async function listLibrary(query: LibraryQuery = {}, signal?: AbortSignal) {
   const res = await api('/library/items', {
     query: { ...query },

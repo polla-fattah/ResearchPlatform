@@ -2,19 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { userMessage } from '@/api/errors'
 
-import {
-  addMilestone,
-  addQuestion,
-  getProjectSummary,
-  listMilestones,
-  listQuestions,
-  projectDetailKeys,
-  setStage,
-} from '@/api/projectDetail'
+import { addMilestone, addQuestion, getProjectSummary, listMilestones, listQuestions, setStage } from '@/api/projectDetail'
 import type { Milestone, ProjectQuestion, ProjectSummary } from '@/api/schemas/projectDetail'
-import { projectKeys } from '@/api/projects'
 import { usePreferences } from '@/app/preferencesContext'
 import { NeutralState } from '@/components/Badges'
 import { BidiText } from '@/components/BidiText'
@@ -24,6 +14,9 @@ import { PROJECT_STAGES, EVIDENCE_STATES, type EvidenceState, type ProjectStage 
 import { hasQuestion } from '@/api/schemas/project'
 import styles from './Projects.module.css'
 import { useProject } from './useProject'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { errorMessage } from '@/api/errorMessage'
 
 const SEG: Record<EvidenceState, string> = {
   candidate: styles.segCandidate!,
@@ -39,18 +32,18 @@ export function ProjectOverviewPage() {
   const { id, project, can } = useProject()
 
   const summary = useQuery({
-    queryKey: projectDetailKeys.summary(id ?? 0),
+    queryKey: qk.project(id ?? 0).summary,
     queryFn: ({ signal }) => getProjectSummary(id!, signal),
     enabled: id !== null,
     retry: false,
   })
   const milestones = useQuery({
-    queryKey: projectDetailKeys.milestones(id ?? 0),
+    queryKey: qk.project(id ?? 0).milestones,
     queryFn: ({ signal }) => listMilestones(id!, signal),
     enabled: id !== null,
   })
   const questions = useQuery({
-    queryKey: projectDetailKeys.questions(id ?? 0),
+    queryKey: qk.project(id ?? 0).questions,
     queryFn: ({ signal }) => listQuestions(id!, signal),
     enabled: id !== null,
   })
@@ -162,9 +155,8 @@ function StageControl({
   const change = useMutation({
     mutationFn: ({ to }: { from: string; to: string }) => setStage(projectId, to),
     onSuccess: (_d, v) => {
-      setLast({ from: v.from, to: v.to, at: new Date() })
-      void qc.invalidateQueries({ queryKey: projectDetailKeys.detail(projectId) })
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
+      setLast({ from: v.from, to: v.to, at: new Date() }) // audit-ok: event handler
+      void invalidate.projectEdited(qc, projectId)
     },
   })
 
@@ -200,7 +192,7 @@ function StageControl({
       {change.isError ? (
         <ErrorSummary
           title={t('projects.overview.stageFailed')}
-          items={[userMessage(change.error, t('states.error.body'))]}
+          items={[errorMessage(change.error, t)]}
         />
       ) : null}
       {last ? (
@@ -332,7 +324,7 @@ function MilestonesBlock({
       setTitle('')
       setDue('')
       setPercent('0')
-      void qc.invalidateQueries({ queryKey: projectDetailKeys.milestones(projectId) })
+      void invalidate.milestonesChanged(qc, projectId)
     },
   })
 
@@ -373,7 +365,7 @@ function MilestonesBlock({
             </Field>
           </div>
           {add.isError ? (
-            <ErrorSummary title={t('states.error.title')} items={[userMessage(add.error, t('states.error.body'))]} />
+            <ErrorSummary title={t('states.error.title')} items={[errorMessage(add.error, t)]} />
           ) : null}
           <div className={styles.row2}>
             <Button type="submit" variant="primary" disabled={add.isPending || !title.trim()}>
@@ -449,7 +441,7 @@ function QuestionsBlock({
     onSuccess: () => {
       setOpen(false)
       setText('')
-      void qc.invalidateQueries({ queryKey: projectDetailKeys.questions(projectId) })
+      void invalidate.questionsChanged(qc, projectId)
     },
   })
   const unresolved = (query.data ?? []).filter((q) => !q.resolved)
@@ -476,7 +468,7 @@ function QuestionsBlock({
             <textarea rows={2} value={text} onChange={(e) => setText(e.target.value)} />
           </Field>
           {add.isError ? (
-            <ErrorSummary title={t('states.error.title')} items={[userMessage(add.error, t('states.error.body'))]} />
+            <ErrorSummary title={t('states.error.title')} items={[errorMessage(add.error, t)]} />
           ) : null}
           <div className={styles.row2}>
             <Button type="submit" variant="primary" disabled={add.isPending || !text.trim()}>

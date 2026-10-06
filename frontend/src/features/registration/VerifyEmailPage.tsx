@@ -3,13 +3,15 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { resendVerification, verifyEmail } from '@/api/auth'
-import { userMessage } from '@/api/errors'
 
 import { useAuth } from '@/app/authContext'
 import { Button, ButtonLink } from '@/components/Button'
 import { Field, Notice } from '@/components/Field'
 import { RegistrationPage } from './RegistrationPage'
 import styles from './Registration.module.css'
+import { invalidate } from '@/api/invalidate'
+import { qk } from '@/api/queryKeys'
+import { errorMessage } from '@/api/errorMessage'
 
 /**
  * Opens from the emailed link: /verify-email?token=...
@@ -24,11 +26,10 @@ export function VerifyEmailPage() {
   const qc = useQueryClient()
 
   const check = useQuery({
-    queryKey: ['verify-email', token],
+    queryKey: qk.verifyEmail(token),
     queryFn: async () => {
       await verifyEmail(token)
-      await qc.invalidateQueries({ queryKey: ['auth', 'me'] })
-      await qc.invalidateQueries({ queryKey: ['application', 'my-status'] })
+      await Promise.all([invalidate.me(qc), invalidate.applicationStatus(qc)])
       return true
     },
     enabled: token !== '',
@@ -103,7 +104,7 @@ function ExpiredLink() {
       {resend.isSuccess ? <Notice>{t('registration.checkEmail.sent')}</Notice> : null}
       {resend.isError ? (
         <Notice dashed>
-          {userMessage(resend.error, t('states.error.body'))}
+          {errorMessage(resend.error, t)}
         </Notice>
       ) : null}
     </RegistrationPage>

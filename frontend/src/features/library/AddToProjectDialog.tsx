@@ -1,18 +1,20 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { addToProjects, libraryManageKeys, sharePreview } from '@/api/libraryManage'
-import { listProjects, projectKeys } from '@/api/projects'
+import { addToProjects, sharePreview } from '@/api/libraryManage'
+import { listProjects } from '@/api/projects'
 import type { LibraryItem, ShareOptions } from '@/api/schemas/library'
 import { usePreferences } from '@/app/preferencesContext'
 import { BidiText } from '@/components/BidiText'
 import { Button } from '@/components/Button'
 import { libraryCode, snapshotText } from '@/domain/libraryItem'
-import { writeErrorMessage } from './writeError'
 import styles from './Library.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { Modal } from '@/components/Modal'
+import { MutationNotice } from '@/components/MutationNotice'
 
 interface Props {
-  open: boolean
   item: LibraryItem
   onClose: () => void
 }
@@ -26,42 +28,32 @@ const OUTCOME_KEY: Record<string, string> = {
   project_not_found: 'notFound',
 }
 
-export function AddToProjectDialog({ open, item, onClose }: Props) {
+export function AddToProjectDialog({ item, onClose }: Props) {
   const { t } = useTranslation()
   const { n } = usePreferences()
   const qc = useQueryClient()
-  const ref = useRef<HTMLDialogElement>(null)
   const [picked, setPicked] = useState<number[]>([])
   const [share, setShare] = useState<ShareOptions>(NO_SHARE)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (open && !el.open) el.showModal()
-    if (!open && el.open) el.close()
-  }, [open])
 
   // Projects you can add to: your own and the ones shared with you.
   const lists = useQueries({
     queries: (['owned', 'shared'] as const).map((scope) => ({
-      queryKey: projectKeys.list({ scope, per_page: 100 }),
+      queryKey: qk.projects.list({ scope, per_page: 100 }),
       queryFn: ({ signal }: { signal: AbortSignal }) => listProjects({ scope, per_page: 100 }, signal),
-      enabled: open,
     })),
   })
   const projects = lists.flatMap((l) => l.data?.items ?? []).filter((p) => !p.is_archived && !p.is_deleted)
 
   const preview = useQuery({
-    queryKey: libraryManageKeys.preview(item.id, picked, share),
+    queryKey: qk.library.sharePreview(item.id, picked, share),
     queryFn: () => sharePreview(item.id, picked, share),
-    enabled: open && picked.length > 0,
+    enabled: picked.length > 0,
   })
 
   const add = useMutation({
     mutationFn: () => addToProjects(item.id, picked, share),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: projectKeys.all })
-      void qc.invalidateQueries({ queryKey: ['project'] })
+      for (const id of picked) void invalidate.resourcesChanged(qc, id)
     },
   })
 
@@ -91,16 +83,8 @@ export function AddToProjectDialog({ open, item, onClose }: Props) {
     results?.filter((r) => r.status === 'added' || r.status === 'already_in_project').length ?? 0
 
   return (
-    <dialog
-      ref={ref}
-      className={styles.wideDialog}
-      aria-labelledby="add-project-title"
-      onCancel={(e) => {
-        e.preventDefault()
-        close()
-      }}
-    >
-      <h2 id="add-project-title">{t('library.addProject.title', { id: libraryCode(item) })}</h2>
+    <Modal title={t('library.addProject.title', { id: libraryCode(item) })} onClose={close} wide>
+      <div className={styles.dialogBody}>
       <p>
         <BidiText>{item.resource.title}</BidiText>
       </p>
@@ -203,11 +187,7 @@ export function AddToProjectDialog({ open, item, onClose }: Props) {
               ))}
           </section>
 
-          {add.isError ? (
-            <p role="alert" className={styles.resultBad}>
-              {writeErrorMessage(add.error, t)}
-            </p>
-          ) : null}
+          <MutationNotice error={add.error} />
 
           <div className={styles.dialogActions}>
             <Button onClick={close} disabled={add.isPending}>
@@ -223,6 +203,7 @@ export function AddToProjectDialog({ open, item, onClose }: Props) {
           </div>
         </>
       )}
-    </dialog>
+      </div>
+    </Modal>
   )
 }

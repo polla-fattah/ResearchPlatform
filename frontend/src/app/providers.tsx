@@ -6,9 +6,9 @@ import { PreferencesProvider } from './preferences'
 export function AppProviders({ client, children }: { client: QueryClient; children: ReactNode }) {
   return (
     <QueryClientProvider client={client}>
-      <PreferencesProvider>
-        <AuthProvider>{children}</AuthProvider>
-      </PreferencesProvider>
+      <AuthProvider>
+        <PreferencesProvider>{children}</PreferencesProvider>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }

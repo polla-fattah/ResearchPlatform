@@ -1,15 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { evidenceKeys, getHistory, setEvidenceState } from '@/api/evidence'
+import { getHistory, setEvidenceState } from '@/api/evidence'
 import type { EvidenceItem } from '@/api/schemas/evidence'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { Field } from '@/components/Field'
 import { Modal } from '@/components/Modal'
 import { EVIDENCE_STATES } from '@/domain/vocab'
-import { evidenceCode, needsReason, writeError } from './evidenceModel'
+import { evidenceCode, needsReason } from './evidenceModel'
 import styles from './Evidence.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { MutationNotice } from '@/components/MutationNotice'
 
 interface Props {
   projectId: number
@@ -30,7 +33,7 @@ export function StatePanel({ projectId, item, findingsCount, canEdit, target, on
   const [reasonMissing, setReasonMissing] = useState(false)
 
   const history = useQuery({
-    queryKey: evidenceKeys.history(projectId, item.id),
+    queryKey: qk.project(projectId).evidence.history(item.id),
     queryFn: ({ signal }) => getHistory(projectId, item.id, signal),
   })
 
@@ -39,9 +42,7 @@ export function StatePanel({ projectId, item, findingsCount, canEdit, target, on
     onSuccess: () => {
       onTarget(null)
       setReason('')
-      void qc.invalidateQueries({ queryKey: evidenceKeys.all(projectId) })
-      void qc.invalidateQueries({ queryKey: ['project', projectId] })
-      void qc.invalidateQueries({ queryKey: ['projects'] })
+      void invalidate.evidenceChanged(qc, projectId)
     },
   })
 
@@ -123,11 +124,7 @@ export function StatePanel({ projectId, item, findingsCount, canEdit, target, on
                 {t('evidence.state.usedIn', { count: findingsCount, formattedCount: n(findingsCount), state: t(`evidenceState.${target}`) })}
               </p>
             ) : null}
-            {change.isError ? (
-              <p role="alert" className={styles.bad}>
-                <strong>{t('evidence.state.failed')}.</strong> {writeError(change.error, t, 'state')}
-              </p>
-            ) : null}
+            <MutationNotice error={change.error} title={t('evidence.state.failed')} />
             <div className={styles.dialogActions}>
               <Button onClick={close} disabled={change.isPending}>
                 {t('common.cancel')}

@@ -1,0 +1,22 @@
+.stored {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stored li {
+  margin-block: 0.25rem;
+}
+dl.stored {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+}
+.entry {
+  display: contents;
+}
+.stored dt {
+  color: var(--muted);
+}
+.stored dd {
+  margin: 0;
+}

@@ -90,6 +90,9 @@ function buildUrl(path: string, query?: RequestOptions['query']): string {
   return url.href
 }
 
+/** Full URL for an API path, for requests that are not JSON (file downloads). */
+export const apiUrl = buildUrl
+
 async function readJson(res: Response): Promise<unknown> {
   const text = await res.text()
   if (!text) return undefined

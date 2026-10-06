@@ -11,6 +11,7 @@ import { formatCode } from '@/domain/codes'
 import { normalizeRole, ROLE_LABEL_KEYS } from '@/domain/roles'
 import { isProjectStage } from '@/domain/vocab'
 import styles from './Projects.module.css'
+import { useNow } from '@/hooks/useNow'
 
 export type RowAction = 'archive' | 'unarchive' | 'trash' | 'restore' | 'leave'
 
@@ -22,7 +23,7 @@ interface Props {
 }
 
 /** Whole days until `iso`, never below zero. */
-function daysUntil(iso: string, now = Date.now()): number {
+function daysUntil(iso: string, now: number): number {
   return Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 86_400_000))
 }
 
@@ -30,6 +31,7 @@ function daysUntil(iso: string, now = Date.now()): number {
 export function ProjectRow({ project, scope, busy, onAction }: Props) {
   const { t } = useTranslation()
   const { relative, date, n } = usePreferences()
+  const now = useNow()
   const role = normalizeRole(project.my_role)
   const isOwner = role === 'owner'
   const stage = isProjectStage(project.stage) ? t(`stage.${project.stage}`) : project.stage
@@ -113,7 +115,7 @@ export function ProjectRow({ project, scope, busy, onAction }: Props) {
             {t('projects.index.row.deleteOn', { date: date(project.recovery_deadline) })}
           </span>
           <span className={styles.meta}>
-            {t('projects.index.row.daysLeft', { count: daysUntil(project.recovery_deadline) })}
+            {t('projects.index.row.daysLeft', { count: daysUntil(project.recovery_deadline, now) })}
           </span>
         </div>
       ) : null}

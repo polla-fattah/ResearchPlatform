@@ -4,6 +4,7 @@ import {
   loginResultSchema,
   meSchema,
   registerResultSchema,
+  sessionResultSchema,
   type Me,
   type RegisterInput,
 } from './schemas/auth'
@@ -21,6 +22,16 @@ export async function login(email: string, password: string): Promise<LoginResul
   })
   if ('mfa_required' in data) return { kind: 'mfa', challengeToken: data.challenge_token }
   return { kind: 'session', token: data.token }
+}
+
+/** The second step of sign-in when the account has two-step sign-in on: the 6-digit code, or a single-use recovery code. */
+export async function completeMfa(challengeToken: string, code: string): Promise<string> {
+  const { data } = await api('/auth/mfa/challenge', {
+    method: 'POST',
+    body: { challenge_token: challengeToken, code },
+    schema: sessionResultSchema,
+  })
+  return data.token
 }
 
 export async function register(input: RegisterInput) {

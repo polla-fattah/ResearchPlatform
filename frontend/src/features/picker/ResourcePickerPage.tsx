@@ -1,15 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams, useSearchParams } from 'react-router-dom'
-import { userMessage } from '@/api/errors'
+import { useParams } from 'react-router-dom'
 
-import {
-  attachResourceToProject,
-  libraryKeys,
-  listLibraryItems,
-  saveLibraryItem,
-} from '@/api/library'
+import { attachResourceToProject, listLibraryItems, saveLibraryItem } from '@/api/library'
 import type { LibraryItem, SaveLibraryInput } from '@/api/schemas/library'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button, ButtonLink } from '@/components/Button'
@@ -27,12 +21,16 @@ import { CorpusPicker } from './CorpusPicker'
 import { emptySelection, type PickerSelection } from './selection'
 import { ExternalForm } from './ExternalForm'
 import styles from './Picker.module.css'
+import { qk } from '@/api/queryKeys'
+import { invalidate } from '@/api/invalidate'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { errorMessage } from '@/api/errorMessage'
 
 type Tab = 'corpus' | 'external'
 type Destination = 'library' | 'project'
 type DupChoice = 'reuse' | 'distinct' | null
 
-const todayIso = () => new Date().toISOString().slice(0, 10)
+const todayIso = () => new Date().toISOString().slice(0, 10) // audit-ok: called from an initialiser and a handler only
 
 interface Done {
   title: string
@@ -56,8 +54,9 @@ export function ResourcePickerPage() {
   // A project can take resources only when you may add shared content and it is not archived.
   const projectWritable = projectId !== null && !!project && can('addShared') && !project.is_archived && !project.is_deleted
 
-  const [search] = useSearchParams()
-  const [tab, setTab] = useState<Tab>(search.get('tab') === 'external' ? 'external' : 'corpus')
+  const url = useQueryParams()
+  const tab: Tab = url.oneOf('tab', ['corpus', 'external'] as const, 'corpus')
+  const setTab = (next: Tab) => url.set({ tab: next === 'corpus' ? null : next })
   const [dest, setDest] = useState<Destination>(projectId !== null ? 'project' : 'library')
   const [selection, setSelection] = useState<PickerSelection>(emptySelection)
   const [external, setExternal] = useState<ExternalReferenceForm>(() => emptyExternalReference(todayIso()))
@@ -65,7 +64,7 @@ export function ResourcePickerPage() {
   const [choice, setChoice] = useState<DupChoice>(null)
   const [done, setDone] = useState<Done | null>(null)
 
-  const library = useQuery({ queryKey: libraryKeys.index, queryFn: ({ signal }) => listLibraryItems(signal) })
+  const library = useQuery({ queryKey: qk.library.index, queryFn: ({ signal }) => listLibraryItems(signal) })
   const saved = useMemo(() => {
     const map = new Map<string, LibraryItem>()
     for (const it of library.data ?? []) {
@@ -132,7 +131,8 @@ export function ResourcePickerPage() {
     onSuccess: (result) => {
       if (result === 'duplicate') return
       setDone(result)
-      void qc.invalidateQueries({ queryKey: libraryKeys.all })
+      void invalidate.libraryChanged(qc)
+      if (result.projectId !== null) void invalidate.resourcesChanged(qc, result.projectId)
     },
   })
 
@@ -225,8 +225,7 @@ export function ResourcePickerPage() {
     </div>
   ) : null
 
-  const errorMessage =
-    save.isError ? userMessage(save.error, t('states.error.body')) : null
+  const failure = save.isError ? errorMessage(save.error, t) : null
 
   return (
     <section>
@@ -320,9 +319,9 @@ export function ResourcePickerPage() {
         ) : null}
       </fieldset>
 
-      {errorMessage ? (
+      {failure ? (
         <div style={{ marginBlockStart: '1rem' }}>
-          <ErrorSummary title={t('picker.failedTitle')} items={[errorMessage]} footer={t('picker.failedKept')} />
+          <ErrorSummary title={t('picker.failedTitle')} items={[failure]} footer={t('picker.failedKept')} />
         </div>
       ) : null}
 
