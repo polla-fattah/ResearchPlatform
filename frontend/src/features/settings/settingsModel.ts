@@ -47,3 +47,9 @@ export function timeZoneChoices(current: string, browser: string): string[] {
   const base = ['UTC', 'Asia/Baghdad', 'Asia/Riyadh', 'Asia/Dubai', 'Africa/Cairo', 'Europe/Istanbul', 'Europe/London', 'Europe/Berlin', 'America/New_York', 'America/Los_Angeles']
   return [...new Set([current, browser, ...base])].filter(isTimeZone)
 }
+
+/**
+ * The link that opens an authenticator app is only offered when it really is an `otpauth://` address. The server sends it,
+ * and a link with any other scheme (`javascript:`, `data:`) would run in this page when followed.
+ */
+export const isOtpAuthUrl = (url: string | null | undefined): url is string => /^otpauth:\/\/(totp|hotp)\//i.test((url ?? '').trim())

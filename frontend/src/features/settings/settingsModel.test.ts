@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { groupSecret, interestsText, isTimeZone, parseInterests, publicFieldsOf, timeZoneChoices } from './settingsModel'
+import { groupSecret, isOtpAuthUrl, interestsText, isTimeZone, parseInterests, publicFieldsOf, timeZoneChoices } from './settingsModel'
 
 describe('interests', () => {
   it('splits on commas (Latin and Arabic) and lines, trims, and keeps each once', () => {
@@ -42,5 +42,13 @@ describe('time zones', () => {
     expect(list).toContain('Europe/Paris')
     expect(list.filter((z) => z === 'Asia/Baghdad')).toHaveLength(1)
     expect(timeZoneChoices('Mars/Olympus', 'UTC')).not.toContain('Mars/Olympus')
+  })
+})
+
+describe('isOtpAuthUrl', () => {
+  it('accepts only an otpauth address', () => {
+    expect(isOtpAuthUrl('otpauth://totp/Open%20Hadith:me@example.org?secret=ABC')).toBe(true)
+    expect(isOtpAuthUrl(' OTPAUTH://hotp/x')).toBe(true)
+    for (const bad of ['javascript:alert(1)', 'data:text/html,x', 'https://example.org', '', null, undefined]) expect(isOtpAuthUrl(bad)).toBe(false)
   })
 })

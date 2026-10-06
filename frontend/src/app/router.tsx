@@ -15,6 +15,7 @@ import { SignInPage } from '@/features/registration/SignInPage'
 import { RequireAdmin, RequireApproved, RequireAuth, RequireEditor } from './guards'
 import { screensIn, type ScreenDef } from './screens'
 import { lazyNamed } from './lazy'
+import { RouteError } from '@/pages/RouteError'
 
 const HomePage = lazyNamed(() => import('@/features/home/HomePage'), 'HomePage')
 const AccountsPage = lazyNamed(() => import('@/features/admin/AccountsPage'), 'AccountsPage')
@@ -123,6 +124,8 @@ const BUILT: Record<string, ReactElement> = {
 const pending = (screen: ScreenDef): RouteObject => ({
   path: screen.path,
   element: BUILT[screen.id] ?? <PendingScreen screen={screen} />,
+  // A page that breaks while it is drawn shows the error inside its layout, which stays on the screen.
+  errorElement: <RouteError />,
 })
 
 /**
@@ -130,7 +133,7 @@ const pending = (screen: ScreenDef): RouteObject => ({
  *   public site  ·  account shell  ·  project shell (inside account shell)  ·  admin
  * Screens are swapped from placeholder to real page as each phase delivers them.
  */
-export const routes: RouteObject[] = [
+const appRoutes: RouteObject[] = [
   {
     element: <PublicLayout />,
     children: [
@@ -215,6 +218,9 @@ export const routes: RouteObject[] = [
   },
   { path: '*', element: <NotFoundPage /> },
 ]
+
+/** Everything sits under one route whose error page catches what a page's own error page does not (a layout that breaks). */
+export const routes: RouteObject[] = [{ errorElement: <RouteError />, children: appRoutes }]
 
 export const createAppRouter = () => createBrowserRouter(routes)
 export const createTestRouter = (

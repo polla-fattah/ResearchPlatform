@@ -1,3 +1,4 @@
+import { clearAllLocalDrafts } from '@/features/writing/localDraft'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import * as authApi from '@/api/auth'
@@ -63,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       /* the local session ends either way */
     }
     session.set(null)
+    clearAllLocalDrafts()
     setHasToken(false)
     qc.clear()
   }, [qc])

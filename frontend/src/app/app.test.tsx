@@ -1,4 +1,5 @@
 import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { server } from '@/test/server'
@@ -98,6 +99,18 @@ describe('shell', () => {
     }
     await router.navigate('/projects/12/evidence')
     await waitFor(() => expect(screen.queryByRole('navigation', { name: 'Analysis tools' })).not.toBeInTheDocument())
+  })
+
+  it('removes the drafts kept in the browser when the person signs out, and keeps the display preferences', async () => {
+    mockMe()
+    mockHomeApis()
+    localStorage.setItem('oh.draft.12.7', JSON.stringify({ text: 'private research', baseVersion: 1, at: 1 }))
+    localStorage.setItem('oh.lang', 'en')
+    server.use(http.post('*/api/v1/auth/logout', () => HttpResponse.json(envelope(null))))
+    renderApp('/home', { signedIn: true })
+    await userEvent.click(await screen.findByRole('button', { name: 'Sign out' }))
+    await waitFor(() => expect(localStorage.getItem('oh.draft.12.7')).toBeNull())
+    expect(localStorage.getItem('oh.lang')).toBe('en')
   })
 
   it('renders the project tab bar with the display code', async () => {

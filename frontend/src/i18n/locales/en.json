@@ -4498,5 +4498,15 @@
       "markdown": "The Markdown editor does everything the document needs today: headings, lists, quotations and citations to your evidence, with each paragraph shown in its own direction."
     },
     "open": "Open the document in the Markdown editor"
+  },
+  "routeError": {
+    "title": "Something went wrong on this page",
+    "body": "What you saved is safe on the server. Anything you were typing in this window may not be. Reload the page to try again. If it keeps happening, tell support what you were doing.",
+    "load": {
+      "title": "This page could not be loaded",
+      "body": "The connection may have dropped, or a new version of the platform was released while this window was open. Reload the page to continue."
+    },
+    "reload": "Reload the page",
+    "home": "Go to Home"
   }
 }
