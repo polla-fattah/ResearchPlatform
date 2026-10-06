@@ -3747,5 +3747,82 @@
       "none": "No alignment has been saved in this project.",
       "version": "v{{version}}"
     }
+  },
+  "isnad": {
+    "title": "Isnād graph",
+    "storedTitle": "Isnād graph {{code}} · v{{version}}",
+    "sub": "The chains of two to six reports drawn as one graph of narrators, with arrows from teacher to student.",
+    "unchecked": "The graph is built from the narrators the corpus lists for each chain, and its reading direction and its narrator links have not been checked by a researcher. A narrator it marks as a candidate common link is picked by a rule of thumb, not shown to be one.",
+    "pick": "Pick reports",
+    "change": "Change reports",
+    "showGraph": "Draw the graph",
+    "backToNew": "← Graph other chains",
+    "graphLabel": "Transmission graph. The same narrators and links are in the table below.",
+    "empty": {
+      "title": "Choose at least 2 reports",
+      "body": "The graph is built from the isnād of two or more reports. Pick reports from this project's evidence, or find them in the corpus."
+    },
+    "fewChains": "The chosen reports have {{count}} chain(s) recorded; a graph needs at least two.",
+    "missing": "These reports could not be found in the corpus and were left out: {{ids}}.",
+    "loadFailed": "Some reports could not be loaded. The graph is of the chains of the ones that did.",
+    "truncated": "Only the first {{max}} of {{total}} chains are drawn.",
+    "notGraph": "This stored analysis is not a graph in the form this screen can draw.",
+    "arrows": "Arrows point from teacher to student. The number on a line is how many of the chains use that link.",
+    "generations_one": "{{formattedCount}} generation",
+    "generations_other": "{{formattedCount}} generations",
+    "onChains_one": "on {{formattedCount}} chain",
+    "onChains_other": "on {{formattedCount}} chains",
+    "summary": {
+      "label": "What the graph holds",
+      "chains_one": "{{formattedCount}} chain",
+      "chains_other": "{{formattedCount}} chains",
+      "narrators_one": "{{formattedCount}} narrator",
+      "narrators_other": "{{formattedCount}} narrators",
+      "links_one": "{{formattedCount}} link",
+      "links_other": "{{formattedCount}} links"
+    },
+    "candidates": {
+      "title": "Candidate common links",
+      "none": "No narrator is picked by the rule: none has two or more students in these chains, and none is on most of them.",
+      "line": "on {{chains}} chain(s), with {{students}} student(s) in these chains",
+      "rule": "The rule: a narrator with two or more students in the chains, or on at least 70% of them. It says where chains branch or gather. It does not say the narrator is the common link, and it does not weigh how the chains were collected."
+    },
+    "roles": {
+      "start": "Where chains begin",
+      "end": "Where chains end",
+      "passes": "Passes the report on",
+      "candidate": "Candidate common link"
+    },
+    "table": {
+      "title": "Narrators",
+      "label": "The narrators of the graph",
+      "narrator": "Narrator",
+      "role": "In these chains",
+      "chains": "Chains",
+      "teachers": "Teachers",
+      "students": "Students",
+      "none": "none in these chains"
+    },
+    "panel": {
+      "title": "The narrator in focus",
+      "pick": "Choose a narrator in the graph or the table to see their links.",
+      "dossier": "Open the narrator dossier",
+      "through": "Show only the chains through this narrator"
+    },
+    "chains": {
+      "title": "The chains",
+      "sanad": "chain {{id}}",
+      "failed": "The chains could not be listed.",
+      "note": "Each chain reads from the narrator nearest the compiler to the earliest source, as the corpus lists them."
+    },
+    "save": "Save this graph",
+    "savedAs": "Saved as {{code}} · v{{version}}",
+    "saveFailed": "The graph was not saved",
+    "readOnly": "You can look at graphs here. Saving one needs a role that can add shared research.",
+    "saved": {
+      "title": "Saved graphs",
+      "none": "No graph has been saved in this project.",
+      "version": "v{{version}}"
+    }
   }
 }

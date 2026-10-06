@@ -146,6 +146,50 @@ function computeIsnads(chains: Chain[]) {
   }
 }
 
+/** The transmission graph the server makes: chains reversed into teacher-to-student order, edges counted, and its rule for candidates. */
+function computeTopology(chains: Chain[]) {
+  const nodes = new Map<number, { id: number; name: string; tabaqah: null; rutba: null; death_year: null; in_degree: number; out_degree: number; frequency: number; role?: string }>()
+  const edges = new Map<string, { source: number; target: number; weight: number }>()
+  const paths = chains.map((c) => c.narrators.map((n) => n.id).reverse())
+  for (const c of chains) {
+    for (const n of c.narrators) {
+      const node = nodes.get(n.id) ?? { id: n.id, name: n.name, tabaqah: null, rutba: null, death_year: null, in_degree: 0, out_degree: 0, frequency: 0 }
+      node.frequency++
+      nodes.set(n.id, node)
+    }
+  }
+  for (const path of paths) {
+    for (let i = 0; i < path.length - 1; i++) {
+      const key = `${path[i]}->${path[i + 1]}`
+      const edge = edges.get(key) ?? { source: path[i]!, target: path[i + 1]!, weight: 0 }
+      if (edge.weight === 0) {
+        nodes.get(edge.source)!.out_degree++
+        nodes.get(edge.target)!.in_degree++
+      }
+      edge.weight++
+      edges.set(key, edge)
+    }
+  }
+  const total = chains.length
+  const candidates = [...nodes.values()]
+    .map((n) => ({ narrator_id: n.id, name: n.name, out_degree: n.out_degree, in_degree: n.in_degree, chain_coverage: Math.round((n.frequency / total) * 1000) / 10, score: n.out_degree * 2 + (n.frequency / total) * 3 }))
+    .filter((c) => c.out_degree >= 2 || (c.chain_coverage >= 70 && total >= 2))
+    .sort((a, b) => b.score - a.score)
+  for (const [i, c] of candidates.entries()) nodes.get(c.narrator_id)!.role = i === 0 ? 'primary_madar' : 'partial_madar'
+  return {
+    total_sanads_analyzed: total,
+    total_unique_narrators: nodes.size,
+    total_transmission_edges: edges.size,
+    madar_al_isnad: candidates[0] ?? null,
+    partial_common_links: candidates.slice(1),
+    graph_topology: { nodes: [...nodes.values()], edges: [...edges.values()], cytoscape: { nodes: [], edges: [] } },
+    formal_proof: candidates[0] ? { theorem: 'Topological Convergence Theorem (Madār al-Isnād)', pivot_narrator: candidates[0].name, evidence: 'All lines coalesce.', status: 'verified_common_link' } : null,
+  }
+}
+
+/** A stored graph in the shape the server makes, for stored-run tests. */
+export const topologyResult = (chains: Chain[]) => computeTopology(chains)
+
 function computeMatrix(ids: number[], narrators: Map<number, Narrator>, statements: Map<number, Statement[]>) {
   const scholars = new Map<number, string>()
   const matrix: Record<string, unknown> = {}
@@ -204,6 +248,7 @@ export interface ComparisonApis {
   /** Overrides returning a Response to take over, or undefined to use the default. */
   matn?: () => Response | undefined
   isnad?: () => Response | undefined
+  topology?: () => Response | undefined
   criticism?: () => Response | undefined
   searchHits?: { id: number; matn: string; book: string }[]
 }
@@ -213,6 +258,7 @@ export function mockComparison(o: ComparisonApis = {}) {
   const calls = {
     matn: [] as Record<string, unknown>[],
     isnad: [] as Record<string, unknown>[],
+    topology: [] as Record<string, unknown>[],
     criticism: [] as Record<string, unknown>[],
     annotations: [] as Record<string, unknown>[],
     criticismPages: [] as number[],
@@ -269,6 +315,16 @@ export function mockComparison(o: ComparisonApis = {}) {
       const analysis = computeIsnads(found)
       const saved = body.save_run ? storeRun('isnad_comparison', { sanad_ids: body.sanad_ids }, analysis) : null
       return HttpResponse.json(envelope({ analysis, saved_run: saved }))
+    }),
+    http.post('*/api/v1/projects/12/analyses/isnad-topology', async ({ request }) => {
+      const body = (await request.json()) as { sanad_ids: number[]; save_run?: boolean }
+      calls.topology.push(body)
+      const custom = o.topology?.()
+      if (custom) return custom
+      const found = body.sanad_ids.flatMap((id) => (chains.has(id) ? [chains.get(id)!] : []))
+      const topology = computeTopology(found)
+      const saved = body.save_run ? storeRun('isnad_topology', { sanad_ids: body.sanad_ids, custom_chains_count: 0 }, topology) : null
+      return HttpResponse.json(envelope({ topology, saved_run: saved }))
     }),
     http.post('*/api/v1/projects/12/analyses/criticism-matrix', async ({ request }) => {
       const body = (await request.json()) as { narrator_ids: number[]; save_run?: boolean }
