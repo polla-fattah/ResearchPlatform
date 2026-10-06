@@ -15,7 +15,8 @@
     "skip": "Skip to content",
     "administration": "Administration",
     "announcements": "Announcements",
-    "editorial": "Editorial"
+    "editorial": "Editorial",
+    "review": "Peer review"
   },
   "release": {
     "R1a": "R1a",
@@ -3525,6 +3526,98 @@
       "reasonHint": "At least 10 characters. It is shown publicly.",
       "submit": "Retract",
       "failed": "The publication was not retracted"
+    }
+  },
+  "review": {
+    "title": "Peer review",
+    "intro": "Packages you have been asked to review. You see only the frozen package, never the project it came from.",
+    "back": "← Peer review",
+    "untitled": "A package",
+    "packageName": "The package",
+    "noneTitle": "Nothing to review",
+    "noneBody": "When an editor asks you to review a package, it appears here.",
+    "unavailableTitle": "This review is not available",
+    "unavailableBody": "It may not exist, or it may not be assigned to you.",
+    "dueOn": "due {{date}}",
+    "table": {
+      "package": "Package",
+      "state": "State",
+      "due": "Due",
+      "version": "package v{{version}}",
+      "noDue": "No due day",
+      "overdue": "Overdue",
+      "soon": "Due within three days"
+    },
+    "states": {
+      "to_review": "To review",
+      "submitted": "Review sent"
+    },
+    "gate": {
+      "title": "Before you open the package",
+      "intro": "Say whether you can review this package fairly. You have a conflict of interest if you:",
+      "items": {
+        "coauthor": "have worked with the authors on a publication or a project",
+        "institution": "share an institution or a close working relationship with them",
+        "supervision": "have supervised them, or been supervised by them",
+        "financial": "have a financial interest in the work",
+        "other": "know of any other reason you could not be impartial"
+      },
+      "confirm": "I know of no conflict of interest and I can review this package impartially.",
+      "note": "If any of these applies, decline instead: the editor will ask someone else. The platform records only whether you declared no conflict.",
+      "open": "No conflict: open the package",
+      "decline": "Decline this review",
+      "failed": "Your declaration was not recorded"
+    },
+    "decline": {
+      "title": "Decline this review?",
+      "body": "The assignment is removed from your list and the editor can ask someone else. It cannot be undone from here.",
+      "confirm": "Decline",
+      "failed": "The review was not declined"
+    },
+    "package": {
+      "abstract": "Abstract",
+      "included": "Included in this package: {{documents}} document(s), {{findings}} finding(s), {{citations}} citation(s).",
+      "notIncluded": "Project notes, discussions, tasks and private annotations are not included.",
+      "noContent": "This document has no text.",
+      "findings": "Findings",
+      "noFindings": "This package has no findings.",
+      "limitations": "Limitations",
+      "noLimitations": "No limitations written.",
+      "evidenceCount_one": "{{formattedCount}} evidence item linked.",
+      "evidenceCount_other": "{{formattedCount}} evidence items linked.",
+      "findingStatus": {
+        "provisional": "Provisional",
+        "supported": "Supported",
+        "inconclusive": "Inconclusive",
+        "disputed": "Disputed"
+      }
+    },
+    "options": {
+      "approve": "Recommend approval",
+      "request_revisions": "Recommend revisions",
+      "reject": "Recommend rejection"
+    },
+    "form": {
+      "title": "Your review",
+      "recommendation": "Recommendation",
+      "score": "Score",
+      "noScore": "No score",
+      "notes": "Your review",
+      "notesHint": "At least {{min}} characters. This goes to the editor, who decides.",
+      "notesShort": "write at least {{min}} characters",
+      "note": "Your recommendation goes to the editor. The editor makes the decision. The platform has no separate comment for the authors, and cannot say whether you may be named.",
+      "submit": "Submit review…",
+      "failed": "The review was not sent"
+    },
+    "confirm": {
+      "title": "Submit your review?",
+      "body": "It is sent to the editor and cannot be changed from here afterwards.",
+      "action": "Submit review"
+    },
+    "sent": {
+      "title": "Your review was sent",
+      "score": "score {{score}}",
+      "note": "The editor decides. You can still read the package."
     }
   }
 }

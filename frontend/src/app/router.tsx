@@ -36,6 +36,8 @@ import { InterestPage } from '@/features/publicAnnouncements/InterestPage'
 import { SubmissionPage } from '@/features/submission/SubmissionPage'
 import { CasePage } from '@/features/editorial/CasePage'
 import { QueuePage } from '@/features/editorial/QueuePage'
+import { ReviewListPage } from '@/features/review/ReviewListPage'
+import { ReviewPage } from '@/features/review/ReviewPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -130,7 +132,10 @@ export const routes: RouteObject[] = [
             children: [
               ...screensIn('account').map(pending),
               { path: 'invitations/:token', element: <InvitationPage /> },
-              ...screensIn('editor').filter((x) => x.id !== '22').map(pending),
+              ...screensIn('editor').filter((x) => x.id !== '22' && x.id !== '23').map(pending),
+              // Screen 23: the packages the person has been asked to review (any approved researcher may be asked).
+              { path: 'review', element: <ReviewListPage /> },
+              { path: 'review/:assignmentId', element: <ReviewPage /> },
               {
                 // Screen 22: the editorial console, for editors and administrators only.
                 element: <RequireEditor />,

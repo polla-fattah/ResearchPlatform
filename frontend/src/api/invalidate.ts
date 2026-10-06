@@ -67,6 +67,9 @@ export const invalidate = {
   /** An editor assigned, decided, released or corrected: the queue, the case, and the author's own list of packages. */
   editorialChanged: (qc: QueryClient, submissionId: number) => run(qc, qk.editor.queueAll, qk.editor.submission(submissionId), qk.editor.candidates(submissionId), qk.projects.root),
 
+  /** A reviewer declared, accepted, declined or submitted. */
+  reviewsChanged: (qc: QueryClient) => run(qc, qk.reviews.all),
+
   /** A package was submitted: the list of packages and the check (which reads documents and evidence). */
   submissionsChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).submission.all, qk.project(id).activityAll),
 

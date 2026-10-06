@@ -135,6 +135,13 @@ export const qk = {
   /** An invitation seen by the person it was sent to, read by its token. */
   invitation: (token: string) => ['invitations', token] as const,
 
+  /** The reviewer's own assignments (screen 23). */
+  reviews: {
+    all: ['reviews'] as const,
+    list: ['reviews', 'list'] as const,
+    one: (id: number) => ['reviews', 'one', id] as const,
+  },
+
   /** The editorial console (screen 22). */
   editor: {
     all: ['editor'] as const,

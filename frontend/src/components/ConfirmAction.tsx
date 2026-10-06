@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './Button'
 import styles from './Dialog.module.css'
@@ -32,6 +32,8 @@ export function ConfirmAction({
 }: Props) {
   const { t } = useTranslation()
   const ref = useRef<HTMLDialogElement>(null)
+  // One id per dialog: two can be on a page at once (one closed), and a shared id would name them both by the first.
+  const titleId = useId()
 
   useEffect(() => {
     const el = ref.current
@@ -44,13 +46,13 @@ export function ConfirmAction({
     <dialog
       ref={ref}
       className={styles.dialog}
-      aria-labelledby="confirm-title"
+      aria-labelledby={titleId}
       onCancel={(e) => {
         e.preventDefault()
         onCancel()
       }}
     >
-      <h2 id="confirm-title">{title}</h2>
+      <h2 id={titleId}>{title}</h2>
       {children}
       <div className={styles.actions}>
         <Button onClick={onCancel} disabled={busy}>

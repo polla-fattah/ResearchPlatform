@@ -34,6 +34,7 @@ export function AccountShell() {
             <NavItem to="/library" label={t('nav.library')} />
             <NavItem to="/projects" label={t('nav.projects')} />
             <NavItem to="/searches" label={t('nav.savedSearches')} />
+            <NavItem to="/review" label={t('nav.review')} />
             <NavItem to="/notifications" label={t('nav.notifications')} count={unread.data ? n(unread.data) : null} />
             <NavItem to="/downloads" label={t('nav.downloads')} />
             <NavItem to="/settings" label={t('nav.settings')} />

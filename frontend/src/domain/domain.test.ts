@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { formatCode, parseCode } from './codes'
 import { can, normalizeRole } from './roles'
+import { assignmentSchema } from '@/api/schemas/review'
+import { submissionSchema } from '@/api/schemas/submission'
+import { containsKey, HIDDEN_FROM_AUTHORS, HIDDEN_FROM_REVIEWERS } from './blinding'
 
 describe('roles', () => {
   it('maps both backend vocabularies onto the SRS set, never upward', () => {
@@ -41,5 +44,41 @@ describe('display codes', () => {
 
   it('does not truncate ids wider than the padding', () => {
     expect(formatCode('EV', 123456)).toBe('EV-123456')
+  })
+})
+
+describe('blind review: what each side’s schema lets through', () => {
+  it('finds a forbidden key at any depth', () => {
+    expect(containsKey({ a: [{ b: { reviewer_id: 1 } }] }, HIDDEN_FROM_AUTHORS)).toBe(true)
+    expect(containsKey({ a: [{ b: { fine: 1 } }] }, HIDDEN_FROM_AUTHORS)).toBe(false)
+  })
+
+  it('keeps every reviewer detail out of what an author reads', () => {
+    const worst = {
+      id: 1, version_number: 1, title: 't', status: 'in_review',
+      reviews: [{ id: 1, completed_at: 'x', reviewer_id: 5, reviewer: { id: 5, display_name: 'R', email: 'r@x.org' }, reviewer_notes: 'n', score: 3, recommendation: 'reject', coi_notes: 'c' }],
+      decision: { decision: 'reject', decision_notes: 'n', editor: { id: 9, display_name: 'E', email: 'e@x.org' } },
+      submitter: { id: 2, display_name: 'S', email: 's@x.org' },
+    }
+    const parsed = submissionSchema.parse(worst)
+    expect(containsKey(parsed, HIDDEN_FROM_AUTHORS)).toBe(false)
+    expect(JSON.stringify(parsed)).not.toMatch(/@x\.org/)
+  })
+
+  it('keeps every author detail out of what a reviewer reads', () => {
+    const worst = {
+      id: 1, submitted_by: 2, coi_confirmed: true,
+      submission: {
+        id: 7, title: 't', project_id: 12, submitted_by: 2, submitter: { id: 2, display_name: 'S', email: 's@x.org' },
+        frozen_package: {
+          abstract: 'a', project: { id: 12, title: 'p', owner_id: 2, owner: { id: 2, display_name: 'S' } },
+          documents: [{ id: 3, title: 'd', project_id: 12, latest_version: { version_number: 1, content: 'c', author_id: 2, citations: [{ id: 1, collector_id: 2 }] } }],
+          findings: [{ id: 4, claim: 'c', evidence_items: [{ id: 9, collector_id: 2, collector: { email: 's@x.org' } }] }],
+        },
+      },
+    }
+    const parsed = assignmentSchema.parse(worst)
+    expect(containsKey(parsed, HIDDEN_FROM_REVIEWERS)).toBe(false)
+    expect(JSON.stringify(parsed)).not.toMatch(/@x\.org/)
   })
 })

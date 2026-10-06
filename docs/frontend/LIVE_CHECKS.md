@@ -32,6 +32,7 @@ responses. The contract tests exist, but they have never been executed. A phase 
 | `public-announcements.test.ts` | 20 Public announcements (no sign-in, read-only) | C-27 | yes (1 expected-fail) |
 | `collaboration-write.test.ts` | 40 Interest form and inbox | C-28 | yes (3 expected-fail, two are P0) |
 | `submission-write.test.ts` | 21 Submission | C-29 | yes (6 expected-fail, two are P0) |
+| `review-write.test.ts` | 23 Reviewer workspace (two throwaway accounts, a package, an assignment) | C-31 | yes (3 expected-fail, one is P0) |
 | `editorial-write.test.ts` | 22 Editorial console (needs an administrator; leaves one retracted publication) | C-30 | yes (3 expected-fail) |
 
 Each write test creates throwaway data (`[contract-test]` projects, one declined throwaway account) and cleans up. If a
@@ -55,6 +56,7 @@ run dies half way, trash the leftover `[contract-test]` projects from the demo a
 - **20 Public** `/announcements` and `/announcements/<slug>` signed out: nothing private anywhere on the page.
 - **21 Submission** `/projects/60/submission`: choose a document, read the check, freeze and submit (a throwaway project, not 60); the packages table; check that no reviewer name or note appears anywhere on the page or in the page's data after an editor has reviewed.
 - **22 Editorial** `/editor` as the demo administrator with a package submitted by a second account: queue filters, the case, assign (the author must be blocked), decide (approval needs a finished review), release, correction, retraction; and as an ordinary researcher: the page must look like it does not exist.
+- **23 Peer review** `/review` as the assigned reviewer: the gate, declining, reading the package, sending a review; look at the page's data (network tab) for the authors' names and the project: they are expected to be there (C-31 P0) and must not be on the page.
 - **40 Interest** `/announcements/<slug>/interest`: expected to fail with "The request was not sent" until C-28 is fixed;
   then the inbox on the members screen.
 
