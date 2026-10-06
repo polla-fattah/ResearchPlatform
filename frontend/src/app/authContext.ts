@@ -10,6 +10,8 @@ export interface AuthState {
   /** Approved and not suspended: allowed on researcher screens (ACC-03). */
   isApproved: boolean
   isAdmin: boolean
+  /** Has the `editor` role, or is an administrator: may open the editorial console (the server checks again). */
+  isEditor: boolean
   /** Resolves with `mfa` and a challenge when the account needs a second factor; `completeMfa` finishes the sign-in. */
   signIn: (email: string, password: string) => Promise<SignInOutcome>
   completeMfa: (challengeToken: string, code: string) => Promise<void>

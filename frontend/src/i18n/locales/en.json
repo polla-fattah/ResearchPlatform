@@ -14,7 +14,8 @@
     "account": "Account navigation",
     "skip": "Skip to content",
     "administration": "Administration",
-    "announcements": "Announcements"
+    "announcements": "Announcements",
+    "editorial": "Editorial"
   },
   "release": {
     "R1a": "R1a",
@@ -3331,6 +3332,199 @@
       "revision_requested": "Revisions requested",
       "approved": "Approved",
       "rejected": "Rejected"
+    }
+  },
+  "editorial": {
+    "title": "Submissions",
+    "count_one": "{{formattedCount}} submission",
+    "count_other": "{{formattedCount}} submissions",
+    "back": "← Submissions",
+    "noneTitle": "No submissions yet",
+    "noneBody": "Packages that researchers submit for publication appear here.",
+    "noneFiltered": "No submissions match these filters",
+    "noneFilteredBody": "Widen the filters, or clear them.",
+    "filters": {
+      "label": "Find submissions",
+      "stage": "Stage",
+      "allStages": "All stages",
+      "search": "Search title or abstract",
+      "action": "Action needed",
+      "anyAction": "Any",
+      "clear": "Clear filters"
+    },
+    "queueStages": {
+      "triage": "Waiting for an editor",
+      "under_review": "Under review",
+      "revisions_pending": "Revisions pending",
+      "ready_for_decision": "Ready for decision",
+      "approved_pending_release": "Approved, not released"
+    },
+    "actions": {
+      "assign_reviewer": "Assign a reviewer",
+      "submit_review": "A review is due",
+      "editor_decision": "Decide",
+      "release": "Release"
+    },
+    "stages": {
+      "triage": "Waiting for an editor",
+      "under_review": "Under review",
+      "ready_for_decision": "Ready for decision",
+      "revisions_pending": "Revisions requested",
+      "approved": "Approved, not released",
+      "released": "Released",
+      "retracted": "Retracted",
+      "rejected": "Rejected",
+      "other": "Unknown"
+    },
+    "waiting": {
+      "editor_assign": "An editor: assign a reviewer",
+      "reviewers": "The reviewers",
+      "editor_decide": "An editor: decide",
+      "authors": "The authors",
+      "editor_release": "An editor: release",
+      "nobody": "Nobody"
+    },
+    "table": {
+      "package": "Package",
+      "stage": "Stage",
+      "reviews": "Reviews",
+      "age": "Waiting",
+      "waiting": "Waiting on",
+      "version": "package v{{version}}",
+      "reviewsOf": "{{done}} of {{assigned}} finished",
+      "days_one": "{{formattedCount}} day",
+      "days_other": "{{formattedCount}} days"
+    },
+    "case": {
+      "unavailableTitle": "This submission is not available",
+      "unavailableBody": "It may not exist, or you may not have editorial access.",
+      "owner": "owner",
+      "conflicted": "You cannot decide on this submission or assign its reviewers: you are its owner or its submitter. It needs another editor.",
+      "package": "Package",
+      "abstract": "Abstract",
+      "keywords": "Keywords",
+      "rights": "Licence",
+      "submitted": "Submitted",
+      "checksum": "Fingerprint",
+      "response": "Authors' response to the last review:",
+      "reviews": "Reviews",
+      "noReviews": "No reviewer has been assigned.",
+      "waitingReview": "Waiting for the review",
+      "due": "due {{date}}",
+      "score": "score {{score}}",
+      "recommendation": {
+        "approve": "Recommends approval",
+        "request_revisions": "Recommends revisions",
+        "reject": "Recommends rejection",
+        "none": "No recommendation"
+      },
+      "decision": "Decision",
+      "nothingToDo": "Nothing is waiting on an editor for this package."
+    },
+    "assign": {
+      "title": "Assign a reviewer",
+      "open": "Choose a reviewer…",
+      "intro": "A reviewer reads this package only. Candidates with a conflict cannot be chosen.",
+      "search": "Search by name or affiliation",
+      "candidates": "Candidates",
+      "none": "No candidate matches.",
+      "failedList": "The candidates could not be loaded.",
+      "prior": "{{count}} earlier reviews",
+      "blocked": "Conflict",
+      "blockedUnknown": "a conflict of interest",
+      "already": "Already assigned to this package",
+      "due": "Due",
+      "dueHint": "Leave empty for 14 days from now.",
+      "coi": "I know of no conflict of interest between me and this choice.",
+      "note": "The platform asks the reviewer nothing: it records the assignment, and the reviewer sees it in their own list.",
+      "submit": "Assign reviewer",
+      "failed": "The reviewer was not assigned"
+    },
+    "decide": {
+      "title": "Decision on {{code}}",
+      "choose": "Decision",
+      "options": {
+        "approve": "Approve",
+        "request_revisions": "Request revisions",
+        "reject": "Reject with reason"
+      },
+      "needsReview": "Needs at least one finished review.",
+      "notes": "Reason or message to the authors",
+      "notesHint": "At least {{min}} characters. The authors read this.",
+      "notesShort": "write at least {{min}} characters",
+      "coi": "I confirm I have no conflict of interest with this submission.",
+      "approveNote": "Approving does not publish. Release is a separate step.",
+      "submit": "Record decision…",
+      "failed": "The decision was not recorded",
+      "toAuthors": "To the authors:",
+      "confirm": {
+        "approve": {
+          "title": "Approve {{code}}?",
+          "body": "The package becomes approved. Nothing is public until it is released.",
+          "action": "Approve"
+        },
+        "request_revisions": {
+          "title": "Request revisions on {{code}}?",
+          "body": "The authors see your message and can answer with a new package.",
+          "action": "Request revisions"
+        },
+        "reject": {
+          "title": "Reject {{code}}?",
+          "body": "The authors see your reason. The platform has no way to submit the project again from there.",
+          "action": "Reject"
+        }
+      }
+    },
+    "release": {
+      "title": "Release {{code}}",
+      "approved": "This package is approved and not yet public.",
+      "open": "Release…",
+      "body": "Releasing creates the public page for this exact package. Check the address and the version.",
+      "slug": "Public address",
+      "slugHint": "Letters, numbers and single hyphens. It must not be used by another publication.",
+      "slugInvalid": "use letters, numbers and single hyphens, with no spaces",
+      "version": "Version",
+      "versionRequired": "give a version",
+      "licence": "Licence",
+      "licenceHint": "Taken from the authors' declaration.",
+      "doi": "DOI",
+      "doiHint": "If you leave it empty the platform makes an internal identifier. That is not a registered DOI and must not be cited as one.",
+      "type": "Type {{code}} to confirm",
+      "typeCode": "type {{code}} to confirm",
+      "submit": "Release to the public site",
+      "failed": "The package was not released"
+    },
+    "publication": {
+      "title": "Publication",
+      "status": "Status",
+      "released": "Released",
+      "corrigenda": "Corrections",
+      "retractedBecause": "Retracted because:",
+      "states": {
+        "published": "Published",
+        "retracted": "Retracted"
+      }
+    },
+    "corrigendum": {
+      "open": "Add a correction…",
+      "title": "Add a correction notice",
+      "body": "The notice is public. The publication moves from version {{version}} to the new one.",
+      "notice": "What was corrected",
+      "noticeHint": "At least 10 characters.",
+      "noticeShort": "write at least 10 characters",
+      "version": "New version",
+      "versionSame": "choose a version different from the current one",
+      "submit": "Publish the correction",
+      "failed": "The correction was not added"
+    },
+    "retract": {
+      "open": "Retract…",
+      "title": "Retract this publication",
+      "body": "The page stays public, marked as retracted, with your reason. This cannot be undone from here.",
+      "reason": "Reason",
+      "reasonHint": "At least 10 characters. It is shown publicly.",
+      "submit": "Retract",
+      "failed": "The publication was not retracted"
     }
   }
 }

@@ -13,7 +13,7 @@ import styles from './Shell.module.css'
 /** Left account rail from the navigation map: Home · My Library · Projects · Saved Searches · Notifications · Downloads · Profile/Settings. */
 export function AccountShell() {
   const { t } = useTranslation()
-  const { user, signOut, isAdmin } = useAuth()
+  const { user, signOut, isAdmin, isEditor } = useAuth()
   const { n } = usePreferences()
   // The number beside Notifications: one query shared with Home, refreshed when the window is focused again.
   const unread = useQuery({ queryKey: qk.home.unread, queryFn: ({ signal }) => countUnreadNotifications(signal), staleTime: 60_000, enabled: !!user, retry: false })
@@ -37,6 +37,7 @@ export function AccountShell() {
             <NavItem to="/notifications" label={t('nav.notifications')} count={unread.data ? n(unread.data) : null} />
             <NavItem to="/downloads" label={t('nav.downloads')} />
             <NavItem to="/settings" label={t('nav.settings')} />
+            {isEditor ? <NavItem to="/editor" label={t('nav.editorial')} /> : null}
             {isAdmin ? <NavItem to="/admin/applications" label={t('nav.administration')} /> : null}
           </nav>
           <div className={styles.railFooter}>

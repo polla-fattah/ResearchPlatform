@@ -31,3 +31,13 @@ export function RequireAdmin() {
   if (!isAdmin) return <NotFoundPage />
   return <Outlet />
 }
+
+/**
+ * The editorial console. Shows the same page as "not found" to everyone else, so the area's existence is not revealed.
+ * The server decides again on every call (a person who is not an editor gets 403 from it).
+ */
+export function RequireEditor() {
+  const { isEditor } = useAuth()
+  if (!isEditor) return <NotFoundPage />
+  return <Outlet />
+}

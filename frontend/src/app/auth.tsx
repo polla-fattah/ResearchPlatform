@@ -83,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       accountStatus,
       isApproved: accountStatus === 'approved',
       isAdmin: user?.is_admin === true,
+      isEditor: user?.is_admin === true || (user?.roles ?? []).includes('editor'),
       signIn,
       completeMfa,
       startSession,

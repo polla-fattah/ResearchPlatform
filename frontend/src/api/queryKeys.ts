@@ -135,6 +135,15 @@ export const qk = {
   /** An invitation seen by the person it was sent to, read by its token. */
   invitation: (token: string) => ['invitations', token] as const,
 
+  /** The editorial console (screen 22). */
+  editor: {
+    all: ['editor'] as const,
+    queue: (query: unknown) => ['editor', 'queue', query] as const,
+    queueAll: ['editor', 'queue'] as const,
+    submission: (id: number) => ['editor', 'submission', id] as const,
+    candidates: (id: number) => ['editor', 'candidates', id] as const,
+  },
+
   /** What a visitor sees: no sign-in, so nothing here belongs to a person. */
   public: {
     announcements: (query: unknown) => ['public', 'announcements', query] as const,

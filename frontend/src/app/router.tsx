@@ -34,6 +34,8 @@ import { AnnouncementPublicPage } from '@/features/publicAnnouncements/Announcem
 import { AnnouncementsListPage } from '@/features/publicAnnouncements/AnnouncementsListPage'
 import { InterestPage } from '@/features/publicAnnouncements/InterestPage'
 import { SubmissionPage } from '@/features/submission/SubmissionPage'
+import { CasePage } from '@/features/editorial/CasePage'
+import { QueuePage } from '@/features/editorial/QueuePage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -48,7 +50,7 @@ import { ProjectSettingsPage } from '@/features/projects/ProjectSettingsPage'
 import { ComponentKit } from '@/pages/ComponentKit'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { PendingScreen } from '@/pages/PendingScreen'
-import { RequireAdmin, RequireApproved, RequireAuth } from './guards'
+import { RequireAdmin, RequireApproved, RequireAuth, RequireEditor } from './guards'
 import { screensIn, type ScreenDef } from './screens'
 
 /** Screens that have a real page; the rest render a placeholder. */
@@ -128,7 +130,15 @@ export const routes: RouteObject[] = [
             children: [
               ...screensIn('account').map(pending),
               { path: 'invitations/:token', element: <InvitationPage /> },
-              ...screensIn('editor').map(pending),
+              ...screensIn('editor').filter((x) => x.id !== '22').map(pending),
+              {
+                // Screen 22: the editorial console, for editors and administrators only.
+                element: <RequireEditor />,
+                children: [
+                  { path: 'editor', element: <QueuePage /> },
+                  { path: 'editor/:submissionId', element: <CasePage /> },
+                ],
+              },
               {
                 path: 'projects/:projectId',
                 element: <ProjectShell />,
