@@ -13,6 +13,7 @@
     "test:contract": "vitest run --config vitest.contract.config.ts",
     "audit": "node scripts/audit.mjs",
     "budget": "node scripts/bundle-budget.mjs",
+    "e2e": "playwright test",
     "check": "npm run lint && npm run typecheck && npm run audit && npm run test && npm run build && npm run budget",
     "preview": "vite preview"
   },
@@ -39,6 +40,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.56.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",

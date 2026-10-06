@@ -54,7 +54,7 @@ export function ProjectShell() {
             <VisibilityBadge visibility={role === 'owner' ? 'private' : 'project'} />
           </div>
         ) : null}
-        <nav className={shell.tabs} aria-label={t('nav.projects')}>
+        <nav className={shell.tabs} aria-label={t('nav.projectSections')}>
           <NavItem tabStyle to={`${base}/overview`} label="Overview" />
           <NavItem tabStyle to={`${base}/resources`} label="Resources" />
           <NavItem tabStyle to={`${base}/searches`} label="Searches" />

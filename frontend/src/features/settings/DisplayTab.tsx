@@ -104,7 +104,7 @@ export function DisplayTab() {
       </Field>
 
       <section className={styles.preview} aria-label={t('settings.display.preview')}>
-        <h3>{t('settings.display.preview')}</h3>
+        <h2>{t('settings.display.preview')}</h2>
         <dl className={styles.facts}>
           <dt>{t('settings.display.previewDate')}</dt>
           <dd>{formatDate(example, language, draft, { time: true })}</dd>

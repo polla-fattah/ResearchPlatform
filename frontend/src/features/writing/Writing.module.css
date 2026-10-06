@@ -240,7 +240,7 @@
   border-inline-start: 3px solid var(--attributed);
   background: var(--attributed-soft);
 }
-.shelved h3 {
+.shelved h2 {
   margin: 0 0 0.25rem;
   font-size: 0.9375rem;
 }

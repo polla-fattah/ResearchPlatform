@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom'
 export function NotFoundPage() {
   const { t } = useTranslation()
   return (
-    <section>
+    <main>
       <h1>{t('states.forbidden.title')}</h1>
       <p>{t('states.forbidden.body')}</p>
       <Link to="/">{t('nav.home')}</Link>
-    </section>
+    </main>
   )
 }

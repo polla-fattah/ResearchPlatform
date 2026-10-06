@@ -39,6 +39,6 @@ export default defineConfig({
     css: false,
     maxWorkers: 4,
     testTimeout: 20000,
-    exclude: ['node_modules', 'dist', 'src/test/contract/**'],
+    exclude: ['node_modules', 'dist', 'e2e/**', 'src/test/contract/**'],
   },
 })

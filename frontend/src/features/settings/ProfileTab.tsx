@@ -109,7 +109,7 @@ export function ProfileTab({ me }: { me: Me }) {
       </fieldset>
 
       <section className={styles.preview} aria-label={t('settings.profile.preview')}>
-        <h3>{t('settings.profile.preview')}</h3>
+        <h2>{t('settings.profile.preview')}</h2>
         {!isPublic ? (
           <NeutralState kind="unknown">{t('settings.profile.previewPrivate')}</NeutralState>
         ) : (

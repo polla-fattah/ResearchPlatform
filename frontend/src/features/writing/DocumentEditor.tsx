@@ -180,7 +180,7 @@ export function DocumentEditor({ projectId, doc, start, evidence, canEdit, showV
 
         {state.shelved !== null ? (
           <aside className={styles.shelved} aria-label={t('writing.doc.shelved')}>
-            <h3>{t('writing.doc.shelved')}</h3>
+            <h2>{t('writing.doc.shelved')}</h2>
             <p className={styles.hint}>{t('writing.doc.shelvedHint')}</p>
             <pre className={styles.shelvedText} dir="auto">
               <BidiText>{state.shelved}</BidiText>
@@ -212,7 +212,7 @@ export function DocumentEditor({ projectId, doc, start, evidence, canEdit, showV
             <h2 className={styles.paneTitle}>{t('writing.doc.preview')}</h2>
             <MarkdownPreview text={state.text} empty={t('writing.doc.previewEmpty')} />
 
-            <h3 className={styles.paneTitle}>{t('writing.doc.citations')}</h3>
+            <h2 className={styles.paneTitle}>{t('writing.doc.citations')}</h2>
             {rows.length === 0 ? <p className={styles.hint}>{t('writing.doc.citationsNone')}</p> : null}
             <ol className={styles.citations}>
               {rows.map((r) => (
