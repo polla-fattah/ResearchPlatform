@@ -16,7 +16,8 @@
     "administration": "Administration",
     "announcements": "Announcements",
     "editorial": "Editorial",
-    "review": "Peer review"
+    "review": "Peer review",
+    "research": "Published research"
   },
   "release": {
     "R1a": "R1a",
@@ -3618,6 +3619,72 @@
       "title": "Your review was sent",
       "score": "score {{score}}",
       "note": "The editor decides. You can still read the package."
+    }
+  },
+  "publications": {
+    "title": "Published research",
+    "intro": "Studies that were reviewed, approved and released by the editors. Announcements of work in progress are listed separately.",
+    "toAnnouncements": "Browse research announcements",
+    "tag": "Published research · released by the editors",
+    "retractedTag": "Retracted",
+    "reviewed": "Reviewed",
+    "released": "Released {{date}}",
+    "version": "version {{version}}",
+    "count_one": "{{count}} publication",
+    "count_other": "{{count}} publications",
+    "noneTitle": "Nothing has been published yet",
+    "noneBody": "Released studies will be listed here.",
+    "noneFiltered": "No published research matches “{{q}}”",
+    "noneFilteredBody": "Try another spelling, such as wudu or الوضوء, or remove a filter.",
+    "scope": "Search covers released publications only. Private projects, drafts and submissions under review are never listed.",
+    "filters": {
+      "label": "Search published research",
+      "search": "Search title or abstract",
+      "show": "Show",
+      "published": "Published",
+      "retracted": "Retracted",
+      "clear": "Clear filters"
+    },
+    "gone": {
+      "title": "Nothing has been published at this address",
+      "body": "Submissions under review, or approved but not yet released, are not public, even with the link.",
+      "browse": "Browse published research"
+    },
+    "abstract": "Abstract",
+    "noContent": "This document has no text.",
+    "findings": "Findings",
+    "about": "About this publication",
+    "releasedLabel": "Released",
+    "versionLabel": "Version",
+    "licence": "Licence",
+    "doi": "DOI",
+    "internalId": "Platform identifier (not a DOI)",
+    "review": "Peer review",
+    "reviewedBy_one": "{{count}} review finished",
+    "reviewedBy_other": "{{count}} reviews finished",
+    "reviewNone": "No review is recorded for this release.",
+    "fromProject": "From the project",
+    "foot": "This page shows the released version only. Project discussions, notes and unpublished drafts are not public. Reviewers are not named.",
+    "retracted": {
+      "title": "Retracted {{date}}.",
+      "note": "This is no longer an active, approved finding. The text below is kept for the record and is marked as retracted."
+    },
+    "corrected": {
+      "title": "Corrected · version {{version}}"
+    },
+    "cite": {
+      "title": "Cite this",
+      "format": "Format",
+      "text": "The citation",
+      "formats": {
+        "bibtex": "BibTeX",
+        "ris": "RIS",
+        "apa": "APA"
+      },
+      "otherFormat": "The platform answered in {{format}} for this request.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "failed": "The citation could not be loaded."
     }
   }
 }

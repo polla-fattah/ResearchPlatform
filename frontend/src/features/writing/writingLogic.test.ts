@@ -153,3 +153,15 @@ describe('what the editor opens with', () => {
     expect(chooseStart(head, null, { text: 'kept offline', baseVersion: 2, at: 99 }).text).toBe('head text')
   })
 })
+
+
+describe('headings inside another page', () => {
+  it('pushes a document’s headings down so the page keeps one h1', () => {
+    expect(renderMarkdown('# Title\n\n## Part')).toContain('<h1')
+    const pushed = renderMarkdown('# Title\n\n## Part\n\n##### Deep', { headingOffset: 2 })
+    expect(pushed).not.toContain('<h1')
+    expect(pushed).toContain('<h3')
+    expect(pushed).toContain('<h4')
+    expect(pushed).toContain('<h6') // capped at six
+  })
+})

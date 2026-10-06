@@ -37,8 +37,21 @@ md.core.ruler.push('block_direction', (state) => {
   return true
 })
 
-/** HTML for the preview. Safe to insert: see above. */
-export function renderMarkdown(text: string): string {
+// Where a document sits inside a page that has its own headings (a publication, a package under review), its headings are
+// pushed down by `headingOffset` levels so the page's outline stays in order: a "#" in the text is never a second <h1>.
+md.core.ruler.push('heading_offset', (state) => {
+  const offset = Number((state.env as { headingOffset?: number }).headingOffset ?? 0)
+  if (!offset) return true
+  for (const token of state.tokens) {
+    if (token.type === 'heading_open' || token.type === 'heading_close') {
+      token.tag = `h${Math.min(6, Number(token.tag.slice(1)) + offset)}`
+    }
+  }
+  return true
+})
+
+/** HTML for the preview. Safe to insert: see above. `headingOffset` pushes the text's headings down that many levels. */
+export function renderMarkdown(text: string, options: { headingOffset?: number } = {}): string {
   const numbers = new Map(extractCitations(text).map((c) => [c.code, c.number]))
-  return md.render(text, { numbers })
+  return md.render(text, { numbers, headingOffset: options.headingOffset ?? 0 })
 }

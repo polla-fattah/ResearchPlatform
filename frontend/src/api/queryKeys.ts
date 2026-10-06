@@ -155,6 +155,9 @@ export const qk = {
   public: {
     announcements: (query: unknown) => ['public', 'announcements', query] as const,
     announcement: (slug: string) => ['public', 'announcement', slug] as const,
+    publications: (query: unknown) => ['public', 'publications', query] as const,
+    publication: (slug: string) => ['public', 'publication', slug] as const,
+    citation: (slug: string, format: string) => ['public', 'citation', slug, format] as const,
   },
 
   library: {

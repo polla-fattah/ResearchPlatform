@@ -146,7 +146,7 @@ export function ReviewPage() {
                       <h2>
                         <BidiText>{d.title}</BidiText>
                       </h2>
-                      <MarkdownPreview text={d.latest_version?.content ?? ''} empty={t('review.package.noContent')} />
+                      <MarkdownPreview headingOffset={2} text={d.latest_version?.content ?? ''} empty={t('review.package.noContent')} />
                     </section>
                   ))}
 

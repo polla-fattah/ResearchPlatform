@@ -38,6 +38,8 @@ import { CasePage } from '@/features/editorial/CasePage'
 import { QueuePage } from '@/features/editorial/QueuePage'
 import { ReviewListPage } from '@/features/review/ReviewListPage'
 import { ReviewPage } from '@/features/review/ReviewPage'
+import { PublicationPage } from '@/features/publications/PublicationPage'
+import { ResearchListPage } from '@/features/publications/ResearchListPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -82,6 +84,8 @@ const BUILT: Record<string, ReactElement> = {
   '20l': <AnnouncementsListPage />,
   '20': <AnnouncementPublicPage />,
   '21': <SubmissionPage />,
+  '24': <PublicationPage />,
+  '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,
 }
