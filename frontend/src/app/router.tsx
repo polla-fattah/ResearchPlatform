@@ -43,6 +43,7 @@ import { ResearchListPage } from '@/features/publications/ResearchListPage'
 import { AlignmentPage } from '@/features/alignment/AlignmentPage'
 import { IsnadPage } from '@/features/isnad/IsnadPage'
 import { FamiliesPage } from '@/features/families/FamiliesPage'
+import { IlalPage } from '@/features/ilal/IlalPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -91,6 +92,7 @@ const BUILT: Record<string, ReactElement> = {
   '26': <AlignmentPage />,
   '27': <IsnadPage />,
   '28': <FamiliesPage />,
+  '29': <IlalPage />,
   '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,

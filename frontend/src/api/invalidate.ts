@@ -76,6 +76,9 @@ export const invalidate = {
   /** A family or one of its members changed. */
   familiesChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).families),
 
+  /** An ʿilal case was made or changed. */
+  ilalChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).ilal),
+
   /** The announcement was saved, published or taken down (and the feed that records it). */
   announcementChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).announcement.all, qk.project(id).activityAll),
 

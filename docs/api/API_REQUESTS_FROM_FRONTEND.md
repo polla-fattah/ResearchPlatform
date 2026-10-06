@@ -126,6 +126,16 @@ The result items now have `occurrences[]` instead of `references[]`, and `meta.c
 - `POST /projects`: Stores `null` when `question` is omitted; database migration made column nullable.
 - `GET /projects`: Dynamically generates contextual `next_action` per project (candidate evidence review, unanswered question, open milestone).
 
+### C-36 · ʿIlal cases: gaps found while building screen 29 · **P1 / P2**
+Found on 7 Oct 2026 by reading `IlalCaseController` and the `IlalCase` model (nothing was run; the contract test `src/test/contract/ilal-write.test.ts` was written from the code and is not yet run).
+- **P1 · A save overwrites a teammate's work.** `PATCH` replaces whole lists and text, and there is no version or `updated_at` check, so two researchers saving a conclusion or adding a version at once lose one change. The design shows this very conflict ("Aras Kamal recorded a preferred version while you were adding an objection"). The screen re-reads before adding to a list to shrink the window; it cannot close it. Please accept an expected `updated_at` and answer 409.
+- **P1 · "Resolved" is accepted with nothing to resolve.** A case with no versions can be set to `resolved_authentic`, and `preferred_version` is free text that need not match any version. The screen blocks both; the server should too. The status names `resolved_authentic` / `resolved_defective` also read as an authenticity grade, which the design says the case is not: the screen labels them "Concluded: no defect found" / "Concluded: a defect found".
+- **P2 · The lists have no shape.** `competing_variants` and `critics_judgments` are untyped arrays (the server's own test writes `{chain_id, narrator, state}` and `{critic, verdict}`). The screen writes `{name, matn, chain, note}` and `{critic, verdict, source, favours}` and reads anything else leniently. Please define the shapes, with `chain_id` / `evidence_id` / `hadith_id` links so a version can point at real chains and evidence.
+- **P2 · No edit or remove of one version or statement, no delete of a case, no filters or paging.** A wrong entry stays. `GET /ilal-cases` returns every case at once.
+- **P2 · No objections, replies or history.** The design has objections and replies by teammates and a log of who changed what; the model has neither. The screen does not draw them.
+- **P2 · A critic statement is not tied to a source.** The design warns when a source locator does not match the linked edition; nothing links a statement to a book or edition, so the screen takes the locator as typed text and says it is not checked.
+- **P2 · The creator's whole account is embedded** (e-mail among it); only `{id, display_name}` is needed.
+
 ### C-35 · Hadith families: gaps found while building screen 28 · **P1 / P2**
 Found on 7 Oct 2026 by reading `HadithFamilyController` (nothing was run; the contract test `src/test/contract/families-write.test.ts` was written from the code and is not yet run).
 - **P1 · A member can be added with no source.** `POST /families/{id}/members` accepts a body with none of `evidence_id`, `corpus_hadith_id`, `corpus_sanad_id`, so an empty member (a relationship pointing at nothing) is stored. Require exactly one.

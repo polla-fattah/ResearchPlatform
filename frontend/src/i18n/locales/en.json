@@ -3907,5 +3907,104 @@
       "confirm": "Remove",
       "failed": "The member was not removed"
     }
+  },
+  "ilal": {
+    "title": "ʿIlal cases",
+    "sub": "Compare versions of a report, record what critics said, and keep your conclusion.",
+    "unchecked": "The platform grades nothing. A case holds what researchers entered: the versions, the critics' words as typed in, and a preference between versions. Objections, replies and a change history are not stored yet.",
+    "readOnly": "You can read the cases of this project; changing them is for members who can edit shared work.",
+    "empty": {
+      "title": "No cases yet",
+      "body": "Start a case when two versions of a report, chain or wording disagree. Then add the versions and what critics said about them."
+    },
+    "list": {
+      "title": "Cases",
+      "pick": "Choose a case to read it.",
+      "notFound": "That case is not in this project."
+    },
+    "categories": {
+      "irsal_vs_ittisal": "Broken vs connected chain (irsāl / ittiṣāl)",
+      "waqf_vs_raf": "Stopped vs raised to the Prophet (waqf / rafʿ)",
+      "ziyadah_thiqah": "Addition by a trusted narrator (ziyādat al-thiqa)",
+      "tashif": "Misreading of a word (taṣḥīf)",
+      "qalb": "Reversal (qalb)",
+      "ikhtilaf_sanad": "Difference in the chain (ikhtilāf al-isnād)",
+      "shudhudh": "Departure from what others report (shudhūdh)"
+    },
+    "statuses": {
+      "under_investigation": "Under investigation",
+      "resolved_authentic": "Concluded: no defect found",
+      "resolved_defective": "Concluded: a defect found",
+      "inconclusive": "Inconclusive"
+    },
+    "new": {
+      "open": "New case",
+      "title": "New case",
+      "titleLabel": "Question",
+      "titleHint": "What differs, in a sentence.",
+      "titleRequired": "Give the case a title.",
+      "category": "Kind of discrepancy",
+      "categoryHint": "The server's fixed list of kinds.",
+      "submit": "Open case",
+      "failed": "The case was not created"
+    },
+    "variant": {
+      "open": "Add a version",
+      "title": "Add a version",
+      "name": "Name",
+      "nameHint": "Short, to tell the versions apart, e.g. “Version A”.",
+      "nameRequired": "Give the version a name.",
+      "nameTaken": "Another version already has this name.",
+      "matn": "Wording",
+      "chain": "Chain",
+      "chainHint": "Optional. The chain as you write it.",
+      "note": "Note",
+      "submit": "Add version",
+      "failed": "The version was not added"
+    },
+    "critic": {
+      "open": "Record a critic’s statement",
+      "title": "Record a critic’s statement",
+      "who": "Critic",
+      "whoRequired": "Name the critic.",
+      "said": "What they said",
+      "saidRequired": "Enter what they said.",
+      "saidHint": "Type it as written; the platform does not check it against the book.",
+      "source": "Where",
+      "sourceHint": "Optional. The book and place, e.g. al-ʿIlal 1/42.",
+      "favours": "Favours",
+      "favoursHint": "Optional. The version the statement supports.",
+      "favoursNone": "None stated",
+      "submit": "Record statement",
+      "failed": "The statement was not recorded"
+    },
+    "detail": {
+      "by": "opened by {{name}}",
+      "discrepancy": "Kind of discrepancy",
+      "versions": "Competing versions",
+      "noVersions": "No versions yet. Add at least two to compare.",
+      "needTwo": "Add a second version to compare, and before a preference can be recorded.",
+      "preferred": "Preferred",
+      "critics": "What critics said",
+      "noCritics": "No statements recorded.",
+      "unnamedCritic": "Unnamed critic",
+      "favours": "favours {{version}}",
+      "conclusion": "Researchers’ conclusion",
+      "notAGrade": "This records the researchers’ preference between versions. It is not an authenticity grade for the report.",
+      "strayPreferred": "The preferred version stored for this case does not match any version above:",
+      "limits": "Versions and statements cannot be edited or removed once added, and a case cannot be deleted. Two people saving at the same moment can overwrite each other’s conclusion."
+    },
+    "conclusion": {
+      "status": "Status",
+      "preferred": "Preferred version",
+      "preferredHint": "Your preference, not a grade.",
+      "none": "None",
+      "notes": "Reasons",
+      "notesHint": "Why you prefer it, and what stays unresolved.",
+      "noNotes": "No reasons written.",
+      "needTwo": "Two versions are needed before a case can be concluded.",
+      "save": "Save conclusion",
+      "failed": "The conclusion was not saved"
+    }
   }
 }

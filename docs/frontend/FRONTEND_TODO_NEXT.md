@@ -101,7 +101,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - [x] **F1 Matn alignment (26)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): `analyses/collate` aligned view, variant markers, baseline switch, notes; honest limits.
 - [ ] **F2 Isnad graph (27)**: React Flow graph plus an accessible list/table alternative with the same data, keyboard navigation, topology and temporal checks.
 - [x] `[live-owed]` **F3 Hadith family and shawahid (28)**: `families`, grouping, add/remove members, evidence links.
-- [ ] **F4 Ilal case file (29)**: `ilal-cases` CRUD, argument sections, linked evidence, status; no automatic verdicts.
+- [x] `[live-owed]` **F4 Ilal case file (29)**: `ilal-cases` CRUD, argument sections, linked evidence, status; no automatic verdicts.
 - [ ] **F5 Narrator dossier (30)**: corpus narrator endpoints, assessments, assertions, geospatial; unknown stays neutral; criticism wording exact.
 - [ ] **F6 Book structure and terminology (31)**: `books/{id}/structure`, concordance; virtualised long trees.
 - [ ] **F7 Argument map (32)**: nodes and edges (`title/content`; relations `supports/refutes/qualifies/replies_to/alternative_to`), React Flow plus list alternative.
@@ -164,6 +164,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · F2 Isnād graph (27) in `features/isnad/` `[live-owed]` · `@xyflow/react` added and loaded lazily (the canvas is a separate chunk) · the chains of two to six reports (picker reused) go to `isnad-topology` as sanad ids · a table of every narrator with role, chains through, teachers and students holds everything the graph holds and is the keyboard and screen-reader way in; choosing a narrator in either is in the address (`node=`) · the server's rule is shown as "candidate common links" with its rule in words and nothing says proved (the `formal_proof` block is dropped by the schema and a test proves it never renders) · `layoutLayers` places narrators by generation and survives loops, unit-tested · "only chains through here" from the comparison's chain list · save and reopen a stored graph · the canvas is also rendered for real in one jsdom test with the two browser APIs stubbed · test mock `computeTopology` mirrors the server's rule (which marks the earliest source as a candidate, C-34) · 833 unit tests · `isnad-write.test.ts` written from the code, not run · gaps in C-34.
 - 2026-10-07 · F3 Hadith families (28) in `features/families/` `[live-owed]` · list and open family (?family=), classified members apart from candidates, add evidence or corpus report (report looked up first, duplicate refused in the form), remove with confirmation, `can('editShared')` gating; 14 tests (model 5, screen 9) · CODE-ONLY · gaps in C-35, contract file `families-write.test.ts` owed a live run.
+- 2026-10-07 · F4 ʿIlal case file (29) in `features/ilal/` `[live-owed]` · case list and open case (?case=), versions and critic statements added from a fresh read, conclusion form (status, preferred version, reasons) gated by `can('editShared')`, concluding needs two versions, status names neutral not graded; 13 tests (model 4, screen 9) · CODE-ONLY · gaps in C-36, contract file `ilal-write.test.ts` owed a live run.
 
 ## 6. Decision log (decisions taken without asking)
 
