@@ -49,6 +49,7 @@ import { BookPage } from '@/features/books/BookPage'
 import { ArgumentPage } from '@/features/argument/ArgumentPage'
 import { SearchComparePage } from '@/features/searchCompare/SearchComparePage'
 import { TemplatesPage } from '@/features/templates/TemplatesPage'
+import { ExchangePage } from '@/features/exchange/ExchangePage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -103,6 +104,7 @@ const BUILT: Record<string, ReactElement> = {
   '32': <ArgumentPage />,
   '35': <SearchComparePage />,
   '37': <TemplatesPage />,
+  '38': <ExchangePage />,
   '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { cancelExport, downloadFile, getQuota, listExports, partPath, projectDownloadPath } from '@/api/exports'
 import type { ExportJob } from '@/api/schemas/exports'
 import { usePreferences } from '@/app/preferencesContext'
@@ -99,6 +100,9 @@ export function JobsView({ notice, page, onPage, onNew, onManifest, onAgain }: P
               })}
             </p>
           ) : null}
+          <p className={styles.hint}>
+            <Link to="/downloads/import">{t('downloads.otherExchange')}</Link>
+          </p>
         </div>
         <Button variant="primary" onClick={onNew}>
           {t('downloads.newExport')}

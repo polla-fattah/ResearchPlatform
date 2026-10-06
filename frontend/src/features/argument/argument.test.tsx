@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, http } from 'msw'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { envelope, mockMe, renderApp } from '@/test/helpers'
 import { mockProjectApis, projectDetail } from '@/test/projectMocks'
 import { server } from '@/test/server'
@@ -77,6 +77,29 @@ function mockArgument(graph: { nodes: unknown[]; edges: unknown[] } = base, view
 }
 
 describe('Argument map', () => {
+  beforeEach(() => {
+    URL.createObjectURL = vi.fn(() => 'blob:fake')
+    URL.revokeObjectURL = vi.fn()
+    HTMLAnchorElement.prototype.click = vi.fn()
+  })
+
+  it('exports the structure and says what the file leaves out', async () => {
+    mockMe()
+    mockArgument()
+    const asked: string[] = []
+    server.use(
+      http.get('*/api/v1/projects/12/exports/graph', ({ request }) => {
+        asked.push(request.url)
+        return HttpResponse.json(envelope({ project_id: 12, graph: { nodes: [], edges: [] }, summary: { total_nodes: 5, total_edges: 3 } }))
+      }),
+    )
+    const user = userEvent.setup()
+    renderApp('/projects/12/argument-map', { signedIn: true })
+    await user.click(await screen.findByRole('button', { name: 'Export structure' }))
+    expect(await screen.findByText(/Saved argument-map-PRJ-0012\.json: 5 points and 3 relations\. It does not carry the evidence links/)).toBeInTheDocument()
+    expect(asked).toHaveLength(1)
+  })
+
   it('says the platform does not judge and shows the outline numbered from the claim', async () => {
     mockMe()
     mockArgument()

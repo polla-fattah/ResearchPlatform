@@ -3,6 +3,7 @@ import { lazy, Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { deleteEdge, deleteNode, getGraph } from '@/api/argument'
+import { exportArgumentGraph } from '@/api/graphExport'
 import { invalidate } from '@/api/invalidate'
 import { qk } from '@/api/queryKeys'
 import type { ArgumentEdge, ArgumentNode } from '@/api/schemas/argument'
@@ -15,6 +16,7 @@ import { RefreshNotice } from '@/components/RefreshNotice'
 import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import { evidenceCode } from '@/features/evidence/evidenceModel'
+import { graphFileName } from '@/features/exchange/exchangeModel'
 import { useProject } from '@/features/projects/useProject'
 import { findingCode } from '@/features/writing/writingModel'
 import { useQueryParams } from '@/hooks/useQueryParams'
@@ -54,6 +56,7 @@ export function ArgumentPage() {
       setDialog(null)
     },
   })
+  const exportFile = useMutation({ mutationFn: () => exportArgumentGraph(pid, graphFileName(pid)) })
   const removeEdge = useMutation({ mutationFn: (e: ArgumentEdge) => deleteEdge(pid, e.id), onSuccess: () => invalidate.argumentChanged(qc, pid) })
 
   if (projectId === null) return null
@@ -113,9 +116,16 @@ export function ArgumentPage() {
                     </select>
                   </label>
                 ) : null}
+                <Button onClick={() => exportFile.mutate()} disabled={exportFile.isPending}>
+                  {t('argument.export.button')}
+                </Button>
                 {canEdit ? <Button onClick={() => setDialog({ kind: 'point', parent: null, existing: null })}>{t('argument.addTop')}</Button> : null}
               </div>
             </div>
+            {exportFile.data ? (
+              <p role="status">{t('argument.export.saved', { file: graphFileName(pid), points: exportFile.data.summary.total_nodes, relations: exportFile.data.summary.total_edges })}</p>
+            ) : null}
+            <MutationNotice error={exportFile.error} title={t('argument.export.failed')} />
             {!canEdit ? <p className={styles.meta}>{t('argument.readOnly')}</p> : null}
             <div className={styles.split}>
               <div>

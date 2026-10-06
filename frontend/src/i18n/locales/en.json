@@ -1824,7 +1824,8 @@
         "body": "The link points to an export that doesn't exist or isn't yours. Exports are personal, so other people's links never open."
       },
       "loadFailed": "The manifest couldn't be loaded."
-    }
+    },
+    "otherExchange": "Other exports and importing a package"
   },
   "writing": {
     "title": "Findings and documents",
@@ -4256,6 +4257,11 @@
       "body": "The point and its relations are removed for good. Points that answered it stay and become top points. The evidence it links to is not touched.",
       "confirm": "Delete point",
       "failed": "The point was not deleted"
+    },
+    "export": {
+      "button": "Export structure",
+      "saved": "Saved {{file}}: {{points}} points and {{relations}} relations. It does not carry the evidence links, notes or removed points.",
+      "failed": "The file was not saved"
     }
   },
   "analysisTools": {
@@ -4373,6 +4379,32 @@
       "afterwards": "The project is private to you. Its scope is set by the server to say it came from this template; write your own in the project's settings.",
       "create": "Create private project",
       "failed": "The project was not created"
+    }
+  },
+  "exchange": {
+    "title": "Other exports and importing a package",
+    "back": "Back to Downloads",
+    "sub": "What can be saved or brought in beyond the ZIP of your data on the Downloads page.",
+    "graph": {
+      "title": "Argument map structure",
+      "what": "Saves a project's argument map as one JSON file: each point with its title, kind and text, and each relation with its kind. Programs that read graphs can open it.",
+      "notIncluded": "The file does not carry the evidence or finding a point is linked to, notes on relations, the order of points, who wrote them, or removed points. It is JSON only; there is no GraphML file.",
+      "project": "Project",
+      "choose": "Choose a project…",
+      "noProjects": "You have no project to export from.",
+      "projectsFailed": "Your projects could not be loaded.",
+      "download": "Download JSON",
+      "saved": "Saved {{file}}: {{points}} points and {{relations}} relations.",
+      "failed": "The file was not saved"
+    },
+    "docx": {
+      "title": "Word document (DOCX)",
+      "unavailable": "Not available yet. The server accepts a request for a Word document but makes the same ZIP of JSON files whatever format is asked for, so no Word file is offered here."
+    },
+    "import": {
+      "title": "Import a package",
+      "unavailable": "Not available yet. The server's import reads the title from a package and makes an empty project: it keeps none of the package's evidence, findings, documents or argument, and it does not check the package. It is not offered here so nothing looks imported that was not.",
+      "blank": "Start a blank project"
     }
   }
 }
