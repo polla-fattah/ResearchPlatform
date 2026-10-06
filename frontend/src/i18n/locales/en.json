@@ -1056,7 +1056,8 @@
       "none": "Everything in your library is already in this project.",
       "add_one": "Add {{formattedCount}} source",
       "add_other": "Add {{formattedCount}} sources"
-    }
+    },
+    "importReferences": "Import references"
   },
   "search": {
     "title": "Search",
@@ -4405,6 +4406,69 @@
       "title": "Import a package",
       "unavailable": "Not available yet. The server's import reads the title from a package and makes an empty project: it keeps none of the package's evidence, findings, documents or argument, and it does not check the package. It is not offered here so nothing looks imported that was not.",
       "blank": "Start a blank project"
+    }
+  },
+  "referenceImport": {
+    "title": "Import references",
+    "back": "Back to My Library",
+    "sub": "Bring in references from your reference manager. Nothing is saved until you have looked at the list.",
+    "refs": {
+      "title": "BibTeX or RIS file",
+      "note": "The file is read in your browser and each reference you keep is saved to My Library, private to you. A reference that is already in your library is left as it is, never overwritten.",
+      "file": "Choose a file",
+      "fileHint": ".bib, .ris or a text file, up to 2 MB.",
+      "paste": "Or paste the references",
+      "pasteHint": "BibTeX entries starting with @book{…} or RIS records starting with TY  -."
+    },
+    "tooBig": "That file is larger than {{max}}. Split it and import the parts.",
+    "readFailed": "The file could not be read.",
+    "unreadable": {
+      "title": "This can’t be read as BibTeX or RIS.",
+      "body": "The first line is “{{line}}”. A BibTeX file starts with @book{… and a RIS file with “TY  -”. Export from your reference manager as BibTeX or RIS and try again."
+    },
+    "noEntries": "The file is BibTeX, but it holds no references to import.",
+    "format": {
+      "bibtex": "BibTeX",
+      "ris": "RIS"
+    },
+    "found_one": "{{count}} reference found in the {{format}} file.",
+    "found_other": "{{count}} references found in the {{format}} file.",
+    "tooMany": "{{count}} references is more than the {{max}} that can be imported at once. Split the file.",
+    "preview": "References found in the file",
+    "col": {
+      "import": "Import",
+      "line": "Line",
+      "entry": "Reference",
+      "check": "Check"
+    },
+    "include": "Import {{title}}",
+    "untitled": "No title",
+    "noAuthor": "Author not given",
+    "ok": "Can be imported",
+    "problems": {
+      "noTitle": "Has no title, so it is left out"
+    },
+    "neverOverwrites": "Entries without a title are left out. A reference you already have is reported and kept as it is.",
+    "import_one": "Import {{count}} reference",
+    "import_other": "Import {{count}} references",
+    "failed": "The import did not finish",
+    "result": {
+      "title": "Import result",
+      "saved_one": "{{count}} reference saved to My Library.",
+      "saved_other": "{{count}} references saved to My Library.",
+      "duplicate_one": "{{count}} was already in your library and was left as it is.",
+      "duplicate_other": "{{count}} were already in your library and were left as they are.",
+      "failed_one": "{{count}} could not be saved.",
+      "failed_other": "{{count}} could not be saved.",
+      "notSaved": "References that were not saved",
+      "line": "line {{line}}",
+      "alreadyThere": "already in your library",
+      "tagged": "Saved references carry the tag “import” and the date, so you can find them together.",
+      "open": "Open My Library"
+    },
+    "uploads": {
+      "title": "Upload a file",
+      "unavailable": "Not available yet. The server has no way to receive files (scans, articles, data) or to check them for malware, so no upload is offered here. Your references can still be imported from BibTeX or RIS above."
     }
   }
 }
