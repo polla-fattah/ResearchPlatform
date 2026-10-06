@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { ApiError, normalizeError } from '@/api/errors'
+import { AuthContext, type AuthState } from '@/app/authContext'
 import { PreferencesProvider } from '@/app/preferences'
 import { NeutralState, ProvenanceTag, VisibilityBadge } from './Badges'
 import { BidiText } from './BidiText'
@@ -104,12 +105,16 @@ describe('badges', () => {
   })
 })
 
+const signedOut = { status: 'anonymous', user: null, accountStatus: null, isApproved: false, isAdmin: false } as unknown as AuthState
+
 describe('<CountedUnit>', () => {
   it('always carries the unit and pluralises', () => {
     render(
-      <PreferencesProvider>
-        <CountedUnit count={42} unit="occurrence" /> / <CountedUnit count={1} unit="occurrence" />
-      </PreferencesProvider>,
+      <AuthContext.Provider value={signedOut}>
+        <PreferencesProvider>
+          <CountedUnit count={42} unit="occurrence" /> / <CountedUnit count={1} unit="occurrence" />
+        </PreferencesProvider>
+      </AuthContext.Provider>,
     )
     expect(screen.getByText(/42 occurrences/)).toBeInTheDocument()
     expect(screen.getByText(/1 occurrence(?!s)/)).toBeInTheDocument()
