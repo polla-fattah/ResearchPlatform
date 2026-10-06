@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { StateBoundary } from '@/components/StateBoundary'
@@ -123,6 +124,11 @@ export function ComparisonPage() {
               </button>
             ))}
           </div>
+          {view === 'occ' && reportIds.length >= 2 ? (
+            <p>
+              <Link to={`/projects/${projectId}/analysis/matn?h=${idsParam(reportIds)}${url.id('base') ? `&base=${url.id('base')}` : ''}`}>{t('comparison.alignLink')}</Link>
+            </p>
+          ) : null}
           <div role="tabpanel">
             {view === 'occ' ? (
               <OccurrencesView

@@ -1666,7 +1666,8 @@
       "none": "No statement recorded",
       "statements": "Statements recorded",
       "noMatrix": "No statement about these narrators is recorded in the corpus."
-    }
+    },
+    "alignLink": "Align these texts word by word →"
   },
   "downloads": {
     "title": "Downloads",
@@ -3685,6 +3686,66 @@
       "copy": "Copy",
       "copied": "Copied",
       "failed": "The citation could not be loaded."
+    }
+  },
+  "alignment": {
+    "title": "Matn alignment",
+    "storedTitle": "Matn alignment {{code}} · v{{version}}",
+    "sub": "Align the wording of two to six reports, word by word, against one of them.",
+    "automatic": "The alignment is made automatically from the words of each text. It has not been checked by a researcher, and a difference here describes the wording, not whether a text is sound.",
+    "pick": "Pick texts",
+    "change": "Change texts",
+    "baseline": "Compare against",
+    "baselineShort": "Baseline",
+    "baselineText": "Baseline:",
+    "isBaseline": "baseline",
+    "onlyDifferences": "Show only the differences",
+    "backToNew": "← Align other texts",
+    "texts": "The texts",
+    "empty": {
+      "title": "Choose at least 2 texts",
+      "body": "Alignment compares the wording of two or more reports word by word. Pick reports from this project's evidence, or find them in the corpus."
+    },
+    "missing": "These reports could not be found in the corpus and were left out: {{ids}}.",
+    "loadFailed": "Some reports could not be loaded. The alignment shown is of the ones that did.",
+    "withoutText": "These reports have no wording in the corpus, so they were left out rather than shown as entirely omitted: {{ids}}.",
+    "notAlignment": "This stored analysis is not an alignment in the form this screen can draw.",
+    "legend": "The words are shown as the platform aligned them: diacritics removed and letter forms unified. = same word · ~ different word at the same place · + a word only in this text · ∅ a word only in the baseline. These are differences in wording, not marks of error.",
+    "identical": "No differences: every word is the same as in the baseline.",
+    "nothingAligned": "Nothing was aligned for this text.",
+    "summary": {
+      "label": "What was counted",
+      "same_one": "{{formattedCount}} word the same",
+      "same_other": "{{formattedCount}} words the same",
+      "different_one": "{{formattedCount}} different word",
+      "different_other": "{{formattedCount}} different words",
+      "added_one": "{{formattedCount}} word added",
+      "added_other": "{{formattedCount}} words added",
+      "omitted_one": "{{formattedCount}} word omitted",
+      "omitted_other": "{{formattedCount}} words omitted",
+      "percent": "{{percent}}% of aligned places have the same word"
+    },
+    "table": {
+      "label": "Alignment of {{label}} against the baseline",
+      "position": "Place",
+      "difference": "Difference",
+      "none": "(nothing here)"
+    },
+    "kinds": {
+      "same": "same",
+      "different": "different word",
+      "added": "added in this text",
+      "omitted": "omitted from this text",
+      "unknown": "unknown"
+    },
+    "save": "Save this alignment",
+    "savedAs": "Saved as {{code}} · v{{version}}",
+    "saveFailed": "The alignment was not saved",
+    "readOnly": "You can look at alignments here. Saving one needs a role that can add shared research.",
+    "saved": {
+      "title": "Saved alignments",
+      "none": "No alignment has been saved in this project.",
+      "version": "v{{version}}"
     }
   }
 }

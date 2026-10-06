@@ -98,7 +98,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
 
 Scholarly wording is for specialist review: keep every label in i18n (English now), never show fixture judgments, no invented probabilities.
 
-- [ ] **F1 Matn alignment (26)**: `analyses/collate` aligned view, variant markers, baseline switch, notes; honest limits.
+- [x] **F1 Matn alignment (26)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): `analyses/collate` aligned view, variant markers, baseline switch, notes; honest limits.
 - [ ] **F2 Isnad graph (27)**: React Flow graph plus an accessible list/table alternative with the same data, keyboard navigation, topology and temporal checks.
 - [ ] **F3 Hadith family and shawahid (28)**: `families`, grouping, add/remove members, evidence links.
 - [ ] **F4 Ilal case file (29)**: `ilal-cases` CRUD, argument sections, linked evidence, status; no automatic verdicts.
@@ -160,6 +160,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · E4 Public publication (24) and E5 Public research search (25) in `features/publications/` `[live-owed]` · list (words debounced, published or retracted, paging, all in the address) and page open to everyone with no credentials · the page keeps only what it shows (a test feeds reviewer aliases and comments, editor notes, the releaser and the project's title through and proves none renders) · retraction banner with the text kept and marked, correction notices, licence and version, an identifier shown as a DOI only when it is one (the server's made-up `10.5281/openhadith.…` is labelled as the platform's own), how many reviews were finished · citation box that asks for BibTeX, RIS or APA, copies, and says when the server answered another format (it cannot answer any but BibTeX today) · headings inside a document are pushed down two levels (`headingOffset`) on publications and review pages so a page keeps one h1 · Published research link in the public header · 786 unit tests · `public-research.test.ts` (no sign-in, read-only) written from the code, not run · gaps in C-32.
 
+- 2026-10-07 · F1 Matn alignment (26) in `features/alignment/` `[live-owed]` · two to six reports chosen with the comparison workspace's own picker, aligned by the server against a baseline (the chosen one, else the first with wording), each variant drawn slot by slot with the difference in words and a symbol (never colour alone), differences with one same word of context by default and every word on request, counts taken from the slots (never from the server's summary), a report with no wording left out and named instead of being shown as wholly omitted, a stored alignment reopened from what the server stored without computing again, saving as a run for roles that can add shared research, the page says plainly that the alignment is automatic and unchecked · link from the comparison workspace · test default for the rail's unread count added to the MSW server (removes the unhandled-request noise) · 808 unit tests · `alignment-write.test.ts` written from the code, not run · gaps in C-33.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
@@ -184,3 +186,4 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · The reviewer's declaration gate is shown on every visit until the review is sent, because the server keeps no state for it (it defaults `coi_confirmed` to true when the editor assigns): the screen records the declaration and the acceptance each time (C-31).
 - 2026-10-07 · The reviewer's schema drops the project entirely (title, question, scope), not only the owner, because a project's title and scope can identify its authors (C-31).
 - 2026-10-07 · The public pages do not say "peer-reviewed": an editor can approve without a finished review (`override_peer_review`), so they say "released by the editors" and show how many reviews were finished (C-30, C-32).
+- 2026-10-07 · Alignment labels are plain words (same, different word, added, omitted), not the engine's Arabic terms or English sentences: the technical terms are for specialist review (phase F rule).

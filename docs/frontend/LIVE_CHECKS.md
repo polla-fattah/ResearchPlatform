@@ -34,6 +34,7 @@ responses. The contract tests exist, but they have never been executed. A phase 
 | `submission-write.test.ts` | 21 Submission | C-29 | yes (6 expected-fail, two are P0) |
 | `review-write.test.ts` | 23 Reviewer workspace (two throwaway accounts, a package, an assignment) | C-31 | yes (3 expected-fail, one is P0) |
 | `public-research.test.ts` | 24 and 25 Public research (no sign-in, read-only) | C-32 | yes (3 expected-fail) |
+| `alignment-write.test.ts` | 26 Matn alignment | C-33 | yes (3 expected-fail) |
 | `editorial-write.test.ts` | 22 Editorial console (needs an administrator; leaves one retracted publication) | C-30 | yes (3 expected-fail) |
 
 Each write test creates throwaway data (`[contract-test]` projects, one declined throwaway account) and cleans up. If a
@@ -59,6 +60,7 @@ run dies half way, trash the leftover `[contract-test]` projects from the demo a
 - **22 Editorial** `/editor` as the demo administrator with a package submitted by a second account: queue filters, the case, assign (the author must be blocked), decide (approval needs a finished review), release, correction, retraction; and as an ordinary researcher: the page must look like it does not exist.
 - **23 Peer review** `/review` as the assigned reviewer: the gate, declining, reading the package, sending a review; look at the page's data (network tab) for the authors' names and the project: they are expected to be there (C-31 P0) and must not be on the page.
 - **24/25 Public research** `/research` and `/research/<slug>` signed out, after the editorial run released and retracted a throwaway publication: the list, the retracted filter, the page with its banner, the citation formats (RIS and APA are expected to answer BibTeX); look at the network answer for reviewer and editor fields (expected there, C-32) and make sure none is on the page.
+- **26 Matn alignment** `/projects/60/analysis/matn?h=…` with two or three of the demo's reports: the alignment, the baseline switch, save and reopen; compare a few slots by eye with the original wording.
 - **40 Interest** `/announcements/<slug>/interest`: expected to fail with "The request was not sent" until C-28 is fixed;
   then the inbox on the members screen.
 

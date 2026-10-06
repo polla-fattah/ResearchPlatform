@@ -40,6 +40,7 @@ import { ReviewListPage } from '@/features/review/ReviewListPage'
 import { ReviewPage } from '@/features/review/ReviewPage'
 import { PublicationPage } from '@/features/publications/PublicationPage'
 import { ResearchListPage } from '@/features/publications/ResearchListPage'
+import { AlignmentPage } from '@/features/alignment/AlignmentPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -85,6 +86,7 @@ const BUILT: Record<string, ReactElement> = {
   '20': <AnnouncementPublicPage />,
   '21': <SubmissionPage />,
   '24': <PublicationPage />,
+  '26': <AlignmentPage />,
   '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,

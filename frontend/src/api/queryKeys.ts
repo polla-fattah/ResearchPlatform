@@ -127,6 +127,7 @@ export const qk = {
       compare: {
         matn: (inputs: unknown) => [...root, 'compare', 'matn', inputs] as const,
         isnads: (sanadIds: readonly number[]) => [...root, 'compare', 'isnads', sanadIds] as const,
+        collate: (inputs: unknown) => [...root, 'compare', 'collate', inputs] as const,
         criticism: (narratorIds: readonly number[]) => [...root, 'compare', 'criticism', narratorIds] as const,
       },
     }
