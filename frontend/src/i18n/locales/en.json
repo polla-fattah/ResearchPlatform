@@ -4101,5 +4101,62 @@
         "audition": "Study session"
       }
     }
+  },
+  "books": {
+    "title": "Book structure and terms",
+    "list": "Collections",
+    "choose": "Choose a collection to read its chapters or look up a word form in it.",
+    "noBooks": "The corpus lists no collections.",
+    "occurrences_one": "{{n}} occurrence",
+    "occurrences_other": "{{n}} occurrences",
+    "allBooks": "All collections",
+    "views": "Views",
+    "view": {
+      "contents": "Chapters",
+      "words": "Word forms"
+    },
+    "unchecked": "Counts are the corpus server's own and are shown as given. Where a result is a sample, or a word form is not found, the page says so; neither is a proof that something is absent. The critic-expression index, corpus snapshots and licence notices of the design are not available yet.",
+    "contents": {
+      "totals": "{{chapters}} chapters · {{occurrences}} occurrences. Chapters are listed in the order the server stores them, with the titles as printed.",
+      "filter": "Find a chapter by title",
+      "chapters": "Chapters",
+      "occurrences_one": "{{n}} occurrence",
+      "occurrences_other": "{{n}} occurrences",
+      "more": "Show more ({{shown}} of {{total}} shown)",
+      "noMatch": "No chapter title contains that.",
+      "pick": "Choose a chapter to read its reports.",
+      "notFound": "That chapter is not in this book."
+    },
+    "chapter": {
+      "count_one": "{{count}} occurrence in this chapter",
+      "count_other": "{{count}} occurrences in this chapter",
+      "reports": "Reports in this chapter",
+      "none": "No reports were returned for this chapter.",
+      "number": "No. {{number}}",
+      "note": "An occurrence is one hadith entry in the edition. The list shows each report once, so it can be shorter than the count when a report stands more than once in the chapter."
+    },
+    "words": {
+      "title": "Word forms",
+      "term": "Word form",
+      "termHint": "2 to 100 characters. Vowel marks are ignored.",
+      "tooShort": "Enter at least 2 characters.",
+      "limit": "Places to return",
+      "limitOption": "Up to {{count}}",
+      "thisBook": "This book only",
+      "search": "Search",
+      "scopeAll": "Searching every collection of the corpus.",
+      "scopeBook": "Searching only {{book}}.",
+      "start": "Enter a word form to see where it appears.",
+      "noneTitle": "No places found",
+      "noneBody": "“{{term}}” was not found in this scope. That is not a confirmed absence: the search is on the corpus text as indexed.",
+      "found_one": "{{n}} place returned.",
+      "found_other": "{{n}} places returned.",
+      "atLeast_one": "{{n}} place returned, the most the server was asked for. There may be more.",
+      "atLeast_other": "{{n}} places returned, the most the server was asked for. There may be more.",
+      "byBook": "By collection",
+      "byBookNote": "Counts only the places returned above, not every place in the collection.",
+      "inContext": "In context",
+      "notLocated": "The word form was not located in this text; the start of the text is shown instead."
+    }
   }
 }

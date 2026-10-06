@@ -103,7 +103,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - [x] `[live-owed]` **F3 Hadith family and shawahid (28)**: `families`, grouping, add/remove members, evidence links.
 - [x] `[live-owed]` **F4 Ilal case file (29)**: `ilal-cases` CRUD, argument sections, linked evidence, status; no automatic verdicts.
 - [x] `[live-owed]` **F5 Narrator dossier (30)**: corpus narrator endpoints, assessments, assertions, geospatial; unknown stays neutral; criticism wording exact.
-- [ ] **F6 Book structure and terminology (31)**: `books/{id}/structure`, concordance; virtualised long trees.
+- [x] `[live-owed]` **F6 Book structure and terminology (31)**: `books/{id}/structure`, concordance; virtualised long trees.
 - [ ] **F7 Argument map (32)**: nodes and edges (`title/content`; relations `supports/refutes/qualifies/replies_to/alternative_to`), React Flow plus list alternative.
 - [ ] **F8 Search run comparison and schedules (35)**: compare on saved result sets, subscriptions; note that runs cannot be listed if still true.
 - [ ] **F9 Project templates (37)**: list, create from project, apply to a new project.
@@ -166,6 +166,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · F3 Hadith families (28) in `features/families/` `[live-owed]` · list and open family (?family=), classified members apart from candidates, add evidence or corpus report (report looked up first, duplicate refused in the form), remove with confirmation, `can('editShared')` gating; 14 tests (model 5, screen 9) · CODE-ONLY · gaps in C-35, contract file `families-write.test.ts` owed a live run.
 - 2026-10-07 · F4 ʿIlal case file (29) in `features/ilal/` `[live-owed]` · case list and open case (?case=), versions and critic statements added from a fresh read, conclusion form (status, preferred version, reasons) gated by `can('editShared')`, concluding needs two versions, status names neutral not graded; 13 tests (model 4, screen 9) · CODE-ONLY · gaps in C-36, contract file `ilal-write.test.ts` owed a live run.
 - 2026-10-07 · F5 Narrator dossier (30) in `features/narrator/` `[live-owed]` · corpus identity (reused from the comparison dossier), corpus criticism word for word, the project's assertions about this narrator (add/edit/delete, alternatives, how sure), assessments grouped by teacher with the teacher chosen by search, shared places read only; no lifetime chart or contact check and no trajectory writing (C-37, one P0); 14 tests (model 5, screen 9) · CODE-ONLY · contract file `narrator-write.test.ts` owed a live run.
+- 2026-10-07 · F6 Book structure and terminology (31) in `features/books/` `[live-owed]` · collection list, chapters with counts (filter, 100 at a time), a chapter's reports, word-form concordance with honest counts ("returned", "at least") and a flag on snippets that are not in context; optional route segments for the list and picker views; 18 tests (model 7, screen 11) · CODE-ONLY · no critic-expression index or snapshots (C-38), contract file `books-read.test.ts` owed a live run.
 
 ## 6. Decision log (decisions taken without asking)
 

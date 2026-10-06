@@ -39,6 +39,7 @@ responses. The contract tests exist, but they have never been executed. A phase 
 | `families-write.test.ts` | 28 Hadith families | C-35 | yes (4 expected-fail) |
 | `ilal-write.test.ts` | 29 ʿIlal cases | C-36 | yes (4 expected-fail) |
 | `narrator-write.test.ts` | 30 Narrator dossier | C-37 | yes (5 expected-fail) |
+| `books-read.test.ts` | 31 Book structure and terms | C-38 | no, read only (5 expected-fail) |
 | `editorial-write.test.ts` | 22 Editorial console (needs an administrator; leaves one retracted publication) | C-30 | yes (3 expected-fail) |
 
 Each write test creates throwaway data (`[contract-test]` projects, one declined throwaway account) and cleans up. If a
@@ -65,6 +66,7 @@ run dies half way, trash the leftover `[contract-test]` projects from the demo a
 - **23 Peer review** `/review` as the assigned reviewer: the gate, declining, reading the package, sending a review; look at the page's data (network tab) for the authors' names and the project: they are expected to be there (C-31 P0) and must not be on the page.
 - **24/25 Public research** `/research` and `/research/<slug>` signed out, after the editorial run released and retracted a throwaway publication: the list, the retracted filter, the page with its banner, the citation formats (RIS and APA are expected to answer BibTeX); look at the network answer for reviewer and editor fields (expected there, C-32) and make sure none is on the page.
 - **26 Matn alignment** `/projects/60/analysis/matn?h=…` with two or three of the demo's reports: the alignment, the baseline switch, save and reopen; compare a few slots by eye with the original wording.
+- **31 Book structure and terms** `/projects/60/analysis/books/<id>`: the chapter counts add up to the book's total; a chapter's report list is plausible for its count; a large book (about 1,900 chapters) loads without a long wait and the filter stays responsive; the word-form search for a common word says "at least" at the limit; a snippet shows the word or the not-located note; Arabic titles run right to left.
 - **30 Narrator dossier** `/projects/60/analysis/narrators/<id of a narrator with places>`: identity matches the corpus; add, edit and delete a claim with alternatives; record an assessment for a teacher found by search and see it grouped under the teacher's name; the places table shows stated and inferred stops, a stop without a year shows Unknown; a viewer sees no buttons; Arabic names run right to left.
 - **29 ʿIlal cases** `/projects/60/analysis/ilal`: open a case, add two versions and a critic statement, conclude it; reload and see all of it; a second browser adding a version at the same time keeps both; a viewer sees no forms; Sorani/Arabic text runs in its own direction.
 - **28 Hadith families** `/projects/60/analysis/families`: create a family, add a corpus report and a piece of evidence, classify and remove; a report number that does not exist is refused; a viewer sees no buttons; Sorani/Arabic titles run in their own direction.
