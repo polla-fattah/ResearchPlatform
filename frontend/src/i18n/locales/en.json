@@ -2601,8 +2601,8 @@
       "offFailed": "Two-step sign-in wasn't turned off"
     },
     "sessions": {
-      "title_one": "Active sessions · {{count}}",
-      "title_other": "Active sessions · {{count}}",
+      "title_one": "Active sessions · {{formattedCount}}",
+      "title_other": "Active sessions · {{formattedCount}}",
       "unnamed": "Browser session",
       "current": "This session",
       "signedIn": "Signed in {{when}}",
@@ -2610,8 +2610,8 @@
       "signOut": "Sign out",
       "signOutOthers": "Sign out all other sessions",
       "othersTitle": "Sign out all other sessions?",
-      "othersBody_one": "{{count}} other session is signed out. This one stays.",
-      "othersBody_other": "{{count}} other sessions are signed out. This one stays.",
+      "othersBody_one": "{{formattedCount}} other session is signed out. This one stays.",
+      "othersBody_other": "{{formattedCount}} other sessions are signed out. This one stays.",
       "othersConfirm": "Sign out the others",
       "failed": "The session wasn't signed out",
       "note": "A signed-out session stops working. The server doesn't say which device each one is, so they are told apart by when they were started."

@@ -34,8 +34,8 @@ export function SessionsSection() {
   const others = items.filter((s) => !s.current).length
 
   return (
-    <section className={styles.section} aria-label={t('settings.sessions.title', { count: n(items.length) })}>
-      <h2>{t('settings.sessions.title', { count: n(items.length) })}</h2>
+    <section className={styles.section} aria-label={t('settings.sessions.title', { count: items.length, formattedCount: n(items.length) })}>
+      <h2>{t('settings.sessions.title', { count: items.length, formattedCount: n(items.length) })}</h2>
       <MutationNotice error={end.error ?? endAll.error} title={t('settings.sessions.failed')} />
       <StateBoundary state={viewStateOf(sessions)} errorValue={sessions.error} onRetry={() => void sessions.refetch()}>
         <ul className={styles.rows}>
