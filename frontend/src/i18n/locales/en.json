@@ -3229,5 +3229,108 @@
       "sentTitle": "Request sent to {{name}}",
       "sentBody": "You shared your name, affiliation, e-mail address and message. Nothing else happens automatically. If the owner wants to work with you, they send you a separate invitation."
     }
+  },
+  "submission": {
+    "tab": "Review & Publication",
+    "title": "Submit for publication",
+    "readOnly": "Only the project owner can submit for publication. You are a {{role}}: you can see the packages and their status below.",
+    "next": {
+      "wait": "A package is waiting for an editor or under review. A new package can follow only a request for revisions.",
+      "closed": {
+        "approved": "The latest package was approved. Releasing it as a publication is an editor's step.",
+        "rejected": "The latest package was rejected. The platform has no way to submit the project again from here yet."
+      }
+    },
+    "form": {
+      "label": "Submission package",
+      "what": "1 · What to publish",
+      "documents": "Documents to include",
+      "noDocuments": "This project has no documents. Write one in Findings & Documents first.",
+      "documentsFailed": "The documents could not be loaded, so a package cannot be built now.",
+      "version": "Latest saved version: v{{version}}",
+      "noVersion": "No saved version yet, so it cannot be included.",
+      "chooseOne": "choose at least one document",
+      "findings_one": "All {{formattedCount}} finding of the project is included. The platform cannot include only some of them.",
+      "findings_other": "All {{formattedCount}} findings of the project are included. The platform cannot include only some of them.",
+      "findingsUnknown": "All the project's findings are included. Their number could not be loaded.",
+      "details": "2 · Public details",
+      "title": "Title",
+      "titleRequired": "give the package a title",
+      "abstract": "Abstract",
+      "abstractRequired": "write an abstract",
+      "abstractHint": "What you studied and what you found, in a few sentences. This is what editors and reviewers read first.",
+      "keywords": "Keywords",
+      "keywordsHint": "Separate with commas.",
+      "noAuthors": "Listing authors with their consent is not available yet: the platform does not record it. Only the submitting owner is named.",
+      "rights": "3 · Rights and licence",
+      "licence": "Licence for your text",
+      "rightsConfirm": "I confirm that quoted source passages are within what the source rights allow, and that everyone credited agreed to be credited.",
+      "coiConfirm": "I have declared every conflict of interest relevant to this work.",
+      "confirmRequired": "confirm this to continue",
+      "rightsNote": "The platform does not check source rights for you. Your confirmation is recorded with the package."
+    },
+    "licences": {
+      "CC-BY-4.0": "CC BY 4.0",
+      "CC-BY-NC-4.0": "CC BY-NC 4.0",
+      "All rights reserved": "All rights reserved"
+    },
+    "check": {
+      "title": "4 · Check before you submit",
+      "choose": "Choose a document to see what needs fixing.",
+      "running": "Checking the package…",
+      "failed": "The check could not be run, so nothing can be submitted now.",
+      "clean": "Nothing to fix. The package passed the check.",
+      "cannot_one": "Cannot submit yet: {{count}} thing to fix",
+      "cannot_other": "Cannot submit yet: {{count}} things to fix",
+      "canWithNotes": "Can be submitted. Please read the notes.",
+      "mustFix": "Fix",
+      "note": "Note",
+      "fix": "Go and fix it",
+      "codes": {
+        "NO_DOCUMENTS": "The package includes no documents. Only the findings and the project's details would be included.",
+        "DOCUMENT_NO_VERSION": "A document in the package has no saved version.",
+        "UNRESOLVED_EVIDENCE_DEPENDENCY": "A citation points to evidence that is still unresolved. Resolve it, or choose a different citation.",
+        "INTERNAL_PRIVATE_LINK": "A document contains a link into the private workspace. Convert it to a public citation or remove it.",
+        "SUSPENDED_PARTICIPANT": "A project member is suspended. Their credit or access must be settled first."
+      }
+    },
+    "respond": {
+      "title": "Revisions were requested",
+      "response": "Your response",
+      "hint": "Answer the editor's points one by one. It is kept with the new package."
+    },
+    "freeze": {
+      "open": "Freeze and submit…",
+      "respond": "Freeze and resubmit…",
+      "notReady": "Complete every part above first.",
+      "title": "Freeze this package and submit?",
+      "what": "A fixed copy is made of {{documents}} document(s) at their latest saved version and the project's {{findings}} findings.",
+      "keepWorking": "You can keep working in the project. Later edits do not change this package.",
+      "notPublic": "Nothing is public until an editor approves this exact package and releases it.",
+      "confirm": "Freeze and submit",
+      "failed": "The package was not submitted"
+    },
+    "packages": {
+      "title": "Packages",
+      "package": "Package",
+      "status": "Status",
+      "submitted": "Submitted",
+      "fingerprint": "Fingerprint",
+      "version": "package v{{version}}",
+      "reviews_one": "{{formattedCount}} review finished",
+      "reviews_other": "{{formattedCount}} reviews finished",
+      "editor": "Editor:",
+      "yourResponse": "Your response",
+      "noneTitle": "Nothing submitted yet",
+      "noneBody": "When you freeze and submit a package it is listed here, with its status.",
+      "note": "Each package is frozen once it is submitted. An editor's decision belongs to the package it was made on."
+    },
+    "status": {
+      "submitted": "Submitted: waiting for an editor",
+      "in_review": "Under review",
+      "revision_requested": "Revisions requested",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
   }
 }

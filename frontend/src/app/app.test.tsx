@@ -56,16 +56,18 @@ describe('route guards', () => {
 })
 
 describe('shell', () => {
-  it('shows areas that are not built yet disabled with their release tag', async () => {
+  it('shows a built screen as a link whatever release it belongs to', async () => {
     mockMe()
     mockProjectApis()
     renderApp('/projects/12', { signedIn: true })
     await screen.findByText('PRJ-0012')
-    const publication = screen.getByText('Review & Publication').closest('[aria-disabled]')
-    expect(publication).toHaveAttribute('aria-disabled', 'true')
-    expect(publication).toHaveTextContent('R1c')
-    // A built screen is a link, whatever release it belongs to.
     expect(screen.getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '/projects/12/activity')
+    expect(screen.getByRole('link', { name: 'Review & Publication' })).toHaveAttribute('href', '/projects/12/submission')
+  })
+
+  it('shows an area that is not built yet disabled with its release tag', async () => {
+    expect(isReleaseEnabled('R1b', 'R1a')).toBe(false)
+    expect(isReleaseEnabled('R2', 'R1c')).toBe(false)
   })
 
   it('shows the number of unread notifications beside Notifications, and nothing when there are none', async () => {

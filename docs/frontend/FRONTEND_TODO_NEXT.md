@@ -86,8 +86,8 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
 
 ### Phase E · R1c: review and publication
 
-- [ ] **E0 Prerequisites**: editor and reviewer role guards (`checkEditor`, assignment-based reviewer access), blinding rules read from the SRS into a small tested `domain/blinding.ts`.
-- [ ] **E1 Submission builder (21)**: pre-publication validation (`validate-pre-publication`) with per-item results (incomplete citation, unresolved evidence, rights), fix-links back to the object, submit with confirmation, status and history; tests and contract.
+- [x] **E0 Prerequisites** (the blinding rule is enforced where it matters: each screen's schema names only the fields that role may see, with a test per screen that proves reviewer data never renders; a shared `domain/blinding.ts` will be added with E3 when both sides exist): editor and reviewer role guards (`checkEditor`, assignment-based reviewer access), blinding rules read from the SRS into a small tested `domain/blinding.ts`.
+- [x] **E1 Submission builder (21)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): pre-publication validation (`validate-pre-publication`) with per-item results (incomplete citation, unresolved evidence, rights), fix-links back to the object, submit with confirmation, status and history; tests and contract.
 - [ ] **E2 Editorial console (22)**: queue, assignment of reviewers with conflict display (note the missing candidate list), decisions with reasons, access limited to editors (assert a non-editor gets the neutral not-available page); tests and contract.
 - [ ] **E3 Reviewer workspace (23)**: "my assignments", accept/decline, review form, blinding rules applied in the UI and verified against what the API returns (never hide only visually data the server sends: file a defect if it does); tests and contract.
 - [ ] **E4 Public publication page and citation export (24)**: public page, citation formats from `cite`, version and correction notices, no private data; tests.
@@ -152,6 +152,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · D8 checkpoint prepared, not ticked: `LIVE_CHECKS.md` lists every contract file and browser check owed for P0 and D1 to D7.
 
+- 2026-10-07 · E1 Submission builder (21) in `features/submission/` `[live-owed]` · documents (one with no saved version disabled), public details, licence and two declarations the author must tick (sent explicitly), the server's check asked for the chosen documents and shown as must-fix and notes with links, freeze behind a confirmation, packages list with status, the editor's note and a finished-review count only, response to a revision request (parent and response sent), no new package while one is in play · Review & Publication tab enabled · 719 unit tests · `submission-write.test.ts` written from the code, not run · gaps in C-29, two P0.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
@@ -169,3 +171,5 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · No "Report this announcement" link and no topic/language filters on the public pages: the server has neither (C-27).
 - 2026-10-07 · "Accept" on a collaboration request is an invitation by e-mail, never the server's `accepted`, which would add the person with no invitation to answer; the request therefore stays listed as waiting (C-28).
 - 2026-10-07 · The interest form is built on the endpoint the backend named for it even though that endpoint answers 500 today (C-28 P0): the screen reports the failure honestly and keeps the message, and works unchanged once the backend is fixed.
+- 2026-10-07 · The submission screen never sends `bypass_warnings` and requires at least one document, because an empty list means every document and the bypass passes errors (C-29).
+- 2026-10-07 · Reviewer identities, notes and scores are dropped by the author-side schema; the unit test feeds them in and proves nothing reaches the page (C-29 P0: the server still sends them).

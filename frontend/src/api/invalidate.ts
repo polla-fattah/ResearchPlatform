@@ -64,6 +64,9 @@ export const invalidate = {
   /** Members or invitations changed: the lists, the project (its role table) and what lists show of it. */
   membersChanged: (qc: QueryClient, id: number) =>
     run(qc, qk.project(id).members.all, qk.project(id).detail, qk.projects.lists),
+  /** A package was submitted: the list of packages and the check (which reads documents and evidence). */
+  submissionsChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).submission.all, qk.project(id).activityAll),
+
   /** The announcement was saved, published or taken down (and the feed that records it). */
   announcementChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).announcement.all, qk.project(id).activityAll),
 

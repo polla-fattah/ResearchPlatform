@@ -31,6 +31,7 @@ responses. The contract tests exist, but they have never been executed. A phase 
 | `announcement-write.test.ts` | 19 Announcement | C-26 | yes (5 expected-fail) |
 | `public-announcements.test.ts` | 20 Public announcements (no sign-in, read-only) | C-27 | yes (1 expected-fail) |
 | `collaboration-write.test.ts` | 40 Interest form and inbox | C-28 | yes (3 expected-fail, two are P0) |
+| `submission-write.test.ts` | 21 Submission | C-29 | yes (6 expected-fail, two are P0) |
 
 Each write test creates throwaway data (`[contract-test]` projects, one declined throwaway account) and cleans up. If a
 run dies half way, trash the leftover `[contract-test]` projects from the demo account.
@@ -51,6 +52,7 @@ run dies half way, trash the leftover `[contract-test]` projects from the demo a
 - **19 Announcement** `/projects/60/announcement`: draft, preview, publish, then open `/announcements/<slug>` in a window
   where nobody is signed in, edit while public, unpublish, history.
 - **20 Public** `/announcements` and `/announcements/<slug>` signed out: nothing private anywhere on the page.
+- **21 Submission** `/projects/60/submission`: choose a document, read the check, freeze and submit (a throwaway project, not 60); the packages table; check that no reviewer name or note appears anywhere on the page or in the page's data after an editor has reviewed.
 - **40 Interest** `/announcements/<slug>/interest`: expected to fail with "The request was not sent" until C-28 is fixed;
   then the inbox on the members screen.
 
