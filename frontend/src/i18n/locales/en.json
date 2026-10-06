@@ -3044,5 +3044,104 @@
       "invitation_created": "An invitation was sent. Who it was sent to is shown to the owner only.",
       "other": "The details of this entry are not shown to your role."
     }
+  },
+  "announcement": {
+    "tab": "Announcement",
+    "title": "Public announcement",
+    "readOnly": "Only the project owner can draft, publish or take down the announcement. You are a {{role}}: you can read it here.",
+    "openPublic": "Open the public page",
+    "publishedOn": "Public since {{date}}",
+    "hidden": "This announcement was hidden by a moderator, so it is not public. The platform does not tell you why, and you cannot edit or restore it from here yet.",
+    "never": "Never public: resources and My Library items, evidence and notes, discussions and tasks, the member list and roles, e-mail addresses, documents and findings.",
+    "status": {
+      "draft": "Draft · not public",
+      "published": "Published · public",
+      "unpublished": "Unpublished · not public",
+      "hidden": "Hidden by a moderator · not public"
+    },
+    "public": {
+      "label": "Project announcement · ongoing research · not peer-reviewed"
+    },
+    "empty": {
+      "title": "No announcement yet",
+      "body": "An announcement tells the public that this research is under way: its scope and stage, in your words. It is labelled as ongoing research, not as reviewed findings. Nothing from the workspace is shown unless you write it into the announcement.",
+      "start": "Start a draft",
+      "ownerOnly": "The owner has not written one."
+    },
+    "form": {
+      "label": "Announcement",
+      "onlyThese": "Only the fields below, and the project's title, scope and stage, can ever be public. Everything else in the project stays private.",
+      "liveWarning": "This announcement is public. The platform keeps one version: saving changes the public page at once.",
+      "title": "Public title",
+      "titleRequired": "give the announcement a title",
+      "summary": "Question and summary",
+      "summaryHint": "Describe what you are investigating, not conclusions. Results go through formal review.",
+      "summaryRequired": "write a summary for the public page",
+      "stage": "Stage shown",
+      "stageHint": "The stage the public page says the research is at.",
+      "keywords": "Keywords",
+      "keywordsHint": "Separate with commas.",
+      "slug": "Address of the public page",
+      "slugHint": "Letters, numbers and single hyphens. It cannot be changed while the page is public.",
+      "slugInvalid": "use letters, numbers and single hyphens, with no spaces",
+      "slugFromTitle": "Make from title",
+      "noCredit": "Crediting other participants is not available yet: the platform has no way to ask them to agree. Only your name, as the project's owner, appears.",
+      "saveDraft": "Save draft",
+      "saveLive": "Save changes to the public page",
+      "saving": "Saving…",
+      "saveFailed": "The announcement was not saved",
+      "unsaved": "Unsaved changes",
+      "saved": "Saved"
+    },
+    "preview": {
+      "title": "Public preview",
+      "noTitle": "(no title yet)",
+      "noSummary": "(no summary yet)",
+      "project": "Project",
+      "scope": "Scope",
+      "noScope": "The project has no scope written. Add one in the project settings.",
+      "stage": "Stage",
+      "keywords": "Keywords",
+      "noKeywords": "None",
+      "by": "By"
+    },
+    "publish": {
+      "open": "Publish…",
+      "cannot_one": "Cannot publish yet: {{count}} thing to fix",
+      "cannot_other": "Cannot publish yet: {{count}} things to fix",
+      "gaps": {
+        "title": "Add a public title.",
+        "summary": "Write the summary: it is required for the public page.",
+        "slug": "Give the page a valid address.",
+        "unsaved": "Save your changes first: what is published is what is saved."
+      },
+      "title": "Publish “{{title}}”?",
+      "body": "These become public, on the announcements page and in search, as soon as you confirm:",
+      "items": {
+        "title": "The announcement's title",
+        "summary": "The summary",
+        "stage": "The stage",
+        "keywords": "The keywords",
+        "project": "The project's title",
+        "scope": "The project's scope",
+        "owner": "Your name (and the public profile details you chose in Settings)"
+      },
+      "after": "You can take it down again at any time.",
+      "confirm": "Publish",
+      "failed": "The announcement was not published"
+    },
+    "unpublish": {
+      "open": "Unpublish…",
+      "title": "Unpublish “{{title}}”?",
+      "body": "The public page and the listings stop showing it at once. The project, its research and the announcement stay, and you can publish again later.",
+      "confirm": "Unpublish",
+      "failed": "The announcement was not unpublished"
+    },
+    "history": {
+      "title": "Announcement history (internal)",
+      "none": "Nothing recorded yet.",
+      "failed": "The history could not be loaded.",
+      "note": "Only taking the announcement down is recorded today. Earlier versions are not kept: the public page is the current version."
+    }
   }
 }

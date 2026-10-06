@@ -21,6 +21,7 @@ import { OperationsPage } from '@/features/admin/OperationsPage'
 import { ProposalsPage } from '@/features/admin/ProposalsPage'
 import { SupportPage } from '@/features/admin/SupportPage'
 import { ComparisonPage } from '@/features/comparison/ComparisonPage'
+import { AnnouncementPage } from '@/features/announcement/AnnouncementPage'
 import { ActivityPage } from '@/features/activity/ActivityPage'
 import { DiscussionPage } from '@/features/discussion/DiscussionPage'
 import { EvidencePage } from '@/features/evidence/EvidencePage'
@@ -69,6 +70,7 @@ const BUILT: Record<string, ReactElement> = {
   '16': <DiscussionPage />,
   '17': <NotificationsPage />,
   '18': <ActivityPage />,
+  '19': <AnnouncementPage />,
   '07p': <ResourcePickerPage />,
 }
 

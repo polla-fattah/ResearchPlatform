@@ -79,7 +79,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
   - [x] D2.5 Tests, contract `discussion-write.test.ts`, C-item.
 - [x] **D3 Notifications (17)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): list with category and read state filters (URL), mark read/unread, mark all, open target object, unread badge (D0.2), preferences link to settings; category set differs from the design (record in the request file); empty and forbidden states; tests and contract.
 - [x] **D4 Activity (18)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): project feed with filters (actor, type, date), structured entries rendered from `ProjectActivity` fields only (no guessed sentences), paging; honest note about the 100-item cap if still true; tests and contract.
-- [ ] **D5 Announcement editor (19)**: draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
+- [x] **D5 Announcement editor (19)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
 - [ ] **D6 Public announcements list and page (20l, 20)**: public layout without sign-in, no private data (assert the response whitelist in a contract test), slug routes, not-found page, share-safe metadata, RTL.
 - [ ] **D7 Collaboration interest form (40)**: public form (needs a public endpoint; if missing, build the honest unavailable state and file the request), owner's inbox from `collaboration-requests`, status handling, rate limit and spam-protection honesty; tests.
 - [ ] **D8 Phase 2 checkpoint**: as P0.1 to P0.5 for screens 15 to 20 and 40; R1b flags on; plan updated.
@@ -144,6 +144,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · D4 Activity (18) in `features/activity/` `[live-owed]` · feed grouped by the person's day, filters (who from the members, object, action, range as a plain day cut from the app clock so the key changes daily) and page all in the address, links to the objects, the server's sentence shown as written with the kind translated, an invitation's sentence withheld from everyone but the owner (it names the e-mail address) · Activity tab enabled · 651 unit tests · `activity-write.test.ts` written from the code, not run · gaps in C-25.
 
+- 2026-10-07 · D5 Announcement editor (19) in `features/announcement/` `[live-owed]` · none/draft/published/unpublished/hidden states, form (title, summary, stage, keywords, address) on React Hook Form with the saved announcement as its key, preview drawn from the typed values with the project's own title, scope and owner, publish only when saved and valid and after a confirmation listing what becomes public, unpublish, history as far as the server keeps it, status always sent on save so a published page is not taken down, hidden is read-only, non-owners read · Announcement tab added · 671 unit tests · `announcement-write.test.ts` written from the code, not run · gaps in C-26.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
@@ -156,3 +158,5 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · A discussion is opened from the list the screen already loaded (there is no single-thread read); one that is not on the loaded page says so (C-23).
 - 2026-10-07 · The server's notification text is shown as written (it is English and carries the project title); only the kind and the controls are translated, because rebuilding the sentence would need data the row does not carry (C-24).
 - 2026-10-07 · No CSV export button on Activity: the server has none and a button that did nothing would be false (C-25).
+- 2026-10-07 · A moderator-hidden announcement cannot be saved from the screen: the save would send `draft` and lift the hiding (C-26).
+- 2026-10-07 · The announcement form says that saving a published page changes it at once, and keeps the status on save; the design's version comparison needs a server draft that does not exist (C-26).
