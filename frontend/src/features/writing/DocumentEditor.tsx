@@ -45,7 +45,7 @@ type Dialog = null | 'cite' | 'rename' | 'delete' | 'link'
  */
 export function DocumentEditor({ projectId, doc, start, evidence, canEdit, showVersions, onVersions, onBack, onOpenFinding, onDeleted }: Props) {
   const { t } = useTranslation()
-  const { relative, date } = usePreferences()
+  const { relative, date, n } = usePreferences()
   const qc = useQueryClient()
   const handle = useRef<EditorHandle>(null)
   const [dialog, setDialog] = useState<Dialog>(null)
@@ -305,6 +305,7 @@ export function DocumentEditor({ projectId, doc, start, evidence, canEdit, showV
         onConfirm={() => remove.mutate()}
       >
         <p>{t('writing.doc.deleteBody')}</p>
+        {(doc.findings ?? []).length > 0 ? <p>{t('writing.doc.deleteLinked', { count: (doc.findings ?? []).length, formattedCount: n((doc.findings ?? []).length) })}</p> : null}
       </ConfirmAction>
 
       {state.status === 'conflict' && state.conflict ? (

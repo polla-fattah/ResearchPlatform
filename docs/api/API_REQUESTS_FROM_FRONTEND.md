@@ -54,6 +54,36 @@
 | API-14 | P2 | Editorial and reviewer workflows | Done | ✅ **Resolved & Verified:** C-29, C-30, C-31 implemented: Complete double-blind reviewer workspace; rights declarations and COI mandatory on submission; decisions require explicit COI confirmation and reject duplicate decisions (409); queue list payload optimized with `package_summary`; citation export accepts query format and strips fake Zenodo URL; verified in `Batch1ImplementationTest` & `Batch2ImplementationTest`. |
 | API-15 | P3 | Datasets, uploads, RIS import | Done | ✅ **Resolved & Verified:** Package import/export (.zip), BibTeX, and graph export fully functional. |
 
+## Live re-check · 6 Oct 2026 (evening, backend at `678ed8c`)
+
+The whole contract suite was run for the first time against the live backend (35 files, writes on). Result after fixing the tests and the screens it exposed: **344 passing, 52 expected failures, 0 unexpected**. Each expected failure is a defect still open (`it.fails`); 72 of the `it.fails` tests that were written from the backend's code **now pass** and were turned into ordinary tests, which means the backend fixed what they describe. Count of tests that flipped, by request item:
+
+| Item | Fixed tests | Item | Fixed tests | Item | Fixed tests |
+|---|---|---|---|---|---|
+| C-12 | 1 | C-22 | 4 | C-30 | 3 |
+| C-13 | 3 | C-23 | 4 | C-31 | 3 |
+| C-15 | 1 | C-24 | 1 | C-32 | 3 |
+| C-16 | 2 | C-25 | 1 | C-33 | 3 |
+| C-17 | 2 | C-26 | 3 | C-34 | 4 |
+| C-18 | 8 | C-27 | 1 | C-35 | 4 |
+| C-19 | 3 | C-28 | 2 | C-37 | 1 |
+| C-20 | 4 | C-29 | 4 | C-38 | 1 |
+| C-21 | 2 | | | C-39 | 1 |
+| | | | | C-40 | 2 |
+| | | | | C-41 | 2 |
+
+Still open (tests that still fail as expected): C-13 (1), C-15 (1), C-16 (1), C-17 (2), C-19 (2), C-20 (3), C-21 (3), C-23 (3), C-24 (2), C-25 (2), C-26 (2), C-28 (1), C-29 (1), C-36 (4), C-37 (4), C-38 (4), C-39 (4), C-40 (3), C-41 (1), C-42 (4), C-43 (4). **Re-check these against the text of each item before relying on the item as written: several items have some of their points fixed and some open.** C-4 and C-8 (the critical ones) have no live test here and still need their own check.
+
+What changed in the API that the frontend had to follow (all handled, with tests):
+- **Every document starts with its first version.** `POST /documents` requires `content`, so a document with no saved version cannot exist; the pre-publication check can no longer meet one.
+- **Deleting a document with findings linked or citations** answers `409 HAS_DEPENDENCIES` (`details.has_findings`, `has_citations`) unless `confirm=true`. The delete dialog now says how many findings are linked and sends `confirm`.
+- **Library items are de-duplicated:** saving the same source again answers `409 DUPLICATE` with the existing item.
+- **Adding a resource to a project twice** answers 200 (the first answer is 201).
+- **An editorial decision needs `coi_confirmed: true`**; the screen already asks for it.
+- **The public copy of a published package carries no internal ids** (findings, documents, evidence items). The public publication page and the reviewer page no longer need them.
+- **Making a project from a template** answers the new project without the detail a later read has (no `is_archived`), and three templates are seeded. The screen reads only what it needs.
+- **The apply endpoint allows ten per hour per address.** The suite makes about twenty throwaway applicants, so it clears a local backend's cache before each file (`src/test/contract/clearLimits.ts`; `CONTRACT_NO_CLEAR=1` turns it off).
+
 ## Part C · Defects found in the re-audit (6 Oct 2026)
 
 Priority order: fix **C-4, C-8, C-1, C-2** before anything else (security), then **C-5** (500s that block R1a screens).

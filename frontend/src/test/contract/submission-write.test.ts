@@ -53,9 +53,9 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`submission (${BASE
   it('sets up a project with a document that has a saved version', async () => {
     owner = (await call('POST', '/auth/login', { email: EMAIL, password: PASSWORD })).body.data.token
     projectId = (await call('POST', '/projects', { title: `[contract-test] submission ${stamp}`, question: 'Submit?', scope: 'Contract testing only.', languages: ['en'], stage: 'writing', tags: [] }, owner)).body.data.id
-    const made = await asOwner('POST', '/documents', { title: 'Contract article', document_type: 'article', language: 'en' })
+    const made = await asOwner('POST', '/documents', { title: 'Contract article', document_type: 'article', language: 'en', content: 'Body text.' })
     docId = made.body.data.id
-    expect((await asOwner('POST', `/documents/${docId}/versions`, { content: 'Body text.', change_summary: 'first', expected_version: 0 })).status).toBeLessThan(300)
+    expect(made.body.data.latest_version?.version_number).toBe(1)
   })
 
   it('has no packages yet, and checks the document without errors', async () => {
@@ -65,22 +65,20 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`submission (${BASE
     expect(validationSchema.parse(res.body.data).is_valid).toBe(true)
   })
 
-  it('flags a document with no saved version as an error', async () => {
-    const empty = (await asOwner('POST', '/documents', { title: 'Empty', document_type: 'article', language: 'en' })).body.data.id
-    const res = validationSchema.parse((await asOwner('POST', '/validate-pre-publication', { document_ids: [empty] })).body.data)
-    expect(res.is_valid).toBe(false)
-    expect(res.issues.some((i) => i.code === 'DOCUMENT_NO_VERSION' && i.severity === 'error')).toBe(true)
-    await asOwner('DELETE', `/documents/${empty}`)
+  it('cannot be given a document with no saved version: a new document always has its first version', async () => {
+    const res = await asOwner('POST', '/documents', { title: 'Empty', document_type: 'article', language: 'en' })
+    expect(res.status).toBe(422)
+    expect(res.body.error.details).toHaveProperty('content')
   })
 
-  it('refuses a package without a title or abstract, and one whose check has errors', async () => {
+  it('refuses a package without a title or an abstract', async () => {
     expect((await asOwner('POST', '/submissions', package_({ title: '' }))).status).toBe(422)
     expect((await asOwner('POST', '/submissions', package_({ abstract: '' }))).status).toBe(422)
-    const empty = (await asOwner('POST', '/documents', { title: 'Empty 2', document_type: 'article', language: 'en' })).body.data.id
-    const res = await asOwner('POST', '/submissions', package_({ document_ids: [empty] }))
-    expect(res.status).toBe(422)
-    expect(res.body.error?.code).toBe('VALIDATION_FAILED')
-    await asOwner('DELETE', `/documents/${empty}`)
+  })
+
+  it('passes a document id that is not in the project without saying so (it is dropped, and the check says "no documents")', async () => {
+    const res = validationSchema.parse((await asOwner('POST', '/validate-pre-publication', { document_ids: [99999999] })).body.data)
+    expect(res.issues.map((i) => i.code)).toEqual(['NO_DOCUMENTS'])
   })
 
   it('freezes and submits the package: version 1, a checksum, status submitted', async () => {
@@ -98,29 +96,22 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`submission (${BASE
     expect(submissionSchema.parse((await asOwner('GET', `/submissions/${submissionId}`)).body.data).title).toBe(`[contract-test] ${stamp}`)
   })
 
-  it.fails('C-29: a package cannot be submitted past an error by sending bypass_warnings', async () => {
-    const empty = (await asOwner('POST', '/documents', { title: 'Empty 3', document_type: 'article', language: 'en' })).body.data.id
-    const res = await asOwner('POST', '/submissions', package_({ document_ids: [empty], bypass_warnings: true }))
-    await asOwner('DELETE', `/documents/${empty}`)
-    expect(res.status).toBe(422)
-  })
-
   it.fails('C-29: the check flags a citation to unresolved evidence', async () => {
     // Needs an unresolved evidence item cited in the document; the check reads `status` where evidence has `state`.
     throw new Error('requires a cited unresolved evidence item; the check cannot see it today')
   })
 
-  it.fails('C-29: the author’s view of a package does not carry reviewer identities or their notes', async () => {
+  it('C-29: the author’s view of a package does not carry reviewer identities or their notes', async () => {
     const text = JSON.stringify((await asOwner('GET', `/submissions/${submissionId}`)).body.data)
     expect(text).not.toMatch(/reviewer_id|reviewer_notes|"reviewer"|"submitter"/)
   })
 
-  it.fails('C-29: a second package cannot be submitted while one is waiting', async () => {
+  it('C-29: a second package cannot be submitted while one is waiting', async () => {
     const res = await asOwner('POST', '/submissions', package_({ title: `[contract-test] second ${stamp}` }))
     expect(res.status).toBe(409)
   })
 
-  it.fails('C-29: a package says nothing is defaulted: a missing licence or declaration is refused', async () => {
+  it('C-29: a package says nothing is defaulted: a missing licence or declaration is refused', async () => {
     const { rights_declaration: _r, coi_declared: _c, ...rest } = package_({ title: `[contract-test] third ${stamp}` })
     const res = await asOwner('POST', '/submissions', rest)
     expect(res.status).toBe(422)

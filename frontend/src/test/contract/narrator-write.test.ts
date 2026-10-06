@@ -79,7 +79,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`narrator dossier (
     expect(trajectorySchema.parse(res.body.data).narrator_id).toBe(narratorId)
   })
 
-  it.fails('C-37: the list of a narrator’s assertions can be asked for by narrator, not only by type', async () => {
+  it('C-37: the list of a narrator’s assertions can be asked for by narrator, not only by type', async () => {
     const list = z.array(assertionSchema).parse((await asOwner('GET', `/assertions?subject_type=narrator&subject_id=${narratorId + 1000}`)).body.data)
     expect(list.every((a) => a.subject_id === narratorId + 1000)).toBe(true)
   })

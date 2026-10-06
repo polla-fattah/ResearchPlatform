@@ -46,7 +46,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD)(`findings and documents, read
   it('reads the seeded project’s documents, a version, the draft and the findings with the schemas', async () => {
     token = (await call('POST', '/auth/login', { email: EMAIL, password: PASSWORD })).body.data.token
     const projects = await call('GET', '/projects?scope=owned&per_page=100')
-    const seeded = projects.body.data.find((p: { id: number; resource_count: number }) => p.resource_count > 0)
+    const seeded = [...projects.body.data].sort((a: { resource_count: number }, b: { resource_count: number }) => b.resource_count - a.resource_count)[0]
     expect(seeded, 'the demo account needs a project with content').toBeTruthy()
     const docs = await call('GET', `/projects/${seeded.id}/documents`)
     const parsedDocs = z.array(documentSchema).parse(docs.body.data)
@@ -71,7 +71,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`findings and docum
 
   it('signs in, finds another project’s document and evidence, and builds a throwaway project', async () => {
     token = (await call('POST', '/auth/login', { email: EMAIL, password: PASSWORD })).body.data.token
-    const seeded = (await call('GET', '/projects?scope=owned&per_page=100')).body.data.find((p: { resource_count: number }) => p.resource_count > 0)
+    const seeded = [...(await call('GET', '/projects?scope=owned&per_page=100')).body.data].sort((a: { resource_count: number }, b: { resource_count: number }) => b.resource_count - a.resource_count)[0]
     foreignProjectId = seeded.id
     foreignDocId = (await call('GET', `/projects/${foreignProjectId}/documents`)).body.data[0].id
     foreignEvidenceId = (await call('GET', `/projects/${foreignProjectId}/evidence`)).body.data[0].id
@@ -85,7 +85,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`findings and docum
         tags: [],
       })
     ).body.data.id
-    const lib = await call('POST', '/library/items', { resource_type: 'external', title: '[contract-test] source', author: 'Author A' })
+    const lib = await call('POST', '/library/items', { resource_type: 'external', title: `[contract-test] source ${Date.now()}`, author: 'Author A' })
     libraryItemId = lib.body.data.id
     resourceId = lib.body.data.resource_id
     evidenceId = (await call('POST', `/projects/${projectId}/evidence`, { resource_id: resourceId, captured_text: 'نص للاختبار', locator: 'p. 5' })).body.data.id
@@ -161,12 +161,12 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`findings and docum
 
   // ---- C-18: known defects, recorded as expected failures --------------------------------------------------------
 
-  it.fails('C-18: a version cannot be saved without saying which version it is based on', async () => {
+  it('C-18: a version cannot be saved without saying which version it is based on', async () => {
     const res = await call('POST', `/projects/${projectId}/documents/${docId}/versions`, { content: 'no base given' })
     expect(res.status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-18: a finding’s version goes up with each edit, so an edit based on the old version is refused', async () => {
+  it('C-18: a finding’s version goes up with each edit, so an edit based on the old version is refused', async () => {
     const before = findingSchema.parse((await call('GET', `/projects/${projectId}/findings/${findingId}`)).body.data)
     await call('PATCH', `/projects/${projectId}/findings/${findingId}`, { claim: 'edited by someone else' })
     const res = await call('PATCH', `/projects/${projectId}/findings/${findingId}`, { claim: 'edited from a stale copy', expected_version: before.version })
@@ -175,41 +175,41 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`findings and docum
 
   // C-18: the per-person draft is not cleared when a version is committed, so reopening the document offers a draft
   // that is older than the newest version. The editor only restores a draft whose base version is the current one.
-  it.fails('C-18: a draft is gone once a version has been committed', async () => {
+  it('C-18: a draft is gone once a version has been committed', async () => {
     await call('PUT', `/projects/${projectId}/documents/${docId}/draft`, { content: 'old draft', base_version: 1 })
     const head = (await call('GET', `/projects/${projectId}/documents/${docId}`)).body.data.latest_version.version_number
     await call('POST', `/projects/${projectId}/documents/${docId}/versions`, { content: 'committed', expected_version: head })
     expect((await call('GET', `/projects/${projectId}/documents/${docId}/draft`)).body.data.draft_content ?? null).toBeNull()
   })
 
-  it.fails('C-18: a document’s versions cannot be read through another project', async () => {
+  it('C-18: a document’s versions cannot be read through another project', async () => {
     const res = await call('GET', `/projects/${projectId}/documents/${foreignDocId}/versions/1`)
     expect(res.status).toBe(404)
   })
 
-  it.fails('C-18: a citation cannot be built from another project’s evidence', async () => {
+  it('C-18: a citation cannot be built from another project’s evidence', async () => {
     const res = await call('POST', `/projects/${projectId}/documents/${docId}/cite`, { evidence_id: foreignEvidenceId })
     expect(res.status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-18: a citation of a source that has an author does not say the author is missing', async () => {
+  it('C-18: a citation of a source that has an author does not say the author is missing', async () => {
     const res = citePreviewSchema.parse((await call('POST', `/projects/${projectId}/documents/${docId}/cite`, { evidence_id: evidenceId })).body.data)
     expect(res.missing_components).not.toContain('author')
   })
 
-  it.fails('C-18: documents and versions name their author by id and display name only', async () => {
+  it('C-18: documents and versions name their author by id and display name only', async () => {
     const res = await call('GET', `/projects/${projectId}/documents/${docId}`)
     expect(JSON.stringify(res.body.data)).not.toMatch(/"email"/)
   })
 
-  it.fails('C-18: a finding can be marked withdrawn', async () => {
+  it('C-18: a finding can be marked withdrawn', async () => {
     const res = await call('PATCH', `/projects/${projectId}/findings/${findingId}`, { status: 'withdrawn' })
     expect(res.status).toBe(200)
   })
 
   it('cleans up: deletes the finding and document, the library item, and trashes the project', async () => {
     expect((await call('DELETE', `/projects/${projectId}/findings/${findingId}`)).status).toBe(200)
-    expect((await call('DELETE', `/projects/${projectId}/documents/${docId}`)).status).toBe(200)
+    expect((await call('DELETE', `/projects/${projectId}/documents/${docId}?confirm=true`)).status).toBe(200)
     expect((await call('DELETE', `/library/items/${libraryItemId}`)).status).toBe(200)
     expect((await call('DELETE', `/projects/${projectId}`)).status).toBe(200)
   })

@@ -81,7 +81,7 @@ describe.skipIf(!reachable)(`book structure and word forms (${BASE})`, () => {
     expect(body).toHaveProperty('total_available')
   })
 
-  it.fails('C-38: a snippet is cut around the match even when the text has vowel marks', async () => {
+  it('C-38: a snippet is cut around the match even when the text has vowel marks', async () => {
     const c = concordanceSchema.parse((await get('/corpus/concordance?q=%D8%AB%D9%84%D8%A7%D8%AB%D8%A7&limit=20')).body.data)
     expect(c.concordance_samples.every((s) => !s.snippet.endsWith('...') || s.snippet.includes('ثلاث'))).toBe(true)
   })

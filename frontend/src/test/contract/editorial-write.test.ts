@@ -78,8 +78,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`editorial, write (
     await asAdmin('POST', `/admin/applications/${applied.body.data.application.id}/decide`, { decision: 'approved', decision_reason: 'Contract test account' })
     guest = (await call('POST', '/auth/login', { email: guestEmail, password: 'password123' })).body.data.token
     projectId = (await asGuest('POST', '/projects', { title: `[contract-test] editorial ${stamp}`, question: 'Edit?', scope: 'Contract testing only.', languages: ['en'], stage: 'writing', tags: [] })).body.data.id
-    docId = (await asGuest('POST', `/projects/${projectId}/documents`, { title: 'Article', document_type: 'article', language: 'en' })).body.data.id
-    await asGuest('POST', `/projects/${projectId}/documents/${docId}/versions`, { content: 'Body.', change_summary: 'first', expected_version: 0 })
+    docId = (await asGuest('POST', `/projects/${projectId}/documents`, { title: 'Article', document_type: 'article', language: 'en', content: 'Body.' })).body.data.id
     const sub = await asGuest('POST', `/projects/${projectId}/submissions`, pack())
     expect(sub.status).toBe(201)
     submissionId = sub.body.data.id
@@ -112,14 +111,14 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`editorial, write (
   })
 
   it('will not approve before a review is finished, and needs a reason', async () => {
-    const res = await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'approve', decision_notes: 'Looks fine to me.' })
+    const res = await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'approve', decision_notes: 'Looks fine to me.', coi_confirmed: true })
     expect(res.status).toBe(422)
     expect(res.body.error?.code).toBe('PEER_REVIEW_REQUIRED')
-    expect((await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'reject', decision_notes: 'short' })).status).toBe(422)
+    expect((await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'reject', decision_notes: 'short', coi_confirmed: true })).status).toBe(422)
   })
 
   it('requests revisions, and the author then sees the decision and its note but no reviewer', async () => {
-    const res = await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'request_revisions', decision_notes: 'Please add a limitations section.' })
+    const res = await asAdmin('POST', `/editor/submissions/${submissionId}/decision`, { decision: 'request_revisions', decision_notes: 'Please add a limitations section.', coi_confirmed: true })
     expect(decisionResultSchema.parse(res.body.data).submission_status).toBe('revision_requested')
     const mine = await asGuest('GET', `/projects/${projectId}/submissions`)
     expect(JSON.stringify(mine.body.data)).toContain('Please add a limitations section.')
@@ -134,7 +133,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`editorial, write (
     expect(assign.status).toBe(201)
     const review = await asAdmin('POST', `/reviews/assignments/${assign.body.data.id}/recommendation`, { recommendation: 'approve', reviewer_notes: 'Sound and clearly argued.', score: 8 })
     expect(review.status).toBe(200)
-    const decided = await asAdmin('POST', `/editor/submissions/${secondId}/decision`, { decision: 'approve', decision_notes: 'Approved after revision.' })
+    const decided = await asAdmin('POST', `/editor/submissions/${secondId}/decision`, { decision: 'approve', decision_notes: 'Approved after revision.', coi_confirmed: true })
     expect(decisionResultSchema.parse(decided.body.data).submission_status).toBe('approved')
   })
 
@@ -148,17 +147,17 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`editorial, write (
     expect(list.some((p) => p.public_slug === `contract-pub-${stamp}`)).toBe(true)
   })
 
-  it.fails('C-30: a package that was released cannot be decided on again', async () => {
-    const res = await asAdmin('POST', `/editor/submissions/${secondId}/decision`, { decision: 'reject', decision_notes: 'Changed my mind after release.' })
+  it('C-30: a package that was released cannot be decided on again', async () => {
+    const res = await asAdmin('POST', `/editor/submissions/${secondId}/decision`, { decision: 'reject', decision_notes: 'Changed my mind after release.', coi_confirmed: true })
     expect(res.status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-30: the DOI is not invented when none is given', async () => {
+  it('C-30: the DOI is not invented when none is given', async () => {
     const pub = publicationRefSchema.parse((await asAdmin('GET', `/editor/submissions/${secondId}`)).body.data.publication)
     expect(pub.doi ?? '').not.toContain('openhadith')
   })
 
-  it.fails('C-30: a queue row does not carry the whole frozen package', async () => {
+  it('C-30: a queue row does not carry the whole frozen package', async () => {
     const rows = (await asAdmin('GET', '/editor/submissions?per_page=5')).body.data as Record<string, unknown>[]
     expect(rows.some((r) => 'frozen_package' in r)).toBe(false)
   })

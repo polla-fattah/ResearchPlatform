@@ -151,7 +151,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD)(`authenticated contract (${BA
   })
 
   // C-12: a trashed project cannot be opened, so the index cannot offer "View (read-only)".
-  it.fails('C-12: GET /projects/{id} returns a trashed project to its owner (read-only)', async (ctx) => {
+  it('C-12: GET /projects/{id} returns a trashed project to its owner (read-only)', async (ctx) => {
     const trash = await get('/projects?scope=trash&per_page=1')
     const row = trash.body.data[0]
     if (!row) ctx.skip() // needs a trashed project in the database

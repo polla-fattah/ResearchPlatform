@@ -152,24 +152,24 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`members and invita
     expect((await asOwner('PATCH', `/members/${ownerId}`, { role: 'viewer' })).status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-22: the other role route refuses "owner" as a role', async () => {
+  it('C-22: the other role route refuses "owner" as a role', async () => {
     const res = await asOwner('PUT', `/members/${guestId}`, { role: 'owner' })
     expect(res.status).toBe(422)
     await asOwner('PATCH', `/members/${guestId}`, { role: 'viewer' })
   })
 
-  it.fails('C-22: the member list has only people who are members now', async () => {
+  it('C-22: the member list has only people who are members now', async () => {
     const rows = z.array(memberSchema).parse((await asOwner('GET', '/members')).body.data)
     expect(rows.every((m) => m.status === 'accepted')).toBe(true)
   })
 
-  it.fails('C-22: the contribution summary counts the member’s own findings, not the project’s', async () => {
+  it('C-22: the contribution summary counts the member’s own findings, not the project’s', async () => {
     const rows = z.array(memberSchema).parse((await asOwner('GET', '/members')).body.data)
     const guestRow = rows.find((m) => m.user_id === guestId)
     expect((guestRow?.contribution_summary as { findings?: number } | undefined)?.findings ?? 0).toBe(0)
   })
 
-  it.fails('C-22: an accepted invitation cannot be sent again', async () => {
+  it('C-22: an accepted invitation cannot be sent again', async () => {
     expect((await asOwner('POST', `/invitations/${inviteId}/resend`)).status).toBe(409)
   })
 

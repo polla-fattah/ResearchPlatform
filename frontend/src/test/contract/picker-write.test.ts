@@ -92,7 +92,8 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`resource picker ($
 
   it('adds the resource to the project (idempotently) and lists it there', async () => {
     expect((await call('POST', `/projects/${projectId}/resources`, { resource_id: resourceId })).status).toBe(201)
-    expect((await call('POST', `/projects/${projectId}/resources`, { resource_id: resourceId })).status).toBe(201)
+    // Adding it again changes nothing and answers 200, not 201.
+    expect((await call('POST', `/projects/${projectId}/resources`, { resource_id: resourceId })).status).toBe(200)
     const list = await call('GET', `/projects/${projectId}/resources`)
     const ids = (list.body.data as { id: number }[]).map((r) => r.id)
     expect(ids.filter((id) => id === resourceId)).toHaveLength(1)
@@ -134,7 +135,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`resource picker ($
 
   // C-13 (a): LibraryItem::$fillable omits these columns, so mass assignment drops them
   // silently. `it.fails` passes while that is true and starts failing when the backend is fixed.
-  it.fails('C-13: locator, excerpt, snapshot and citation flags are actually stored', async () => {
+  it('C-13: locator, excerpt, snapshot and citation flags are actually stored', async () => {
     const first = await call('GET', `/library/items/${firstItemId}`)
     expect(first.body.data.locator).toBe(pickedLocator)
     const external = await call('GET', `/library/items/${externalItemId}`)

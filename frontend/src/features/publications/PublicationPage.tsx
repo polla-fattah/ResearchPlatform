@@ -85,8 +85,8 @@ export function PublicationPage() {
               </section>
             ) : null}
 
-            {(content?.documents ?? []).map((d) => (
-              <section key={d.id} aria-label={d.title}>
+            {(content?.documents ?? []).map((d, di) => (
+              <section key={d.id ?? di} aria-label={d.title}>
                 <h2>
                   <BidiText>{d.title}</BidiText>
                 </h2>
@@ -97,8 +97,8 @@ export function PublicationPage() {
             {(content?.findings ?? []).length > 0 ? (
               <section aria-label={t('publications.findings')}>
                 <h2>{t('publications.findings')}</h2>
-                {(content?.findings ?? []).map((f) => (
-                  <div key={f.id}>
+                {(content?.findings ?? []).map((f, fi) => (
+                  <div key={f.id ?? fi}>
                     <p>
                       <strong>
                         <BidiText>{f.claim}</BidiText>

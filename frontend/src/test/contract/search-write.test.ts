@@ -169,7 +169,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`search workspace (
 
   // C-15: two occurrences of the SAME report carry the same wording, and evidence is de-duplicated by wording
   // alone, so the second occurrence is skipped as a "duplicate" although it is a different source.
-  it.fails('C-15: evidence from two different occurrences of one report is not treated as a duplicate', async () => {
+  it('C-15: evidence from two different occurrences of one report is not treated as a duplicate', async () => {
     const search = await call('GET', `/corpus/search?q=${encodeURIComponent('وضوء')}&mode=normalized&per_page=10&page=7`)
     const hits = z.array(corpusSearchHitSchema).parse(search.body.data)
     const multi = hits.find((h) => (h.occurrences?.length ?? 0) >= 2)

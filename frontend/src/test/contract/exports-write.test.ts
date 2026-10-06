@@ -61,7 +61,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`downloads (${BASE}
         tags: [],
       })
     ).body.data.id
-    const lib = await call('POST', '/library/items', { resource_type: 'external', title: '[contract-test] export source' })
+    const lib = await call('POST', '/library/items', { resource_type: 'external', title: `[contract-test] export source ${Date.now()}` })
     libraryItemId = lib.body.data.id
     const ev = await call('POST', `/projects/${projectId}/evidence`, { resource_id: lib.body.data.resource_id, captured_text: 'نص تجريبي للتصدير' })
     expect(ev.status).toBe(201)
@@ -118,7 +118,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`downloads (${BASE}
   })
 
   // C-17: part numbers are not checked; every number returns the same file.
-  it.fails('C-17: a part that does not exist is not found', async () => {
+  it('C-17: a part that does not exist is not found', async () => {
     const res = await fetch(`${BASE}/api/v1/exports/${jobId}/parts/2/download`, { headers: { Authorization: `Bearer ${token}` } })
     expect(res.status).toBe(404)
   })
@@ -131,7 +131,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`downloads (${BASE}
   })
 
   // C-17: a finished export can be "cancelled", which discards it. (Run last: it changes the job.)
-  it.fails('C-17: cancelling a finished export is refused', async () => {
+  it('C-17: cancelling a finished export is refused', async () => {
     const res = await call('POST', `/exports/${jobId}/cancel`)
     expect(res.status).toBeGreaterThanOrEqual(400)
   })

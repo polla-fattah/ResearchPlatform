@@ -62,21 +62,21 @@ describe.skipIf(!reachable)(`public research (${BASE})`, () => {
     expect(citationSchema.parse(res.body.data).citation.length).toBeGreaterThan(10)
   })
 
-  it.fails('C-32: the citation can be asked for in RIS and APA', async () => {
+  it('C-32: the citation can be asked for in RIS and APA', async () => {
     const first = ((await get('/public/research?per_page=1')).body.data as { public_slug: string }[])[0]
     if (!first) throw new Error('no publication to check')
     const ris = citationSchema.parse((await get(`/public/research/${first.public_slug}/cite?format=ris`)).body.data)
     expect(ris.format.toLowerCase()).toBe('ris')
   })
 
-  it.fails('C-32: the public page carries no reviewer alias, comment or editor note', async () => {
+  it('C-32: the public page carries no reviewer alias, comment or editor note', async () => {
     const first = ((await get('/public/research?per_page=1')).body.data as { public_slug: string }[])[0]
     if (!first) throw new Error('no publication to check')
     const text = JSON.stringify((await get(`/public/research/${first.public_slug}`)).body.data)
     expect(text).not.toMatch(/reviewer_alias|review_comments|editorial_notes|releaser/)
   })
 
-  it.fails('C-32: the public page does not carry internal ids', async () => {
+  it('C-32: the public page does not carry internal ids', async () => {
     const first = ((await get('/public/research?per_page=1')).body.data as Record<string, any>[])[0]
     if (!first) throw new Error('no publication to check')
     expect(first.project ?? {}).not.toHaveProperty('id')

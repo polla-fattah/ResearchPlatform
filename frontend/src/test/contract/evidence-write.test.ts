@@ -61,7 +61,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`evidence inspector
         tags: [],
       })
     ).body.data.id
-    const lib = await call('POST', '/library/items', { resource_type: 'external', title: '[contract-test] source' })
+    const lib = await call('POST', '/library/items', { resource_type: 'external', title: `[contract-test] source ${Date.now()}` })
     libraryItemId = lib.body.data.id
     resourceId = lib.body.data.resource_id
     const ev = await call('POST', `/projects/${projectId}/evidence`, {
@@ -83,7 +83,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`evidence inspector
   })
 
   // C-16: list rows embed the whole collector user, including e-mail address, roles and profile.
-  it.fails('C-16: evidence list rows carry only the collector’s id and display name', async () => {
+  it('C-16: evidence list rows carry only the collector’s id and display name', async () => {
     const list = await call('GET', `/projects/${projectId}/evidence`)
     expect(JSON.stringify(list.body.data)).not.toMatch(/"email"/)
   })
@@ -157,7 +157,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`evidence inspector
   })
 
   // C-16: evidence_id is validated against ALL evidence, not this project's.
-  it.fails('C-16: a finding cannot link evidence that belongs to another project', async () => {
+  it('C-16: a finding cannot link evidence that belongs to another project', async () => {
     const other = await call('GET', `/projects?scope=owned&per_page=100`)
     const otherProject = other.body.data.find((p: { id: number; evidence_count: number }) => p.id !== projectId && p.evidence_count > 0)
     if (!otherProject) throw new Error('needs another project that has evidence')

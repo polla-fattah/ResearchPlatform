@@ -6,6 +6,13 @@ Every screen in this list was built from the backend's code (controllers, models
 responses. The contract tests exist, but they have never been executed. A phase checkpoint (the `D8`, `E6`, `F15` boxes in
 `FRONTEND_TODO_NEXT.md`) is **not** ticked until the checks for its screens below are done.
 
+> **Status, 6 Oct 2026 evening (backend started on the owner's machine, PHP 8.5, commit `678ed8c`).** Done: the full contract
+> suite with writes (steps 1 to 4 below: **344 pass, 52 expected failures, none unexpected**; 72 of the old `it.fails` now pass
+> because the backend fixed them, see "Live re-check" in the request file), and a load sweep of every route as the demo
+> administrator (no error panel, no contract mismatch in the console on any of 60 pages). Still owed: the interactive
+> **browser checks** below (typing, saving, two-account flows, signed-out views), which the sweep does not cover. The "Not yet
+> run" column below is out of date for the contract part; read it as "browser check owed".
+
 ## How to run
 
 1. Start the backend as in `FRONTEND_TODO.md` section 0 (PowerShell recipe), seeded with `ScholarlyDemoSeeder`.

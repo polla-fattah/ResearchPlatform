@@ -79,23 +79,23 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`hadith families ($
     expect(list.find((f) => f.id === familyId)?.members).toEqual([])
   })
 
-  it.fails('C-35: a member must say what it is (a report or evidence), not nothing', async () => {
+  it('C-35: a member must say what it is (a report or evidence), not nothing', async () => {
     const res = await asOwner('POST', `/families/${familyId}/members`, { relationship_type: 'shahid' })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-35: the same report is not added to a family twice', async () => {
+  it('C-35: the same report is not added to a family twice', async () => {
     await asOwner('POST', `/families/${familyId}/members`, { corpus_hadith_id: 1, relationship_type: 'shahid' })
     const again = await asOwner('POST', `/families/${familyId}/members`, { corpus_hadith_id: 1, relationship_type: 'shahid' })
     expect(again.status).toBe(422)
   })
 
-  it.fails('C-35: a report that is not in the corpus is refused', async () => {
+  it('C-35: a report that is not in the corpus is refused', async () => {
     const res = await asOwner('POST', `/families/${familyId}/members`, { corpus_hadith_id: 999999999, relationship_type: 'shahid' })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-35: a family can be renamed and deleted', async () => {
+  it('C-35: a family can be renamed and deleted', async () => {
     const renamed = await asOwner('PATCH', `/families/${familyId}`, { canonical_title: 'Renamed' })
     expect(renamed.status).toBe(200)
     expect((await asOwner('DELETE', `/families/${familyId}`)).status).toBe(200)

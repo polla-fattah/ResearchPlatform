@@ -127,7 +127,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(queue.some((a) => a.id === applicationId)).toBe(false)
   })
 
-  it.fails('C-20: an applicant can confirm their email, which is what puts them in the queue', async () => {
+  it('C-20: an applicant can confirm their email, which is what puts them in the queue', async () => {
     const res = await call('POST', '/auth/email/verify', { token: verificationToken })
     expect(res.status).toBe(200)
   })
@@ -238,7 +238,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(accepted.decided_at).toBeTruthy()
   })
 
-  it.fails('C-20: a researcher can give an administrator support access to their project', async () => {
+  it('C-20: a researcher can give an administrator support access to their project', async () => {
     projectId = (await call('POST', '/projects', { title: `[contract-test] grant ${stamp}`, question: 'q', scope: 's', languages: ['ar'], stage: 'scoping', tags: [] }, applicantToken)).body.data.id
     const res = await call(
       'POST',
@@ -249,7 +249,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(res.status).toBe(201)
   })
 
-  it.fails('C-20: a decided application cannot be decided again, and a decision does not change an account that was already decided', async () => {
+  it('C-20: a decided application cannot be decided again, and a decision does not change an account that was already decided', async () => {
     const again = await asAdmin('POST', `/admin/applications/${applicationId}/decide`, { decision: 'rejected', decision_reason: 'Contract test: second decision' })
     expect(again.status).toBeGreaterThanOrEqual(400)
   })
@@ -259,7 +259,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(again.status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-20: the audit log says that a refused attempt was refused', async () => {
+  it('C-20: the audit log says that a refused attempt was refused', async () => {
     const refused = z.array(auditEntrySchema.extend({ outcome: z.string() })).parse((await asAdmin('GET', '/admin/audit-logs?action=update_own_role_refused&per_page=1')).body.data)
     expect(refused[0]!.outcome).not.toBe('success')
   })

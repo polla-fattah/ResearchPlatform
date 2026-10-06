@@ -14,7 +14,8 @@ export const reviewPackageSchema = z.object({
   documents: z
     .array(
       z.object({
-        id: z.number(),
+        /** The public copy of a package carries no internal ids (request file C-32), so a key falls back to the position. */
+        id: z.number().optional(),
         title: z.string(),
         document_type: z.string().nullable().optional(),
         language: z.string().nullable().optional(),
@@ -33,13 +34,13 @@ export const reviewPackageSchema = z.object({
   findings: z
     .array(
       z.object({
-        id: z.number(),
+        id: z.number().optional(),
         question: z.string().nullable().optional(),
         claim: z.string(),
         reasoning: z.string().nullable().optional(),
         limitations: z.string().nullable().optional(),
         status: z.string().nullable().optional(),
-        evidence_items: z.array(z.object({ id: z.number() })).nullable().optional(),
+        evidence_items: z.array(z.object({ id: z.number().optional() })).nullable().optional(),
       }),
     )
     .nullable()

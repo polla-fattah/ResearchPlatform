@@ -97,15 +97,16 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`argument map (${BA
     expect(JSON.stringify(res.body)).not.toContain('Secret of B')
   })
 
-  it.fails('C-39: a link to evidence can be removed again', async () => {
+  it('C-39: a link to evidence can be removed again', async () => {
     const res = await inA('PATCH', `/argument-nodes/${ids[0]}`, { evidence_id: null })
     expect(argumentNodeSchema.parse(res.body.data).evidence_id ?? null).toBeNull()
   })
 
   it.fails('C-39: a removed point is kept in a history that can be read', async () => {
-    await inA('DELETE', `/argument-nodes/${ids[1]}`)
+    const extra = argumentNodeSchema.parse((await inA('POST', '/argument-nodes', { node_type: 'claim', title: 'Short-lived', content: 'x' })).body.data).id
+    await inA('DELETE', `/argument-nodes/${extra}`)
     const res = await inA('GET', '/argument-graph?include_removed=1')
-    expect(argumentGraphSchema.parse(res.body.data).nodes.some((n) => n.id === ids[1])).toBe(true)
+    expect(argumentGraphSchema.parse(res.body.data).nodes.some((n) => n.id === extra)).toBe(true)
   })
 
   it('removes a relation and a point, and the relation goes with the point', async () => {

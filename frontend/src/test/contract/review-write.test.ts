@@ -62,8 +62,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`reviewer workspace
     await account('author')
     await account('reviewer')
     projectId = (await as('author', 'POST', '/projects', { title: `[contract-test] review ${stamp}`, question: 'Review?', scope: 'Contract testing only.', languages: ['en'], stage: 'writing', tags: [] })).body.data.id
-    const docId = (await as('author', 'POST', `/projects/${projectId}/documents`, { title: 'Article', document_type: 'article', language: 'en' })).body.data.id
-    await as('author', 'POST', `/projects/${projectId}/documents/${docId}/versions`, { content: 'Body.', change_summary: 'first', expected_version: 0 })
+    const docId = (await as('author', 'POST', `/projects/${projectId}/documents`, { title: 'Article', document_type: 'article', language: 'en', content: 'Body.' })).body.data.id
     const sub = await as('author', 'POST', `/projects/${projectId}/submissions`, { title: `[contract-test] ${stamp}`, abstract: 'An abstract.', document_ids: [docId], keywords: [], rights_declaration: 'CC-BY-4.0', coi_declared: true })
     submissionId = sub.body.data.id
     const assign = await asAdmin('POST', `/editor/submissions/${submissionId}/assign`, { reviewer_id: people.reviewer.id })
@@ -106,17 +105,17 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`reviewer workspace
     expect(one.reviews[0].completed_at).toBeTruthy()
   })
 
-  it.fails('C-31: the reviewer’s package does not name the submitter or the project', async () => {
+  it('C-31: the reviewer’s package does not name the submitter or the project', async () => {
     const text = JSON.stringify((await as('reviewer', 'GET', `/reviews/assignments/${assignmentId}`)).body.data)
     expect(text).not.toMatch(/submitted_by|"project_id"|"owner"|"submitter"/)
   })
 
-  it.fails('C-31: a finished review cannot be sent again', async () => {
+  it('C-31: a finished review cannot be sent again', async () => {
     const again = await as('reviewer', 'POST', `/reviews/assignments/${assignmentId}/recommendation`, { recommendation: 'reject', reviewer_notes: 'Changed my mind about this.' })
     expect(again.status).toBe(409)
   })
 
-  it.fails('C-31: declining keeps a record of the assignment', async () => {
+  it('C-31: declining keeps a record of the assignment', async () => {
     const second = await asAdmin('POST', `/editor/submissions/${submissionId}/assign`, { reviewer_id: people.author.id })
     // The author is blocked from review (conflict), so use the editor's own account for the second assignment.
     const own = await asAdmin('POST', `/editor/submissions/${submissionId}/assign`, { reviewer_id: (await asAdmin('GET', '/auth/me')).body.data.id })

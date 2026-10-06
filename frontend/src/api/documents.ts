@@ -46,8 +46,12 @@ export async function updateDocument(projectId: number, id: number, patch: { tit
   return data
 }
 
+/**
+ * Deletes a document with all its versions. The server refuses (409 HAS_DEPENDENCIES) while findings are linked to it or
+ * it is cited, unless `confirm` is sent; the dialog that asks has already said what is linked, so it is sent.
+ */
 export async function deleteDocument(projectId: number, id: number) {
-  await api(`/projects/${projectId}/documents/${id}`, { method: 'DELETE' })
+  await api(`/projects/${projectId}/documents/${id}`, { method: 'DELETE', query: { confirm: true } })
 }
 
 export async function getDraft(projectId: number, id: number, signal?: AbortSignal) {

@@ -84,23 +84,23 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`isnād graph (${BA
     expect(z.object({ graph_topology: z.object({ nodes: z.array(z.unknown()) }) }).safeParse(again.output_data).success).toBe(true)
   })
 
-  it.fails('C-34: the answer does not call a rule of thumb a theorem or a verified common link', async () => {
+  it('C-34: the answer does not call a rule of thumb a theorem or a verified common link', async () => {
     const text = JSON.stringify((await asOwner('POST', '/analyses/isnad-topology', { custom_chains: chains })).body.data)
     expect(text).not.toMatch(/Theorem|verified_common_link/)
   })
 
-  it.fails('C-34: the earliest source, who is on every chain, is not offered as a common link', async () => {
+  it('C-34: the earliest source, who is on every chain, is not offered as a common link', async () => {
     const t = topologyAnswerSchema.parse((await asOwner('POST', '/analyses/isnad-topology', { custom_chains: chains })).body.data).topology
     const names = [t.madar_al_isnad, ...(t.partial_common_links ?? [])].filter(Boolean).map((c) => c!.name)
     expect(names).not.toContain('Sufyān')
   })
 
-  it.fails('C-34: the answer returns the chains it used, in the order it read them', async () => {
+  it('C-34: the answer returns the chains it used, in the order it read them', async () => {
     const data = (await asOwner('POST', '/analyses/isnad-topology', { custom_chains: chains })).body.data.topology as Record<string, unknown>
     expect(data).toHaveProperty('chains')
   })
 
-  it.fails('C-34: a chain that names the same narrator twice is refused (it would make a loop)', async () => {
+  it('C-34: a chain that names the same narrator twice is refused (it would make a loop)', async () => {
     const res = await asOwner('POST', '/analyses/isnad-topology', { custom_chains: [['A', 'B', 'A'], ['C', 'B']] })
     expect(res.status).toBe(422)
   })

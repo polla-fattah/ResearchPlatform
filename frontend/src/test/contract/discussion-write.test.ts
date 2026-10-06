@@ -150,11 +150,11 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`discussions and ta
     expect((await call('POST', `/projects/${projectId}/tasks`, { title: 'x' }, guest)).status).toBe(403)
   })
 
-  it.fails('C-23: a viewer cannot complete or block a task', async () => {
+  it('C-23: a viewer cannot complete or block a task', async () => {
     expect((await call('POST', `/projects/${projectId}/tasks/${taskId}/complete`, undefined, guest)).status).toBe(403)
   })
 
-  it.fails('C-23: a viewer cannot change a task', async () => {
+  it('C-23: a viewer cannot change a task', async () => {
     expect((await call('PATCH', `/projects/${projectId}/tasks/${taskId}`, { title: 'Hijacked' }, guest)).status).toBe(403)
   })
 
@@ -168,11 +168,11 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`discussions and ta
     expect((await call('GET', `/discussions/${threadId}`, undefined, owner)).status).toBe(200)
   })
 
-  it.fails('C-23: a resolved discussion can be reopened', async () => {
+  it('C-23: a resolved discussion can be reopened', async () => {
     expect((await call('POST', `/discussions/${threadId}/reopen`, undefined, owner)).status).toBe(200)
   })
 
-  it.fails('C-23: a discussion must be about an item that is in the project', async () => {
+  it('C-23: a discussion must be about an item that is in the project', async () => {
     const res = await asOwner('POST', '/discussions', { title: 'Elsewhere', target_type: 'evidence', target_id: 999999999, initial_comment: 'x' })
     expect(res.status).toBe(422)
   })

@@ -58,7 +58,7 @@ describe.skipIf(!reachable)(`public announcements (${BASE})`, () => {
     expect((await get('/public/announcements?q=zzzz-no-such-word-zzzz')).body.data).toEqual([])
   })
 
-  it.fails('C-27: the public answer does not carry the internal project id', async () => {
+  it('C-27: the public answer does not carry the internal project id', async () => {
     const first = ((await get('/public/announcements?per_page=1')).body.data as Record<string, any>[])[0]
     if (!first) throw new Error('no announcement to check')
     expect(first).not.toHaveProperty('project_id')

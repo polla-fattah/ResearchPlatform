@@ -72,12 +72,12 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`library management
   })
 
   // C-13: tags and notes are accepted with 200 and then silently dropped (not fillable).
-  it.fails('C-13: PUT /library/items/{id}/tags keeps the tags', async () => {
+  it('C-13: PUT /library/items/{id}/tags keeps the tags', async () => {
     await call('PUT', `/library/items/${itemId}/tags`, { tags: ['contract'] })
     expect((await read()).tags).toEqual(['contract'])
   })
 
-  it.fails('C-13: PATCH /library/items/{id} keeps notes', async () => {
+  it('C-13: PATCH /library/items/{id} keeps notes', async () => {
     await call('PATCH', `/library/items/${itemId}`, { notes: [{ text: 'a note' }] })
     expect((await read()).notes?.length).toBe(1)
   })

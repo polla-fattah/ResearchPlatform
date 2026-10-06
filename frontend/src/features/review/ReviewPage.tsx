@@ -141,8 +141,8 @@ export function ReviewPage() {
                     <p className={styles.meta}>{t('review.package.notIncluded')}</p>
                   </section>
 
-                  {(pack?.documents ?? []).map((d) => (
-                    <section key={d.id} className={[styles.panel, styles.doc].join(' ')} aria-label={d.title}>
+                  {(pack?.documents ?? []).map((d, di) => (
+                    <section key={d.id ?? di} className={[styles.panel, styles.doc].join(' ')} aria-label={d.title}>
                       <h2>
                         <BidiText>{d.title}</BidiText>
                       </h2>
@@ -153,8 +153,8 @@ export function ReviewPage() {
                   <section className={styles.panel} aria-label={t('review.package.findings')}>
                     <h2>{t('review.package.findings')}</h2>
                     {(pack?.findings ?? []).length === 0 ? <p className={styles.meta}>{t('review.package.noFindings')}</p> : null}
-                    {(pack?.findings ?? []).map((f) => (
-                      <div key={f.id} className={styles.finding}>
+                    {(pack?.findings ?? []).map((f, fi) => (
+                      <div key={f.id ?? fi} className={styles.finding}>
                         <strong>
                           <BidiText>{f.claim}</BidiText>
                         </strong>

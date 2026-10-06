@@ -126,7 +126,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`notifications, wri
     expect(row?.invitation_token ?? row?.action_url).toBeTruthy()
   })
 
-  it.fails('C-24: a notification the person has turned off is not made', async () => {
+  it('C-24: a notification the person has turned off is not made', async () => {
     await call('PATCH', '/notifications/preferences', { notify_invitations: false }, guest)
     const before = notificationPageSchema.parse((await call('GET', '/notifications', undefined, guest)).body.data).notifications.length
     await call('POST', `/projects/${projectId}/invitations`, { email: guestEmail.replace('contract-notify', 'contract-notify-b'), role: 'viewer' }, owner)

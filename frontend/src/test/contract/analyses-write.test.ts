@@ -219,7 +219,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`analyses, write ($
     expect(criticismMatrixResultSchema.parse(res.body.data.analysis).narrator_count).toBe(0)
   })
 
-  it.fails('C-19: the matrix gives each critic’s exact wording, which is what the design shows', async () => {
+  it('C-19: the matrix gives each critic’s exact wording, which is what the design shows', async () => {
     const res = await call('POST', `/projects/${projectId}/analyses/criticism-matrix`, { narrator_ids: [1403] })
     const evaluations = Object.values(criticismMatrixResultSchema.parse(res.body.data.analysis).matrix['1403']!.evaluations)
     expect(evaluations.some((e) => !!e.quote)).toBe(true)
@@ -231,13 +231,13 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`analyses, write ($
     expect(Object.keys(entry.evaluations).length).toBe(entry.counts.total_statements)
   })
 
-  it.fails('C-19: the matrix counts statements that praise and statements that criticise', async () => {
+  it('C-19: the matrix counts statements that praise and statements that criticise', async () => {
     const res = await call('POST', `/projects/${projectId}/analyses/criticism-matrix`, { narrator_ids: [1403] })
     const { counts } = criticismMatrixResultSchema.parse(res.body.data.analysis).matrix['1403']!
     expect(counts.taadil + counts.jarh).toBeGreaterThan(0)
   })
 
-  it.fails('C-19: stored analyses can be renamed or deleted', async () => {
+  it('C-19: stored analyses can be renamed or deleted', async () => {
     const res = await call('DELETE', `/projects/${projectId}/analyses/${firstSavedId}`)
     expect(res.status).toBe(200)
   })

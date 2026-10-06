@@ -15,5 +15,6 @@ export default defineConfig({
     include: ['src/test/contract/**/*.test.ts'],
     testTimeout: 60_000,
     fileParallelism: false,
+    setupFiles: ['src/test/contract/clearLimits.ts'],
   },
 })

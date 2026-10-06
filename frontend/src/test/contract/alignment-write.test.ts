@@ -90,17 +90,17 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`matn alignment (${
     expect(list.some((r) => r.id === runId && r.analysis_type === 'sequence_collation')).toBe(true)
   })
 
-  it.fails('C-33: an empty baseline is refused instead of aligning everything as added', async () => {
+  it('C-33: an empty baseline is refused instead of aligning everything as added', async () => {
     const res = await asOwner('POST', '/analyses/collate', { baseline_text: '  ', variants })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-33: the stored run says which texts were aligned (their ids), not only how many', async () => {
+  it('C-33: the stored run says which texts were aligned (their ids), not only how many', async () => {
     const run = analysisRunSchema.parse((await asOwner('GET', `/analyses/${runId}`)).body.data)
     expect(JSON.stringify(run.input_params)).toContain('Variant one')
   })
 
-  it.fails('C-33: a very long text is refused before it uses the server’s memory', async () => {
+  it('C-33: a very long text is refused before it uses the server’s memory', async () => {
     const long = Array.from({ length: 6000 }, (_, i) => `كلمة${i}`).join(' ')
     const res = await asOwner('POST', '/analyses/collate', { baseline_text: long, variants: [{ id: 1, label: 'long', text: long }] })
     expect(res.status).toBe(422)

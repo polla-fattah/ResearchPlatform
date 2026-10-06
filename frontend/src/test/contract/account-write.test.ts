@@ -252,7 +252,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`account, write (${
     expect(meSchema.parse((await as('GET', '/auth/me')).body.data).status).toBe('approved')
   })
 
-  it.fails('C-21: the password change ends the other sessions', async () => {
+  it('C-21: the password change ends the other sessions', async () => {
     const other = (await call('POST', '/auth/login', { email, password })).body.data.token
     expect((await as('POST', '/auth/password/change', { current_password: password, password: 'thirdpassword1', password_confirmation: 'thirdpassword1' })).status).toBe(200)
     password = 'thirdpassword1'
@@ -278,7 +278,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`account, write (${
     expect(mine.closure_requested_at).toBeTruthy()
   })
 
-  it.fails('C-21: a researcher can see the support access they have given', async () => {
+  it('C-21: a researcher can see the support access they have given', async () => {
     const res = await as('GET', '/researcher/support-grants')
     expect(res.status).toBe(200)
   })

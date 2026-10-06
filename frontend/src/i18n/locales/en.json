@@ -1996,7 +1996,9 @@
       "shelvedInsert": "Add to the end of the document",
       "shelvedDismiss": "Dismiss",
       "length": "{{count}} characters",
-      "findingLabel": "Finding"
+      "findingLabel": "Finding",
+      "deleteLinked_one": "{{formattedCount}} finding is linked to it. The finding stays and loses the link.",
+      "deleteLinked_other": "{{formattedCount}} findings are linked to it. They stay and lose the link."
     },
     "save": {
       "idle": "Saved · v{{version}}",

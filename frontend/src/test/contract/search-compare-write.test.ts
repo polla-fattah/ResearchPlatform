@@ -86,7 +86,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`search comparison 
     expect((await inA('POST', '/search-subscriptions', { saved_query_id: queryId, frequency: 'hourly' })).status).toBe(422)
   })
 
-  it.fails('C-40: a run of ANOTHER project cannot be compared, and its details do not come back', async () => {
+  it('C-40: a run of ANOTHER project cannot be compared, and its details do not come back', async () => {
     const res = await inA('POST', '/search-runs/compare', { run_id_1: runs[0], run_id_2: otherRun })
     expect(res.status).toBe(404)
   })
@@ -103,7 +103,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`search comparison 
     expect(list.find((x) => x.id === subId)?.last_run_at).toBeTruthy()
   })
 
-  it.fails('C-40: a run that did not complete cannot be compared', async () => {
+  it('C-40: a run that did not complete cannot be compared', async () => {
     const res = await inA('POST', '/search-runs/compare', { run_id_1: 999999999, run_id_2: runs[1] })
     expect(res.status).toBe(422)
   })

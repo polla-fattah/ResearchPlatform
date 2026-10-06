@@ -80,7 +80,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`project activity (
     expect((await call('GET', '/projects/999999999/activity', undefined, owner)).status).toBe(404)
   })
 
-  it.fails('C-25: an invitation’s entry does not name the invited e-mail address', async () => {
+  it('C-25: an invitation’s entry does not name the invited e-mail address', async () => {
     const row = (await feed('?action=invitation_created'))[0]
     expect(row?.summary ?? '').not.toContain('@')
   })

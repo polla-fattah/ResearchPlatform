@@ -99,18 +99,18 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`project announceme
     expect(history.some((h) => h.action === 'announcement_unpublished')).toBe(true)
   })
 
-  it.fails('C-26: saving without a status keeps the status the announcement has', async () => {
+  it('C-26: saving without a status keeps the status the announcement has', async () => {
     await asOwner('POST', a, '/announcement/publish')
     const res = await asOwner('POST', a, '/announcement', fields({ title: `[contract-test] revised ${stamp}` }))
     expect(announcementSchema.parse(res.body.data).status).toBe('published')
     await asOwner('POST', a, '/announcement/unpublish')
   })
 
-  it.fails('C-26: an address that is not an address is refused', async () => {
+  it('C-26: an address that is not an address is refused', async () => {
     expect((await asOwner('POST', b, '/announcement', fields({ public_slug: 'not a valid address!!' }))).status).toBe(422)
   })
 
-  it.fails('C-26: two projects cannot take the same address', async () => {
+  it('C-26: two projects cannot take the same address', async () => {
     const res = await asOwner('POST', b, '/announcement', fields())
     expect(res.status).toBe(422)
   })

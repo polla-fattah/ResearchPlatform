@@ -62,7 +62,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`collaboration requ
     expect(res.status).toBe(202)
   })
 
-  it.fails('C-28 (P0): the public endpoint refuses a request without consent or a message of ten characters', async () => {
+  it('C-28 (P0): the public endpoint refuses a request without consent or a message of ten characters', async () => {
     expect((await call('POST', `/public/announcements/${slug}/collaboration-requests`, interest({ consent: false }), owner)).status).toBe(422)
     expect((await call('POST', `/public/announcements/${slug}/collaboration-requests`, interest({ message: 'short' }), owner)).status).toBe(422)
   })
@@ -77,7 +77,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`collaboration requ
     z.array(collaborationRequestSchema).parse(res.body.data)
   })
 
-  it.fails('C-28: the inbox does not embed the requester’s whole account', async () => {
+  it('C-28: the inbox does not embed the requester’s whole account', async () => {
     const res = await asOwner('GET', '/collaboration-requests')
     expect(JSON.stringify(res.body.data)).not.toMatch(/is_admin|"roles"|mfa_enabled/)
   })
