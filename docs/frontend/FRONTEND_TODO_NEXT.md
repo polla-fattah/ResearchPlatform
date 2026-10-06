@@ -92,7 +92,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
 - [x] **E3 Reviewer workspace (23)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): "my assignments", accept/decline, review form, blinding rules applied in the UI and verified against what the API returns (never hide only visually data the server sends: file a defect if it does); tests and contract.
 - [ ] **E4 Public publication page and citation export (24)**: public page, citation formats from `cite`, version and correction notices, no private data; tests.
 - [ ] **E5 Public research search (25)**: search with filters the API supports, facets only if the API returns counts, URL-held query, paging; tests.
-- [ ] **E6 Phase 3 checkpoint**: as P0.1 to P0.5.
+- [ ] **E6 Phase 3 checkpoint**: as P0.1 to P0.5. **Blocked on a live backend** (E1 to E5 are all `[live-owed]`, see `LIVE_CHECKS.md`). Phase F starts meanwhile in Mode CODE-ONLY.
 
 ### Phase F · R2: advanced analysis and exchange
 
