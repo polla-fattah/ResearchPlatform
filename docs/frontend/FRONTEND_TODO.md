@@ -1,5 +1,7 @@
 # Frontend work list (autonomous)
 
+**Superseded for remaining work by `FRONTEND_TODO_NEXT.md` (7 Oct 2026); this file keeps the rules and the history.**
+
 **Written 6 Oct 2026.** This file is the single ordered list of everything left to build, with the rules for building it.
 It is written so that work can continue **without asking the user anything**: pick the first unticked task, do it to the
 definition of done below, tick it, log it, move on. Do not stop between screens. Do not rush and do not skip steps to
