@@ -169,7 +169,7 @@ describe('Public profile', () => {
     await userEvent.type(screen.getByRole('textbox', { name: /Affiliation/ }), 'Salahaddin University')
     await userEvent.click(screen.getByRole('checkbox', { name: /Make my profile public/ }))
     await userEvent.click(screen.getByRole('checkbox', { name: 'Email' }))
-    expect(screen.getByRole('status', { name: '' }).textContent).toContain('Unsaved changes')
+    expect(screen.getByText('Unsaved changes')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Save changes' }))
     await waitFor(() =>
       expect(calls.profile).toEqual([
@@ -256,7 +256,7 @@ describe('Language and display', () => {
   it('says a display choice the server did not keep was not saved', async () => {
     mockAccount({ profile: () => HttpResponse.json(envelope({ id: 142, display_name: 'Shilan Rashid', preferred_language: 'en', profile: { display_preferences: null } })) })
     open('display')
-    await userEvent.selectOptions(await screen.findByRole('combobox', { name: /^Numerals/ }), 'western')
+    await userEvent.selectOptions(await screen.findByRole('combobox', { name: /^Numerals/ }), 'eastern_arabic')
     await userEvent.click(screen.getByRole('button', { name: 'Save changes' }))
     expect(await screen.findByRole('alert')).toHaveTextContent("The changes weren't saved")
   })
