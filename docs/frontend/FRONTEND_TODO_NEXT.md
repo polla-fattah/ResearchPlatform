@@ -105,7 +105,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - [x] `[live-owed]` **F5 Narrator dossier (30)**: corpus narrator endpoints, assessments, assertions, geospatial; unknown stays neutral; criticism wording exact.
 - [x] `[live-owed]` **F6 Book structure and terminology (31)**: `books/{id}/structure`, concordance; virtualised long trees.
 - [x] `[live-owed]` **F7 Argument map (32)**: nodes and edges (`title/content`; relations `supports/refutes/qualifies/replies_to/alternative_to`), React Flow plus list alternative.
-- [ ] **F8 Search run comparison and schedules (35)**: compare on saved result sets, subscriptions; note that runs cannot be listed if still true.
+- [x] `[live-owed]` **F8 Search run comparison and schedules (35)**: compare on saved result sets, subscriptions; note that runs cannot be listed if still true.
 - [ ] **F9 Project templates (37)**: list, create from project, apply to a new project.
 - [ ] **F10 Export and package import (38)**: extend Downloads with graph export and `import-package` (file upload needs the backend; request if missing).
 - [ ] **F11 Rich-text editor (34)**: only after the citation-markup contract is agreed (API-8); until then the Markdown editor stays the only editor.
@@ -169,6 +169,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · F6 Book structure and terminology (31) in `features/books/` `[live-owed]` · collection list, chapters with counts (filter, 100 at a time), a chapter's reports, word-form concordance with honest counts ("returned", "at least") and a flag on snippets that are not in context; optional route segments for the list and picker views; 18 tests (model 7, screen 11) · CODE-ONLY · no critic-expression index or snapshots (C-38), contract file `books-read.test.ts` owed a live run.
 - 2026-10-07 · F7 Argument map (32) in `features/argument/` `[live-owed]` · outline numbered from the top with answers under what they answer, loops set apart, lazy React Flow graph from the same rows, map narrowed to a finding, point panel with source/relations, add/answer/relate/edit/delete, loop and duplicate refused client-side, half-saved answer reported; 28 tests (model 8, screen 20) · CODE-ONLY · gaps in C-39 including a P0 cross-project read, contract file `argument-write.test.ts` owed a live run.
 - 2026-10-07 · Navigation to the advanced analysis screens · screens 26 to 32 could only be reached by typing the address; the project shell now shows an "Analysis tools" bar (comparison, matn alignment, isnād, families, ʿilal, narrators, books and terms, argument map) under the Analysis tab and on the argument map; 1 test.
+- 2026-10-07 · F8 Search run comparison and schedules (35) in `features/searchCompare/` `[live-owed]` · query and two runs in the address, completed runs only with the older first, three lists with the corpus wording per page, warnings from the corpus and query versions the runs recorded, own subscription (subscribe, change how often, switch on/off, read back) with an honest note that nothing reruns or alerts; 17 tests (model 6, screen 11) · CODE-ONLY · gaps in C-40 (two P1 cross-project reads, nothing runs subscriptions), contract file `search-compare-write.test.ts` owed a live run.
 
 ## 6. Decision log (decisions taken without asking)
 

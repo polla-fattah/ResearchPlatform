@@ -74,6 +74,8 @@ export const qk = {
         runs: [...root, 'search', 'runs'] as const,
         resultSets: [...root, 'search', 'result-sets'] as const,
         compare: (a: number, b: number) => [...root, 'search', 'compare', a, b] as const,
+        compareFull: (a: number, b: number) => [...root, 'search', 'compare-full', a, b] as const,
+        subscriptions: [...root, 'search', 'subscriptions'] as const,
       },
       findings: {
         all: [...root, 'findings'] as const,

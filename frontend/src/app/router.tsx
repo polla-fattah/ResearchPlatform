@@ -47,6 +47,7 @@ import { IlalPage } from '@/features/ilal/IlalPage'
 import { NarratorPage } from '@/features/narrator/NarratorPage'
 import { BookPage } from '@/features/books/BookPage'
 import { ArgumentPage } from '@/features/argument/ArgumentPage'
+import { SearchComparePage } from '@/features/searchCompare/SearchComparePage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -99,6 +100,7 @@ const BUILT: Record<string, ReactElement> = {
   '30': <NarratorPage />,
   '31': <BookPage />,
   '32': <ArgumentPage />,
+  '35': <SearchComparePage />,
   '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,

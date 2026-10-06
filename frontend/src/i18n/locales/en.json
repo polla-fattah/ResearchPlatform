@@ -4267,5 +4267,69 @@
     "narrators": "Narrators",
     "books": "Books and terms",
     "argument": "Argument map"
+  },
+  "searchCompare": {
+    "title": "Search run comparison and schedules",
+    "sub": "See what a saved query found newly, lost, or kept between two runs, and choose whether to be told about it.",
+    "unchecked": "The lists are the server's: records in the later run only, in the earlier run only, and in both. A record that changed its wording or place is not detected as changed, and the platform does not say whether the corpus itself changed beyond the version each run recorded.",
+    "query": "Saved query",
+    "earlier": "Earlier run",
+    "later": "Later run",
+    "choose": "Choose…",
+    "noDate": "no date",
+    "results_one": "{{n}} result",
+    "results_other": "{{n}} results",
+    "noQueries": {
+      "title": "No saved queries yet",
+      "body": "Save a search and run it more than once to compare its runs."
+    },
+    "pickQuery": "Choose a saved query.",
+    "needTwo_zero": "This query has no completed run to compare.",
+    "needTwo_one": "This query has one completed run. Run it again to compare.",
+    "needTwo_other": "This query has {{count}} completed runs.",
+    "pickRuns": "Choose an earlier and a later run.",
+    "sameRun": "Choose two different runs.",
+    "sameQuery": "Same saved query ({{code}}).",
+    "queryEdited": "The saved query was edited between the two runs, so some differences come from the edit and not from the corpus.",
+    "corpusChanged": "The corpus version changed between the runs ({{from}} to {{to}}), so some differences may come from the corpus and not from the query.",
+    "corpusUnknown": "One of the runs did not record its corpus version, so a change in the corpus cannot be ruled out.",
+    "summary": "Summary",
+    "listsLabel": "Lists",
+    "lists": {
+      "added": "New in the later run",
+      "removed": "No longer in the later run",
+      "kept": "In both runs"
+    },
+    "empty": {
+      "added": "No record is new in the later run.",
+      "removed": "No record dropped out.",
+      "kept": "No record is in both runs."
+    },
+    "recordUnavailable": "The text of this record could not be loaded.",
+    "footnote": "Records are listed once each, by their corpus number. The wording is the corpus text now.",
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "schedule": {
+      "title": "Alerts about this query",
+      "notRunning": "The server keeps this choice but does not rerun the query or send alerts yet. Saving it records your wish only; each run is still started by a person.",
+      "none": "You are not subscribed to this query.",
+      "on": "You are subscribed: {{frequency}}.",
+      "off": "Your subscription is switched off.",
+      "lastRun": "Last run on {{date}}, {{count}} results.",
+      "neverRun": "No scheduled run has happened.",
+      "frequency": "How often",
+      "subscribe": "Subscribe",
+      "change": "Save how often",
+      "turnOff": "Switch off",
+      "turnOn": "Switch on",
+      "readOnly": "Subscribing is for members who can edit shared work.",
+      "failed": "The subscription was not saved",
+      "others": "Others subscribed",
+      "othersNone": "No one else is subscribed.",
+      "someone": "A member"
+    }
   }
 }
