@@ -105,6 +105,7 @@ export const qk = {
       },
       families: [...root, 'families'] as const,
       ilal: [...root, 'ilal'] as const,
+      argument: [...root, 'argument'] as const,
       narrator: (narratorId: number) => ({
         assertions: [...root, 'narrator', narratorId, 'assertions'] as const,
         assessments: [...root, 'narrator', narratorId, 'assessments'] as const,

@@ -4158,5 +4158,103 @@
       "inContext": "In context",
       "notLocated": "The word form was not located in this text; the start of the text is shown instead."
     }
+  },
+  "argument": {
+    "title": "Argument map",
+    "sub": "The points of the project's reasoning and how they answer one another.",
+    "unchecked": "Everything here was written by researchers. The platform does not judge an argument. The server keeps one map for the whole project; the design draws one per finding, so you can narrow this one to the points connected to a finding. A removed point is gone for good: there is no history yet.",
+    "readOnly": "You can read the map; adding to it is for members who can edit shared work.",
+    "views": "Views",
+    "view": {
+      "outline": "Outline",
+      "graph": "Graph"
+    },
+    "outline": "Points of the argument",
+    "filter": "Show the map of",
+    "filterAll": "The whole project",
+    "addTop": "Add a point",
+    "reasoningOnly": "reasoning only",
+    "loops": "These points answer each other in a loop, so they cannot be placed in the outline. Open one and remove a relation to break the loop:",
+    "pick": "Choose a point to read it.",
+    "notFound": "That point is not in the map shown.",
+    "graphLabel": "Argument graph",
+    "graphNote": "The graph repeats the outline. Choose a point in either to change it.",
+    "empty": {
+      "title": "No argument structure yet",
+      "body": "Start with the claim, then add supporting points, objections, replies, qualifications and alternative conclusions. Each point can link to the evidence behind it.",
+      "add": "Add the first point"
+    },
+    "types": {
+      "premise": "Premise",
+      "claim": "Claim",
+      "objection": "Objection",
+      "reply": "Reply",
+      "qualification": "Qualification",
+      "alternative_conclusion": "Alternative conclusion"
+    },
+    "relations": {
+      "title": "Relations",
+      "supports": "supports",
+      "refutes": "refutes",
+      "qualifies": "qualifies",
+      "replies_to": "replies to",
+      "alternative_to": "is an alternative to",
+      "answers": "This point answers:",
+      "answersNone": "It answers no other point.",
+      "answeredBy": "Answered by:",
+      "answeredByNone": "No point answers it.",
+      "remove": "Remove",
+      "removeOf": "Remove the relation with {{title}}",
+      "removeFailed": "The relation was not removed"
+    },
+    "source": {
+      "title": "Source behind this point",
+      "none": "This point is reasoning only, with no source linked.",
+      "finding": "Finding"
+    },
+    "actions": {
+      "answer": "Add a point that answers this",
+      "relate": "Make this answer another point",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "point": {
+      "addTitle": "Add a point",
+      "answerTitle": "Answer “{{title}}”",
+      "editTitle": "Edit the point",
+      "type": "Kind of point",
+      "typeHint": "Choosing a kind suggests how it relates to the point it answers.",
+      "relation": "How it relates to “{{title}}”",
+      "relationHint": "You can change the suggestion.",
+      "title": "Short title",
+      "titleRequired": "Give the point a title.",
+      "content": "The point",
+      "contentRequired": "Write the point.",
+      "evidence": "Evidence behind it",
+      "evidenceHint": "Optional. Without one, the point is shown as reasoning only.",
+      "finding": "Finding it belongs to",
+      "findingHint": "Optional.",
+      "none": "None",
+      "cannotUnlink": "It can be changed to another, but not emptied: the server ignores empty values.",
+      "save": "Save point",
+      "failed": "The point was not saved",
+      "linkFailed": "The point was added, but linking it to the point it answers failed. It now stands as a top point; link it again from its page."
+    },
+    "relation": {
+      "title": "Make “{{title}}” answer another point",
+      "relation": "Relation",
+      "target": "The point it answers",
+      "chooseTarget": "Choose the point.",
+      "exists": "That relation already exists.",
+      "loop": "That would make the points answer each other in a loop.",
+      "save": "Add relation",
+      "failed": "The relation was not added"
+    },
+    "delete": {
+      "title": "Delete “{{title}}”?",
+      "body": "The point and its relations are removed for good. Points that answered it stay and become top points. The evidence it links to is not touched.",
+      "confirm": "Delete point",
+      "failed": "The point was not deleted"
+    }
   }
 }
