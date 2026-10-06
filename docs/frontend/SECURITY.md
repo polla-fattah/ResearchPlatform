@@ -33,6 +33,13 @@ The token is never put in an address, a log line or a stored query result. Sign-
   e-mail addresses or research text, and drop the address's query string (it can hold a recovery token).
 - Errors outside React (a failed script, an unawaited promise) are caught by `listenForUnhandledErrors` and reported the same way.
 
+## Replies that do not match what the screen expects
+
+Every reply is checked against its schema. A reply that does not match is refused in every build (the screen shows its error
+state with a retry) and reported through `reportError('contract')` with the schema's complaints and no values from the reply.
+Before 7 October 2026 only development and tests did this and the production build passed the reply on; a wrong shape then
+crashed a layout (found by the browser journeys). `VITE_LENIENT_CONTRACT=1` restores the old behaviour for an emergency.
+
 ## Addresses that carry secrets
 
 Recovery and verification links contain a token (and the recovery link the e-mail address) in the query string, and an

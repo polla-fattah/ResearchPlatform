@@ -15,6 +15,8 @@ for (const v of VISITS) {
     await page.goto(v.path)
     await expect(page.getByText(v.ready).first()).toBeVisible({ timeout: 15_000 })
     await page.waitForLoadState('networkidle')
+    // The screen shows its data, not an error: a reply that did not match its schema would show an alert.
+    expect(await page.getByRole('alert').allInnerTexts(), 'the page shows an error').toEqual([])
     const violations = await axeViolations(page)
     const bad = blocking(violations)
     if (violations.length) console.log(`[${v.name}] ${violations.map((x) => `${x.impact}:${x.id}(${x.count})`).join(', ')}`)

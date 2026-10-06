@@ -40,9 +40,9 @@ const FINDING = { id: 4, project_id: 12, question: 'Do the Kufan chains share a 
 
 const DOCUMENT = { id: 31, project_id: 12, title: 'Main article', status: 'draft', latest_version: { id: 1, document_id: 31, version_number: 1, content: '# Main article\n\nتَوَضَّأَ ثَلاَثًا ثَلاَثًا [@EV-0004]\n\n> أَنَّ النَّبِيَّ تَوَضَّأَ\n', created_at: '2026-10-02T09:00:00Z', author: { id: 1, display_name: 'Shilan Rashid' } }, findings: [], created_at: '2026-10-01T09:00:00Z', updated_at: '2026-10-02T09:00:00Z' }
 
-const ANNOUNCEMENT = { id: 3, slug: 'wudu-chains', title: 'Looking for collaborators on the wuḍūʾ chains', summary: 'We study how the three-times wording travels.', status: 'published', published_at: '2026-10-02T09:00:00Z', researchers: [{ display_name: 'Shilan Rashid' }], topics: ['wuḍūʾ'] }
+const ANNOUNCEMENT = { public_slug: 'wudu-chains', title: 'Looking for collaborators on the wuḍūʾ chains', summary: 'We study how the three-times wording travels.', research_stage: 'analysing', keywords: ['wuḍūʾ'], published_at: '2026-10-02T09:00:00Z', project: { title: 'Chains of the wuḍūʾ reports', scope: 'Six Sunan collections', stage: 'analysing', owner: { display_name: 'Shilan Rashid', affiliation: 'Soran University', biography: null, research_interests: ['Takhrīj'] } } }
 
-const PUBLICATION = { id: 8, slug: 'kufan-chains-v1', title: 'The Kufan chains of the three-times report', abstract: 'A study of a common link.', published_at: '2026-10-03T09:00:00Z', version: 1, licence: 'CC BY 4.0', authors: [{ display_name: 'Shilan Rashid' }], topics: ['wuḍūʾ'], type: 'article' }
+const PUBLICATION = { id: 8, public_slug: 'kufan-chains-v1', doi: null, title: 'The Kufan chains of the three-times report', abstract: 'A study of a common link.', version_string: '1.0.0', license: 'CC-BY-4.0', status: 'published', retraction_reason: null, retracted_at: null, released_at: '2026-10-03T09:00:00Z', corrigenda: [], project: { id: 12, title: 'Chains', scope: 'Six Sunan collections', stage: 'writing', owner: { id: 1, display_name: 'Shilan Rashid', affiliation: 'Soran University' } }, submission: { id: 7, version_number: 1, reviews: [{ id: 1, submitted_at: '2026-10-02T10:00:00Z' }] }, releaser: { id: 1, display_name: 'Shilan Rashid' }, published_content: { abstract: 'A study.', documents: [], findings: [] } }
 
 type Reply = { status?: number; body: unknown }
 type Handler = (url: URL, method: string, body: unknown) => Reply | unknown
@@ -88,7 +88,12 @@ export async function installApi(p: Page, options: MockOptions = {}) {
     [/^GET \/public\/announcements$/, () => ({ __list: [ANNOUNCEMENT], extra: page(1) })],
     [/^GET \/public\/research$/, () => ({ __list: [PUBLICATION], extra: { ...page(1), facets: {} } })],
     [/^GET \/library\/items$/, () => ({ __list: [], extra: page(0) })],
-    [/^GET \/exports\/quota$/, () => ({ running: 0, queued: 0, limit: 2 })],
+    [/^GET \/exports\/quota$/, () => ({ used_bytes: 1000, limit_bytes: 5 * 1024 ** 3, concurrent_jobs: 0, concurrent_limit: 2 })],
+    [/^POST \/projects\/12\/documents\/31\/lock$/, () => ({ document_id: 31, locked_by: 1, locked_at: '2026-10-06T09:00:00Z', expires_at: '2099-01-01T00:00:00Z' })],
+    [/^POST \/projects\/12\/documents\/31\/unlock$/, () => null],
+    [/^GET \/projects\/12\/documents\/31\/draft$/, () => ({ status: 404, body: { message: 'No draft' } })],
+    [/^GET \/notifications\/preferences$/, () => ({ notify_exports: true, notify_search_runs: true, notify_source_changes: true, notify_corpus_proposals: true, notify_invitations: true, notify_mentions: true, notify_assignments: true, notify_reviews: true, email_digest: null })],
+    [/^GET \/admin\/ops$/, () => ({ queue_depth: 0, failures_count: 0, storage_used_bytes: 1024, active_alerts: [] })],
   ]
 
   await p.route('**/api/v1/**', async (route: Route) => {

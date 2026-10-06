@@ -15,9 +15,10 @@ npm test           # includes the colour-contrast test of the design tokens
 
 | File | What it checks |
 |---|---|
-| `e2e/a11y.spec.ts` | axe (WCAG 2.1 A and AA, best practices) on 18 screens: sign-in, apply, public announcements and research, home, projects, overview, evidence, searches, analysis, findings, a document, argument map, members, library, downloads, settings, not-found. Serious and critical problems fail the test. |
+| `e2e/a11y.spec.ts` | axe (WCAG 2.1 A and AA, best practices) on 18 screens, and the screen must show its data and not an error (an `alert`): sign-in, apply, public announcements and research, home, projects, overview, evidence, searches, analysis, findings, a document, argument map, members, library, downloads, settings, not-found. Serious and critical problems fail the test. |
 | `e2e/rtl.spec.ts` | The same 18 screens in Sorani (`ckb`) and Arabic (`ar`): `dir="rtl"` and `lang` on the page, no sideways scrolling, the rail on the right, axe again, and a screenshot in `e2e/screenshots/` (not committed). The interface strings of both languages are still English until specialist translation, so this checks mirroring, not wording. |
 | `e2e/dialogs.spec.ts` | Dialogs: focus moves in, Tab never reaches the page behind, axe passes while open, Escape closes, focus returns to the button that opened it; the skip link. |
+| `e2e/journeys.spec.ts` | Seven whole journeys (see `FRONTEND_TODO_NEXT.md`, G4): sign in, sign out, accept an invitation, create a document and type in the editor, start an export, a page that fails to load, admin approval. |
 | `src/styles/contrast.test.ts` | Contrast of every colour pair the interface draws text or outlines with. |
 
 ## Results

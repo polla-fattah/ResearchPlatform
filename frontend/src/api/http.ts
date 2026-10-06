@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import { reportError } from '@/app/errorReporting'
 import { ApiError, normalizeError } from './errors'
 
 export interface Pagination {
@@ -31,7 +32,13 @@ export interface RequestOptions<S extends z.ZodType | undefined = undefined> {
 }
 
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? '/api/v1'
-const STRICT = import.meta.env.DEV || import.meta.env.MODE === 'test'
+/**
+ * A reply that does not match the shape a screen was written for is refused (the screen shows its error state with a retry),
+ * in every build. Passing it on would hand code that trusts the shape either a crash or wrong data shown as fact. Only for an
+ * emergency while the server and the app drift apart, `VITE_LENIENT_CONTRACT=1` turns this off: the mismatch is then logged
+ * and the unchecked reply is used.
+ */
+const STRICT = import.meta.env.VITE_LENIENT_CONTRACT !== '1'
 
 // ---- session token (memory + sessionStorage) -------------------------------
 const TOKEN_KEY = 'oh.token'
@@ -157,12 +164,14 @@ export async function api<S extends z.ZodType | undefined = undefined>(
     if (parsed.success) {
       data = parsed.data
     } else if (STRICT) {
-      throw new ApiError({
+      const mismatch = new ApiError({
         status: res.status,
         code: 'CONTRACT_MISMATCH',
         message: `Response from ${method} ${path} does not match the expected shape.`,
         details: parsed.error.issues,
       })
+      reportError(mismatch, 'contract')
+      throw mismatch
     } else {
       console.warn(`[contract] ${method} ${path}`, parsed.error.issues)
     }
