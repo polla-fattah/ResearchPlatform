@@ -2814,6 +2814,26 @@
         "accepted": "This invitation was already accepted.",
         "other": "This invitation can no longer be answered."
       }
+    },
+    "requests": {
+      "title": "Collaboration requests",
+      "none": "No requests yet. Requests from your public announcement appear here.",
+      "failed": "The requests could not be loaded.",
+      "someone": "Someone",
+      "notes": "Your note",
+      "states": {
+        "pending": "Waiting for you",
+        "accepted": "Accepted",
+        "declined": "Declined"
+      },
+      "invite": "Invite…",
+      "decline": "Decline",
+      "note": "Inviting sends no e-mail and adds no one: the person gets an invitation link and joins only if they accept it. The platform cannot mark a request as answered by an invitation, so it stays listed as waiting.",
+      "declineTitle": "Decline the request from {{name}}?",
+      "declineBody": "They are not told by the platform. Nothing else changes.",
+      "declineNotes": "A note for yourself",
+      "declineNotesHint": "Kept with the request.",
+      "declineFailed": "The request was not declined"
     }
   },
   "discussion": {
@@ -3182,6 +3202,32 @@
       "body": "Send the researchers a short message. You need a verified account. Your message shares only what you write. Joining always needs a separate invitation from the project owner.",
       "ask": "Ask to collaborate",
       "signIn": "Sign in to ask"
+    },
+    "interest": {
+      "title": "Offer to collaborate",
+      "theResearchers": "the researchers",
+      "readFull": "Read the full announcement",
+      "signInTitle": "Sign in with an account to offer help",
+      "signInBody": "This keeps requests accountable and protects the researchers from spam. Any signed-in researcher account can send a request.",
+      "createAccount": "Create an account",
+      "seen": {
+        "name": "Your name",
+        "email": "Your account e-mail address"
+      },
+      "affiliation": "Your affiliation",
+      "message": "How you could help",
+      "messageHint": "Say what you can offer and how it relates to the project.",
+      "messageShort": "write at least {{min}} characters",
+      "consent": "I agree that my name, affiliation, e-mail address and this message are shared with {{name}}.",
+      "consentRequired": "Agree to share these details to send the request",
+      "noAccess": "Only the project owner sees this. Sending does not give you access to the project: if the owner wants to work with you, they send you a separate invitation, and you can decline it.",
+      "send": "Send request",
+      "sending": "Sending…",
+      "failed": "The request was not sent",
+      "closedTitle": "This call closed while you were writing",
+      "closedBody": "Your message was not sent. It is still in the box below so you can keep a copy.",
+      "sentTitle": "Request sent to {{name}}",
+      "sentBody": "You shared your name, affiliation, e-mail address and message. Nothing else happens automatically. If the owner wants to work with you, they send you a separate invitation."
     }
   }
 }

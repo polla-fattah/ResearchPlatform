@@ -74,6 +74,9 @@ export const invalidate = {
   discussionChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).discussion.all),
   /** A task changed: the task lists, the open-task count on the summary, and the account's own task count on Home. */
   tasksChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).discussion.tasksAll, qk.project(id).summary, qk.home.openTasks),
+  /** A collaboration request was decided. */
+  collaborationRequestsChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).members.requests),
+
   /** An invitation was answered: the project now exists for this person, or does not. */
   invitationAnswered: (qc: QueryClient, token: string) => run(qc, qk.invitation(token), qk.projects.root),
 

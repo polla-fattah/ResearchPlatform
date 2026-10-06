@@ -21,7 +21,7 @@ import styles from './Members.module.css'
  * the dialog hands over its link for the owner to pass on (request file C-22). Mounted only while open: its draft
  * is gone when it closes.
  */
-export function InviteDialog({ projectId, onClose }: { projectId: number; onClose: () => void }) {
+export function InviteDialog({ projectId, initialEmail = '', onClose }: { projectId: number; initialEmail?: string; onClose: () => void }) {
   const { t } = useTranslation()
   const qc = useQueryClient()
 
@@ -34,7 +34,7 @@ export function InviteDialog({ projectId, onClose }: { projectId: number; onClos
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: '', role: 'researcher' } })
+  } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: initialEmail, role: 'researcher' } })
 
   const send = useMutation({
     mutationFn: (v: Values) => createInvitation(projectId, { email: v.email.trim(), role: v.role as InvitableRole }),

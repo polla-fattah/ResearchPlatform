@@ -12,6 +12,7 @@ import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import { ROLE_LABEL_KEYS } from '@/domain/roles'
 import { useProject } from '@/features/projects/useProject'
+import { CollaborationRequestsPanel } from './CollaborationRequestsPanel'
 import { InvitationsPanel } from './InvitationsPanel'
 import { InviteDialog } from './InviteDialog'
 import { ChangeRoleDialog, LeaveDialog, RemoveDialog } from './MemberDialogs'
@@ -105,6 +106,13 @@ export function MembersPage() {
           <p className={styles.muted}>
             <NeutralState kind="limitation">{t('members.transferUnavailable')}</NeutralState>
           </p>
+        </div>
+      ) : null}
+
+      {manage ? (
+        <div className={styles.section}>
+          <h3>{t('members.requests.title')}</h3>
+          <CollaborationRequestsPanel projectId={id} />
         </div>
       ) : null}
 

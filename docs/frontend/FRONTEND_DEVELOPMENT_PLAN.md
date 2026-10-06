@@ -190,7 +190,7 @@ Accessibility audit, RTL review with a Sorani/Arabic reader, performance (virtua
 | 37 | Project templates (R2) | `project-templates*` | ✅ |
 | 38 | Export/import (R2) | `exports/graph`, `projects/import-package` | ⚠️ JSON body only, no file upload **[API-9]** |
 | 39 | Public dataset/dossier (R2) | none | ❌ **[API-15]** |
-| 40 | Collaboration interest (R2) | `collaboration-requests` (authenticated, project-scoped) | ⚠️ needs a public endpoint **[API-13]** |
+| 40 | Collaboration interest (R2) | `public/announcements/{slug}/collaboration-requests`, `projects/{id}/collaboration-requests` | ✅ built 7 Oct 2026 from the backend code (not yet run live): sign-in first, form that shows what the owner will see and asks for consent, closed-call state that keeps the message; the owner's inbox on the members screen (invite by e-mail or decline). **The public endpoint answers 500 today (P0).** Gaps in C-28. |
 
 ## 8. Definition of done (per screen)
 

@@ -81,7 +81,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
 - [x] **D4 Activity (18)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): project feed with filters (actor, type, date), structured entries rendered from `ProjectActivity` fields only (no guessed sentences), paging; honest note about the 100-item cap if still true; tests and contract.
 - [x] **D5 Announcement editor (19)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
 - [x] **D6 Public announcements list and page (20l, 20)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): public layout without sign-in, no private data (assert the response whitelist in a contract test), slug routes, not-found page, share-safe metadata, RTL.
-- [ ] **D7 Collaboration interest form (40)**: public form (needs a public endpoint; if missing, build the honest unavailable state and file the request), owner's inbox from `collaboration-requests`, status handling, rate limit and spam-protection honesty; tests.
+- [x] **D7 Collaboration interest form (40)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): public form (needs a public endpoint; if missing, build the honest unavailable state and file the request), owner's inbox from `collaboration-requests`, status handling, rate limit and spam-protection honesty; tests.
 - [ ] **D8 Phase 2 checkpoint**: as P0.1 to P0.5 for screens 15 to 20 and 40; R1b flags on; plan updated.
 
 ### Phase E · R1c: review and publication
@@ -148,6 +148,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · D6 Public announcements (20l, 20) in `features/publicAnnouncements/` `[live-owed]` · list with search words (debounced, in the address), stage filter, paging, cards labelled as ongoing research; page with the project's title, scope, stage, keywords, the owner's name, the "not a finding" notice, and a collaboration block that sends visitors to sign in or signed-in researchers to the request form (D7) · no credentials sent, schema keeps only the displayed fields (a test proves an extra e-mail never renders), 404 for unpublished and unknown look the same, no link into a project · Announcements link in the public header · 684 unit tests · `public-announcements.test.ts` (no sign-in, read-only) written from the code, not run · gaps in C-27.
 
+- 2026-10-07 · D7 Collaboration interest (40) `[live-owed]` · public form (sign-in first and back, name and account e-mail shown as what the owner receives, affiliation, message of ten characters, consent that is only ever sent as true, sent state, closed-call state that keeps the message, error that keeps it) and the owner's inbox on the members screen (requests with the requester's name and the address they gave, never the embedded account, invite by e-mail through the normal invitation or decline with a note, owner only) · 697 unit tests · `collaboration-write.test.ts` written from the code, not run · **the public endpoint is broken in the backend (P0, C-28)**.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
@@ -163,3 +165,5 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · A moderator-hidden announcement cannot be saved from the screen: the save would send `draft` and lift the hiding (C-26).
 - 2026-10-07 · The announcement form says that saving a published page changes it at once, and keeps the status on save; the design's version comparison needs a server draft that does not exist (C-26).
 - 2026-10-07 · No "Report this announcement" link and no topic/language filters on the public pages: the server has neither (C-27).
+- 2026-10-07 · "Accept" on a collaboration request is an invitation by e-mail, never the server's `accepted`, which would add the person with no invitation to answer; the request therefore stays listed as waiting (C-28).
+- 2026-10-07 · The interest form is built on the endpoint the backend named for it even though that endpoint answers 500 today (C-28 P0): the screen reports the failure honestly and keeps the message, and works unchanged once the backend is fixed.
