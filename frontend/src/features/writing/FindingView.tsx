@@ -5,6 +5,7 @@ import { qk } from '@/api/queryKeys'
 import { Button } from '@/components/Button'
 import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
+import { ItemDiscussions } from '@/features/discussion/ItemDiscussions'
 import { FindingForm } from './FindingForm'
 import styles from './Writing.module.css'
 
@@ -50,15 +51,18 @@ export function FindingView({ projectId, id, canEdit, onBack, onCreated, onOpenD
       }
     >
       {finding.data ? (
-        <FindingForm
-          key={finding.data.id}
-          projectId={projectId}
-          finding={finding.data}
-          canEdit={canEdit}
-          onBack={onBack}
-          onCreated={onCreated}
-          onOpenDocument={onOpenDocument}
-        />
+        <>
+          <FindingForm
+            key={finding.data.id}
+            projectId={projectId}
+            finding={finding.data}
+            canEdit={canEdit}
+            onBack={onBack}
+            onCreated={onCreated}
+            onOpenDocument={onOpenDocument}
+          />
+          <ItemDiscussions projectId={projectId} type="finding" id={finding.data.id} />
+        </>
       ) : null}
     </StateBoundary>
   )

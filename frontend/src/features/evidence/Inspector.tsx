@@ -12,6 +12,7 @@ import { AnnotationsPanel } from './AnnotationsPanel'
 import { CorpusTabs } from './CorpusTabs'
 import { CorrectionDialog, RemoveDialog } from './EvidenceDialogs'
 import { correctionTarget, evidenceCode, hadithIdOf } from './evidenceModel'
+import { ItemDiscussions } from '@/features/discussion/ItemDiscussions'
 import { FindingsPanel } from './FindingsPanel'
 import { StateBadge } from './StateBadge'
 import { StatePanel } from './StatePanel'
@@ -146,6 +147,8 @@ export function Inspector({ projectId, id, canEdit, canAnnotate, onRemoved }: Pr
             depsFailed={deps.isError}
             canEdit={canEdit}
           />
+
+          <ItemDiscussions projectId={projectId} type="evidence" id={id} />
 
           <div className={styles.actions}>
             <Button onClick={() => setDialog('correction')}>{t('evidence.inspector.proposeCorrection')}</Button>

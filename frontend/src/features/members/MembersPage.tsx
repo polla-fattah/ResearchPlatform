@@ -7,6 +7,7 @@ import { useAuth } from '@/app/authContext'
 import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { NeutralState } from '@/components/Badges'
+import { RefreshNotice } from '@/components/RefreshNotice'
 import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import { ROLE_LABEL_KEYS } from '@/domain/roles'
@@ -75,12 +76,7 @@ export function MembersPage() {
       ) : null}
 
       <div className={styles.section}>
-        {members.isError && members.data ? (
-          <div role="alert" className={styles.empty}>
-            <p>{t('members.refreshFailed')}</p>
-            <Button onClick={() => void members.refetch()}>{t('common.retry')}</Button>
-          </div>
-        ) : null}
+        <RefreshNotice query={members} what={t('members.title')} />
         <StateBoundary state={state} errorValue={members.error} onRetry={() => void members.refetch()}>
           {alone && manage ? (
             <div className={styles.empty}>

@@ -102,6 +102,14 @@ export const qk = {
         list: [...root, 'members', 'list'] as const,
         invitations: [...root, 'members', 'invitations'] as const,
       },
+      discussion: {
+        all: [...root, 'discussion'] as const,
+        threads: (page: number) => [...root, 'discussion', 'threads', page] as const,
+        comments: (threadId: number, page: number) => [...root, 'discussion', 'comments', threadId, page] as const,
+        about: (type: string, id: number) => [...root, 'discussion', 'about', type, id] as const,
+        tasks: (query: unknown) => [...root, 'discussion', 'tasks', query] as const,
+        tasksAll: [...root, 'discussion', 'tasks'] as const,
+      },
       /** A comparison computed from its inputs and not stored: it only changes when the inputs do. */
       compare: {
         matn: (inputs: unknown) => [...root, 'compare', 'matn', inputs] as const,

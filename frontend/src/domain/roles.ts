@@ -30,6 +30,7 @@ export type ProjectAction =
   | 'comment'
   | 'createPrivateAnnotation'
   | 'manageTasks'
+  | 'resolveDiscussion' // record the decision that closes a thread
   | 'editShared'
   | 'manageMembers' // members, settings, ownership
   | 'manageSettings' // project details, stage, archive, trash
@@ -44,6 +45,7 @@ const MATRIX: Record<ProjectAction, readonly ProjectRole[]> = {
   comment: ['owner', 'researcher', 'reviewer'],
   createPrivateAnnotation: ['owner', 'researcher', 'reviewer', 'viewer'],
   manageTasks: ['owner', 'researcher'],
+  resolveDiscussion: ['owner', 'researcher'],
   editShared: ['owner', 'researcher'],
   manageMembers: ['owner'],
   manageSettings: ['owner'],

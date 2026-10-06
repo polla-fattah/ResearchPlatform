@@ -21,6 +21,7 @@ import { OperationsPage } from '@/features/admin/OperationsPage'
 import { ProposalsPage } from '@/features/admin/ProposalsPage'
 import { SupportPage } from '@/features/admin/SupportPage'
 import { ComparisonPage } from '@/features/comparison/ComparisonPage'
+import { DiscussionPage } from '@/features/discussion/DiscussionPage'
 import { EvidencePage } from '@/features/evidence/EvidencePage'
 import { DownloadsPage } from '@/features/downloads/DownloadsPage'
 import { WritingPage } from '@/features/writing/WritingPage'
@@ -63,6 +64,7 @@ const BUILT: Record<string, ReactElement> = {
   '12': <DownloadsPage />,
   '14': <SettingsPage />,
   '15': <MembersPage />,
+  '16': <DiscussionPage />,
   '07p': <ResourcePickerPage />,
 }
 

@@ -258,6 +258,24 @@ describe('Evidence inspector', () => {
     expect(screen.getByText(/Ruling: صحيح/)).toBeInTheDocument()
   })
 
+  it('lists the discussions about the item and links to start another', async () => {
+    mockMe()
+    mockEvidence()
+    let query = ''
+    server.use(
+      http.get('*/api/v1/projects/12/discussions', ({ request }) => {
+        query = new URL(request.url).search
+        return HttpResponse.json(envelope([{ id: 14, title: 'Check the locator', is_resolved: false, comments_count: 2 }], { pagination: { current_page: 1, per_page: 10, total_items: 1, total_pages: 1, has_more: false } }))
+      }),
+    )
+    renderApp('/projects/12/evidence?item=27', { signedIn: true })
+    const section = await screen.findByRole('region', { name: 'Discussions about this' })
+    expect(await within(section).findByRole('link', { name: 'Check the locator' })).toHaveAttribute('href', '/projects/12/discussion?thread=14&state=all')
+    expect(within(section).getByRole('link', { name: 'Start a discussion about this' })).toHaveAttribute('href', '/projects/12/discussion?new=1&targetType=evidence&targetId=27')
+    expect(query).toContain('target_type=evidence')
+    expect(query).toContain('target_id=27')
+  })
+
   it('says an external source has no chain to show', async () => {
     mockMe()
     mockEvidence({ items: [evidence({ resource: { id: 3, resource_type: 'external', corpus_table: null, corpus_id: null, title: 'An article' } })] })

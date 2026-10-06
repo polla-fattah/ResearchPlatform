@@ -71,7 +71,8 @@
       "empty": "Nothing stored",
       "more_one": "{{count}} more",
       "more_other": "{{count}} more"
-    }
+    },
+    "refreshFailed": "{{what}} could not be refreshed. What is shown is as it was when it last loaded."
   },
   "states": {
     "empty": {
@@ -2678,7 +2679,6 @@
     "unnamed": "Unnamed researcher",
     "you": "You",
     "readOnly": "You are a {{role}} here, so you can see who is in the project but not change membership. Only {{owner}} can invite people, change roles or remove members.",
-    "refreshFailed": "The list could not be refreshed. The people below are as they were when it last loaded.",
     "joinedUnknown": "Not recorded",
     "changeRole": "Change role",
     "changeRoleOf": "Change the role of {{name}}",
@@ -2813,6 +2813,149 @@
         "accepted": "This invitation was already accepted.",
         "other": "This invitation can no longer be answered."
       }
+    }
+  },
+  "discussion": {
+    "tab": "Discussion & Tasks",
+    "readOnly": "You are a {{role}} in this project. You can read discussions and tasks, but you cannot comment, create tasks or be assigned in a way the server records.",
+    "on": "On",
+    "startedBy": "started by {{name}}",
+    "views": {
+      "label": "Discussion and tasks",
+      "discussions": "Discussions",
+      "tasks": "Tasks"
+    },
+    "targets": {
+      "project": "this project",
+      "evidence": "evidence item {{id}}",
+      "analysis": "analysis {{id}}",
+      "finding": "finding {{id}}",
+      "document": "document {{id}}",
+      "passage": "a passage"
+    },
+    "state": {
+      "open": "Open",
+      "resolved": "Resolved"
+    },
+    "filter": {
+      "label": "Show discussions",
+      "open": "Open ({{formattedCount}})",
+      "resolved": "Resolved ({{formattedCount}})",
+      "all": "All ({{formattedCount}})",
+      "none": "No discussions in this view.",
+      "pageNote": "The counts are for the page shown. Move between pages to see the rest."
+    },
+    "list": {
+      "label": "Discussions",
+      "replies_one": "{{formattedCount}} reply",
+      "replies_other": "{{formattedCount}} replies",
+      "pick": "Choose a discussion to read it.",
+      "notOnPage": "That discussion is not on this page of the list."
+    },
+    "empty": {
+      "title": "No discussions yet",
+      "body": "A discussion keeps a question about the project, an evidence item or a finding in one place, with its answer. Everyone in the project can read it.",
+      "action": "Start the first discussion"
+    },
+    "new": {
+      "open": "New discussion",
+      "title": "New discussion",
+      "about": "About {{target}}.",
+      "titleLabel": "Title",
+      "titleRequired": "give the discussion a title",
+      "comment": "First comment",
+      "commentRequired": "write the first comment",
+      "visible": "Everyone in the project can read this. Private notes are not shared here.",
+      "submit": "Open discussion",
+      "failed": "The discussion was not opened"
+    },
+    "reply": {
+      "label": "Reply",
+      "underDecision": "Add a reply under the decision",
+      "post": "Post reply",
+      "posting": "Posting…",
+      "failed": "The reply was not posted",
+      "kept": "Your text is still in the box.",
+      "visible": "Visible to everyone in the project. Mentions are not supported yet.",
+      "cannot": "You can read this discussion but not reply to it."
+    },
+    "comments": {
+      "label": "Replies",
+      "failed": "The replies could not be loaded.",
+      "unknown": "Unknown researcher"
+    },
+    "decision": {
+      "title": "Resolved",
+      "by": "decided by {{name}}",
+      "alternative": "Alternative kept",
+      "noCorpus": "This is a decision of this project. It never changes the corpus."
+    },
+    "resolve": {
+      "open": "Resolve…",
+      "title": "Resolve {{code}}",
+      "decision": "Decision and reason",
+      "decisionHint": "What was decided, and why.",
+      "decisionShort": "write the decision and its reason (at least three characters)",
+      "alternative": "Alternative interpretations to keep",
+      "alternativeHint": "Another reading someone argued, so it is not lost.",
+      "note": "The discussion and every reply stay readable. The decision is attributed to you. It is not undone from here: the server has no way to reopen a discussion yet.",
+      "submit": "Resolve discussion",
+      "failed": "The discussion was not resolved"
+    },
+    "tasks": {
+      "label": "Tasks",
+      "filter": "Show tasks",
+      "all": "All",
+      "mine": "Assigned to me",
+      "new": "New task",
+      "emptyTitle": "No tasks yet",
+      "emptyBody": "A task is a piece of work for someone in the project, with a day it is due.",
+      "noneFiltered": "No tasks match these filters."
+    },
+    "task": {
+      "titleLabel": "Task",
+      "titleRequired": "give the task a title",
+      "description": "Details",
+      "assignee": "Assigned to",
+      "assigneeHint": "A project reviewer can comment but cannot edit shared research.",
+      "unassigned": "Nobody",
+      "due": "Due",
+      "noDue": "No day",
+      "overdue": "Overdue",
+      "dueToday": "Due today",
+      "state": "State",
+      "states": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "blocked": "Blocked",
+        "done": "Done"
+      },
+      "lockedState": "This task is {{state}}. Use the actions in the list to change that.",
+      "doneNote": "Marking a task done does not resolve any discussion or decide any scholarly question.",
+      "newTitle": "New task",
+      "editTitle": "Task {{code}}",
+      "save": "Save task",
+      "failed": "The task was not saved",
+      "edit": "Edit",
+      "editOf": "Edit {{title}}",
+      "markDone": "Mark done",
+      "doneOf": "Mark {{title}} done",
+      "completeFailed": "The task was not marked done",
+      "block": "Mark blocked",
+      "blockOf": "Mark {{title}} blocked",
+      "blockTitle": "Mark {{code}} blocked",
+      "reason": "What is blocking it",
+      "reasonShort": "say what is blocking it (at least three characters)",
+      "blockFailed": "The task was not marked blocked",
+      "blockedBecause": "Blocked because"
+    },
+    "item": {
+      "title": "Discussions about this",
+      "none": "No discussion about this yet.",
+      "failed": "The discussions about this could not be loaded.",
+      "more_one": "{{formattedCount}} more discussion about this.",
+      "more_other": "{{formattedCount}} more discussions about this.",
+      "start": "Start a discussion about this"
     }
   }
 }

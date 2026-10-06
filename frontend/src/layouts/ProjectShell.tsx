@@ -59,7 +59,7 @@ export function ProjectShell() {
           <NavItem tabStyle to={`${base}/evidence`} label="Evidence" />
           <NavItem tabStyle to={`${base}/analysis`} label="Analysis" />
           <NavItem tabStyle to={`${base}/members`} label={t('members.tab')} />
-          <NavItem tabStyle to={`${base}/discussion`} label="Discussion & Tasks" release="R1b" />
+          <NavItem tabStyle to={`${base}/discussion`} label={t('discussion.tab')} />
           <NavItem tabStyle to={`${base}/findings`} label="Findings & Documents" />
           <NavItem tabStyle to={`${base}/submission`} label="Review & Publication" release="R1c" />
           <NavItem tabStyle to={`${base}/activity`} label="Activity" release="R1b" />
