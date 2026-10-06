@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { server } from '@/test/server'
@@ -78,6 +78,26 @@ describe('shell', () => {
     const link = await screen.findByRole('link', { name: /Notifications/ })
     expect(link).toHaveAttribute('href', '/notifications')
     await waitFor(() => expect(link).toHaveTextContent('3'))
+  })
+
+  it('shows the analysis tools under the Analysis tab and not on other tabs', async () => {
+    mockMe()
+    mockProjectApis()
+    const { router } = renderApp('/projects/12/analysis/ilal', { signedIn: true })
+    const tools = await screen.findByRole('navigation', { name: 'Analysis tools' })
+    for (const [name, href] of [
+      ['Matn alignment', '/projects/12/analysis/matn'],
+      ['Isnād graph', '/projects/12/analysis/isnad'],
+      ['Hadith families', '/projects/12/analysis/families'],
+      ['ʿIlal cases', '/projects/12/analysis/ilal'],
+      ['Narrators', '/projects/12/analysis/narrators'],
+      ['Books and terms', '/projects/12/analysis/books'],
+      ['Argument map', '/projects/12/argument-map'],
+    ] as const) {
+      expect(within(tools).getByRole('link', { name })).toHaveAttribute('href', href)
+    }
+    await router.navigate('/projects/12/evidence')
+    await waitFor(() => expect(screen.queryByRole('navigation', { name: 'Analysis tools' })).not.toBeInTheDocument())
   })
 
   it('renders the project tab bar with the display code', async () => {

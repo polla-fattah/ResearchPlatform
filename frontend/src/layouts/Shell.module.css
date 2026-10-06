@@ -102,6 +102,15 @@
   gap: 0.25rem 1rem;
   margin-block-start: 0.5rem;
 }
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-block-start: 0.25rem;
+  padding-block: 0.25rem;
+  border-block-start: 1px solid var(--rule);
+  font-size: 0.9375rem;
+}
 .tab {
   padding-block: 0.5rem;
   border-block-end: 2px solid transparent;

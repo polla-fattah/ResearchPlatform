@@ -4256,5 +4256,16 @@
       "confirm": "Delete point",
       "failed": "The point was not deleted"
     }
+  },
+  "analysisTools": {
+    "label": "Analysis tools",
+    "compare": "Comparison",
+    "matn": "Matn alignment",
+    "isnad": "Isnād graph",
+    "families": "Hadith families",
+    "ilal": "ʿIlal cases",
+    "narrators": "Narrators",
+    "books": "Books and terms",
+    "argument": "Argument map"
   }
 }
