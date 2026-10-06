@@ -12,6 +12,32 @@
 - Priority: **P1** blocks R1a screens · **P2** blocks R1b/R1c · **P3** R2+. R1a scope is defined by `docs/requirements/milestones/R1a_MVP.md`.
 - The frontend works mock-first: it implements each requested contract in MSW so it is not blocked. **If you change a requested shape, say so here** and the mock follows.
 
+## Priority index (6 Oct 2026, after the first live run at backend `678ed8c`)
+
+Read this first. It says what is still open, in the order to fix it. Each line names the item (the full text is below, newest first)
+and the contract tests that still fail as expected for it (`src/test/contract/*`, `it.fails`). An item with no failing test
+left has been fixed by the backend and is kept below only for its history. **The 52 remaining expected failures are the
+exact list of what is open.**
+
+**Verified fixed in the live run** (so not to be re-opened): C-4 (a six-digit code is checked and cannot be used twice, a recovery code works once, a
+wrong code is refused: `account-write.test.ts`), C-8 on the endpoints tried (`/auth/me`, login, projects, evidence, documents, findings,
+members, analyses, activity, admin lists, public pages, notifications, library: none carries a secret), C-30 and C-31 (all their points),
+and most of C-18, C-22, C-26, C-29, C-32 to C-35 (see the table in "Live re-check").
+
+**P0, security or data**
+1. **C-37** narrator places: any approved researcher can write shared data (4 tests open).
+2. **C-39** argument map: links and relations read other projects' private evidence and points (4 open).
+3. **C-42** package import imports nothing but looks as if it did (4 open).
+4. **C-20** administration: three points open (a decided application can be decided again and changes the account, the audit log says "success" for a refused attempt, support access has no list on the researcher's side).
+5. **C-28** the public collaboration endpoint accepts a request without consent (1 open) and **C-29** one point open (1).
+
+**P1, wrong or missing behaviour the screens work around**
+6. **C-40** cross-project runs and subscriptions, and nothing runs scheduled searches (3 open).
+7. **C-43** BibTeX import saves to a shared catalogue (4 open). **C-41** one template point (1 open).
+8. **C-36** ʿIlal cases (4 open), **C-38** book structure (4 open), **C-23** discussion (3), **C-21** account (3), **C-24** notifications (2), **C-25** activity (2), **C-26** announcement (2), **C-17** downloads (2), **C-19** comparison (2), **C-13**, **C-15**, **C-16** (1 each).
+
+**P3 (release R2):** **C-44** datasets and public dossiers: there is nothing on the server yet.
+
 ## Conventions we rely on (please keep)
 
 - Prefix `/api/v1`, Sanctum bearer auth, success envelope `{ success, message, data, meta }`, `meta.pagination` with `current_page, per_page, total_items, total_pages, has_more`; `?page=` and `?per_page=` (max 100) on **every** list.

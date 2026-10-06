@@ -121,7 +121,7 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - [x] **G4 Playwright journeys** (7 Oct 2026, run against an in-memory API; the same files run against a live seeded backend once it exists, by pointing `baseURL` at it and dropping `installApi`; a CI workflow comes with G6): apply and sign in (UC-01), project to evidence to finding (UC-02), search to evidence, export (UC-07), invitation accept, admin approval; against the seeded backend; CI-ready script.
 - [x] **G5 Security pass** (7 Oct 2026, code and tooling only; a hands-on test against a live server is owed, see `SECURITY.md`): token storage and expiry handling, no secrets or emails in logs and URLs, 5xx text never shown, CSP-compatible build, dependency audit (`npm audit`), error-reporting hook.
 - [ ] **G6 Production build and docs**: environment config and base URL, `frontend/README.md` complete (setup, scripts, state-management table, i18n workflow, release flags), CI workflow running `npm run check` and the contract suite against a seeded backend, final plan and request-file clean-up.
-- [ ] **G7 Final regression and handover**: full checkpoint, a summary for the user at the top of the plan (what is built, what depends on the backend, the open request list by priority, what needs human translators and scholars).
+- [x] **G7 Final regression and handover** (summary written at the top of the plan 7 Oct; the live browser checks it names are still owed): full checkpoint, a summary for the user at the top of the plan (what is built, what depends on the backend, the open request list by priority, what needs human translators and scholars).
 
 ---
 
@@ -181,6 +181,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · G4 Playwright journeys (`e2e/journeys.spec.ts`, 7 journeys) · sign in with a wrong then right password, sign out clearing drafts, accept an invitation, create a document and type in the lazily loaded editor, start an export and see the job, a page whose code fails to load, admin approval of an application; the browser runs found that the production build passed a reply with the wrong shape on to code that crashed on it, so replies are now checked against their schema in every build (`VITE_LENIENT_CONTRACT=1` turns it off) and the mismatch is reported without the data; the mock's shapes were corrected until all screens show data (65 browser checks, 1020 unit tests). Not covered yet: apply and verify (UC-01 first half), search to evidence, which need the seeded backend's real answers.
 
 - 2026-10-06 · P0.2 and P0.3 done on the owner's machine against the live backend (`678ed8c`): contract suite 344 pass + 52 expected-fail (72 old `it.fails` now pass, request file "Live re-check"); load sweep of all routes clean. Fixes it forced: documents need `content` and delete needs `confirm` (HAS_DEPENDENCIES), template instantiate and public package answers are smaller than the schemas, contract setup clears the apply limit. 1019 unit tests, check green.
+
+- 2026-10-07 · G7 handover summary at the top of the plan; priority index at the top of the request file (G6); narrow windows no longer blocked (notice for phone-sized screens only, sideways scroll otherwise, `ACCESSIBILITY.md`).
 
 ## 6. Decision log (decisions taken without asking)
 

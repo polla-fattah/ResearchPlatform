@@ -142,12 +142,19 @@
   padding: 2rem;
 }
 
-/* Desktop only: below 1024px the workspaces show a notice instead of a squeezed layout. */
+/*
+ * Desktop only. A phone-sized screen gets a notice instead of a squeezed layout. A desktop window that is narrow because the
+ * person zoomed the page (or made the window small) keeps the workspace at its usual width and scrolls sideways, so zoom
+ * is never answered with a blocked page.
+ */
 .tooSmall {
   display: none;
   padding: 2rem;
 }
-@media (max-width: 1023.98px) {
+.app {
+  min-inline-size: var(--min-desktop);
+}
+@media (max-width: 1023.98px) and (max-device-width: 767.98px) {
   .app {
     display: none;
   }

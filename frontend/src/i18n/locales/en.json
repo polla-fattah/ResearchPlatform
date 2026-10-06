@@ -157,7 +157,7 @@
   },
   "viewport": {
     "title": "Use a larger screen",
-    "body": "Research workspaces need a window at least 1024 pixels wide. Make this window larger, or open the platform on a laptop or desktop."
+    "body": "Research workspaces are made for a laptop or desktop screen. Open the platform on one. On a computer, you can make the window wider or lower the page zoom."
   },
   "shell": {
     "signedInAs": "Signed in as {{name}}",

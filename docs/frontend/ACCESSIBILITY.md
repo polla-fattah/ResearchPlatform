@@ -58,17 +58,17 @@ animation and transition off (`base.css`); form labels and error messages are ti
 lines use `role="status"` and failures `role="alert"`; every list, table and group has an accessible name; the graph canvases
 (isnād, argument map) are announced as companions of a table or an outline that holds the same facts and is the way in by keyboard.
 
-## Needs a decision (not changed)
+## Decided: narrow windows (7 Oct 2026)
 
-**The workspaces are blocked below 1024 CSS pixels.** The design decided "desktop only" and replaced the 360 px rule of NFR-12
-(`docs/design/HadithResearch/CLAUDE.md`). A person who zooms the browser makes the window narrower in CSS pixels: a 1280 px
-screen at 150% is about 853 px wide, at 200% 640 px, at 400% 320 px, so the page shows "Use a larger screen" and nothing
-else. That fails WCAG 1.4.4 (resize text to 200%) and 1.4.10 (reflow) for exactly the people who use zoom. Options, in order of effort:
-lower the threshold (for example to 640 px) and make the layouts collapse to one column; keep the notice only for phone-sized
-screens (by device width, not window width); or accept the barrier and record it as a known limitation in the release evidence.
+The workspaces used to be blocked below 1024 CSS pixels, which answered a person who zooms the page (a 1280 px screen at 150% is
+about 853 px wide) with "Use a larger screen" and nothing else. That failed WCAG 1.4.4 and 1.4.10 for exactly those people.
+The middle option was taken: the notice now shows only on phone-sized screens (`max-device-width: 767px`); a narrow desktop
+window keeps the workspace at its usual width and scrolls sideways. This is not full reflow (1.4.10 is still not met at 400% zoom), so
+it stays on the list below as a known limitation until the layouts collapse to one column.
 
 ## Still owed
 
+- Reflow at high zoom: collapse the rail and the multi-column workspaces to one column below about 640 px (the sideways scroll above is the stop-gap).
 - A pass with a screen reader (NVDA with Firefox, VoiceOver with Safari) on the main journeys, in Arabic and Sorani once the
   strings exist: reading order, names of the graph and outline views, announcements after saving, errors and dialogs.
 - Keyboard walk-throughs of the two graphs and the document editor (CodeMirror), including the editor's shortcuts, which are not

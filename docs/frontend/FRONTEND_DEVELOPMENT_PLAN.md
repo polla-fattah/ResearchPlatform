@@ -4,6 +4,31 @@
 Scope: React app in `frontend/`, built from the 41 mockups in `docs/design/HadithResearch/*.dc.html` against the Laravel API in `backend/` (`routes/api.php`, prefix `/api/v1`).
 Missing or wrong backend behaviour is tracked in [`../api/API_REQUESTS_FROM_FRONTEND.md`](../api/API_REQUESTS_FROM_FRONTEND.md). References like **[API-3]** or **[DEF-2]** point into it.
 
+## Handover summary (7 Oct 2026)
+
+**What is built.** Screens 01 to 32, 35, 36, 37, 38 and 40 are built against the real API, with 1,019 unit tests, a rule audit
+(`npm run audit`), an accessibility check (axe, three languages, 18 screens), seven browser journeys, a bundle budget, and a CI
+workflow (never run yet). Screens 33 and 39 (datasets) and 34 (rich-text editor) are honest "not available yet" pages: the server has
+no dataset routes, and the editor waits for the citation-markup contract.
+
+**What has been run against a live backend.** On 6 Oct (evening) the whole contract suite ran for the first time against the real
+server (backend `678ed8c`): **344 pass, 52 expected failures, none unexpected**, and every route loads without an error or a
+contract mismatch. 72 backend defects that were only known from reading its code turned out to be fixed already. What is still owed
+is the interactive browser checks (typing, saving, two-account flows, signed-out views): see `LIVE_CHECKS.md`. The phase
+checkpoints D8, E6 and F15 and P0.1, P0.4, P0.5 stay unticked until those are done.
+
+**What depends on the backend.** The open list, in priority order, is the "Priority index" at the top of
+`../api/API_REQUESTS_FROM_FRONTEND.md`; the 52 remaining `it.fails` tests are its exact content. The first to fix are the security
+ones (C-37, C-39, C-42 and the three open points of C-20).
+
+**What needs people.** Sorani and Arabic strings need human translators (every screen falls back to English until then). Scholars
+should review the labels in `docs/design/terminology.md`. An error-reporting service has to be chosen (the app calls one hook,
+`setErrorReporter`, at start-up). Narrow-window behaviour is decided (see `ACCESSIBILITY.md`) but full reflow at 400% zoom is not built.
+
+**How to continue.** Open `FRONTEND_TODO_NEXT.md`, take the first unticked task, and keep `LIVE_CHECKS.md`, the request file and the
+progress log in step. To re-run the live check, start the backend (`php artisan serve`) and run
+`npm run test:contract` with `CONTRACT_EMAIL`, `CONTRACT_PASSWORD` and `CONTRACT_WRITE=1`.
+
 ## 0b. Backend re-audit, 6 Oct 2026: what changes in the plan
 
 While Phase 0 was being built the backend agent added about 120 endpoints (309 routes now, from 187), so several first-draft gaps no longer exist. I re-verified each against the code and a running server (read-only calls); the evidence is in [the request file](../api/API_REQUESTS_FROM_FRONTEND.md) (summary table and Part C). The backend agent marked everything Done; my verification found **a mixed picture**.
