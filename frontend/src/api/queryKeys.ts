@@ -183,6 +183,8 @@ export const qk = {
       ['library', 'share-preview', id, projectIds, share] as const,
   },
 
+  templates: ['templates'] as const,
+
   corpus: {
     all: ['corpus'] as const,
     search: (params: CorpusSearchParams) => ['corpus', 'search', params] as const,

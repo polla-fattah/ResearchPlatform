@@ -580,7 +580,8 @@
         "privateBody": "Only you can see this project until you invite members. Making anything public always goes through a sharing preview.",
         "separateTitle": "Separate from your other projects",
         "separateBody": "This project gets its own resources, searches, evidence and writing. To reuse material from another project, copy it from that project's Overview. The copy keeps a record of where it came from."
-      }
+      },
+      "fromTemplate": "Start from a template instead"
     },
     "overview": {
       "question": "Research question",
@@ -4330,6 +4331,48 @@
       "others": "Others subscribed",
       "othersNone": "No one else is subscribed.",
       "someone": "A member"
+    }
+  },
+  "templates": {
+    "title": "Project templates",
+    "sub": "Start a new private project from a template, with its starting question and tasks.",
+    "limits": "A template only adds a starting question and starting tasks. It adds no evidence, gradings or conclusions, and everything can be changed or deleted after the project is created.",
+    "list": "Templates",
+    "empty": {
+      "title": "No templates are published",
+      "body": "This server has no project templates yet. You can still start a blank project."
+    },
+    "counts_one": "{{count}} starting task",
+    "counts_other": "{{count}} starting tasks",
+    "stages": "Suggested stages: {{stages}}",
+    "use": "Use this template",
+    "chosen": "Chosen",
+    "choose": "Use the template {{title}}",
+    "unusable": "This template cannot be used now: one of its starting tasks has no title.",
+    "blank": "Start a blank project",
+    "notFound": "That template is not available.",
+    "languages": {
+      "ar": "Arabic",
+      "ckb": "Sorani Kurdish",
+      "en": "English"
+    },
+    "form": {
+      "label": "New project from {{title}}",
+      "title": "New project from “{{title}}”",
+      "projectTitle": "Project title",
+      "projectTitleHint": "It must differ from the titles of your other projects.",
+      "titleRequired": "Give the project a title.",
+      "duplicate": "You already have a project with this title ({{code}}).",
+      "question": "Research question",
+      "questionHint": "Starts as the template's question. Change it to yours.",
+      "questionRequired": "Write the research question.",
+      "language": "Main language",
+      "languageHint": "The project's other languages can be added later.",
+      "tasksTitle": "Tasks that will be created",
+      "noTasks": "This template creates no tasks.",
+      "afterwards": "The project is private to you. Its scope is set by the server to say it came from this template; write your own in the project's settings.",
+      "create": "Create private project",
+      "failed": "The project was not created"
     }
   }
 }
