@@ -56,7 +56,16 @@
       "name": "name",
       "roles": "roles",
       "status": "status",
-      "decision": "decision"
+      "decision": "decision",
+      "affiliation": "affiliation",
+      "biography": "biography",
+      "interests": "research interests",
+      "visible fields": "visible fields",
+      "language": "language",
+      "display settings": "display settings",
+      "notification settings": "notification settings",
+      "two-step sign-in": "two-step sign-in",
+      "request": "request"
     },
     "stored": {
       "empty": "Nothing stored",
@@ -2483,6 +2492,181 @@
         "completeness": "Export completeness"
       },
       "counts": "Dashboards use counts, timings and job numbers only. Investigating a failure never requires reading private research."
+    }
+  },
+  "settings": {
+    "title": "Profile and settings",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "unsaved": "Unsaved changes",
+    "saveFailed": "The changes weren't saved. Your edits are kept below",
+    "tabs": {
+      "label": "Settings",
+      "profile": "Public profile",
+      "display": "Language and display",
+      "security": "Security and sessions",
+      "support": "Support access",
+      "notifications": "Notifications",
+      "account": "Account and closure"
+    },
+    "profile": {
+      "name": "Display name",
+      "nameRequired": "enter your name.",
+      "interests": "Research interests",
+      "interestsHint": "Separate them with commas.",
+      "affiliation": "Affiliation",
+      "biography": "Biography",
+      "email": "Email",
+      "emailNote": "Your email is private unless you choose to show it. Profile fields are separate from your account details. Changing one never changes the other.",
+      "public": "Public profile",
+      "publicOn": "Make my profile public",
+      "publicLineOn": "On. Visitors see only the fields marked below.",
+      "publicLineOff": "Off. Nothing about you is public.",
+      "showFields": "Fields visitors can see",
+      "nameAlways": "Your display name is shown whenever the profile is public.",
+      "fields": {
+        "research_interests": "Research interests",
+        "affiliation": "Affiliation",
+        "biography": "Biography",
+        "email": "Email"
+      },
+      "preview": "Public preview",
+      "previewPrivate": "Your profile isn't public, so other visitors see nothing about you. Turn on the public profile and choose the fields to show.",
+      "notProvided": "Not provided",
+      "noResearch": "Public research: none yet. Announcements and publications you release appear here."
+    },
+    "display": {
+      "interface": "Interface language",
+      "interfaceHint": "Changes menus and labels only. Source texts always show their original wording.",
+      "content": "Default content language",
+      "contentHint": "Suggested for new notes and blocks. You can change it for each one.",
+      "numerals": "Numerals",
+      "numeralsHint": "Applies to dates, counts and page numbers you see.",
+      "numeralChoices": {
+        "eastern_arabic": "Eastern Arabic (٠١٢٣)",
+        "western": "Western (0123)"
+      },
+      "calendar": "Calendar display",
+      "calendarHint": "Hijri dates from sources are shown as stored. Converted dates are labelled.",
+      "calendarChoices": {
+        "gregorian_hijri": "Gregorian with Hijri",
+        "hijri_gregorian": "Hijri with Gregorian",
+        "gregorian": "Gregorian only"
+      },
+      "timeZone": "Time zone",
+      "timeZoneHint": "Used for run times, saves and download expiry.",
+      "preview": "Preview with these settings",
+      "previewDate": "Date and time",
+      "previewNumber": "Number",
+      "sourceDates": "A converted date is a conversion, not a recorded source date."
+    },
+    "security": {
+      "password": "Password",
+      "current": "Current password",
+      "currentRequired": "enter your current password.",
+      "new": "New password",
+      "newHint": "At least {{min}} characters.",
+      "passwordShort": "use at least {{min}} characters.",
+      "confirm": "New password again",
+      "mismatch": "type the same password twice.",
+      "change": "Change password",
+      "passwordChanged": "Your password was changed.",
+      "passwordFailed": "The password wasn't changed",
+      "otherSessionsStay": "Other sessions stay signed in. If you changed your password because of a problem, sign them out below."
+    },
+    "mfa": {
+      "title": "Two-step sign-in",
+      "on": "On. Signing in asks for a code from your authenticator app.",
+      "off": "Off.",
+      "about": "Recommended for researchers, and for anyone with access to other people's work. You will also get one-time recovery codes.",
+      "turnOn": "Turn on",
+      "turnOff": "Turn off…",
+      "step1": "Add this key to your authenticator app. Type it in, or open it in the app:",
+      "secret": "Authenticator key",
+      "openApp": "Open in an authenticator app",
+      "code": "Code from the app",
+      "step2": "Enter the 6-digit code the app shows now, to check it works.",
+      "confirm": "Confirm and turn on",
+      "confirmFailed": "Two-step sign-in wasn't turned on",
+      "startFailed": "Two-step sign-in couldn't be started",
+      "nowOn": "Two-step sign-in is on.",
+      "codesTitle": "Your recovery codes",
+      "codesBody": "Each code works once, if you lose your authenticator app. They are shown only now and can't be shown again. Keep them somewhere safe.",
+      "codesKept": "I have kept these codes",
+      "offTitle": "Turn off two-step sign-in?",
+      "offBody": "Signing in will need only your password. Enter your password to confirm.",
+      "password": "Password",
+      "offConfirm": "Turn off",
+      "offFailed": "Two-step sign-in wasn't turned off"
+    },
+    "sessions": {
+      "title_one": "Active sessions · {{count}}",
+      "title_other": "Active sessions · {{count}}",
+      "unnamed": "Browser session",
+      "current": "This session",
+      "signedIn": "Signed in {{when}}",
+      "lastUsed": "last used {{when}}",
+      "signOut": "Sign out",
+      "signOutOthers": "Sign out all other sessions",
+      "othersTitle": "Sign out all other sessions?",
+      "othersBody_one": "{{count}} other session is signed out. This one stays.",
+      "othersBody_other": "{{count}} other sessions are signed out. This one stays.",
+      "othersConfirm": "Sign out the others",
+      "failed": "The session wasn't signed out",
+      "note": "A signed-out session stops working. The server doesn't say which device each one is, so they are told apart by when they were started."
+    },
+    "support": {
+      "title": "Let support see something private",
+      "body": "Administrators can't see your private research. If you need help with a specific project or document, you will be able to grant read-only access for a limited time, and end it at any time.",
+      "unavailable": "Not available yet: the server can't record a grant today, and has no list of the grants you have given."
+    },
+    "notifications": {
+      "about": "Email me about",
+      "flags": {
+        "notify_exports": "A download is ready or has failed",
+        "notify_search_runs": "A saved search finished or was partial",
+        "notify_source_changes": "A saved source changed in the corpus",
+        "notify_corpus_proposals": "A corpus correction was decided",
+        "notify_invitations": "Invitations to projects",
+        "notify_mentions": "Mentions",
+        "notify_assignments": "Tasks and assignments",
+        "notify_reviews": "Reviews"
+      },
+      "digest": "How often",
+      "digestHint": "Instant sends each one as it happens.",
+      "digests": {
+        "instant": "Instantly",
+        "daily": "Once a day",
+        "weekly": "Once a week",
+        "never": "Never"
+      },
+      "note": "Settings marked R1b start to matter when those features arrive."
+    },
+    "account": {
+      "id": "Account number",
+      "email": "Email (private)",
+      "status": "State",
+      "statuses": {
+        "approved": "Active researcher",
+        "pending": "Waiting for review",
+        "suspended": "Suspended",
+        "rejected": "Declined",
+        "unverified": "Email not verified",
+        "closure_requested": "Closure requested"
+      },
+      "closeTitle": "Close account",
+      "owns_one": "You own {{formattedCount}} active project.",
+      "owns_other": "You own {{formattedCount}} active projects.",
+      "closeBody": "Before closing, download what you want to keep. An administrator confirms the closure.",
+      "download": "Download all research first",
+      "request": "Request closure…",
+      "dialogTitle": "Request account closure",
+      "dialogBody": "Your account is limited to a status page until an administrator decides. Enter your password to confirm.",
+      "reason": "Reason",
+      "password": "Password",
+      "confirm": "Request closure",
+      "failed": "The closure wasn't requested"
     }
   }
 }

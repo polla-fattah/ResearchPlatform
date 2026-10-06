@@ -28,6 +28,7 @@ import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
 import { SearchPage } from '@/features/search/SearchPage'
+import { SettingsPage } from '@/features/settings/SettingsPage'
 import { ResourcePickerPage } from '@/features/picker/ResourcePickerPage'
 import { ProjectCopyPage } from '@/features/projects/ProjectCopyPage'
 import { ProjectCreatePage } from '@/features/projects/ProjectCreatePage'
@@ -58,6 +59,7 @@ const BUILT: Record<string, ReactElement> = {
   '10': <ComparisonPage />,
   '11': <WritingPage />,
   '12': <DownloadsPage />,
+  '14': <SettingsPage />,
   '07p': <ResourcePickerPage />,
 }
 

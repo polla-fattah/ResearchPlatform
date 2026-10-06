@@ -24,7 +24,7 @@ export function NotificationsTab() {
   const state = viewStateOf(prefs)
   return (
     <StateBoundary state={state} errorValue={prefs.error} onRetry={() => void prefs.refetch()}>
-      {prefs.data ? <NotificationForm key={prefs.dataUpdatedAt} saved={prefs.data} /> : null}
+      {prefs.data ? <NotificationForm saved={prefs.data} /> : null}
       <p className={styles.hint}>{t('settings.notifications.note')}</p>
     </StateBoundary>
   )
