@@ -1,0 +1,35 @@
+.panel {
+  max-inline-size: 36rem;
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  margin: 0 0 0.35rem;
+}
+.body {
+  margin: 0 0 1rem;
+  color: var(--ink-2);
+}
+.error {
+  border-color: var(--warn-rule);
+  background: var(--warn-soft);
+}
+.conflict,
+.empty {
+  border-style: dashed;
+  border-color: var(--neutral);
+}
+.skeleton {
+  display: grid;
+  gap: 0.75rem;
+}
+.skeletonRow {
+  block-size: 3.25rem;
+  border-radius: var(--radius);
+  background: var(--rule);
+  animation: oh-pulse 1.4s ease-in-out infinite;
+}

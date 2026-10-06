@@ -1,0 +1,36 @@
+/* Visual system from docs/design/HadithResearch/CLAUDE.md. Do not add colours elsewhere. */
+:root {
+  --paper: #f5f1e8;
+  --surface: #fffdf8;
+  --surface-white: #ffffff;
+  --ink: #1d1a15;
+  --ink-2: #4a443b;
+  --muted: #6a6257;
+  --neutral: #8a8276; /* dashed neutral states, never red */
+  --rule: #e3dbcb;
+  --rule-strong: #cfc6b4;
+
+  --accent: #1f5a57;
+  --accent-dark: #123b39;
+  --accent-soft: #e3eeec;
+  --accent-mid: #8fc2bc;
+
+  --warn: #9a3b24; /* real errors only */
+  --warn-soft: #f6e5df;
+  --warn-rule: #d9a898;
+
+  /* Provenance (always text + icon, never colour alone) */
+  --note: #2f4e7a;
+  --note-soft: #e8edf5;
+  --attributed: #7a5413;
+  --attributed-soft: #f5ecd9;
+
+  --font-serif: 'Newsreader', serif;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-arabic: 'Noto Naskh Arabic', serif;
+
+  --radius: 6px;
+  --rail-width: 232px;
+  --min-desktop: 1024px;
+}

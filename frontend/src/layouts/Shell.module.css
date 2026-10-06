@@ -1,0 +1,144 @@
+.app {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  min-block-size: 100vh;
+}
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  border-inline-end: 1px solid var(--rule);
+  background: var(--surface);
+}
+.brand {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.tagline {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 0.45rem;
+  padding-inline: 0.75rem;
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-decoration: none;
+}
+.navItem:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+.active {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+.disabled {
+  color: var(--neutral);
+  cursor: not-allowed;
+}
+.disabled:hover {
+  background: transparent;
+  color: var(--neutral);
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+.railFooter {
+  display: grid;
+  gap: 0.5rem;
+  margin-block-start: auto;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.main {
+  min-inline-size: 0;
+  padding: 1.5rem 2rem 3rem;
+}
+.skip {
+  position: absolute;
+  inset-inline-start: -999px;
+}
+.skip:focus {
+  inset-inline-start: 0.5rem;
+  inset-block-start: 0.5rem;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-white);
+}
+
+.projectHeader {
+  margin-block-end: 1.25rem;
+  border-block-end: 1px solid var(--rule);
+}
+.projectCode {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-block-start: 0.5rem;
+}
+.tab {
+  padding-block: 0.5rem;
+  border-block-end: 2px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.tabActive {
+  border-block-end-color: var(--accent);
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
+.publicHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--surface);
+}
+.publicNav {
+  display: flex;
+  gap: 1rem;
+}
+.publicMain {
+  max-inline-size: 64rem;
+  margin-inline: auto;
+  padding: 2rem;
+}
+
+/* Desktop only: below 1024px the workspaces show a notice instead of a squeezed layout. */
+.tooSmall {
+  display: none;
+  padding: 2rem;
+}
+@media (max-width: 1023.98px) {
+  .app {
+    display: none;
+  }
+  .tooSmall {
+    display: block;
+    max-inline-size: 32rem;
+    margin: 3rem auto;
+  }
+}

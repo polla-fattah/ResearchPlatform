@@ -1,0 +1,950 @@
+/* Comparison workspace styling following tokens.css and 10 Comparison Workspace mockup */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.reviewBar {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: baseline;
+}
+
+.reviewTitle {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b9b0a0;
+}
+
+.reviewReqs {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-mid);
+}
+
+.reviewNotice {
+  font-size: 12px;
+  color: #d9c9a3;
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.chipsLabel {
+  font-size: 12px;
+  color: var(--neutral);
+  width: 44px;
+}
+
+.chip {
+  font: inherit;
+  font-size: 12px;
+  padding: 5px 10px;
+  border: 1px solid #4a443b;
+  border-radius: 2px;
+  cursor: pointer;
+  background: transparent;
+  color: #e3dbcb;
+}
+
+.chipActive {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.chipStateActive {
+  background: var(--accent-mid);
+  color: var(--ink);
+}
+
+/* Saved analysis top bar */
+.analysisBar {
+  padding: 12px clamp(16px, 3vw, 40px);
+  background: #f1ece1;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+}
+
+.analysisMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 360px;
+  min-width: 0;
+}
+
+.analysisTitleRow {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.analysisTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.analysisId {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+.analysisSub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.analysisActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.inputsChangedNotice {
+  flex: 1 1 100%;
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px dashed var(--rule-strong);
+}
+
+.inputsChangedBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border: 1px dashed var(--neutral);
+}
+
+/* Mode tabs */
+.tabList {
+  padding: 0 clamp(16px, 3vw, 40px);
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--rule);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--surface);
+}
+
+.tabBtn {
+  font: inherit;
+  flex-shrink: 0;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+.tabBtnActive {
+  border-bottom-color: var(--accent);
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
+/* Empty & Forbidden states */
+.stateContainer {
+  padding: 32px clamp(16px, 3vw, 40px);
+}
+
+.emptyCard {
+  max-width: 680px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emptyTitle {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 24px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.forbiddenCard {
+  max-width: 640px;
+  background: var(--surface);
+  border: 1px dashed var(--neutral);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.forbiddenTitle {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 28px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.forbiddenText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* Skeleton loader */
+@keyframes ohpulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.skeletonGrid {
+  padding: 24px clamp(16px, 3vw, 40px);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.skeletonCard {
+  flex: 1 1 220px;
+  height: 320px;
+  background: #efe9dc;
+  animation: ohpulse 1.4s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+/* Occurrences View */
+.occView {
+  padding: 20px clamp(16px, 3vw, 40px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.occHeaderBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.occSummaryText {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.diffToggleLabel {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.occScrollRegion {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.occGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  min-width: 800px;
+}
+
+.occCol {
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+}
+
+.occCol:last-child {
+  border-right: none;
+}
+
+.occColHeader {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fbf8f1;
+}
+
+.occBookTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.occLocator {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.occEvLink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.limitationNotice {
+  margin: 16px;
+  border: 1px dashed var(--neutral);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.limitationKicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.sourceBlock {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 3px solid var(--ink);
+  margin: 16px;
+}
+
+.sourceKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.matnArabic {
+  margin: 0;
+  font-family: var(--font-arabic);
+  font-size: 20px;
+  line-height: 2.1;
+  text-align: right;
+  direction: rtl;
+}
+
+.diffHighlight {
+  background: #f1e3b8;
+  padding: 0 1px;
+}
+
+.annotationUnderline {
+  border-bottom: 2px solid var(--note);
+  padding: 0 1px;
+}
+
+.notesCol {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.noteItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--note-soft);
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.noteKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--note);
+}
+
+.noteText {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1d2b44;
+}
+
+.annotateBtn {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 12px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+}
+
+.occLegend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.legendItem {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.legendSwatchDiff {
+  width: 14px;
+  height: 10px;
+  background: #f1e3b8;
+}
+
+.legendSwatchAnnotated {
+  width: 14px;
+  height: 0;
+  border-bottom: 2px solid var(--note);
+}
+
+/* Chains View */
+.chainsLayout {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 0;
+}
+
+.chainsMain {
+  flex: 2 1 380px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 20px clamp(16px, 3vw, 40px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chainsScrollRegion {
+  overflow-x: auto;
+}
+
+.chainsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(210px, 1fr));
+  gap: 12px;
+  min-width: 660px;
+}
+
+.chainCol {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+}
+
+.chainHeader {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #fbf8f1;
+}
+
+.chainBookName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.chainMeta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.chainList {
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chainLinkItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.connectorLine {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 0 3px 10px;
+  border-left: 2px solid var(--rule-strong);
+  margin-left: 6px;
+}
+
+.connectorLineUncertain {
+  border-left-style: dashed;
+  border-left-color: var(--neutral);
+}
+
+.connectorFormula {
+  font-family: var(--font-arabic);
+  font-size: 13px;
+  color: var(--ink-2);
+  direction: rtl;
+}
+
+.uncertainBadge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 5px;
+  border: 1px dashed var(--neutral);
+  color: var(--muted);
+}
+
+.narratorBtn {
+  font: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 8px;
+  border: 1px solid var(--rule);
+  background: var(--surface-white);
+  cursor: pointer;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+.narratorBtnSelected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.narratorBtnDashed {
+  border-style: dashed;
+  border-color: var(--neutral);
+}
+
+.narratorBtnName {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.narratorBtnSub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Inspector panel */
+.inspectorAside {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 20px 20px 40px;
+  box-sizing: border-box;
+  border-left: 1px solid var(--rule);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inspectorKicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ambiguityCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ambiguityTitle {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  margin: 0;
+}
+
+.ambiguityBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border: 1px dashed var(--neutral);
+  color: var(--ink-2);
+  align-self: flex-start;
+}
+
+.ambiguityText {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.ambOptionBtn {
+  font: inherit;
+  text-align: left;
+  padding: 10px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface-white);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: 2px;
+}
+
+.ambOptionName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.ambOptionSub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.personCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.personName {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.personId {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.personSub {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Dossier View */
+.dossierView {
+  padding: 20px clamp(16px, 3vw, 40px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+  box-sizing: border-box;
+}
+
+.dossierHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dossierKicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.dossierTitle {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.dossierArabic {
+  font-family: var(--font-arabic);
+  font-size: 20px;
+  align-self: flex-start;
+  direction: rtl;
+}
+
+.dossierGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dossierSection {
+  flex: 1 1 300px;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionHeading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.identityGrid {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 6px 12px;
+  font-size: 13px;
+}
+
+.identityKey {
+  color: var(--muted);
+}
+
+.identityVal {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  color: var(--ink);
+}
+
+.critShortCard {
+  background: var(--attributed-soft);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 2px;
+}
+
+.critShortKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--attributed);
+}
+
+.critShortQawl {
+  font-family: var(--font-arabic);
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: right;
+  direction: rtl;
+}
+
+.critShortSrc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--attributed);
+  text-decoration: underline;
+}
+
+/* Criticism comparison matrix */
+.critView {
+  padding: 20px clamp(16px, 3vw, 40px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.critFiltersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.critFilterLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.critSelect {
+  padding: 6px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface-white);
+  font: inherit;
+  font-size: 13px;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+.critNote {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  border-left: 3px solid var(--attributed);
+  padding-left: 12px;
+}
+
+.critTableRegion {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+
+.critTableInner {
+  min-width: 760px;
+}
+
+.critTableHeader {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1.6fr) minmax(0, 1.2fr) 150px;
+  gap: 14px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.critTableRow {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1.6fr) minmax(0, 1.2fr) 150px;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ede6d8;
+  align-items: baseline;
+}
+
+.critTableRow:last-child {
+  border-bottom: none;
+}
+
+.critCriticCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.critCriticName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.critCriticDied {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.critQawlCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.critAttributedKicker {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--attributed);
+}
+
+.critQawlText {
+  font-family: var(--font-arabic);
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: right;
+  direction: rtl;
+}
+
+.critSrcCol {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.critLabelBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border: 1px solid var(--ink-2);
+  color: var(--ink-2);
+  display: inline-block;
+}
+
+.critLabelBadgeDashed {
+  border-style: dashed;
+}

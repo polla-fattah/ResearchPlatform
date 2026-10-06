@@ -1,0 +1,1615 @@
+{
+  "app": {
+    "name": "Open Hadith Research",
+    "tagline": "Research workspace"
+  },
+  "nav": {
+    "home": "Home",
+    "library": "My Library",
+    "projects": "Projects",
+    "savedSearches": "Saved Searches",
+    "notifications": "Notifications",
+    "downloads": "Downloads",
+    "settings": "Profile & Settings",
+    "account": "Account navigation",
+    "skip": "Skip to content"
+  },
+  "release": {
+    "R1a": "R1a",
+    "R1b": "R1b",
+    "R1c": "R1c",
+    "R2": "R2",
+    "notYet": "Arrives in {{release}}"
+  },
+  "roles": {
+    "owner": "Owner",
+    "researcher": "Researcher",
+    "reviewer": "Project reviewer",
+    "viewer": "Viewer"
+  },
+  "common": {
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "save": "Save",
+    "unknown": "Unknown",
+    "loading": "Loading…",
+    "language": "Language",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "apply": "Apply",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "states": {
+    "empty": {
+      "title": "Nothing here yet",
+      "body": "When there is something to show, it will appear here."
+    },
+    "loading": {
+      "label": "Loading"
+    },
+    "error": {
+      "title": "This didn't load",
+      "body": "The server didn't respond in time. Your research is safe. Try again.",
+      "network": "The server didn't respond. Check your connection and try again."
+    },
+    "forbidden": {
+      "title": "That page isn't available",
+      "body": "The link you followed points to something that doesn't exist or that you can't open. If someone sent you the link, ask them to check it."
+    },
+    "conflict": {
+      "title": "Someone else changed this",
+      "body": "Your change wasn't saved because the item was updated after you opened it. Compare both versions and choose what to keep."
+    }
+  },
+  "visibility": {
+    "private": "Private",
+    "project": "Project",
+    "announcement": "Public announcement",
+    "publication": "Public publication"
+  },
+  "provenance": {
+    "source": "Source",
+    "note": "Researcher note",
+    "attributed": "Attributed to {{name}}",
+    "attributedUnnamed": "Attributed",
+    "suggestion": "Suggestion (not accepted)"
+  },
+  "neutral": {
+    "unknown": "Unknown",
+    "unresolved": "Unresolved",
+    "incompleteCitation": "Incomplete citation",
+    "partialRun": "Partial run",
+    "uncertainOrder": "Uncertain order",
+    "limitation": "Limitation notice"
+  },
+  "evidenceState": {
+    "candidate": "Candidate",
+    "included": "Included",
+    "reviewed": "Reviewed",
+    "excluded": "Excluded",
+    "unresolved": "Unresolved"
+  },
+  "stage": {
+    "scoping": "Scoping",
+    "collecting": "Collecting",
+    "analysing": "Analysing",
+    "writing": "Writing",
+    "reviewing": "Reviewing",
+    "completed": "Completed"
+  },
+  "units": {
+    "occurrence_one": "{{formattedCount}} occurrence",
+    "occurrence_other": "{{formattedCount}} occurrences",
+    "report_one": "{{formattedCount}} report record",
+    "report_other": "{{formattedCount}} report records",
+    "evidence_one": "{{formattedCount}} evidence item",
+    "evidence_other": "{{formattedCount}} evidence items",
+    "resource_one": "{{formattedCount}} resource",
+    "resource_other": "{{formattedCount}} resources",
+    "finding_one": "{{formattedCount}} finding",
+    "finding_other": "{{formattedCount}} findings",
+    "narrator_one": "{{formattedCount}} narrator",
+    "narrator_other": "{{formattedCount}} narrators",
+    "item_one": "{{formattedCount}} item",
+    "item_other": "{{formattedCount}} items",
+    "document_one": "{{formattedCount}} document",
+    "document_other": "{{formattedCount}} documents"
+  },
+  "viewport": {
+    "title": "Use a larger screen",
+    "body": "Research workspaces need a window at least 1024 pixels wide. Make this window larger, or open the platform on a laptop or desktop."
+  },
+  "shell": {
+    "signedInAs": "Signed in as {{name}}",
+    "devKit": "Component kit"
+  },
+  "pending": {
+    "title": "{{name}}",
+    "mockup": "Mockup: {{file}}",
+    "requirements": "Requirements: {{reqs}}",
+    "release": "Release {{release}}",
+    "apis": "Needs backend work: {{apis}}",
+    "body": "This screen is not built yet. It is part of the frontend plan."
+  },
+  "auth": {
+    "required": "Sign in to continue.",
+    "statusOnly": "Researcher screens aren't open to you yet. Until your application is approved, you can only see your application status."
+  },
+  "confirm": {
+    "danger": "This can't be undone."
+  },
+  "registration": {
+    "brandTag": "Researcher access",
+    "fields": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "languages": {
+      "ckb": "Sorani",
+      "ar": "Arabic",
+      "en": "English"
+    },
+    "steps": {
+      "title": "How access works",
+      "apply": "Apply",
+      "applySub": "Tell us who you are and what you research.",
+      "verify": "Verify your email",
+      "verifySub": "Open the link we send you.",
+      "review": "Administrator review",
+      "reviewSub": "Approve, decline with a reason, or ask a question.",
+      "info": "Review: information requested",
+      "infoSub": "Approve, decline with a reason, or ask a question.",
+      "rejected": "Review: not approved",
+      "rejectedSub": "A reason is always given. You can reply.",
+      "enabled": "Access enabled",
+      "enabledSub": "Same account, no need to sign up again."
+    },
+    "apply": {
+      "title": "Apply for researcher access",
+      "lead": "An administrator reviews every application before you can create projects. Fill in the fields marked Required. Everything else is optional.",
+      "fixFields_one": "Fix {{count}} field to continue",
+      "fixFields_other": "Fix {{count}} fields to continue",
+      "answersSaved": "Your other answers are saved.",
+      "failed": "We couldn't send your application",
+      "submit": "Submit application",
+      "submitting": "Submitting…",
+      "checkStatus": "Already applied? Check your status",
+      "chooseLanguage": "Choose a language",
+      "fields": {
+        "display_name": "Display name",
+        "email": "Email",
+        "password": "Password",
+        "password_confirmation": "Confirm password",
+        "research_interests": "Research interests",
+        "preferred_language": "Preferred language",
+        "affiliation": "Affiliation",
+        "biography": "Biography"
+      },
+      "placeholders": {
+        "name": "The name other researchers will see",
+        "interests": "Topics, collections or methods you work on",
+        "affiliation": "University, institute or study circle",
+        "biography": "A few sentences about your background"
+      },
+      "hints": {
+        "email": "Private. We send a verification link here, and it's never shown on your profile unless you choose to show it.",
+        "password": "At least 8 characters.",
+        "language": "Sets the interface language. Your research content can be in Arabic, Sorani or English.",
+        "affiliation": "You don't need an academic affiliation to be approved."
+      },
+      "errors": {
+        "name": "enter the name other researchers will see.",
+        "email": "enter a full address, like name@example.org.",
+        "password": "use at least 8 characters.",
+        "passwordMatch": "the two passwords don't match.",
+        "interests": "add at least one research interest.",
+        "language": "choose a language."
+      }
+    },
+    "checkEmail": {
+      "title": "Check your email",
+      "lead": "We sent a verification link to {{email}}.",
+      "expiry": "The link works once and expires in 24 hours.",
+      "didntGet": "Didn't get it?",
+      "spam": "Check your spam folder first. You can ask for a new link once a minute, up to 5 times a day.",
+      "resend": "Resend link",
+      "available": "Available in {{clock}}",
+      "usedToday": "{{used}} of 5 used today",
+      "sent": "A new link is on its way. Use the most recent email.",
+      "dailyLimit": "You've reached today's limit of 5 links. Try again tomorrow, or contact an administrator."
+    },
+    "verify": {
+      "checking": "Checking your link…",
+      "checkingHint": "This usually takes a second. Keep this page open.",
+      "done": "Email verified",
+      "doneBody": "Your application is in the review queue. We'll tell you when an administrator has decided.",
+      "viewStatus": "View your application",
+      "expiredTitle": "This link no longer works",
+      "expiredBody": "It has expired or was already used. Nothing changed in your application. Ask for a new link and use the most recent email.",
+      "sendNew": "Send a new link"
+    },
+    "signIn": {
+      "submitting": "Signing in…",
+      "forgot": "Forgot password?",
+      "noAccount": "No account?",
+      "applyLink": "Apply for access",
+      "mismatch": "The email or password doesn't match",
+      "mismatchHint": "Check both and try again. After 5 failed attempts, sign-in pauses for 15 minutes.",
+      "pausedTitle": "Sign-in is paused",
+      "pausedBody_one": "Too many failed attempts. Try again in {{count}} minute.",
+      "pausedBody_other": "Too many failed attempts. Try again in {{count}} minutes.",
+      "suspended": "This account is suspended. Contact an administrator.",
+      "mfaUnavailable": "This account uses two-factor sign-in, which isn't available in this version yet.",
+      "signedOut": "You were signed out.",
+      "signedOutBody": "This session ended or expired. Sign in again to continue. Unsaved editor text is kept as a local draft.",
+      "errors": {
+        "password": "enter your password."
+      }
+    },
+    "recover": {
+      "title": "Reset your password",
+      "lead": "Enter the email you applied with. If it belongs to an account, we'll send a link to choose a new password.",
+      "send": "Send reset link",
+      "sending": "Sending…",
+      "back": "Back to sign in",
+      "checkTitle": "Check your email",
+      "checkBody": "If an account uses {{email}}, a reset link is on its way. The link expires in 1 hour.",
+      "tooMany_one": "Too many reset requests in a short time. Try again in {{count}} minute.",
+      "tooMany_other": "Too many reset requests in a short time. Try again in {{count}} minutes.",
+      "emailKept": "Your email is still filled in.",
+      "noEmailYet": "Reset links are not delivered by email in this development build yet. Ask an administrator if you can't get in."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "newPassword": "New password",
+      "submit": "Set new password",
+      "requestNew": "Request a new link",
+      "invalidTitle": "This reset link doesn't work",
+      "invalidBody": "It has expired or was already used. Request a new link.",
+      "doneTitle": "Password changed",
+      "doneBody": "You can sign in with your new password."
+    },
+    "status": {
+      "blockedTitle": "Researcher screens aren't open to you yet.",
+      "blockedBody": "You tried to open {{area}}. Until your application is approved, you can only see this status page.",
+      "application": "Application {{reference}}",
+      "submitted": "Submitted {{date}}",
+      "pendingTitle": "Your application is under review",
+      "pendingBody": "An administrator will approve it, decline it with a reason, or ask you for more information. We'll email {{email}} when something changes.",
+      "infoTitle": "An administrator asked for more information",
+      "fromAdmin": "Platform administrator",
+      "deadline": "Please reply by {{date}}.",
+      "reply": "Your reply",
+      "replySend": "Send reply",
+      "replyFailed": "Your reply wasn't sent",
+      "replyKept": "Your text is still here. Try sending it again.",
+      "rejectedTitle": "Your application wasn't approved",
+      "reasonGiven": "Platform administrator · reason given",
+      "keepAccount": "We keep your account. If you're approved later, you'll use this same account, so there's no need to apply again.",
+      "reconsider": "Reply and ask us to reconsider",
+      "reconsiderSend": "Send and ask to reconsider",
+      "approvedTitle": "You're approved",
+      "approvedBody": "Approved by a platform administrator on {{date}}. Your account is ready for research.",
+      "approvedBodyNoDate": "Your account is ready for research.",
+      "goHome": "Go to your home",
+      "suspendedTitle": "Your account is suspended",
+      "suspendedBody": "You can't use researcher screens while the account is suspended. Contact an administrator to ask why.",
+      "notProvided": "Not provided (optional)"
+    }
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "welcomeBack": "Welcome back, {{name}}",
+    "startTitle": "Start your first investigation",
+    "startLead": "Your account is ready. Most researchers begin in one of two ways. Everything you create stays private to you.",
+    "createProjectTitle": "Create a project",
+    "createProjectBody": "Write down your research question and scope. You can keep as many projects as you need.",
+    "newProject": "New project",
+    "saveSourceTitle": "Save a first source",
+    "saveSourceBody": "Save a book, chapter, report or narrator from the corpus, or add an external reference, to My Library.",
+    "saveSource": "Save a source",
+    "recentProjects": "Recent projects",
+    "owned": "Owned · {{n}}",
+    "shared": "Shared · {{n}}",
+    "allProjects": "All projects",
+    "projectsFailedTitle": "Your projects didn't load",
+    "projectsFailedBody": "The server didn't respond in time. Your research is safe. Downloads and counts load separately.",
+    "questionNotWritten": "Question not written yet",
+    "updated": "Updated {{when}}",
+    "nextActions": "Next actions",
+    "nextActionsFailedTitle": "Next actions couldn't be worked out",
+    "nextActionsFailedBody": "They are based on your recent projects, which didn't load. Try again.",
+    "noNextActions": "Nothing needs your attention right now.",
+    "open": "Open",
+    "downloads": "Downloads",
+    "allDownloads": "All downloads",
+    "noDownloads": "No exports yet. Exports you start will appear here.",
+    "downloadsFailedTitle": "Downloads didn't load",
+    "downloadsFailedBody": "Your exports are not affected. Try again.",
+    "requested": "Requested {{when}}",
+    "expires": "Expires {{when}}",
+    "viewJob": "View job",
+    "exportScope": {
+      "document": "Document",
+      "resources": "Selected resources",
+      "project": "Project",
+      "account": "All research · account-wide"
+    },
+    "exportState": {
+      "queued": "Queued",
+      "running": "Running",
+      "complete": "Complete",
+      "partial": "Partial",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "counts": {
+      "tasks_one": "{{formatted}} task assigned to you",
+      "tasks_other": "{{formatted}} tasks assigned to you",
+      "unread_one": "{{formatted}} unread notification",
+      "unread_other": "{{formatted}} unread notifications"
+    }
+  },
+  "projects": {
+    "breadcrumb": {
+      "projects": "Projects",
+      "newProject": "New project"
+    },
+    "notAvailable": {
+      "title": "Project not available",
+      "body": "This project doesn't exist, or you don't have access to it. We show the same message in both cases so private projects stay private.",
+      "go": "Go to your projects"
+    },
+    "visibility": {
+      "private": "Private project",
+      "shared": "Shared project"
+    },
+    "index": {
+      "title": "Projects",
+      "new": "New project",
+      "countLine": "{{active}} active · {{archived}} archived · {{trash}} in trash · all owned by you",
+      "countLineShared": "{{shared}} shared with you · owned by others",
+      "noneYet": "No projects yet",
+      "tabs": {
+        "owned": "Owned · active · {{n}}",
+        "shared": "Shared with me · {{n}}",
+        "archived": "Archived · {{n}}",
+        "trash": "Trash · {{n}}"
+      },
+      "filters": {
+        "search": "Search projects",
+        "stage": "Stage",
+        "stageAll": "Stage: all",
+        "tag": "Tag",
+        "tagAll": "Tag: all",
+        "sort": "Sort",
+        "recent": "Recent activity first",
+        "title": "Title A–Z",
+        "created": "Created, newest"
+      },
+      "filterFailedTitle": "Projects couldn't be filtered",
+      "filterFailedBody": "The server didn't respond. Your filter “{{q}}” is kept. Try again, or clear it to see the last loaded list.",
+      "loadFailedTitle": "Projects didn't load",
+      "loadFailedBody": "The server didn't respond. Your research is safe. Try again.",
+      "empty": {
+        "owned": {
+          "title": "No projects yet",
+          "body": "A project holds one investigation: a question, its scope, and everything you gather and write for it. You can have as many as you need, and each one is private and separate from the others."
+        },
+        "shared": {
+          "title": "Nothing shared with you yet",
+          "body": "When a project owner invites you and you accept, the project appears here with your role. Shared projects never mix with your private library."
+        },
+        "archived": {
+          "title": "No archived projects",
+          "body": "Archive a project to take it out of your active list without changing its stage. You can unarchive it at any time."
+        },
+        "trash": {
+          "title": "Trash is empty",
+          "body": "Projects you move to trash stay here, read-only, for 30 days before they are deleted permanently."
+        },
+        "filtered": {
+          "title": "No projects match",
+          "body": "Nothing matches your search and filters. Clear them to see everything in this list."
+        }
+      },
+      "firstSteps": {
+        "question": "A question",
+        "questionBody": "What you're trying to find out, in a sentence.",
+        "workspace": "Its own workspace",
+        "workspaceBody": "Resources, searches, evidence and writing, kept apart from other projects.",
+        "stages": "Stages",
+        "stagesBody": "Scoping → Collecting → Analysing → Writing → Reviewing → Completed.",
+        "create": "Create your first project"
+      },
+      "recovery": "Projects in trash are read-only and can be restored for 30 days. After the date shown, they are deleted permanently. Your library items and other projects aren't affected.",
+      "row": {
+        "owner": "Owner: {{owner}} · You: {{role}}",
+        "ownerYou": "Owner: you",
+        "nextAction": "Next action",
+        "none": "No action needed",
+        "noQuestion": "Question not written yet",
+        "resources_one": "{{n}} resource",
+        "resources_other": "{{n}} resources",
+        "lastActivity": "Last activity {{when}}",
+        "archivedNote": "Archiving doesn't mark a project completed. Its stage is kept as {{stage}}.",
+        "deleteOn": "Deleted permanently on {{date}}",
+        "daysLeft_one": "{{count}} day left",
+        "daysLeft_other": "{{count}} days left",
+        "open": "Open",
+        "viewReadOnly": "View (read-only)",
+        "archive": "Archive",
+        "unarchive": "Unarchive",
+        "trash": "Move to trash",
+        "restore": "Restore",
+        "leave": "Leave project"
+      },
+      "actionFailed": "That didn't work",
+      "trashDialog": {
+        "kicker": "Move to trash · {{code}}",
+        "title": "Move “{{title}}” to trash?",
+        "readOnly": "It becomes read-only and leaves your project list.",
+        "restore": "You can restore it until {{date}}. After that it's deleted permanently.",
+        "goesWith": "{{evidence}} and {{findings}} go with it. Items saved in My Library stay.",
+        "confirm": "Move to trash"
+      },
+      "leaveDialog": {
+        "title": "Leave “{{title}}”?",
+        "body": "You will lose access to this project. Anything you saved to My Library stays yours. The owner can invite you again.",
+        "confirm": "Leave project"
+      }
+    },
+    "create": {
+      "title": "New project",
+      "lead": "Start with a question. You can change any of this later in project settings.",
+      "fixFields_one": "Fix {{count}} field to create the project",
+      "fixFields_other": "Fix {{count}} fields to create the project",
+      "keptNote": "Everything else you entered is kept.",
+      "fields": {
+        "title": "Title",
+        "question": "Research question",
+        "scope": "Scope",
+        "languages": "Content language",
+        "stage": "Starting stage",
+        "tags": "Project tags",
+        "template": "Start from"
+      },
+      "errors": {
+        "title": "enter a title.",
+        "duplicate": "this matches {{code}}. Titles must be unique among your projects.",
+        "question": "write the question this project will answer.",
+        "scope": "describe what is in and out of scope.",
+        "languages": "choose at least one."
+      },
+      "hints": {
+        "direction": "Direction is set for this field only. Auto follows the first strong character.",
+        "languages": "The languages your notes and writing will use. This is separate from the interface language.",
+        "stage": "You can move forwards or back later. Each change is logged.",
+        "tags": "Separate tags with commas."
+      },
+      "placeholders": {
+        "title": "A short name for the investigation",
+        "question": "What are you trying to find out?",
+        "scope": "Which sources, periods and narrators are in. What is out.",
+        "tags": "wuḍūʾ, narrators"
+      },
+      "direction": {
+        "auto": "Auto",
+        "rtl": "RTL",
+        "ltr": "LTR"
+      },
+      "languages": {
+        "ar": "Arabic · العربية",
+        "ckb": "Sorani · کوردی",
+        "en": "English"
+      },
+      "template": {
+        "blank": "Blank project",
+        "takhrij": "Takhrīj template · R2",
+        "narrator": "Narrator study template · R2"
+      },
+      "submit": "Create project",
+      "submitting": "Setting up a private workspace…",
+      "cancel": "Cancel",
+      "forbiddenTitle": "You can't create projects right now",
+      "forbiddenBody": "Your account doesn't currently allow new projects. This happens while an application is pending or when an account is suspended. Your existing research is kept and you can still read it.",
+      "seeStatus": "See account status",
+      "backToProjects": "Back to projects",
+      "failed": "We couldn't create the project",
+      "created": {
+        "badge": "Created · {{code}} · {{when}}",
+        "intro": "Your new project is empty and separate. Nothing was copied from your other projects. Good first steps:",
+        "addResources": "Add resources",
+        "addResourcesHint": "From My Library or the corpus",
+        "search": "Run a first search",
+        "searchHint": "Save it to rerun later",
+        "overview": "Open overview",
+        "overviewHint": "Milestones and open questions",
+        "privateTitle": "Private by default",
+        "privateBody": "Only you can see this project until you invite members. Making anything public always goes through a sharing preview.",
+        "separateTitle": "Separate from your other projects",
+        "separateBody": "This project gets its own resources, searches, evidence and writing. To reuse material from another project, copy it from that project's Overview. The copy keeps a record of where it came from."
+      }
+    },
+    "overview": {
+      "question": "Research question",
+      "scope": "Scope",
+      "notWritten": "Not written yet",
+      "content": "Content: {{languages}}",
+      "owner": "Owner: {{name}}",
+      "created": "Created {{date}}",
+      "copyTo": "Copy to another project…",
+      "stage": "Stage",
+      "stageHelp": "Click a stage to move. Moving back is allowed and goes in the activity log. Archiving is separate and lives in Settings.",
+      "stageChanged": "Stage changed from {{from}} to {{to}}{{back}}. Recorded in the activity log, {{when}}.",
+      "movedBack": " (moved back)",
+      "undo": "Undo",
+      "stageFailed": "The stage wasn't changed. Try again.",
+      "emptyTitle": "This project is empty",
+      "emptyBody": "Start by gathering sources and saving a search. Evidence counts, milestones and findings will appear here as you work.",
+      "collect": "Collect sources",
+      "collectHint": "From My Library or the corpus",
+      "saveSearch": "Save a search",
+      "saveSearchHint": "So you can rerun it and keep its results",
+      "evidenceTitle": "Evidence by state",
+      "total": "{{n}} evidence items in this project",
+      "totalUnknown": "Total: Unknown",
+      "unknown": "Unknown",
+      "countsFailed": "Counts couldn't be calculated. They're shown as Unknown, not zero. Your evidence is unchanged.",
+      "recalculate": "Recalculate",
+      "ofItems": "of {{total}} evidence items",
+      "couldntCalculate": "Couldn't calculate",
+      "reviewedNote": "“Reviewed” means you have checked the item. It doesn't mean the report is authentic or correct.",
+      "milestones": "Milestones",
+      "addMilestone": "+ Add",
+      "milestoneTitle": "Milestone",
+      "milestoneDue": "Due date",
+      "milestonePercent": "Progress, %",
+      "milestoneSave": "Add milestone",
+      "noMilestones": "No milestones yet.",
+      "due": "Due {{date}}",
+      "manualBasis": "About {{percent}}%, judged by you",
+      "manualTag": "Manual estimate",
+      "computedUnknown": "Progress is calculated from project data; the basis isn't available yet.",
+      "questions": "Open questions",
+      "addQuestion": "+ Add",
+      "questionLabel": "Question",
+      "questionSave": "Add question",
+      "noQuestions": "No open questions.",
+      "questionMeta": "Added {{date}}",
+      "questionLinked_one": " · linked to {{count}} evidence item",
+      "questionLinked_other": " · linked to {{count}} evidence items",
+      "nextActions": "Next actions",
+      "noNextActions": "Nothing needs your attention right now.",
+      "actionReview_one": "Review {{count}} candidate evidence item",
+      "actionReview_other": "Review {{count}} candidate evidence items",
+      "actionUnresolved_one": "Resolve {{count}} unresolved item",
+      "actionUnresolved_other": "Resolve {{count}} unresolved items",
+      "actionQuestion": "Answer an open question",
+      "contents": {
+        "resources": "resources",
+        "searches": "saved searches",
+        "resultSets": "result sets",
+        "analyses": "analyses",
+        "findings": "findings",
+        "documents": "documents"
+      },
+      "viewerNote": "You can read this project. Only researchers and the owner can add to it."
+    },
+    "settings": {
+      "readOnly": "Only the owner can change project settings. You can read them here.",
+      "details": "Details",
+      "saveDetails": "Save details",
+      "saved": "Details saved.",
+      "saveFailed": "The details weren't saved. What you typed is kept.",
+      "archiveTitle": "Archive project",
+      "archiveBody": "Takes it out of your active list. The stage stays {{stage}}. An unfinished project isn't marked Completed. You can unarchive at any time.",
+      "archive": "Archive",
+      "unarchiveTitle": "Unarchive project",
+      "unarchiveBody": "Puts the project back in your active list. Its stage stays {{stage}}.",
+      "unarchive": "Unarchive",
+      "transferTitle": "Transfer ownership",
+      "transferBody": "Choose an existing member. The new owner must accept the transfer. Available when members can join (R1b).",
+      "transfer": "Transfer",
+      "trashTitle": "Move to trash",
+      "trashBody": "The project becomes read-only and can be restored for 30 days. {{evidence}}, {{findings}} and {{documents}} go with it. My Library isn't affected.",
+      "trash": "Move to trash…"
+    },
+    "copy": {
+      "title": "Copy to another project",
+      "from": "From {{code}}",
+      "destination": "Destination",
+      "choose": "Choose a project",
+      "noDestination": "You have no other project to copy into. Create one first.",
+      "what": "What to copy",
+      "resources": "Resources",
+      "searches": "Saved queries",
+      "analyses": "Analyses",
+      "analysesUnavailable": "Analyses can't be copied yet.",
+      "none": "Nothing to copy in this group.",
+      "visibility": "Visibility preview · {{code}}",
+      "visibilityBody": "Copies become visible to members of {{code}} (just you in R1a). Each copy records where it came from.",
+      "neverCopied": "Never copied",
+      "neverCopiedList": "Members and roles · private annotations · publication authority · activity history",
+      "destinationNote": "Changes in the destination never change this project.",
+      "copy_one": "Copy {{count}} item",
+      "copy_other": "Copy {{count}} items",
+      "copying": "Copying…",
+      "pickSomething": "Choose at least one item and a destination.",
+      "result": "Copied {{done}} of {{total}} items",
+      "copied": "{{label}} was copied.",
+      "notCopied": "{{label}} wasn't copied. Review it in this project, then try again.",
+      "previewFailed": "The preview couldn't be loaded. Try again.",
+      "failed": "Nothing was copied. Try again."
+    }
+  },
+  "picker": {
+    "title": "Add resource",
+    "openedFrom": "Opened from {{origin}}",
+    "originLibrary": "My Library",
+    "originProject": "Project {{code}} · Resources",
+    "close": "Close",
+    "tabs": {
+      "corpus": "From the corpus",
+      "external": "External reference"
+    },
+    "forbiddenTitle": "You can't add resources to this project right now",
+    "forbiddenBody": "The project is read-only because it's in trash or archived, or your account can't make changes. You can still save to My Library.",
+    "saveToLibraryInstead": "Save to My Library instead",
+    "find": "Find",
+    "searchLabel": "Search the corpus",
+    "searchPlaceholder": "A phrase, a title, a narrator's name, or an ID such as REP-000318",
+    "searchHint": "For full searches with filters, saved queries and result sets, use the Search workspace.",
+    "types": {
+      "report": "Report",
+      "occurrence": "Occurrence",
+      "narrator": "Narrator",
+      "book": "Book",
+      "chapter": "Chapter",
+      "section": "Section",
+      "chain": "Chain",
+      "judgment": "Judgment",
+      "passage": "Source passage",
+      "notSearchable": "Can't be searched here yet"
+    },
+    "typeLabel": "Type",
+    "searchFailedTitle": "Search didn't finish",
+    "searchFailedBody": "The corpus index didn't respond. Your search “{{q}}” is kept. Try again in a moment.",
+    "noMatchTitle": "No corpus items match “{{q}}”",
+    "noMatchBody": "This box matches report text, narrator names and IDs as written. Try fewer words, a different spelling, or a type filter. If the source isn't in the corpus, add it as an external reference.",
+    "addExternal": "Add an external reference",
+    "typeAtLeast": "Type at least two characters to search.",
+    "counts_one": "{{count}} corpus item: {{parts}}",
+    "counts_other": "{{count}} corpus items: {{parts}}",
+    "kind": {
+      "report": "Report record",
+      "occurrence": "Report occurrence",
+      "narrator": "Narrator"
+    },
+    "reportLong": "Report record (all occurrences)",
+    "inLibrary": "In My Library",
+    "idLabel": "ID",
+    "locatorLabel": "Locator",
+    "snapshotNote": "Corpus snapshot kept on save",
+    "originalText": "original text",
+    "reportLevelText": "The corpus records this wording for the report. Occurrence-specific wording is not recorded, so no variant is shown.",
+    "noText": "A narrator identity has no source text.",
+    "unknownPage": "Page: Unknown",
+    "duplicate": {
+      "title": "Already in My Library",
+      "body": "Saved {{when}}{{as}}. Saving again won't duplicate it.",
+      "asExcerpt": " as “{{locator}}”",
+      "reuse": "Reuse the existing entry (add it to another collection or project)",
+      "distinct": "Save a distinct excerpt (pick a different page or span below)",
+      "distinctNeeded": "Choose a selected passage or a page range below first.",
+      "reusedDone": "Nothing new was saved. The existing entry is used.",
+      "reusedAdded": "The existing entry was added to the project."
+    },
+    "what": {
+      "title": "What to save",
+      "item": "The whole {{kind}}",
+      "itemSub": "Saves the record and its locator.",
+      "span": "A selected passage",
+      "spanSub": "Select text in the source panel to save just that span, with its own locator.",
+      "page": "A page range",
+      "pageSub": "For example vol. 1, pp. 78–79.",
+      "selected": "Selected passage",
+      "noneSelected": "Nothing selected yet. Select text in the source above.",
+      "clear": "Clear selection",
+      "pages": "Pages",
+      "pagesPlaceholder": "78–79"
+    },
+    "saveTo": {
+      "title": "Save to",
+      "library": "My Library",
+      "libraryBadge": "Private",
+      "librarySub": "Only you. Available across all your projects.",
+      "project": "Project {{code}} resources",
+      "projectBadge": "Project",
+      "projectSub": "Visible to project members (just you in R1a). Also saved to My Library."
+    },
+    "external": {
+      "lead": "For an article, edition, manuscript or web page that isn't in the corpus. Fill in what you know. Anything left blank is marked as missing, never guessed.",
+      "kind": "Kind",
+      "kinds": {
+        "article": "Journal article",
+        "book": "Book or edition",
+        "chapter": "Book chapter",
+        "manuscript": "Manuscript",
+        "thesis": "Thesis",
+        "web": "Web page"
+      },
+      "titleField": "Title",
+      "author": "Author(s)",
+      "date": "Publication date",
+      "dateUnknown": "Date unknown",
+      "accessed": "Accessed on",
+      "accessedHint": "Defaults to today",
+      "url": "URL",
+      "identifier": "Identifier",
+      "venue": "Published in / publisher",
+      "pages": "Pages",
+      "preview": "Citation preview",
+      "incomplete": "Incomplete citation",
+      "missing": "Missing: {{list}}. You can still save it. It will carry this flag everywhere it's cited until you fill the gaps.",
+      "complete": "All citation details are filled in.",
+      "titleRequired": "A title is needed to save"
+    },
+    "footer": {
+      "nothing": "Nothing selected",
+      "route": "{{code}} → {{dest}}",
+      "needTitle": "A title is needed to save",
+      "flagged_one": "Saves with an Incomplete citation flag ({{count}} missing)",
+      "flagged_other": "Saves with an Incomplete citation flag ({{count}} missing)",
+      "ready": "Ready to save",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "continue": "Continue",
+      "saveWithFlag": "Save with flag",
+      "saveReference": "Save reference"
+    },
+    "done": {
+      "title": "Saved",
+      "toLibrary": "{{title}} was saved to My Library.",
+      "toProject": "{{title}} was saved to My Library and added to {{code}} resources.",
+      "another": "Add another",
+      "openLibrary": "Open My Library",
+      "openProject": "Open project resources"
+    },
+    "failedTitle": "It wasn't saved",
+    "failedKept": "Your selection and entries are kept. Try again."
+  },
+  "library": {
+    "title": "My Library",
+    "countLine": "{{total}} saved · {{favourites}} favourites · {{collections}} collections",
+    "saveFromCorpus": "Save from corpus",
+    "addExternal": "Add external reference",
+    "unavailable": {
+      "title": "That library item isn't available",
+      "body": "The link points to an item that doesn't exist or isn't in your library. Libraries are personal, so links to other researchers' libraries never open. Your own library is shown below."
+    },
+    "empty": {
+      "title": "Your library is empty",
+      "body": "My Library keeps sources you want to come back to across all your projects. Saving here never changes the corpus, and removing something later never deletes the source.",
+      "step1": "Save from the corpus.",
+      "step1Body": "Open any book, chapter, section, report, occurrence, chain, narrator or judgment and choose Save to My Library.",
+      "step2": "Add an external reference.",
+      "step2Body": "An article, manuscript or edition outside the corpus. Missing details are fine; they're flagged, not guessed.",
+      "step3": "Organise later.",
+      "step3Body": "Collections, tags, favourites and private notes. One item can sit in many collections.",
+      "filtered": "No saved items match these filters.",
+      "filteredBody": "Clear a filter or search for something else."
+    },
+    "loadFailed": {
+      "title": "Your library couldn't be loaded",
+      "body": "Nothing has been changed. Try again in a moment."
+    },
+    "scope": {
+      "all": "All items",
+      "favourites": "Favourites"
+    },
+    "collections": {
+      "heading": "Collections",
+      "new": "+ New collection",
+      "name": "Collection name",
+      "create": "Create",
+      "createFailed": "The collection couldn't be created.",
+      "none": "No collections yet.",
+      "remove": "Remove from collection {{name}}"
+    },
+    "tagsHeading": "Personal tags",
+    "filters": {
+      "search": "Search your library",
+      "type": "Type: all",
+      "typeLabel": "Type",
+      "saved": "Saved: any time",
+      "savedLabel": "Saved",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days"
+    },
+    "type": {
+      "report": "Report record",
+      "occurrence": "Occurrence",
+      "narrator": "Narrator",
+      "book": "Book",
+      "judgment": "Judgment",
+      "chain": "Chain",
+      "external": "External reference",
+      "other": "Source"
+    },
+    "private": "Private · My Library",
+    "id": "ID",
+    "locator": "Saved locator",
+    "savedOn": "Saved",
+    "noLocator": "No locator saved",
+    "flag": {
+      "no_page": "Page missing",
+      "no_volume": "Volume missing",
+      "no_edition": "Edition missing",
+      "no_author": "Author missing",
+      "no_date": "Date missing",
+      "other": "Incomplete citation"
+    },
+    "flagLabel": "Incomplete citation",
+    "merged": {
+      "title": "Source changed · merged",
+      "body": "The corpus team merged this record into {{target}}. Your saved locator and the snapshot you saved are kept exactly as they were. Your notes and linked projects are unaffected."
+    },
+    "changed": {
+      "title": "Source changed",
+      "body": "The corpus record changed after you saved it. Your saved locator and snapshot are kept as they were."
+    },
+    "removedSource": {
+      "title": "Source removed from the corpus",
+      "body": "Your saved locator and snapshot are kept as they were."
+    },
+    "snapshot": "Source · {{label}}",
+    "snapshotSaved": "saved snapshot",
+    "noSnapshot": "No source text was saved with this item.",
+    "favourite": "Favourite",
+    "unfavourite": "Remove favourite",
+    "favouriteOn": "Marked as a favourite.",
+    "addToProject": "Add to project…",
+    "openSource": "Open source",
+    "organise": "Tags and collections",
+    "tagPlaceholder": "Tag",
+    "addTag": "Add tag",
+    "removeTag": "Remove tag {{tag}}",
+    "noTags": "No tags yet.",
+    "collectionPicker": "Add to collection",
+    "collectionNone": "Add to collection…",
+    "inCollections": "In {{collections}}. The item is stored once; collections only point to it.",
+    "inNoCollections": "Not in any collection. The item is stored once; collections only point to it.",
+    "notes": {
+      "heading": "Private notes",
+      "add": "+ Add note",
+      "placeholder": "A note only you can see",
+      "save": "Save note",
+      "author": "Researcher note · {{name}}",
+      "none": "No notes yet.",
+      "legacy": "Earlier note"
+    },
+    "usedIn": {
+      "heading": "Used in projects",
+      "unavailable": "Which projects use this item isn't shown yet.",
+      "none": "Not in any project yet."
+    },
+    "remove": {
+      "action": "Remove from My Library",
+      "note": "This removes only your library entry, tags and favourite. The corpus source and its use in projects stay as they are.",
+      "title": "Remove “{{title}}” from My Library?",
+      "confirm": "Remove from My Library",
+      "body": "Your tags, favourite and private notes on this item are removed with it.",
+      "kept": "The corpus source and any project that already uses it stay as they are."
+    },
+    "actionFailed": "That change wasn't saved",
+    "notPersisted": "The server accepted the request but did not keep your {{what}}. Nothing was changed.",
+    "addProject": {
+      "title": "Add to project · {{id}}",
+      "projects": "Projects",
+      "noProjects": "You have no projects you can add to yet.",
+      "include": "What to include",
+      "record": "The source record",
+      "recordSub": "Always included",
+      "excerpt": "Saved excerpt",
+      "excerptSub": "The snapshot you saved with it",
+      "tags": "My tags",
+      "tagsSub": "Copied as project tags",
+      "notes": "My private notes",
+      "notesSub": "Become visible to project members",
+      "preview": "Sharing preview",
+      "previewProject": "Project",
+      "previewNote": "This is exactly what project members will see.",
+      "pickOne": "Choose at least one project.",
+      "previewFailed": "The preview couldn't be loaded. You can still add; only the record is sure to be included.",
+      "notShared": "Not shared: {{list}}.",
+      "summary_one": "Adds to {{formattedCount}} project",
+      "summary_other": "Adds to {{formattedCount}} projects",
+      "button_one": "Add to {{formattedCount}} project",
+      "button_other": "Add to {{formattedCount}} projects",
+      "alreadyIn": "Already in this project. Adding again won't create a duplicate.",
+      "result": "Added to {{done}} of {{total}} projects",
+      "added": "{{title}}: added.",
+      "already": "{{title}}: already in the project, nothing duplicated.",
+      "forbidden": "{{title}}: not added. Your role in that project doesn't allow adding resources, or the project is in trash.",
+      "notFound": "{{title}}: not added because the project could not be found.",
+      "failed": "{{title}}: not added.",
+      "done": "Done"
+    },
+    "projectResources": {
+      "title": "Resources",
+      "countLine": "{{resources}} · {{collections}}",
+      "collectionsCount_one": "{{formattedCount}} collection",
+      "collectionsCount_other": "{{formattedCount}} collections",
+      "addFromLibrary": "Add from My Library…",
+      "add": "Add resource",
+      "heading": "This project's resources",
+      "intro": "The sources this project relies on, with tags and reasons for inclusion that belong to {{id}} only. Other projects can't see them.",
+      "separate": "My Library is separate",
+      "separateBody": "Your personal shelf across all projects. Adding from it copies only what you choose. Removing it here never touches your library, and removing it from your library never touches this project.",
+      "unavailable": {
+        "title": "That resource isn't available",
+        "body": "The link points to a resource that isn't in {{id}}. Resources belong to one project, so another project's ID can't open them here."
+      },
+      "empty": {
+        "title": "No resources in this project yet",
+        "body": "Pick the sources this investigation needs from your library, or add straight from the corpus. Search results you keep will appear here too."
+      },
+      "loadFailed": {
+        "title": "This project's resources couldn't be loaded",
+        "body": "Nothing has been changed. Try again in a moment."
+      },
+      "collections": "Project collections",
+      "collectionsUnavailable": "Which resources are in a collection isn't shown yet.",
+      "newCollection": "+ New",
+      "collectionName": "Collection name",
+      "createCollection": "Create",
+      "collectionFailed": "The collection couldn't be created.",
+      "noCollections": "No project collections yet.",
+      "detail": {
+        "kicker": "{{code}} · resource of {{id}}",
+        "points": "Points to corpus record {{code}}. The source is stored once and never copied.",
+        "inProject": "In this project",
+        "projectTags": "Project tags",
+        "tagsEditUnavailable": "Editing project tags isn't available yet.",
+        "noTags": "None",
+        "why": "Why included",
+        "noWhy": "No reason recorded",
+        "added": "Added",
+        "addedBy": "Added by {{who}}",
+        "evidence": "Evidence from it",
+        "evidenceUnavailable": "Not counted yet",
+        "elsewhere": "Elsewhere (separate copies, not shared)",
+        "myLibrary": "My Library",
+        "inLibrary": "Also in your library",
+        "notInLibrary": "Not in your library",
+        "otherProjects": "Other projects",
+        "otherUnavailable": "Not shown yet",
+        "rename": "Changing tags here doesn't change your personal tags or this source's tags in any other project.",
+        "remove": "Remove from this project…",
+        "removeNote": "Your library entry, other projects and the corpus source stay as they are."
+      },
+      "removeDialog": {
+        "kicker": "Remove resource · {{code}}",
+        "title": "Remove “{{title}}” from {{id}}?",
+        "tags": "Project tags and the inclusion reason are removed with it.",
+        "kept": "Your My Library entry and other projects are not affected.",
+        "confirm": "Remove from {{id}}"
+      },
+      "removeFailed": "The resource wasn't removed"
+    },
+    "what": {
+      "favourite": "favourite mark",
+      "tags": "tags",
+      "note": "note"
+    },
+    "fromLibrary": {
+      "title": "Add from My Library",
+      "body": "Pick the sources this project needs. Only the source record is copied; your tags and notes stay private.",
+      "none": "Everything in your library is already in this project.",
+      "add_one": "Add {{formattedCount}} source",
+      "add_other": "Add {{formattedCount}} sources"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "intro": "Search the corpus for wording. Results are grouped by report record, with every occurrence underneath.",
+    "saved": {
+      "heading": "Saved searches",
+      "count": "{{count}} saved",
+      "noneTitle": "No saved searches yet",
+      "noneBody": "Save a search to rerun it later with the same text, filters and mode. Every run is recorded, so you can see what changed.",
+      "scope": "Project searches belong to this project and are visible to its members. Sharing a project search never exposes your personal ones.",
+      "scopeLabel": "Project scope",
+      "open": "Open",
+      "rerun": "Run and record",
+      "history": "Run history",
+      "delete": "Delete",
+      "lastRun": "Last run {{when}}",
+      "neverRun": "Not run yet",
+      "loadFailed": "Saved searches couldn't be loaded.",
+      "unavailable": {
+        "title": "That saved search isn't available",
+        "body": "The link points to a search that doesn't exist or isn't in a scope you can open. Personal searches are never visible from projects, and project searches are only visible inside their project. A new, empty search is open instead."
+      },
+      "deleteDialog": {
+        "title": "Delete “{{name}}”?",
+        "body": "The saved definition is removed. Result sets already saved from its runs keep their members.",
+        "confirm": "Delete saved search"
+      },
+      "deleteFailed": "The saved search wasn't deleted"
+    },
+    "form": {
+      "label": "Search text",
+      "placeholder": "Arabic wording to find, for example وضوء",
+      "run": "Search",
+      "clear": "Clear",
+      "tooShort": "Enter at least 2 characters.",
+      "mode": "Search mode",
+      "modes": {
+        "exact": "Exact original text",
+        "normalized": "Normalized"
+      },
+      "modeHelp": {
+        "exact": "Matches the wording exactly as stored, including diacritics and spelling.",
+        "normalized": "Ignores diacritics and spelling variants like ثلثا / ثلاثا."
+      }
+    },
+    "filters": {
+      "heading": "Filters",
+      "hukm": "Ruling (ḥukm)",
+      "hukmAll": "Any ruling",
+      "narrator": "Narrator in the chain",
+      "narratorPlaceholder": "Type a narrator's name",
+      "narratorNone": "No narrator matches that name.",
+      "narratorSearching": "Searching…",
+      "book": "Book",
+      "bookUnavailable": "Filtering by book isn't available yet.",
+      "coverage": "How much of the corpus records each of these fields isn't shown yet, so a filter may leave out records that simply have no value.",
+      "remove": "Remove filter: {{label}}",
+      "active": "Active filters",
+      "hukmChip": "Ruling: {{name}}",
+      "narratorChip": "Narrator: {{name}}"
+    },
+    "results": {
+      "countLine": "{{reports}} · {{occurrences}} on this page",
+      "reportCount_one": "{{formattedCount}} report record",
+      "reportCount_other": "{{formattedCount}} report records",
+      "occurrenceCount_one": "{{formattedCount}} occurrence",
+      "occurrenceCount_other": "{{formattedCount}} occurrences",
+      "mode": "Mode: {{mode}}",
+      "report": "Report record · {{code}}",
+      "occurrence": "Occurrence",
+      "why": "Why it matched",
+      "whyValue": {
+        "exact": "The exact wording appears in the original text.",
+        "normalized": "Matched after ignoring diacritics and spelling variants.",
+        "ranked": "Matched by the full-text index, ranked by relevance.",
+        "similar": "Matched by similarity.",
+        "unknown": "Matched."
+      },
+      "chain": "Chain",
+      "chainNarrators_one": "{{formattedCount}} narrator",
+      "chainNarrators_other": "{{formattedCount}} narrators",
+      "chainUncertain": "Order uncertain",
+      "noChain": "Chain not recorded",
+      "pageUnknown": "page unknown",
+      "volume": "Vol. {{volume}}",
+      "page": "p. {{page}}",
+      "source": "source no. {{number}}",
+      "hukm": "Ruling: {{label}}",
+      "hukmUnknown": "Ruling not recorded",
+      "inResources": "Already in this project's resources",
+      "selectGroup": "Select all occurrences of {{code}}",
+      "selectOne": "Select occurrence in {{title}}",
+      "noOccurrences": "No occurrence is recorded for this report.",
+      "startTitle": "Search the corpus",
+      "startBody": "Enter the wording you are looking for. Nothing is saved until you choose to save the search or add results.",
+      "failedTitle": "The search couldn't be completed",
+      "failedBody": "Your query and filters are kept. Try again in a moment.",
+      "emptyTitle": "No matches in {{mode}} mode",
+      "emptyBody": "The search found no report records.",
+      "emptyHints": "Try one of these:",
+      "switchMode": "Switch to Normalized",
+      "switchModeNote": ", which ignores diacritics and spelling variants like ثلثا / ثلاثا.",
+      "removeFilters": "Remove the filters above.",
+      "stale": "Showing the previous results while the new search runs."
+    },
+    "selection": {
+      "count_one": "{{formattedCount}} occurrence selected",
+      "count_other": "{{formattedCount}} occurrences selected",
+      "none": "Select occurrences to add them to the project.",
+      "clear": "Clear selection",
+      "addResources": "Add to resources",
+      "addEvidence": "Add to evidence",
+      "saveSet": "Save selected as result set",
+      "readOnly": "Your role in this project can read results but not add to it."
+    },
+    "save": {
+      "button": "Save search",
+      "title": "Save search",
+      "name": "Name",
+      "namePlaceholder": "A short name you will recognise",
+      "summary": "{{text}} · {{mode}}",
+      "submit": "Save search",
+      "failed": "The search wasn't saved",
+      "saved": "Saved as {{code}}.",
+      "needText": "Enter some text to search before saving it."
+    },
+    "run": {
+      "record": "Run and record",
+      "recording": "Recording the run…",
+      "recorded": "Run {{code}} {{status}}",
+      "meta": "{{count}} matches · {{duration}} ms · corpus {{corpus}} · definition v{{version}}",
+      "capped": "Only the first {{shown}} of {{total}} matches were recorded. A recorded run is capped, so “Save all results” would not be complete.",
+      "failed": "The run couldn't be recorded",
+      "saveAll": "Save all results",
+      "saveAllOff": "“Save all results” is turned off for a run that is not complete or was capped.",
+      "history": "Run history",
+      "status": {
+        "completed": "completed",
+        "partial": "partial",
+        "failed": "failed",
+        "cancelled": "cancelled",
+        "running": "running"
+      },
+      "partialTitle": "Partial run: the search stopped before finishing",
+      "partialBody": "Run {{code}} was interrupted after scanning {{scanned}} of {{total}} books. The results are what was found so far. This is not the complete result, so “Save all results” is turned off for this run."
+    },
+    "history": {
+      "title": "Run history · “{{name}}”",
+      "sub": "Saved query {{code}} · project scope · every run is kept as its own record",
+      "back": "← Back to search",
+      "empty": "This saved search has not been run yet.",
+      "loadFailed": "Run history couldn't be loaded.",
+      "columns": {
+        "run": "Run",
+        "executed": "Executed",
+        "version": "Query",
+        "corpus": "Corpus",
+        "results": "Results",
+        "status": "Status"
+      },
+      "version": "v{{version}}",
+      "compare": "Compare",
+      "compareHint": "Pick two runs to compare them.",
+      "compareSelect": "Select run {{code}} to compare",
+      "compareTitle": "Compare {{a}} with {{b}}",
+      "compareResult": "+{{added}} reports · −{{removed}} reports · {{common}} unchanged",
+      "compareFailed": "The runs couldn't be compared.",
+      "sets": "Result sets",
+      "setsNone": "No result sets saved yet.",
+      "setsFrozen": "Result set {{code}}, saved from {{run}}, keeps exactly its {{count}} members. New runs never add to or remove from an earlier result set."
+    },
+    "set": {
+      "title": "Save as result set",
+      "from": "From {{source}}",
+      "fromSelection": "{{count}} selected occurrences",
+      "fromRun": "Run {{code}} · {{status}}",
+      "name": "Name",
+      "limit": "Result sets hold up to 5,000 members. They are never cut short silently.",
+      "fixed": "Membership is fixed once saved. Later corpus changes or reruns won't add or remove items.",
+      "submit": "Save result set",
+      "failed": "The result set wasn't saved",
+      "saved": "Saved {{code}} with {{count}} members."
+    },
+    "add": {
+      "titleEvidence": "Add to evidence · {{id}}",
+      "titleResources": "Add to resources · {{id}}",
+      "intro": "Each selected occurrence is saved to My Library first (the source record only), then added to this project.",
+      "evidenceNote": "New evidence starts as Candidate. Each item records the run it came from, the corpus version, you as collector, and the time.",
+      "submit_one": "Add {{formattedCount}} item",
+      "submit_other": "Add {{formattedCount}} items",
+      "working": "Adding…",
+      "summary": "{{added}} added, {{skipped}} already there, {{failed}} failed",
+      "added": "added",
+      "skipped": "already in the project",
+      "failed": "not added",
+      "openEvidence": "Open evidence",
+      "openResources": "Open resources",
+      "done": "Done",
+      "saveFailed": "This occurrence couldn't be saved to your library, so it was not added."
+    }
+  },
+  "evidence": {
+    "title": "Evidence",
+    "list": {
+      "search": "Search evidence text, locator or reason",
+      "all": "All",
+      "loadFailed": {
+        "title": "Evidence couldn't be loaded",
+        "body": "Nothing has been changed. Try again in a moment."
+      },
+      "noMatch": {
+        "title": "No evidence matches",
+        "body": "Clear the filter or search for something else."
+      }
+    },
+    "empty": {
+      "title": "No evidence yet",
+      "body": "Evidence is an exact passage or record you've captured for this project, with its locator and source version. Add it from search results, from a resource, or by selecting text in a source. It starts as Candidate, and you decide what to include.",
+      "search": "Search the corpus",
+      "resources": "From project resources"
+    },
+    "unavailable": {
+      "title": "That evidence isn't available",
+      "body": "The link points to an evidence item that isn't in this project. Evidence belongs to one project, so another project's ID can't open it here."
+    },
+    "inspector": {
+      "kicker": "{{code}} · collected by {{who}}",
+      "unknownCollector": "an unknown collector",
+      "project": "Project",
+      "openSource": "Open exact source ↗",
+      "source": "Source · exact captured span",
+      "direction": "Arabic · right-to-left",
+      "normalizedUnavailable": "The normalized form used for search isn't provided yet.",
+      "locatorHeading": "Locator and version",
+      "locator": "Locator",
+      "version": "Source version",
+      "record": "Corpus record",
+      "collected": "Collected",
+      "fingerprint": "Content fingerprint",
+      "notRecorded": "Not recorded",
+      "incompleteTitle": "Incomplete citation",
+      "incompleteBody": "No locator is recorded for this evidence. Citations from it will show “p. unknown” until it is filled in. It's never guessed. If you know it, propose a corpus correction.",
+      "origin": "Where it came from",
+      "originUnavailable": "The search run or resource it was collected from isn't recorded yet.",
+      "proposeCorrection": "Propose corpus correction…",
+      "remove": "Remove evidence…",
+      "pick": "Select an evidence item to inspect its source, state, annotations and links."
+    },
+    "tabs": {
+      "label": "Corpus detail",
+      "chain": "Chain",
+      "narrators": "Narrators",
+      "judgments": "Judgments",
+      "noCorpus": "This source isn't a corpus record, so there is no chain or judgment to show.",
+      "loadFailed": "The corpus record couldn't be loaded.",
+      "noChain": "No chain is recorded for this report.",
+      "chainOf": "Chain {{n}} of {{total}} · {{count}} narrators",
+      "order": "The narrator order is as the corpus stores it.",
+      "noNarrators": "No narrators are recorded.",
+      "narratorMeta": "d. {{death}} AH",
+      "rutba": "Grade: {{value}}",
+      "judgmentIn": "{{book}}",
+      "noJudgments": "No ruling is recorded for any occurrence.",
+      "hukm": "Ruling: {{label}}"
+    },
+    "state": {
+      "heading": "State",
+      "note": "Reviewed means checked by you. It doesn't mean authentic, correct or agreed.",
+      "current": "Current state",
+      "reason": "Reason",
+      "reasonRequired": "Excluded and Unresolved always need a reason. It is attributed to you and dated.",
+      "reasonOptional": "Optional. It is attributed to you and dated.",
+      "mark": "Mark as {{state}}",
+      "dialogTitle": "{{code}} · {{from}} → {{to}}",
+      "usedIn_one": "Used in {{formattedCount}} finding. It keeps the link and will show this evidence as {{state}}.",
+      "usedIn_other": "Used in {{formattedCount}} findings. They keep the link and will show this evidence as {{state}}.",
+      "confirm": "Change state",
+      "failed": "The state wasn't changed",
+      "notPersisted": "The server accepted the request but did not keep the new {{what}}. Nothing was changed.",
+      "needReason": "Enter a reason.",
+      "reasonShown": "Reason: {{reason}}",
+      "readOnly": "Your role in this project can read evidence but not change its state."
+    },
+    "history": {
+      "heading": "History",
+      "created": "Candidate · added by {{who}}",
+      "unknown": "Someone",
+      "failed": "The history couldn't be loaded.",
+      "structuredUnavailable": "Each change shows the server's own wording."
+    },
+    "annotations": {
+      "heading": "Annotations",
+      "count": "{{count}}",
+      "privacy": "Only annotations you may see are listed. Other authors' private annotations are never shown here, in search, in document links or in exports, including to project owners.",
+      "none": "No annotations yet.",
+      "failed": "Annotations couldn't be loaded.",
+      "kind": {
+        "source_quotation": "Source quotation",
+        "interpretation": "Researcher note",
+        "scholarly_judgment": "Attributed judgment (needs a source)",
+        "machine_suggestion": "Suggestion (not accepted)"
+      },
+      "visibility": {
+        "private": "Private to me",
+        "project_shared": "Project"
+      },
+      "add": "Add annotation",
+      "kindLabel": "Kind",
+      "body": "Annotation",
+      "visibilityLabel": "Who can see it",
+      "attributedTo": "Attributed to",
+      "sourceLocator": "Where it is stated",
+      "attributedRequired": "A judgment needs the scholar it is attributed to and where it is stated.",
+      "save": "Add",
+      "promote": "Share with project",
+      "makePrivate": "Make private",
+      "delete": "Delete",
+      "by": "{{who}}",
+      "failed2": "The annotation wasn't saved",
+      "attributionLost": "The annotation was saved, but the server did not keep who it is attributed to or where it is stated.",
+      "promoteFailed": "The visibility wasn't changed",
+      "deleteFailed": "The annotation wasn't deleted",
+      "notPersisted": "The server accepted the request but did not keep the new {{what}}. Nothing was changed.",
+      "readOnly": "Your role in this project cannot add annotations."
+    },
+    "findings": {
+      "heading": "Linked findings",
+      "none": "Not linked to any finding.",
+      "link": "+ Link to finding",
+      "unlink": "Unlink",
+      "relation": {
+        "supporting": "Supports",
+        "opposing": "Opposes",
+        "contextual": "Context",
+        "unresolved": "Unresolved"
+      },
+      "dialogTitle": "Link {{code}} to a finding",
+      "finding": "Finding",
+      "relationLabel": "Relation",
+      "interpretation": "How it bears on the finding (optional)",
+      "note": "The same evidence can support one finding and oppose another. Its source isn't duplicated.",
+      "noFindings": "This project has no findings yet.",
+      "submit": "Link",
+      "failed": "The link wasn't made",
+      "unlinkFailed": "The link wasn't removed",
+      "loadFailed": "Findings couldn't be loaded."
+    },
+    "usedIn": {
+      "heading": "Used in",
+      "none": "Not cited in any document.",
+      "document": "{{title}} · version {{version}}",
+      "citation": {
+        "direct_quotation": "direct quotation",
+        "paraphrase": "paraphrase",
+        "reference": "reference"
+      }
+    },
+    "correction": {
+      "title": "Propose a correction to the corpus",
+      "kicker": "Corpus correction proposal · {{code}}",
+      "field": "Field",
+      "fields": {
+        "page": "Page number",
+        "volume": "Volume",
+        "matn": "Matn wording",
+        "chain_narrator": "Chain: narrator identity",
+        "chain_order": "Chain: order",
+        "other": "Other"
+      },
+      "current": "Current value",
+      "currentDefault": "Unknown (not recorded)",
+      "proposed": "Proposed value",
+      "explanation": "Explanation",
+      "explanationHint": "Say what the evidence shows, in at least 10 characters.",
+      "note": "Your proposal goes to the corpus editors' queue, which is separate from this project. Nothing in the corpus changes until an editor accepts it, and accepting it inside a project never changes the canonical record.",
+      "submit": "Send proposal",
+      "failed": "The proposal wasn't sent",
+      "sent": "Proposal {{code}} sent to the corpus editors.",
+      "noRecord": "This evidence doesn't point to a corpus record, so a correction can't be proposed from it."
+    },
+    "remove": {
+      "dialogKicker": "Remove evidence · {{code}}",
+      "title": "Remove “{{title}}” from this project?",
+      "plain": "This removes the evidence item and its annotations. It can't be undone.",
+      "inUseTitle": "This evidence is in use",
+      "inUse": "Removing it affects {{findings}} and {{citations}}.",
+      "findingsCount_one": "{{formattedCount}} finding",
+      "findingsCount_other": "{{formattedCount}} findings",
+      "citationsCount_one": "{{formattedCount}} document citation",
+      "citationsCount_other": "{{formattedCount}} document citations",
+      "kept": "Earlier document versions keep their quoted text unchanged. Consider marking it Excluded with a reason instead.",
+      "excludeInstead": "Mark Excluded instead",
+      "confirm": "Remove {{code}}",
+      "failed": "The evidence wasn't removed"
+    },
+    "what": {
+      "state": "state",
+      "visibility": "visibility"
+    }
+  },
+  "comparison": {
+    "title": "Comparison workspace",
+    "reqs": "ANA-01 · 02 · 03 · 04 · 05",
+    "sampleNotice": "Sample texts and judgments are illustrative fixtures, pending specialist review",
+    "modes": {
+      "occ": "Occurrences",
+      "chains": "Chains",
+      "dossier": "Narrator dossier",
+      "crit": "Criticism"
+    },
+    "bar": {
+      "untitled": "Untitled analysis",
+      "notSaved": "not saved",
+      "noInputs": "No inputs yet",
+      "selectInputs": "Select inputs…",
+      "rerun": "Rerun",
+      "rerunAs": "Rerun as v{{version}}",
+      "saveAnalysis": "Save analysis",
+      "savedToast": "Analysis {{code}} saved.",
+      "inputsChangedTitle": "Inputs changed",
+      "inputsChangedBody": "{{item}} was updated in corpus {{version}}. v{{oldVersion}} still shows what you saved. Rerunning creates v{{newVersion}} and leaves v{{oldVersion}} as it is."
+    },
+    "states": {
+      "forbiddenTitle": "Analysis not available",
+      "forbiddenBody": "This analysis doesn't exist in this project, or one of its inputs belongs to a project you can't open. We show the same message in both cases. Nothing about the other project is revealed.",
+      "seeAnalyses": "See this project's analyses",
+      "emptyOccTitle": "Select occurrences to compare",
+      "emptyOccBody": "Pick 2 to 6 occurrences from evidence or a result set. Each column shows its source header and original wording. Where wording is missing, you get a limitation notice, never invented variants.",
+      "emptyChainsTitle": "Select chains to compare",
+      "emptyChainsBody": "Pick chains from evidence or occurrences. They are shown as ordered lists with transmission formulas. Unresolved order is marked Uncertain, and unidentified narrators are marked Unknown.",
+      "emptyCritTitle": "Choose a narrator",
+      "emptyCritBody": "Pick a target narrator to compare what different critics said, with their exact words and sources.",
+      "selectInputs": "Select inputs",
+      "pickFromEvidence": "Pick from evidence"
+    },
+    "occ": {
+      "summary": "{{count}} occurrences of {{report}}, compared on original wording",
+      "highlightDiff": "Highlight differences",
+      "limitationTitle": "Limitation notice",
+      "limitationBody": "The corpus has no occurrence-specific wording for this occurrence yet, only the report-level text. No variants are shown, because they would have to be invented. The chain is still available in Chains.",
+      "sourceHeader": "Source · original wording",
+      "annotateDiff": "+ Annotate difference",
+      "legendDiff": "Wording only in some occurrences",
+      "legendAnnotation": "Has an annotation"
+    },
+    "chains": {
+      "summary": "{{count}} chains, from the compiler (top) to the Companion (bottom). Click a narrator to inspect.",
+      "narratorsCount_one": "{{count}} narrator",
+      "narratorsCount_other": "{{count}} narrators",
+      "uncertainCount": " · {{count}} uncertain",
+      "unknownCount": " · {{count}} unknown",
+      "uncertainOrder": "Uncertain order",
+      "unknownNarrator": "Unknown",
+      "inspectorTitle": "Inspector",
+      "ambiguityTitle": "Ambiguity record {{code}}",
+      "ambiguityBody": "This chain names only “{{name}}”. The corpus records two candidates and hasn't decided between them:",
+      "ambiguityNote": "Picking one here is your reading, recorded as a researcher note. It doesn't change the corpus.",
+      "identityRecord": "Identity record",
+      "openDossier": "Open narrator dossier"
+    },
+    "dossier": {
+      "kicker": "Narrator dossier · {{code}}",
+      "identity": "Identity",
+      "teachersStudents": "Teachers and students",
+      "teachersCount": "Teachers · {{count}} recorded",
+      "studentsCount": "Students · {{count}} recorded",
+      "corpusListsNote": "Lists come from chains in the corpus. They are not complete biographies.",
+      "attributedCriticism": "Attributed criticism",
+      "compareCriticism": "Compare criticism →",
+      "attributedTo": "Attributed to {{critic}}",
+      "relatedReports": "Related reports in this project",
+      "relatedReportsBody": "Appears in {{chainsCount}} of {{totalChains}} chains compared here · {{evidenceCount}} evidence items · {{corpusCount}} occurrences across the corpus"
+    },
+    "crit": {
+      "targetNarrator": "Target narrator",
+      "critic": "Critic",
+      "allCritics": "All critics",
+      "expression": "Expression",
+      "book": "Book",
+      "category": "Recorded category",
+      "any": "Any",
+      "note": "Each critic's exact wording is kept. The normalized label is shown separately to help filtering. It's not a score, and it never replaces the wording.",
+      "thCritic": "Critic",
+      "thQawl": "Exact qawl",
+      "thSource": "Source",
+      "thLabel": "Normalized label",
+      "attributed": "Attributed"
+    },
+    "dialog": {
+      "selectTitle": "Select inputs for comparison",
+      "selectPrompt": "Choose 2 to 6 occurrences from project evidence or corpus references:",
+      "cancel": "Cancel",
+      "apply": "Apply selection",
+      "annotateTitle": "Annotate difference",
+      "notePlaceholder": "Add your note on this variant...",
+      "saveNote": "Save note"
+    }
+  },
+  "findingsEditor": {
+    "reviewTitle": "Finding and document editor",
+    "index": {
+      "heading": "Findings and documents",
+      "summaryCount": "{{docs}} documents · {{findings}} findings · {{links}} links between them",
+      "noneYet": "None yet",
+      "newFinding": "New finding",
+      "newDoc": "New document",
+      "emptyHeading": "Nothing written yet",
+      "emptyBody": "A finding is one claim with its reasoning and evidence. It can be provisional or inconclusive. A document is a piece of writing, such as an article or chain summary, that can draw on several findings. One finding can appear in several documents.",
+      "docsHeading": "Documents · {{count}}",
+      "findingsHeading": "Findings · {{count}}"
+    },
+    "editor": {
+      "backToIndex": "← Findings and documents",
+      "untitled": "Untitled document",
+      "insertCite": "Insert citation",
+      "versions": "Versions",
+      "commit": "Save revision",
+      "offlineStrong": "Not saved. You're offline.",
+      "offlineBody": "Your last {{count}} changes are kept as a local draft in this browser and will be sent when you reconnect. Don't clear browser data until then.",
+      "emptySourceHint": "Start writing in Markdown. Use # for headings, > for quotations, and Insert citation for sources.",
+      "emptyPreviewHint": "The preview appears here as you write.",
+      "paraphraseBadge": "Paraphrase",
+      "citationsFootnotesTitle": "Citations"
+    },
+    "save": {
+      "newNotSaved": "New document · not saved yet",
+      "saving": "Saving…",
+      "notSavedDraft": "Not saved · {{count}} changes in local draft",
+      "conflict": "Save rejected · conflict"
+    },
+    "layout": {
+      "source": "Source",
+      "split": "Split",
+      "preview": "Preview"
+    },
+    "forbidden": {
+      "title": "Document not available",
+      "body": "This document or finding doesn't exist in this project, or you can't open it. A citation link from another project never opens content here."
+    },
+    "finding": {
+      "badge": "finding",
+      "statusLabel": "Status",
+      "questionLabel": "Question",
+      "claimLabel": "Claim or conclusion",
+      "reasoningLabel": "Reasoning",
+      "evidenceLabel": "Evidence",
+      "noneLinked": "None linked",
+      "linkEvidenceAction": "Link evidence",
+      "limitationsLabel": "Limitations",
+      "limitationsPlaceholder": "What this finding can't show, and why",
+      "contributorsHeading": "Contributors",
+      "usedInHeading": "Used in documents",
+      "notUsedInDocs": "Not used in any document yet",
+      "submissionChecklistHeading": "Before public submission",
+      "submissionMissingNotice": "{{count}} fields are missing: {{fields}} considered. A provisional finding is fine for now. This is only checked if you submit it for publication.",
+      "submissionReadyNotice": "✓ All required public-submission fields are present: claim, reasoning, limitations, and corroborating/opposing evidence considered."
+    },
+    "versions": {
+      "heading": "Version history",
+      "backToDoc": "← Back to {{title}}",
+      "comparingHeading": "Comparing {{from}} → {{to}}",
+      "restoreAction": "Restore {{from}} as {{as}}",
+      "restoreNotice": "Restoring never deletes later history. {{from}}'s text becomes a new {{as}}, and later versions stay listed with their authors."
+    },
+    "citeModal": {
+      "title": "Insert citation",
+      "evidenceLabel": "Evidence",
+      "insertAs": "Insert as",
+      "exactQuote": "Exact quotation",
+      "exactQuoteSub": "Inserts the original text unchanged, marked as Source.",
+      "paraphrase": "Paraphrase",
+      "paraphraseSub": "Your own wording. It is never shown as a quotation.",
+      "previewHeading": "Preview",
+      "notice": "Source numbers are the compiler’s own numbering, not the platform’s report ID. Bibliography entries used by citations can't be deleted without first listing the citations that depend on them.",
+      "insert": "Insert citation",
+      "insertWithFlag": "Insert with flag"
+    },
+    "conflict": {
+      "sessionLabel": "Main article · save rejected",
+      "col06Label": "COL-06 · Main article §2 · your save was stopped",
+      "sessionTitle": "This document changed in another session",
+      "memberTitle": "Aras Kamal changed this paragraph while you were editing",
+      "sessionDesc": "You saved v15 from your laptop at 11:38. This tab was still on v14, so its save was stopped to avoid overwriting. Nothing is lost: both versions are below.",
+      "memberDesc": "Aras saved v16 at 11:51. Your changes were based on v15, so they weren’t saved over his. Both versions are kept with their authors. Choose how to continue.",
+      "colNotice": "There's no real-time co-editing in R1. Whatever you choose, nobody's text is thrown away, and every version keeps its author in the history.",
+      "copyAndOpen": "Copy my text and open v15",
+      "keepMember": "Keep Aras's version",
+      "compareDetail": "Compare in detail",
+      "mergeByHand": "Merge by hand",
+      "saveMineV16": "Save mine as v16",
+      "saveMineV17": "Save mine as v17"
+    }
+  }
+}
+

@@ -120,18 +120,18 @@ Delivered: Vite proxy, tokens and self-hosted fonts, router with guards and rele
 Everything in §4; tokens, fonts, router, auth, CI (lint, typecheck, test, build); replace the Vite demo files; Vite proxy; first contract tests against corpus and public endpoints.
 
 ### Phase 1 · R1a Personal Research Core (≈8 weeks)
-**Progress:** steps 1 (screen 01), 2 (Home) and 3 (Projects: 04, 05, 06) done 6 Oct 2026. Next: step 4 (Corpus browsing and Resource picker).
+**Progress:** steps 1 (screen 01), 2 (Home), 3 (Projects: 04, 05, 06), 4 (Resource picker, 07) and 5 (My Library 03, Project resources 03b) done 6 Oct 2026. Step 6 (Search workspace, project screen 08) done 6 Oct 2026; the account page Saved Searches (08s) is deferred until personal searches can be run (request file C-15). Step 7 (Evidence inspector, 09) done 6 Oct 2026; gaps in request file C-16. Step 8 (Comparison workspace, 10) done 6 Oct 2026. Step 9 (Findings and document editor, 11) done 6 Oct 2026. Next: step 10 (Downloads, 12). Known gaps in step 5 are in the request file, C-13 and C-14: tags, notes, locator and snapshot are not stored by the backend, "used in projects", project-resource tag editing and collection filtering have no data yet, and the screens say so rather than showing empty values.
 
 Order gives a usable slice at each step. *(⚠ = needs pending API)*
 1. ✅ **Auth and onboarding** (01 done; 14 security tab still to do): apply, verify, status pages (pending / info requested / rejected / approved), sign-in, recovery, sessions. **Real:** apply, login, recovery, sessions, status, replies. **Mocked/hidden:** MFA (C-4); verification flow assumes C-1/C-2 get fixed.
 2. ✅ **Account shell + Home** (02, built from `/projects`, `/me/exports`, `/me/tasks`, `/notifications/unread-count`; `/home` not used): projects, next actions, exports, updates. **Real:** `/projects`, `/me/tasks`, `/me/exports`. **Mocked until fixed:** `/home` (500, C-5), `/me/corpus-proposals` (500); the `updates` feed is fabricated (C-9) so it is not shown.
 3. ✅ **Projects** (04, 05, 06 done): owned / shared / archived / trash tabs, create, overview with evidence counts by state, stage control with undo, archive, trash and restore, copy-to-project. **Real:** list, scopes, counts, create, stage, archive, trash/restore, milestones, questions. **Mocked until fixed:** `/projects/{id}/summary` (500, C-5).
-4. **Corpus browsing and Resource picker** (07): books, hadith, narrators; duplicate prompt. **Real:** books, search, narrators, authors, critics, coverage, duplicate 409. **Mocked until fixed:** hukm list and book chapters (500, C-5).
-5. **My Library + Project resources** (03, 03b): items, collections, tags, notes, add-to-project with sharing preview. ⚠ API-5
-6. **Search workspace** (08): query, grouped results, filters with coverage notes, save query, runs, result sets, bulk add with per-item outcomes. ⚠ API-6
-7. **Evidence inspector** (09): states with reasons, history, annotations (four kinds, private/project), link to finding, dependencies, correction proposals. ⚠ API-7
-8. **Comparison workspace** (10): occurrences side by side, chains, narrator dossier, criticism matrix; saved analyses.
-9. **Findings and document editor** (11): Markdown editor, citations, versions and compare, restore, autosave, conflict view. ⚠ API-8
+4. ✅ **Corpus browsing and Resource picker** (07 done; hukm labels and book/narrator drill-down pages come with screens 10, 30, 31): books, hadith, narrators; duplicate prompt. **Real:** books, search, narrators, authors, critics, coverage, duplicate 409. **Mocked until fixed:** hukm list and book chapters (500, C-5).
+5. ✅ **My Library + Project resources** (03, 03b): items, collections, tags, notes, add-to-project with sharing preview. ⚠ API-5
+6. ✅ **Search workspace** (08): query, grouped results, filters with coverage notes, save query, runs, result sets, bulk add with per-item outcomes. ⚠ API-6
+7. ✅ **Evidence inspector** (09): states with reasons, history, annotations (four kinds, private/project), link to finding, dependencies, correction proposals. ⚠ API-7
+8. ✅ **Comparison workspace** (10): occurrences side by side, chains, narrator dossier, criticism matrix; saved analyses.
+9. ✅ **Findings and document editor** (11): Markdown editor, citations, versions and compare, restore, autosave, conflict view. ⚠ API-8
 10. **Downloads** (12): scope preview, jobs, parts, manifest, quota. **Real:** list, quota. **Hidden or mocked:** creating exports, parts and download (stubs, C-7); the screen shows an honest "export packaging is not available yet" state rather than fake jobs.
 11. **Administration** (13): applications, accounts, limits, support access, audit, ops, MFA step-up. ⚠ API-10
 
@@ -161,8 +161,8 @@ Accessibility audit, RTL review with a Sorani/Arabic reader, performance (virtua
 | 05 | Project creation (R1a) | `POST projects` | ⚠️ single `primary_language` vs multi-language; no tags **[API-4]** |
 | 06 | Overview and settings (R1a) | `projects/{id}`, `stage`, `archive`, `DELETE` | ⚠️ no summary counts, milestones, open questions, copy-to-project, restore **[API-4]** |
 | 07 | Resource picker (R1a) | `corpus/books`, `corpus/search`, `library/items`, `resources` | ✅ (⚠️ duplicate prompt **[DEF-9]**) |
-| 08 | Search workspace (R1a) | `corpus/search`, `searches`, `run`, `result-sets` | ⚠️ run ignores filters, ≤200 raw matches, no run list/hits/highlights, no personal scope **[API-6, DEF-11]** |
-| 09 | Evidence inspector (R1a) | `evidence`, `annotations` | ⚠️ no history, dependencies, promote, attribution; **private-annotation leak** **[API-7, DEF-4]** |
+| 08 | Search workspace (R1a) | `corpus/search`, `searches`, `run`, `search-runs`, `result-sets`, bulk add | ✅ built 6 Oct 2026 (project screen). ⚠️ runs are synchronous, capped at 100 and report-level; bulk add goes through My Library; evidence dedupe by wording; no sort, coverage or book filter; personal searches cannot run **[C-15]** |
+| 09 | Evidence inspector (R1a) | `evidence`, `annotations`, `history`, `dependencies`, `findings` link, `corpus/proposals` | ✅ built 6 Oct 2026. ⚠️ attribution dropped, collector contact details in list rows, foreign evidence linkable, reasons not enforced, no origin or corpus version, removal permanent **[C-16]** |
 | 10 | Comparison (R1a) | `analyses/*`, `corpus/*` | ✅ (⚠️ no narrator search `GET corpus/narrators`) **[API-6]** |
 | 11 | Finding and document editor (R1a) | `findings`, `documents`, `versions`, `lock` | ⚠️ no autosave draft, no stale-save rejection, no citation formatting **[API-8, DEF-8]** |
 | 12 | Downloads (R1a) | `projects/{id}/exports` (synchronous JSON) | ❌ no jobs, parts, quota, manifest, scopes **[API-9]** |

@@ -1,0 +1,124 @@
+import type { ReactElement } from 'react'
+import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router-dom'
+import { AccountShell } from '@/layouts/AccountShell'
+import { ProjectShell } from '@/layouts/ProjectShell'
+import { PublicLayout } from '@/layouts/PublicLayout'
+import { HomePage } from '@/features/home/HomePage'
+import { ApplyPage } from '@/features/registration/ApplyPage'
+import { CheckEmailPage } from '@/features/registration/CheckEmailPage'
+import { RecoverPage } from '@/features/registration/RecoverPage'
+import { RegistrationLayout } from '@/features/registration/RegistrationLayout'
+import { ResetPasswordPage } from '@/features/registration/ResetPasswordPage'
+import { SignInPage } from '@/features/registration/SignInPage'
+import { StatusPage } from '@/features/registration/StatusPage'
+import { VerifyEmailPage } from '@/features/registration/VerifyEmailPage'
+import { ComparisonPage } from '@/features/comparison/ComparisonPage'
+import { EvidencePage } from '@/features/evidence/EvidencePage'
+import { FindingEditorPage } from '@/features/findings/FindingEditorPage'
+import { LibraryPage } from '@/features/library/LibraryPage'
+import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
+import { SearchPage } from '@/features/search/SearchPage'
+import { ResourcePickerPage } from '@/features/picker/ResourcePickerPage'
+import { ProjectCopyPage } from '@/features/projects/ProjectCopyPage'
+import { ProjectCreatePage } from '@/features/projects/ProjectCreatePage'
+import { ProjectIndexPage } from '@/features/projects/ProjectIndexPage'
+import { ProjectOverviewPage } from '@/features/projects/ProjectOverviewPage'
+import { ProjectSettingsPage } from '@/features/projects/ProjectSettingsPage'
+import { ComponentKit } from '@/pages/ComponentKit'
+import { NotFoundPage } from '@/pages/NotFoundPage'
+import { PendingScreen } from '@/pages/PendingScreen'
+import { RequireAdmin, RequireApproved, RequireAuth } from './guards'
+import { screensIn, type ScreenDef } from './screens'
+
+/** Screens that have a real page; the rest render a placeholder. */
+const BUILT: Record<string, ReactElement> = {
+  '01': <ApplyPage />,
+  '02': <HomePage />,
+  '04': <ProjectIndexPage />,
+  '05': <ProjectCreatePage />,
+  '06': <ProjectOverviewPage />,
+  '06s': <ProjectSettingsPage />,
+  '06c': <ProjectCopyPage />,
+  '03': <LibraryPage />,
+  '03b': <ProjectResourcesPage />,
+  '07': <ResourcePickerPage />,
+  '08': <SearchPage />,
+  '09': <EvidencePage />,
+  '10': <ComparisonPage />,
+  '11': <FindingEditorPage />,
+  '07p': <ResourcePickerPage />,
+}
+
+const pending = (screen: ScreenDef): RouteObject => ({
+  path: screen.path,
+  element: BUILT[screen.id] ?? <PendingScreen screen={screen} />,
+})
+
+/**
+ * Route table follows docs/design/navigation-map.md:
+ *   public site  ·  account shell  ·  project shell (inside account shell)  ·  admin
+ * Screens are swapped from placeholder to real page as each phase delivers them.
+ */
+export const routes: RouteObject[] = [
+  {
+    element: <PublicLayout />,
+    children: [
+      { path: '/', element: <Navigate to="/home" replace /> },
+      // Screen 01 has its own group below.
+      ...screensIn('public').filter((x) => x.id !== '01').map(pending),
+    ],
+  },
+  {
+    // Screen 01: apply, verify, sign in, recover, status.
+    element: <RegistrationLayout />,
+    children: [
+      { path: 'apply', element: <ApplyPage /> },
+      { path: 'apply/check-email', element: <CheckEmailPage /> },
+      { path: 'verify-email', element: <VerifyEmailPage /> },
+      { path: 'sign-in', element: <SignInPage /> },
+      { path: 'recover', element: <RecoverPage /> },
+      { path: 'recover/reset', element: <ResetPasswordPage /> },
+    ],
+  },
+  {
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <RegistrationLayout />,
+        children: [{ path: 'status', element: <StatusPage /> }],
+      },
+      {
+        element: <RequireApproved />,
+        children: [
+          {
+            element: <AccountShell />,
+            children: [
+              ...screensIn('account').map(pending),
+              ...screensIn('editor').map(pending),
+              {
+                path: 'projects/:projectId',
+                element: <ProjectShell />,
+                children: [
+                  { index: true, element: <Navigate to="overview" replace /> },
+                  ...screensIn('project').map(pending),
+                ],
+              },
+              ...(import.meta.env.DEV ? [{ path: 'dev/kit', element: <ComponentKit /> }] : []),
+              {
+                path: 'admin',
+                element: <RequireAdmin />,
+                children: screensIn('admin').map(pending),
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  { path: '*', element: <NotFoundPage /> },
+]
+
+export const createAppRouter = () => createBrowserRouter(routes)
+export const createTestRouter = (
+  initialEntries: NonNullable<NonNullable<Parameters<typeof createMemoryRouter>[1]>['initialEntries']>,
+) => createMemoryRouter(routes, { initialEntries })

@@ -1,0 +1,21 @@
+.dialog {
+  max-inline-size: 28rem;
+  padding: 1.5rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+.dialog::backdrop {
+  background: rgb(29 26 21 / 45%);
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-block-start: 1.25rem;
+}
+.wide {
+  inline-size: min(44rem, 94vw);
+  max-inline-size: none;
+}
