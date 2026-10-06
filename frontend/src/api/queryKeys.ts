@@ -102,6 +102,8 @@ export const qk = {
         list: [...root, 'members', 'list'] as const,
         invitations: [...root, 'members', 'invitations'] as const,
       },
+      activity: (query: unknown) => [...root, 'activity', query] as const,
+      activityAll: [...root, 'activity'] as const,
       discussion: {
         all: [...root, 'discussion'] as const,
         threads: (page: number) => [...root, 'discussion', 'threads', page] as const,

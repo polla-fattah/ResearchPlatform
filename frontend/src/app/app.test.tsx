@@ -61,11 +61,11 @@ describe('shell', () => {
     mockProjectApis()
     renderApp('/projects/12', { signedIn: true })
     await screen.findByText('PRJ-0012')
-    const activity = screen.getByText('Activity').closest('[aria-disabled]')
-    expect(activity).toHaveAttribute('aria-disabled', 'true')
-    expect(activity).toHaveTextContent('R1b')
     const publication = screen.getByText('Review & Publication').closest('[aria-disabled]')
+    expect(publication).toHaveAttribute('aria-disabled', 'true')
     expect(publication).toHaveTextContent('R1c')
+    // A built screen is a link, whatever release it belongs to.
+    expect(screen.getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '/projects/12/activity')
   })
 
   it('shows the number of unread notifications beside Notifications, and nothing when there are none', async () => {

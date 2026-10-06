@@ -78,7 +78,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
   - [x] D2.4 "From this object" entry points: a Discussion panel on Evidence and Findings that opens the right thread.
   - [x] D2.5 Tests, contract `discussion-write.test.ts`, C-item.
 - [x] **D3 Notifications (17)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): list with category and read state filters (URL), mark read/unread, mark all, open target object, unread badge (D0.2), preferences link to settings; category set differs from the design (record in the request file); empty and forbidden states; tests and contract.
-- [ ] **D4 Activity (18)**: project feed with filters (actor, type, date), structured entries rendered from `ProjectActivity` fields only (no guessed sentences), paging; honest note about the 100-item cap if still true; tests and contract.
+- [x] **D4 Activity (18)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): project feed with filters (actor, type, date), structured entries rendered from `ProjectActivity` fields only (no guessed sentences), paging; honest note about the 100-item cap if still true; tests and contract.
 - [ ] **D5 Announcement editor (19)**: draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
 - [ ] **D6 Public announcements list and page (20l, 20)**: public layout without sign-in, no private data (assert the response whitelist in a contract test), slug routes, not-found page, share-safe metadata, RTL.
 - [ ] **D7 Collaboration interest form (40)**: public form (needs a public endpoint; if missing, build the honest unavailable state and file the request), owner's inbox from `collaboration-requests`, status handling, rate limit and spam-protection honesty; tests.
@@ -142,6 +142,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · D3 Notifications (17) in `features/notifications/` `[live-owed]` · list (kind filter on the server, unread-only on the loaded page, both in the address), read one (also when opened) or all, read-back, links only where they can honestly lead (invitation none, task through the assigned-task lookup), unread count beside Notifications in the account rail from the query Home shares, any other kind shown by its own name · test for the rail and the project tabs updated · 637 unit tests · `notifications-write.test.ts` written from the code, not run · gaps in C-24.
 
+- 2026-10-07 · D4 Activity (18) in `features/activity/` `[live-owed]` · feed grouped by the person's day, filters (who from the members, object, action, range as a plain day cut from the app clock so the key changes daily) and page all in the address, links to the objects, the server's sentence shown as written with the kind translated, an invitation's sentence withheld from everyone but the owner (it names the e-mail address) · Activity tab enabled · 651 unit tests · `activity-write.test.ts` written from the code, not run · gaps in C-25.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
@@ -153,3 +155,4 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · Mentions, reopening and the three-way decision outcome are not built: the server stores none of them, and a field that is not kept would be false (C-23).
 - 2026-10-07 · A discussion is opened from the list the screen already loaded (there is no single-thread read); one that is not on the loaded page says so (C-23).
 - 2026-10-07 · The server's notification text is shown as written (it is English and carries the project title); only the kind and the controls are translated, because rebuilding the sentence would need data the row does not carry (C-24).
+- 2026-10-07 · No CSV export button on Activity: the server has none and a button that did nothing would be false (C-25).

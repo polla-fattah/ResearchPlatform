@@ -2986,5 +2986,63 @@
       "role_updated": "Role changed",
       "assignment": "Task assigned"
     }
+  },
+  "activity": {
+    "tab": "Activity",
+    "title": "Activity",
+    "count_one": "{{formattedCount}} entry",
+    "count_other": "{{formattedCount}} entries",
+    "scope": "Changes the project records: members, discussions, tasks, resources, evidence states, stage and announcements. Private notes, and the fact that someone wrote one, never appear. Sign-ins and security events are in the separate audit log, which only administrators can see.",
+    "open": "Open",
+    "unknownActor": "Someone",
+    "noDay": "Day not recorded",
+    "emptyTitle": "No activity yet",
+    "emptyBody": "Changes to the project will be listed here as they happen.",
+    "noneFiltered": "No activity matches these filters",
+    "noneFilteredBody": "Widen the filters to see more, or clear them.",
+    "filters": {
+      "label": "Filter the activity",
+      "who": "Who",
+      "anyone": "Anyone",
+      "object": "Object",
+      "anyObject": "Any object",
+      "action": "Action",
+      "anyAction": "Any action",
+      "when": "When",
+      "clear": "Clear filters"
+    },
+    "ranges": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "all": "All time"
+    },
+    "objects": {
+      "project": "Project",
+      "membership": "Members",
+      "invitation": "Invitations",
+      "discussion_thread": "Discussions",
+      "task": "Tasks",
+      "evidence": "Evidence",
+      "resource": "Resources",
+      "announcement": "Announcements"
+    },
+    "actions": {
+      "invitation_created": "Invited",
+      "member_joined": "Joined",
+      "role_changed": "Role changed",
+      "member_removed": "Removed",
+      "discussion_opened": "Discussion opened",
+      "discussion_resolved": "Discussion resolved",
+      "task_created": "Task created",
+      "task_completed": "Task done",
+      "stage_changed": "Stage changed",
+      "resource_added": "Resource added",
+      "evidence_state_changed": "Evidence state changed",
+      "announcement_unpublished": "Announcement withdrawn"
+    },
+    "hidden": {
+      "invitation_created": "An invitation was sent. Who it was sent to is shown to the owner only.",
+      "other": "The details of this entry are not shown to your role."
+    }
   }
 }
