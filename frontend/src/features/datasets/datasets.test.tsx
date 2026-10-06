@@ -23,3 +23,20 @@ describe('Datasets (not available)', () => {
     expect(screen.queryByText(/wudu-three-times/)).not.toBeInTheDocument()
   })
 })
+
+describe('Rich-text editor (not available)', () => {
+  it('says only the Markdown editor is offered and links back to the same document', async () => {
+    mockMe()
+    mockProjectApis(12)
+    renderApp('/projects/12/documents/7/rich', { signedIn: true })
+    expect(await screen.findByRole('heading', { name: 'Rich-text editing is not available yet' })).toBeInTheDocument()
+    expect(within(screen.getByRole('main')).getByRole('link', { name: 'Open the document in the Markdown editor' })).toHaveAttribute('href', '/projects/12/findings?doc=7')
+  })
+
+  it('does not follow an address that is not a document number', async () => {
+    mockMe()
+    mockProjectApis(12)
+    renderApp('/projects/12/documents/abc/rich', { signedIn: true })
+    expect(await screen.findByRole('link', { name: 'Open the document in the Markdown editor' })).toHaveAttribute('href', '/projects/12/findings')
+  })
+})

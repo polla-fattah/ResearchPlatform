@@ -53,6 +53,7 @@ import { ExchangePage } from '@/features/exchange/ExchangePage'
 import { ReferenceImportPage } from '@/features/referenceImport/ReferenceImportPage'
 import { DatasetsPage } from '@/features/datasets/DatasetsPage'
 import { PublicDatasetPage } from '@/features/datasets/PublicDatasetPage'
+import { RichEditorPage } from '@/features/writing/RichEditorPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -106,6 +107,7 @@ const BUILT: Record<string, ReactElement> = {
   '31': <BookPage />,
   '32': <ArgumentPage />,
   '33': <DatasetsPage />,
+  '34': <RichEditorPage />,
   '35': <SearchComparePage />,
   '36': <ReferenceImportPage />,
   '37': <TemplatesPage />,

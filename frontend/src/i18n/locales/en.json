@@ -4489,5 +4489,14 @@
       "body": "Public dataset and dossier pages are not available yet. Published research can be read in the research listing.",
       "research": "Published research"
     }
+  },
+  "richEditor": {
+    "title": "Rich-text editor",
+    "unavailable": {
+      "title": "Rich-text editing is not available yet",
+      "body": "Rich text and Markdown would be two ways to edit the same document. Until the server is confirmed to keep citation markup and the direction of each block exactly as written, moving between the two could quietly change your text, so only one editor is offered.",
+      "markdown": "The Markdown editor does everything the document needs today: headings, lists, quotations and citations to your evidence, with each paragraph shown in its own direction."
+    },
+    "open": "Open the document in the Markdown editor"
   }
 }
