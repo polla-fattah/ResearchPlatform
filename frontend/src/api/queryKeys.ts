@@ -103,6 +103,7 @@ export const qk = {
         invitations: [...root, 'members', 'invitations'] as const,
         requests: [...root, 'members', 'requests'] as const,
       },
+      families: [...root, 'families'] as const,
       submission: {
         all: [...root, 'submission'] as const,
         list: [...root, 'submission', 'list'] as const,

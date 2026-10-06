@@ -3824,5 +3824,88 @@
       "none": "No graph has been saved in this project.",
       "version": "v{{version}}"
     }
+  },
+  "families": {
+    "title": "Hadith families",
+    "sub": "Reports that share a core, grouped by you, with the relationship each one has to the family.",
+    "unchecked": "The platform suggests no members: there is no matcher behind this screen. Everything here was added by a researcher, and a family cannot be edited or deleted once it is made.",
+    "readOnly": "You can read the families of this project; adding to them is for members who can edit shared work.",
+    "empty": {
+      "title": "No families yet",
+      "body": "Start a family when two or more reports seem to share a core, then add each report with the relationship you judge it to have."
+    },
+    "list": {
+      "title": "Families",
+      "members_one": "{{count}} member",
+      "members_other": "{{count}} members",
+      "pick": "Choose a family to see its members.",
+      "notFound": "That family is not in this project."
+    },
+    "relationships": {
+      "mutabaah_tammah": "Full corroboration (mutābaʿa tāmma)",
+      "mutabaah_qasirah": "Partial corroboration (mutābaʿa qāṣira)",
+      "shahid": "Witness (shāhid)",
+      "candidate": "Candidate (not yet classified)"
+    },
+    "new": {
+      "open": "New family",
+      "title": "New family",
+      "titleLabel": "Title",
+      "titleRequired": "Give the family a title.",
+      "companion": "Companion at the root",
+      "companionHint": "Optional. The Companion the reports are traced to.",
+      "theme": "Core theme",
+      "submit": "Create family",
+      "failed": "The family was not created"
+    },
+    "add": {
+      "open": "Add a member",
+      "title": "Add a member",
+      "source": "What to add",
+      "fromEvidence": "Evidence of this project",
+      "fromReport": "A report of the corpus",
+      "evidence": "Evidence",
+      "choose": "Choose…",
+      "chooseEvidence": "Choose a piece of evidence.",
+      "report": "Report number",
+      "reportHint": "The number of the report in the corpus. It is looked up before it is added.",
+      "reportNumber": "Enter the report number, digits only.",
+      "relationship": "Relationship",
+      "relationshipHint": "Your judgement. Choose Candidate if you have not classified it yet.",
+      "narrator": "Narrator where it converges",
+      "narratorHint": "Optional. The narrator at which this report meets the family.",
+      "depth": "Depth of convergence",
+      "depthInvalid": "Use a whole number, or leave it empty.",
+      "notes": "Notes",
+      "notesHint": "Optional. Why you placed it here.",
+      "already": "That is already a member of this family.",
+      "submit": "Add to family",
+      "failed": "The member was not added"
+    },
+    "detail": {
+      "by": "started by {{name}}",
+      "companion": "Companion at the root",
+      "counts": "Members by relationship",
+      "reviewed": "Classified members",
+      "candidates": "Candidates",
+      "noReviewed": "No member has been classified yet.",
+      "noCandidates": "No candidates.",
+      "limits": "Families cannot be renamed or deleted after they are made, and the relationships above are the server's fixed set."
+    },
+    "member": {
+      "noSource": "Member without a source",
+      "converges": "Converges at",
+      "unknownNarrator": "unnamed narrator",
+      "depth": "depth {{depth}}",
+      "added": "Added {{date}}",
+      "remove": "Remove",
+      "removeOf": "Remove {{code}} from the family"
+    },
+    "remove": {
+      "title": "Remove {{code}} from this family?",
+      "body": "The report itself is not deleted; only its place in this family.",
+      "confirm": "Remove",
+      "failed": "The member was not removed"
+    }
   }
 }

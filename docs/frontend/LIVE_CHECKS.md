@@ -36,6 +36,7 @@ responses. The contract tests exist, but they have never been executed. A phase 
 | `public-research.test.ts` | 24 and 25 Public research (no sign-in, read-only) | C-32 | yes (3 expected-fail) |
 | `alignment-write.test.ts` | 26 Matn alignment | C-33 | yes (3 expected-fail) |
 | `isnad-write.test.ts` | 27 Isnād graph | C-34 | yes (4 expected-fail) |
+| `families-write.test.ts` | 28 Hadith families | C-35 | yes (4 expected-fail) |
 | `editorial-write.test.ts` | 22 Editorial console (needs an administrator; leaves one retracted publication) | C-30 | yes (3 expected-fail) |
 
 Each write test creates throwaway data (`[contract-test]` projects, one declined throwaway account) and cleans up. If a
@@ -62,6 +63,7 @@ run dies half way, trash the leftover `[contract-test]` projects from the demo a
 - **23 Peer review** `/review` as the assigned reviewer: the gate, declining, reading the package, sending a review; look at the page's data (network tab) for the authors' names and the project: they are expected to be there (C-31 P0) and must not be on the page.
 - **24/25 Public research** `/research` and `/research/<slug>` signed out, after the editorial run released and retracted a throwaway publication: the list, the retracted filter, the page with its banner, the citation formats (RIS and APA are expected to answer BibTeX); look at the network answer for reviewer and editor fields (expected there, C-32) and make sure none is on the page.
 - **26 Matn alignment** `/projects/60/analysis/matn?h=…` with two or three of the demo's reports: the alignment, the baseline switch, save and reopen; compare a few slots by eye with the original wording.
+- **28 Hadith families** `/projects/60/analysis/families`: create a family, add a corpus report and a piece of evidence, classify and remove; a report number that does not exist is refused; a viewer sees no buttons; Sorani/Arabic titles run in their own direction.
 - **27 Isnād graph** `/projects/60/analysis/isnad?h=…` with reports that have several chains: the graph and the table agree, the arrows run teacher to student, the candidates and the "begins/ends" roles look right for known chains, the page in Sorani/Arabic puts the earliest transmitters on the right, keyboard focus reaches the nodes and the table.
 - **40 Interest** `/announcements/<slug>/interest`: expected to fail with "The request was not sent" until C-28 is fixed;
   then the inbox on the members screen.
