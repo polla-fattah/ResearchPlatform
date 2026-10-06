@@ -25,3 +25,6 @@ backend/bootstrap/cache/*
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# The frontend lists the settings it reads in a committed example file.
+!frontend/.env.example
