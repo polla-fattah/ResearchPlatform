@@ -82,7 +82,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
 - [x] **D5 Announcement editor (19)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
 - [x] **D6 Public announcements list and page (20l, 20)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): public layout without sign-in, no private data (assert the response whitelist in a contract test), slug routes, not-found page, share-safe metadata, RTL.
 - [x] **D7 Collaboration interest form (40)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): public form (needs a public endpoint; if missing, build the honest unavailable state and file the request), owner's inbox from `collaboration-requests`, status handling, rate limit and spam-protection honesty; tests.
-- [ ] **D8 Phase 2 checkpoint**: as P0.1 to P0.5 for screens 15 to 20 and 40; R1b flags on; plan updated.
+- [ ] **D8 Phase 2 checkpoint**: as P0.1 to P0.5 for screens 15 to 20 and 40; R1b flags on; plan updated. **Blocked on a live backend.** Everything checkable without one is done (check, audit, unit tests, docs). The owed live work is listed in `LIVE_CHECKS.md`; do not tick this box until it is done. Phase E starts meanwhile in Mode CODE-ONLY.
 
 ### Phase E · R1c: review and publication
 
@@ -149,6 +149,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · D6 Public announcements (20l, 20) in `features/publicAnnouncements/` `[live-owed]` · list with search words (debounced, in the address), stage filter, paging, cards labelled as ongoing research; page with the project's title, scope, stage, keywords, the owner's name, the "not a finding" notice, and a collaboration block that sends visitors to sign in or signed-in researchers to the request form (D7) · no credentials sent, schema keeps only the displayed fields (a test proves an extra e-mail never renders), 404 for unpublished and unknown look the same, no link into a project · Announcements link in the public header · 684 unit tests · `public-announcements.test.ts` (no sign-in, read-only) written from the code, not run · gaps in C-27.
 
 - 2026-10-07 · D7 Collaboration interest (40) `[live-owed]` · public form (sign-in first and back, name and account e-mail shown as what the owner receives, affiliation, message of ten characters, consent that is only ever sent as true, sent state, closed-call state that keeps the message, error that keeps it) and the owner's inbox on the members screen (requests with the requester's name and the address they gave, never the embedded account, invite by e-mail through the normal invitation or decline with a note, owner only) · 697 unit tests · `collaboration-write.test.ts` written from the code, not run · **the public endpoint is broken in the backend (P0, C-28)**.
+
+- 2026-10-07 · D8 checkpoint prepared, not ticked: `LIVE_CHECKS.md` lists every contract file and browser check owed for P0 and D1 to D7.
 
 ## 6. Decision log (decisions taken without asking)
 
