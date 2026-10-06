@@ -105,6 +105,10 @@ export const qk = {
       },
       families: [...root, 'families'] as const,
       ilal: [...root, 'ilal'] as const,
+      narrator: (narratorId: number) => ({
+        assertions: [...root, 'narrator', narratorId, 'assertions'] as const,
+        assessments: [...root, 'narrator', narratorId, 'assessments'] as const,
+      }),
       submission: {
         all: [...root, 'submission'] as const,
         list: [...root, 'submission', 'list'] as const,
@@ -183,6 +187,7 @@ export const qk = {
     narrator: (id: number) => ['corpus', 'narrator', id] as const,
     criticism: (id: number, page: number) => ['corpus', 'narrator', id, 'criticism', page] as const,
     narratorLinks: (id: number, kind: 'teachers' | 'students') => ['corpus', 'narrator', id, kind] as const,
+    trajectory: (id: number) => ['corpus', 'narrator', id, 'trajectory'] as const,
     narratorLookup: (term: string) => ['corpus', 'narrator-lookup', term] as const,
     books: (page: number) => ['corpus', 'books', page] as const,
     hukms: ['corpus', 'hukms'] as const,

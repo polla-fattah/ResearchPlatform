@@ -79,6 +79,10 @@ export const invalidate = {
   /** An ʿilal case was made or changed. */
   ilalChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).ilal),
 
+  /** An assertion or a teacher-specific assessment about a narrator changed. */
+  narratorDossierChanged: (qc: QueryClient, id: number, narratorId: number) =>
+    Promise.all([run(qc, qk.project(id).narrator(narratorId).assertions), run(qc, qk.project(id).narrator(narratorId).assessments)]),
+
   /** The announcement was saved, published or taken down (and the feed that records it). */
   announcementChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).announcement.all, qk.project(id).activityAll),
 

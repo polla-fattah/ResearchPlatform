@@ -4006,5 +4006,100 @@
       "save": "Save conclusion",
       "failed": "The conclusion was not saved"
     }
+  },
+  "narrator": {
+    "title": "Narrator dossier",
+    "choose": "Look a narrator up by name to open their dossier.",
+    "another": "Open another narrator",
+    "unchecked": "The identity and the critics' words come from the corpus as recorded. What the project holds about this narrator is what researchers entered. The platform computes no verdicts and no checks of whether two narrators could have met.",
+    "levels": {
+      "certain": "Certain",
+      "highly_probable": "Highly probable",
+      "probable": "Probable",
+      "contested": "Contested",
+      "speculative": "Speculative",
+      "unknown": "Certainty not stated"
+    },
+    "categories": {
+      "sound": "Sound from this teacher",
+      "weakened_specifically": "Weak specifically from this teacher",
+      "mudallis_from_him": "Conceals the link (tadlīs) from this teacher",
+      "unsubstantiated": "Not substantiated"
+    },
+    "assertions": {
+      "title": "What this project holds about the narrator",
+      "note": "Dates and facts as the researchers state them, with alternatives kept beside each. A claim is free text: it has no date field and no source field of its own.",
+      "empty": "Nothing recorded yet. Add a claim such as a death year, and put its source in the text.",
+      "add": "Add a claim",
+      "addTitle": "Add a claim",
+      "editTitle": "Edit the claim",
+      "edit": "Edit",
+      "delete": "Delete",
+      "claim": "Claim",
+      "claimHint": "For example “died in 197 AH (Ibn Ḥajar, Taqrīb)”.",
+      "claimRequired": "Write the claim.",
+      "level": "How sure",
+      "alternatives": "Alternatives kept beside it",
+      "altClaim": "Alternative {{n}}",
+      "altSource": "Source of alternative {{n}}",
+      "altAdd": "Add an alternative",
+      "altRemove": "Remove alternative {{n}}",
+      "adjudication": "Adjudication",
+      "adjudicationHint": "Why one reading is preferred, or why they stay open.",
+      "cannotClear": "Once written, this can be changed but not emptied: the server ignores empty values.",
+      "save": "Save claim",
+      "failed": "The claim was not saved",
+      "deleteTitle": "Delete this claim?",
+      "deleteBody": "The claim and its alternatives are removed from the project. Other claims are not touched.",
+      "deleteFailed": "The claim was not deleted"
+    },
+    "assessments": {
+      "title": "Assessments by teacher",
+      "note": "What critics said about this narrator's reports from one particular teacher. They are recorded here only; the comparison workspace and the isnād graph do not use them yet.",
+      "empty": "No teacher-specific assessments recorded.",
+      "add": "Record an assessment",
+      "addTitle": "Record an assessment",
+      "from": "From",
+      "fromAria": "Assessments of reports from {{teacher}}",
+      "teacher": "Teacher",
+      "teacherNone": "Not chosen yet. Look the teacher up below.",
+      "teacherRequired": "Choose the teacher first.",
+      "category": "Assessment",
+      "critic": "Critic",
+      "text": "Words of the critic",
+      "textHint": "Type it as written; the platform does not check it against the book.",
+      "textRequired": "Enter what was said.",
+      "noCritic": "Critic not named",
+      "recordedBy": "recorded by {{name}}",
+      "save": "Record assessment",
+      "failed": "The assessment was not recorded"
+    },
+    "criticism": {
+      "title": "What critics said (general)",
+      "note": "From the corpus, word for word. The first page only.",
+      "none": "The corpus records no statements for this narrator.",
+      "noScholar": "Critic not recorded",
+      "failed": "The statements could not be loaded."
+    },
+    "trajectory": {
+      "title": "Places",
+      "note": "Shared geographic records, the same for every project. Read only here.",
+      "none": "No places recorded.",
+      "failed": "The places could not be loaded.",
+      "place": "Place",
+      "kind": "Kind",
+      "years": "Years",
+      "basis": "Basis",
+      "ah": "AH",
+      "inferred": "Inferred",
+      "stated": "Stated",
+      "types": {
+        "birth": "Birth",
+        "death": "Death",
+        "residence": "Residence",
+        "rihlah": "Journey",
+        "audition": "Study session"
+      }
+    }
   }
 }
