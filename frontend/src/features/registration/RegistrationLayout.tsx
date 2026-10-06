@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/authContext'
 import { Button } from '@/components/Button'
@@ -36,7 +37,7 @@ export function RegistrationLayout() {
           </nav>
         </div>
       </header>
-      <Outlet />
+      <SuspenseOutlet />
     </>
   )
 }

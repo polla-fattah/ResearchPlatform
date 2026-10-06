@@ -1,0 +1,41 @@
+name: frontend
+
+# Runs the frontend's checks on every push and pull request that touches it: lint, types, project rules, unit tests, the build
+# and its size budget (`npm run check`), then the browser checks of the built app (`npm run e2e`).
+# The contract tests (`npm run test:contract`) need a running backend and are NOT run here; see docs/frontend/LIVE_CHECKS.md.
+
+on:
+  push:
+    paths: ['frontend/**', 'docs/frontend/**', '.github/workflows/frontend.yml']
+  pull_request:
+    paths: ['frontend/**', '.github/workflows/frontend.yml']
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - name: Known vulnerabilities in what ships to browsers
+        run: npm audit --omit=dev
+      - name: Install the browser for the browser checks
+        run: npx playwright install --with-deps chromium
+      - name: Browser checks (accessibility, right-to-left, journeys)
+        run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: |
+            frontend/test-results
+            frontend/e2e/screenshots

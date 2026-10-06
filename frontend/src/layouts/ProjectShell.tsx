@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button'
 import { BidiText } from '@/components/BidiText'
@@ -20,6 +21,7 @@ import { NavItem } from './NavItem'
 export function ProjectShell() {
   const { t } = useTranslation()
   const { id, query, project, role } = useProject()
+  const { pathname } = useLocation()
   const state = id === null ? 'forbidden' : viewStateOf(query)
   const base = `/projects/${id}`
 
@@ -52,7 +54,7 @@ export function ProjectShell() {
             <VisibilityBadge visibility={role === 'owner' ? 'private' : 'project'} />
           </div>
         ) : null}
-        <nav className={shell.tabs} aria-label={t('nav.projects')}>
+        <nav className={shell.tabs} aria-label={t('nav.projectSections')}>
           <NavItem tabStyle to={`${base}/overview`} label="Overview" />
           <NavItem tabStyle to={`${base}/resources`} label="Resources" />
           <NavItem tabStyle to={`${base}/searches`} label="Searches" />
@@ -66,6 +68,18 @@ export function ProjectShell() {
           <NavItem tabStyle to={`${base}/announcement`} label={t('announcement.tab')} />
           <NavItem tabStyle to={`${base}/settings`} label="Settings" />
         </nav>
+        {pathname.startsWith(`${base}/analysis`) || pathname.startsWith(`${base}/argument-map`) ? (
+          <nav className={shell.tools} aria-label={t('analysisTools.label')}>
+            <NavItem to={`${base}/analysis`} label={t('analysisTools.compare')} end />
+            <NavItem to={`${base}/analysis/matn`} label={t('analysisTools.matn')} />
+            <NavItem to={`${base}/analysis/isnad`} label={t('analysisTools.isnad')} />
+            <NavItem to={`${base}/analysis/families`} label={t('analysisTools.families')} />
+            <NavItem to={`${base}/analysis/ilal`} label={t('analysisTools.ilal')} />
+            <NavItem to={`${base}/analysis/narrators`} label={t('analysisTools.narrators')} />
+            <NavItem to={`${base}/analysis/books`} label={t('analysisTools.books')} />
+            <NavItem to={`${base}/argument-map`} label={t('analysisTools.argument')} />
+          </nav>
+        ) : null}
       </header>
       <StateBoundary
         state={state}
@@ -79,7 +93,7 @@ export function ProjectShell() {
           </div>
         }
       >
-        <Outlet />
+        <SuspenseOutlet />
       </StateBoundary>
     </>
   )

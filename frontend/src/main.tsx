@@ -4,12 +4,14 @@ import { RouterProvider } from 'react-router-dom'
 import './styles/fonts.css'
 import './styles/tokens.css'
 import './styles/base.css'
+import { listenForUnhandledErrors } from './app/errorReporting'
 import { AppProviders } from './app/providers'
 import { createQueryClient } from './app/queryClient'
 import { createAppRouter } from './app/router'
 import { initI18n } from './i18n'
 
 initI18n()
+listenForUnhandledErrors()
 
 const queryClient = createQueryClient()
 const router = createAppRouter()

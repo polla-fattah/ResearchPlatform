@@ -41,3 +41,22 @@ export function clearLocalDraft(projectId: number, documentId: number): void {
     /* nothing to clear */
   }
 }
+
+const PREFIX = 'oh.draft.'
+
+/**
+ * Removes every kept draft. Called when the person signs out on purpose: the text of their research must not stay in a
+ * browser they may share. (When a session only EXPIRES the drafts stay, so work typed while offline is not lost.)
+ */
+export function clearAllLocalDrafts(): void {
+  try {
+    const keys: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k?.startsWith(PREFIX)) keys.push(k)
+    }
+    keys.forEach((k) => localStorage.removeItem(k))
+  } catch {
+    /* nothing to clear */
+  }
+}

@@ -109,6 +109,7 @@ export function LibraryPage() {
         </div>
         <div className={styles.headActions}>
           <ButtonLink to="/library/add?tab=external">{t('library.addExternal')}</ButtonLink>
+          <ButtonLink to="/library/import">{t('library.importReferences')}</ButtonLink>
           <ButtonLink variant="primary" to="/library/add">
             {t('library.saveFromCorpus')}
           </ButtonLink>

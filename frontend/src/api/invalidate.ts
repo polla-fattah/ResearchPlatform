@@ -76,6 +76,16 @@ export const invalidate = {
   /** A family or one of its members changed. */
   familiesChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).families),
 
+  /** An ʿilal case was made or changed. */
+  ilalChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).ilal),
+
+  /** A point or a relation of the argument map changed. */
+  argumentChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).argument),
+
+  /** An assertion or a teacher-specific assessment about a narrator changed. */
+  narratorDossierChanged: (qc: QueryClient, id: number, narratorId: number) =>
+    Promise.all([run(qc, qk.project(id).narrator(narratorId).assertions), run(qc, qk.project(id).narrator(narratorId).assessments)]),
+
   /** The announcement was saved, published or taken down (and the feed that records it). */
   announcementChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).announcement.all, qk.project(id).activityAll),
 

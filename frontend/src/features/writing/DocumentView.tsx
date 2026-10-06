@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getDocument, getDraft } from '@/api/documents'
 import { listEvidence } from '@/api/evidence'
@@ -7,10 +7,13 @@ import { qk } from '@/api/queryKeys'
 import { Button } from '@/components/Button'
 import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
-import { DocumentEditor } from './DocumentEditor'
+import { lazyNamed } from '@/app/lazy'
 import { readLocalDraft } from './localDraft'
 import { chooseStart } from './writingModel'
 import styles from './Writing.module.css'
+
+// The editor brings CodeMirror with it; the lists of documents and findings do not need it, so it is fetched when a document opens.
+const DocumentEditor = lazyNamed(() => import('./DocumentEditor'), 'DocumentEditor')
 
 interface Props {
   projectId: number
@@ -69,19 +72,21 @@ export function DocumentView({ projectId, id, canEdit, showVersions, onVersions,
       }
     >
       {doc.data && head ? (
-        <DocumentEditor
-          key={doc.data.id}
-          projectId={projectId}
-          doc={doc.data}
-          start={chooseStart(head, draft.data ?? null, local)}
-          evidence={evidence.data?.items ?? []}
-          canEdit={canEdit}
-          showVersions={showVersions}
-          onVersions={onVersions}
-          onBack={onBack}
-          onOpenFinding={onOpenFinding}
-          onDeleted={onBack}
-        />
+        <Suspense fallback={<p role="status">{t('states.loading.label')}</p>}>
+          <DocumentEditor
+            key={doc.data.id}
+            projectId={projectId}
+            doc={doc.data}
+            start={chooseStart(head, draft.data ?? null, local)}
+            evidence={evidence.data?.items ?? []}
+            canEdit={canEdit}
+            showVersions={showVersions}
+            onVersions={onVersions}
+            onBack={onBack}
+            onOpenFinding={onOpenFinding}
+            onDeleted={onBack}
+          />
+        </Suspense>
       ) : null}
     </StateBoundary>
   )

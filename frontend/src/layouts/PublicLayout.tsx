@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/authContext'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -29,7 +30,7 @@ export function PublicLayout() {
         </nav>
       </header>
       <main className={styles.publicMain}>
-        <Outlet />
+        <SuspenseOutlet />
       </main>
     </>
   )

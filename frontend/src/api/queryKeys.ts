@@ -74,6 +74,8 @@ export const qk = {
         runs: [...root, 'search', 'runs'] as const,
         resultSets: [...root, 'search', 'result-sets'] as const,
         compare: (a: number, b: number) => [...root, 'search', 'compare', a, b] as const,
+        compareFull: (a: number, b: number) => [...root, 'search', 'compare-full', a, b] as const,
+        subscriptions: [...root, 'search', 'subscriptions'] as const,
       },
       findings: {
         all: [...root, 'findings'] as const,
@@ -104,6 +106,12 @@ export const qk = {
         requests: [...root, 'members', 'requests'] as const,
       },
       families: [...root, 'families'] as const,
+      ilal: [...root, 'ilal'] as const,
+      argument: [...root, 'argument'] as const,
+      narrator: (narratorId: number) => ({
+        assertions: [...root, 'narrator', narratorId, 'assertions'] as const,
+        assessments: [...root, 'narrator', narratorId, 'assessments'] as const,
+      }),
       submission: {
         all: [...root, 'submission'] as const,
         list: [...root, 'submission', 'list'] as const,
@@ -175,6 +183,8 @@ export const qk = {
       ['library', 'share-preview', id, projectIds, share] as const,
   },
 
+  templates: ['templates'] as const,
+
   corpus: {
     all: ['corpus'] as const,
     search: (params: CorpusSearchParams) => ['corpus', 'search', params] as const,
@@ -182,8 +192,12 @@ export const qk = {
     narrator: (id: number) => ['corpus', 'narrator', id] as const,
     criticism: (id: number, page: number) => ['corpus', 'narrator', id, 'criticism', page] as const,
     narratorLinks: (id: number, kind: 'teachers' | 'students') => ['corpus', 'narrator', id, kind] as const,
+    trajectory: (id: number) => ['corpus', 'narrator', id, 'trajectory'] as const,
     narratorLookup: (term: string) => ['corpus', 'narrator-lookup', term] as const,
     books: (page: number) => ['corpus', 'books', page] as const,
+    structure: (bookId: number) => ['corpus', 'book', bookId, 'structure'] as const,
+    chapterHits: (bookId: number, chapterId: number, page: number) => ['corpus', 'book', bookId, 'chapter', chapterId, page] as const,
+    concordance: (term: string, bookId: number | null, limit: number) => ['corpus', 'concordance', term, bookId, limit] as const,
     hukms: ['corpus', 'hukms'] as const,
     picker: (term: string, kind: string, page: number) => ['corpus', 'picker', term, kind, page] as const,
   },

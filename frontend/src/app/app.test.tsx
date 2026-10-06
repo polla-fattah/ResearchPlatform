@@ -1,4 +1,5 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { server } from '@/test/server'
@@ -78,6 +79,38 @@ describe('shell', () => {
     const link = await screen.findByRole('link', { name: /Notifications/ })
     expect(link).toHaveAttribute('href', '/notifications')
     await waitFor(() => expect(link).toHaveTextContent('3'))
+  })
+
+  it('shows the analysis tools under the Analysis tab and not on other tabs', async () => {
+    mockMe()
+    mockProjectApis()
+    const { router } = renderApp('/projects/12/analysis/ilal', { signedIn: true })
+    const tools = await screen.findByRole('navigation', { name: 'Analysis tools' })
+    for (const [name, href] of [
+      ['Matn alignment', '/projects/12/analysis/matn'],
+      ['Isnād graph', '/projects/12/analysis/isnad'],
+      ['Hadith families', '/projects/12/analysis/families'],
+      ['ʿIlal cases', '/projects/12/analysis/ilal'],
+      ['Narrators', '/projects/12/analysis/narrators'],
+      ['Books and terms', '/projects/12/analysis/books'],
+      ['Argument map', '/projects/12/argument-map'],
+    ] as const) {
+      expect(within(tools).getByRole('link', { name })).toHaveAttribute('href', href)
+    }
+    await router.navigate('/projects/12/evidence')
+    await waitFor(() => expect(screen.queryByRole('navigation', { name: 'Analysis tools' })).not.toBeInTheDocument())
+  })
+
+  it('removes the drafts kept in the browser when the person signs out, and keeps the display preferences', async () => {
+    mockMe()
+    mockHomeApis()
+    localStorage.setItem('oh.draft.12.7', JSON.stringify({ text: 'private research', baseVersion: 1, at: 1 }))
+    localStorage.setItem('oh.lang', 'en')
+    server.use(http.post('*/api/v1/auth/logout', () => HttpResponse.json(envelope(null))))
+    renderApp('/home', { signedIn: true })
+    await userEvent.click(await screen.findByRole('button', { name: 'Sign out' }))
+    await waitFor(() => expect(localStorage.getItem('oh.draft.12.7')).toBeNull())
+    expect(localStorage.getItem('oh.lang')).toBe('en')
   })
 
   it('renders the project tab bar with the display code', async () => {

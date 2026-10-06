@@ -121,6 +121,8 @@ export interface SaveLibraryInput {
   incomplete_citation_flags?: string[]
   /** Only after the researcher chose "save a distinct excerpt". */
   allow_duplicate_excerpt?: boolean
+  /** Tags put on the new item (an import adds one that names the import). */
+  tags?: string[]
 }
 
 export interface ShareOptions {

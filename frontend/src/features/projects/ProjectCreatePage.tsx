@@ -175,6 +175,9 @@ export function ProjectCreatePage() {
         <div>
           <h1 style={{ margin: 0 }}>{t('projects.create.title')}</h1>
           <p style={{ margin: '0.5rem 0 0' }}>{t('projects.create.lead')}</p>
+          <p style={{ margin: '0.5rem 0 0' }}>
+            <Link to="/projects/templates">{t('projects.create.fromTemplate')}</Link>
+          </p>
         </div>
 
         {problems.length > 0 && isSubmitted ? (

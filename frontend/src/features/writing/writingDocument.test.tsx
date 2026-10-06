@@ -15,7 +15,7 @@ async function editor(): Promise<EditorView> {
     const found = document.querySelector('.cm-editor')
     if (!found) throw new Error('editor not ready')
     return found as HTMLElement
-  })
+  }, { timeout: 15000 }) // the writing page and the editor are loaded when the route opens
   return EditorView.findFromDOM(el)!
 }
 const typeAtEnd = (view: EditorView, text: string) => act(() => view.dispatch({ changes: { from: view.state.doc.length, insert: text } }))

@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/authContext'
 import { usePreferences } from '@/app/preferencesContext'
@@ -50,7 +51,7 @@ export function AdminShell() {
           </div>
         </aside>
         <main id="main" className={styles.main}>
-          <Outlet />
+          <SuspenseOutlet />
         </main>
       </div>
       <ViewportNotice />

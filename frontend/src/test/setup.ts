@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { session } from '@/api/http'
 import { initI18n } from '@/i18n'
@@ -16,6 +16,9 @@ if (typeof HTMLDialogElement !== 'undefined') {
 }
 
 initI18n('en')
+
+// Pages are loaded when their route opens, so the first look for something on a page can wait for its code to be fetched.
+configure({ asyncUtilTimeout: 5000 })
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => {

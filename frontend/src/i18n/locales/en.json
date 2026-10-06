@@ -17,7 +17,8 @@
     "announcements": "Announcements",
     "editorial": "Editorial",
     "review": "Peer review",
-    "research": "Published research"
+    "research": "Published research",
+    "projectSections": "Project sections"
   },
   "release": {
     "R1a": "R1a",
@@ -580,7 +581,8 @@
         "privateBody": "Only you can see this project until you invite members. Making anything public always goes through a sharing preview.",
         "separateTitle": "Separate from your other projects",
         "separateBody": "This project gets its own resources, searches, evidence and writing. To reuse material from another project, copy it from that project's Overview. The copy keeps a record of where it came from."
-      }
+      },
+      "fromTemplate": "Start from a template instead"
     },
     "overview": {
       "question": "Research question",
@@ -1055,7 +1057,8 @@
       "none": "Everything in your library is already in this project.",
       "add_one": "Add {{formattedCount}} source",
       "add_other": "Add {{formattedCount}} sources"
-    }
+    },
+    "importReferences": "Import references"
   },
   "search": {
     "title": "Search",
@@ -1823,7 +1826,8 @@
         "body": "The link points to an export that doesn't exist or isn't yours. Exports are personal, so other people's links never open."
       },
       "loadFailed": "The manifest couldn't be loaded."
-    }
+    },
+    "otherExchange": "Other exports and importing a package"
   },
   "writing": {
     "title": "Findings and documents",
@@ -3907,5 +3911,603 @@
       "confirm": "Remove",
       "failed": "The member was not removed"
     }
+  },
+  "ilal": {
+    "title": "ʿIlal cases",
+    "sub": "Compare versions of a report, record what critics said, and keep your conclusion.",
+    "unchecked": "The platform grades nothing. A case holds what researchers entered: the versions, the critics' words as typed in, and a preference between versions. Objections, replies and a change history are not stored yet.",
+    "readOnly": "You can read the cases of this project; changing them is for members who can edit shared work.",
+    "empty": {
+      "title": "No cases yet",
+      "body": "Start a case when two versions of a report, chain or wording disagree. Then add the versions and what critics said about them."
+    },
+    "list": {
+      "title": "Cases",
+      "pick": "Choose a case to read it.",
+      "notFound": "That case is not in this project."
+    },
+    "categories": {
+      "irsal_vs_ittisal": "Broken vs connected chain (irsāl / ittiṣāl)",
+      "waqf_vs_raf": "Stopped vs raised to the Prophet (waqf / rafʿ)",
+      "ziyadah_thiqah": "Addition by a trusted narrator (ziyādat al-thiqa)",
+      "tashif": "Misreading of a word (taṣḥīf)",
+      "qalb": "Reversal (qalb)",
+      "ikhtilaf_sanad": "Difference in the chain (ikhtilāf al-isnād)",
+      "shudhudh": "Departure from what others report (shudhūdh)"
+    },
+    "statuses": {
+      "under_investigation": "Under investigation",
+      "resolved_authentic": "Concluded: no defect found",
+      "resolved_defective": "Concluded: a defect found",
+      "inconclusive": "Inconclusive"
+    },
+    "new": {
+      "open": "New case",
+      "title": "New case",
+      "titleLabel": "Question",
+      "titleHint": "What differs, in a sentence.",
+      "titleRequired": "Give the case a title.",
+      "category": "Kind of discrepancy",
+      "categoryHint": "The server's fixed list of kinds.",
+      "submit": "Open case",
+      "failed": "The case was not created"
+    },
+    "variant": {
+      "open": "Add a version",
+      "title": "Add a version",
+      "name": "Name",
+      "nameHint": "Short, to tell the versions apart, e.g. “Version A”.",
+      "nameRequired": "Give the version a name.",
+      "nameTaken": "Another version already has this name.",
+      "matn": "Wording",
+      "chain": "Chain",
+      "chainHint": "Optional. The chain as you write it.",
+      "note": "Note",
+      "submit": "Add version",
+      "failed": "The version was not added"
+    },
+    "critic": {
+      "open": "Record a critic’s statement",
+      "title": "Record a critic’s statement",
+      "who": "Critic",
+      "whoRequired": "Name the critic.",
+      "said": "What they said",
+      "saidRequired": "Enter what they said.",
+      "saidHint": "Type it as written; the platform does not check it against the book.",
+      "source": "Where",
+      "sourceHint": "Optional. The book and place, e.g. al-ʿIlal 1/42.",
+      "favours": "Favours",
+      "favoursHint": "Optional. The version the statement supports.",
+      "favoursNone": "None stated",
+      "submit": "Record statement",
+      "failed": "The statement was not recorded"
+    },
+    "detail": {
+      "by": "opened by {{name}}",
+      "discrepancy": "Kind of discrepancy",
+      "versions": "Competing versions",
+      "noVersions": "No versions yet. Add at least two to compare.",
+      "needTwo": "Add a second version to compare, and before a preference can be recorded.",
+      "preferred": "Preferred",
+      "critics": "What critics said",
+      "noCritics": "No statements recorded.",
+      "unnamedCritic": "Unnamed critic",
+      "favours": "favours {{version}}",
+      "conclusion": "Researchers’ conclusion",
+      "notAGrade": "This records the researchers’ preference between versions. It is not an authenticity grade for the report.",
+      "strayPreferred": "The preferred version stored for this case does not match any version above:",
+      "limits": "Versions and statements cannot be edited or removed once added, and a case cannot be deleted. Two people saving at the same moment can overwrite each other’s conclusion."
+    },
+    "conclusion": {
+      "status": "Status",
+      "preferred": "Preferred version",
+      "preferredHint": "Your preference, not a grade.",
+      "none": "None",
+      "notes": "Reasons",
+      "notesHint": "Why you prefer it, and what stays unresolved.",
+      "noNotes": "No reasons written.",
+      "needTwo": "Two versions are needed before a case can be concluded.",
+      "save": "Save conclusion",
+      "failed": "The conclusion was not saved"
+    }
+  },
+  "narrator": {
+    "title": "Narrator dossier",
+    "choose": "Look a narrator up by name to open their dossier.",
+    "another": "Open another narrator",
+    "unchecked": "The identity and the critics' words come from the corpus as recorded. What the project holds about this narrator is what researchers entered. The platform computes no verdicts and no checks of whether two narrators could have met.",
+    "levels": {
+      "certain": "Certain",
+      "highly_probable": "Highly probable",
+      "probable": "Probable",
+      "contested": "Contested",
+      "speculative": "Speculative",
+      "unknown": "Certainty not stated"
+    },
+    "categories": {
+      "sound": "Sound from this teacher",
+      "weakened_specifically": "Weak specifically from this teacher",
+      "mudallis_from_him": "Conceals the link (tadlīs) from this teacher",
+      "unsubstantiated": "Not substantiated"
+    },
+    "assertions": {
+      "title": "What this project holds about the narrator",
+      "note": "Dates and facts as the researchers state them, with alternatives kept beside each. A claim is free text: it has no date field and no source field of its own.",
+      "empty": "Nothing recorded yet. Add a claim such as a death year, and put its source in the text.",
+      "add": "Add a claim",
+      "addTitle": "Add a claim",
+      "editTitle": "Edit the claim",
+      "edit": "Edit",
+      "delete": "Delete",
+      "claim": "Claim",
+      "claimHint": "For example “died in 197 AH (Ibn Ḥajar, Taqrīb)”.",
+      "claimRequired": "Write the claim.",
+      "level": "How sure",
+      "alternatives": "Alternatives kept beside it",
+      "altClaim": "Alternative {{n}}",
+      "altSource": "Source of alternative {{n}}",
+      "altAdd": "Add an alternative",
+      "altRemove": "Remove alternative {{n}}",
+      "adjudication": "Adjudication",
+      "adjudicationHint": "Why one reading is preferred, or why they stay open.",
+      "cannotClear": "Once written, this can be changed but not emptied: the server ignores empty values.",
+      "save": "Save claim",
+      "failed": "The claim was not saved",
+      "deleteTitle": "Delete this claim?",
+      "deleteBody": "The claim and its alternatives are removed from the project. Other claims are not touched.",
+      "deleteFailed": "The claim was not deleted"
+    },
+    "assessments": {
+      "title": "Assessments by teacher",
+      "note": "What critics said about this narrator's reports from one particular teacher. They are recorded here only; the comparison workspace and the isnād graph do not use them yet.",
+      "empty": "No teacher-specific assessments recorded.",
+      "add": "Record an assessment",
+      "addTitle": "Record an assessment",
+      "from": "From",
+      "fromAria": "Assessments of reports from {{teacher}}",
+      "teacher": "Teacher",
+      "teacherNone": "Not chosen yet. Look the teacher up below.",
+      "teacherRequired": "Choose the teacher first.",
+      "category": "Assessment",
+      "critic": "Critic",
+      "text": "Words of the critic",
+      "textHint": "Type it as written; the platform does not check it against the book.",
+      "textRequired": "Enter what was said.",
+      "noCritic": "Critic not named",
+      "recordedBy": "recorded by {{name}}",
+      "save": "Record assessment",
+      "failed": "The assessment was not recorded"
+    },
+    "criticism": {
+      "title": "What critics said (general)",
+      "note": "From the corpus, word for word. The first page only.",
+      "none": "The corpus records no statements for this narrator.",
+      "noScholar": "Critic not recorded",
+      "failed": "The statements could not be loaded."
+    },
+    "trajectory": {
+      "title": "Places",
+      "note": "Shared geographic records, the same for every project. Read only here.",
+      "none": "No places recorded.",
+      "failed": "The places could not be loaded.",
+      "place": "Place",
+      "kind": "Kind",
+      "years": "Years",
+      "basis": "Basis",
+      "ah": "AH",
+      "inferred": "Inferred",
+      "stated": "Stated",
+      "types": {
+        "birth": "Birth",
+        "death": "Death",
+        "residence": "Residence",
+        "rihlah": "Journey",
+        "audition": "Study session"
+      }
+    }
+  },
+  "books": {
+    "title": "Book structure and terms",
+    "list": "Collections",
+    "choose": "Choose a collection to read its chapters or look up a word form in it.",
+    "noBooks": "The corpus lists no collections.",
+    "occurrences_one": "{{n}} occurrence",
+    "occurrences_other": "{{n}} occurrences",
+    "allBooks": "All collections",
+    "views": "Views",
+    "view": {
+      "contents": "Chapters",
+      "words": "Word forms"
+    },
+    "unchecked": "Counts are the corpus server's own and are shown as given. Where a result is a sample, or a word form is not found, the page says so; neither is a proof that something is absent. The critic-expression index, corpus snapshots and licence notices of the design are not available yet.",
+    "contents": {
+      "totals": "{{chapters}} chapters · {{occurrences}} occurrences. Chapters are listed in the order the server stores them, with the titles as printed.",
+      "filter": "Find a chapter by title",
+      "chapters": "Chapters",
+      "occurrences_one": "{{n}} occurrence",
+      "occurrences_other": "{{n}} occurrences",
+      "more": "Show more ({{shown}} of {{total}} shown)",
+      "noMatch": "No chapter title contains that.",
+      "pick": "Choose a chapter to read its reports.",
+      "notFound": "That chapter is not in this book."
+    },
+    "chapter": {
+      "count_one": "{{count}} occurrence in this chapter",
+      "count_other": "{{count}} occurrences in this chapter",
+      "reports": "Reports in this chapter",
+      "none": "No reports were returned for this chapter.",
+      "number": "No. {{number}}",
+      "note": "An occurrence is one hadith entry in the edition. The list shows each report once, so it can be shorter than the count when a report stands more than once in the chapter."
+    },
+    "words": {
+      "title": "Word forms",
+      "term": "Word form",
+      "termHint": "2 to 100 characters. Vowel marks are ignored.",
+      "tooShort": "Enter at least 2 characters.",
+      "limit": "Places to return",
+      "limitOption": "Up to {{count}}",
+      "thisBook": "This book only",
+      "search": "Search",
+      "scopeAll": "Searching every collection of the corpus.",
+      "scopeBook": "Searching only {{book}}.",
+      "start": "Enter a word form to see where it appears.",
+      "noneTitle": "No places found",
+      "noneBody": "“{{term}}” was not found in this scope. That is not a confirmed absence: the search is on the corpus text as indexed.",
+      "found_one": "{{n}} place returned.",
+      "found_other": "{{n}} places returned.",
+      "atLeast_one": "{{n}} place returned, the most the server was asked for. There may be more.",
+      "atLeast_other": "{{n}} places returned, the most the server was asked for. There may be more.",
+      "byBook": "By collection",
+      "byBookNote": "Counts only the places returned above, not every place in the collection.",
+      "inContext": "In context",
+      "notLocated": "The word form was not located in this text; the start of the text is shown instead."
+    }
+  },
+  "argument": {
+    "title": "Argument map",
+    "sub": "The points of the project's reasoning and how they answer one another.",
+    "unchecked": "Everything here was written by researchers. The platform does not judge an argument. The server keeps one map for the whole project; the design draws one per finding, so you can narrow this one to the points connected to a finding. A removed point is gone for good: there is no history yet.",
+    "readOnly": "You can read the map; adding to it is for members who can edit shared work.",
+    "views": "Views",
+    "view": {
+      "outline": "Outline",
+      "graph": "Graph"
+    },
+    "outline": "Points of the argument",
+    "filter": "Show the map of",
+    "filterAll": "The whole project",
+    "addTop": "Add a point",
+    "reasoningOnly": "reasoning only",
+    "loops": "These points answer each other in a loop, so they cannot be placed in the outline. Open one and remove a relation to break the loop:",
+    "pick": "Choose a point to read it.",
+    "notFound": "That point is not in the map shown.",
+    "graphLabel": "Argument graph",
+    "graphNote": "The graph repeats the outline. Choose a point in either to change it.",
+    "empty": {
+      "title": "No argument structure yet",
+      "body": "Start with the claim, then add supporting points, objections, replies, qualifications and alternative conclusions. Each point can link to the evidence behind it.",
+      "add": "Add the first point"
+    },
+    "types": {
+      "premise": "Premise",
+      "claim": "Claim",
+      "objection": "Objection",
+      "reply": "Reply",
+      "qualification": "Qualification",
+      "alternative_conclusion": "Alternative conclusion"
+    },
+    "relations": {
+      "title": "Relations",
+      "supports": "supports",
+      "refutes": "refutes",
+      "qualifies": "qualifies",
+      "replies_to": "replies to",
+      "alternative_to": "is an alternative to",
+      "answers": "This point answers:",
+      "answersNone": "It answers no other point.",
+      "answeredBy": "Answered by:",
+      "answeredByNone": "No point answers it.",
+      "remove": "Remove",
+      "removeOf": "Remove the relation with {{title}}",
+      "removeFailed": "The relation was not removed"
+    },
+    "source": {
+      "title": "Source behind this point",
+      "none": "This point is reasoning only, with no source linked.",
+      "finding": "Finding"
+    },
+    "actions": {
+      "answer": "Add a point that answers this",
+      "relate": "Make this answer another point",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "point": {
+      "addTitle": "Add a point",
+      "answerTitle": "Answer “{{title}}”",
+      "editTitle": "Edit the point",
+      "type": "Kind of point",
+      "typeHint": "Choosing a kind suggests how it relates to the point it answers.",
+      "relation": "How it relates to “{{title}}”",
+      "relationHint": "You can change the suggestion.",
+      "title": "Short title",
+      "titleRequired": "Give the point a title.",
+      "content": "The point",
+      "contentRequired": "Write the point.",
+      "evidence": "Evidence behind it",
+      "evidenceHint": "Optional. Without one, the point is shown as reasoning only.",
+      "finding": "Finding it belongs to",
+      "findingHint": "Optional.",
+      "none": "None",
+      "cannotUnlink": "It can be changed to another, but not emptied: the server ignores empty values.",
+      "save": "Save point",
+      "failed": "The point was not saved",
+      "linkFailed": "The point was added, but linking it to the point it answers failed. It now stands as a top point; link it again from its page."
+    },
+    "relation": {
+      "title": "Make “{{title}}” answer another point",
+      "relation": "Relation",
+      "target": "The point it answers",
+      "chooseTarget": "Choose the point.",
+      "exists": "That relation already exists.",
+      "loop": "That would make the points answer each other in a loop.",
+      "save": "Add relation",
+      "failed": "The relation was not added"
+    },
+    "delete": {
+      "title": "Delete “{{title}}”?",
+      "body": "The point and its relations are removed for good. Points that answered it stay and become top points. The evidence it links to is not touched.",
+      "confirm": "Delete point",
+      "failed": "The point was not deleted"
+    },
+    "export": {
+      "button": "Export structure",
+      "saved": "Saved {{file}}: {{points}} points and {{relations}} relations. It does not carry the evidence links, notes or removed points.",
+      "failed": "The file was not saved"
+    }
+  },
+  "analysisTools": {
+    "label": "Analysis tools",
+    "compare": "Comparison",
+    "matn": "Matn alignment",
+    "isnad": "Isnād graph",
+    "families": "Hadith families",
+    "ilal": "ʿIlal cases",
+    "narrators": "Narrators",
+    "books": "Books and terms",
+    "argument": "Argument map"
+  },
+  "searchCompare": {
+    "title": "Search run comparison and schedules",
+    "sub": "See what a saved query found newly, lost, or kept between two runs, and choose whether to be told about it.",
+    "unchecked": "The lists are the server's: records in the later run only, in the earlier run only, and in both. A record that changed its wording or place is not detected as changed, and the platform does not say whether the corpus itself changed beyond the version each run recorded.",
+    "query": "Saved query",
+    "earlier": "Earlier run",
+    "later": "Later run",
+    "choose": "Choose…",
+    "noDate": "no date",
+    "results_one": "{{n}} result",
+    "results_other": "{{n}} results",
+    "noQueries": {
+      "title": "No saved queries yet",
+      "body": "Save a search and run it more than once to compare its runs."
+    },
+    "pickQuery": "Choose a saved query.",
+    "needTwo_zero": "This query has no completed run to compare.",
+    "needTwo_one": "This query has one completed run. Run it again to compare.",
+    "needTwo_other": "This query has {{count}} completed runs.",
+    "pickRuns": "Choose an earlier and a later run.",
+    "sameRun": "Choose two different runs.",
+    "sameQuery": "Same saved query ({{code}}).",
+    "queryEdited": "The saved query was edited between the two runs, so some differences come from the edit and not from the corpus.",
+    "corpusChanged": "The corpus version changed between the runs ({{from}} to {{to}}), so some differences may come from the corpus and not from the query.",
+    "corpusUnknown": "One of the runs did not record its corpus version, so a change in the corpus cannot be ruled out.",
+    "summary": "Summary",
+    "listsLabel": "Lists",
+    "lists": {
+      "added": "New in the later run",
+      "removed": "No longer in the later run",
+      "kept": "In both runs"
+    },
+    "empty": {
+      "added": "No record is new in the later run.",
+      "removed": "No record dropped out.",
+      "kept": "No record is in both runs."
+    },
+    "recordUnavailable": "The text of this record could not be loaded.",
+    "footnote": "Records are listed once each, by their corpus number. The wording is the corpus text now.",
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "schedule": {
+      "title": "Alerts about this query",
+      "notRunning": "The server keeps this choice but does not rerun the query or send alerts yet. Saving it records your wish only; each run is still started by a person.",
+      "none": "You are not subscribed to this query.",
+      "on": "You are subscribed: {{frequency}}.",
+      "off": "Your subscription is switched off.",
+      "lastRun": "Last run on {{date}}, {{count}} results.",
+      "neverRun": "No scheduled run has happened.",
+      "frequency": "How often",
+      "subscribe": "Subscribe",
+      "change": "Save how often",
+      "turnOff": "Switch off",
+      "turnOn": "Switch on",
+      "readOnly": "Subscribing is for members who can edit shared work.",
+      "failed": "The subscription was not saved",
+      "others": "Others subscribed",
+      "othersNone": "No one else is subscribed.",
+      "someone": "A member"
+    }
+  },
+  "templates": {
+    "title": "Project templates",
+    "sub": "Start a new private project from a template, with its starting question and tasks.",
+    "limits": "A template only adds a starting question and starting tasks. It adds no evidence, gradings or conclusions, and everything can be changed or deleted after the project is created.",
+    "list": "Templates",
+    "empty": {
+      "title": "No templates are published",
+      "body": "This server has no project templates yet. You can still start a blank project."
+    },
+    "counts_one": "{{count}} starting task",
+    "counts_other": "{{count}} starting tasks",
+    "stages": "Suggested stages: {{stages}}",
+    "use": "Use this template",
+    "chosen": "Chosen",
+    "choose": "Use the template {{title}}",
+    "unusable": "This template cannot be used now: one of its starting tasks has no title.",
+    "blank": "Start a blank project",
+    "notFound": "That template is not available.",
+    "languages": {
+      "ar": "Arabic",
+      "ckb": "Sorani Kurdish",
+      "en": "English"
+    },
+    "form": {
+      "label": "New project from {{title}}",
+      "title": "New project from “{{title}}”",
+      "projectTitle": "Project title",
+      "projectTitleHint": "It must differ from the titles of your other projects.",
+      "titleRequired": "Give the project a title.",
+      "duplicate": "You already have a project with this title ({{code}}).",
+      "question": "Research question",
+      "questionHint": "Starts as the template's question. Change it to yours.",
+      "questionRequired": "Write the research question.",
+      "language": "Main language",
+      "languageHint": "The project's other languages can be added later.",
+      "tasksTitle": "Tasks that will be created",
+      "noTasks": "This template creates no tasks.",
+      "afterwards": "The project is private to you. Its scope is set by the server to say it came from this template; write your own in the project's settings.",
+      "create": "Create private project",
+      "failed": "The project was not created"
+    }
+  },
+  "exchange": {
+    "title": "Other exports and importing a package",
+    "back": "Back to Downloads",
+    "sub": "What can be saved or brought in beyond the ZIP of your data on the Downloads page.",
+    "graph": {
+      "title": "Argument map structure",
+      "what": "Saves a project's argument map as one JSON file: each point with its title, kind and text, and each relation with its kind. Programs that read graphs can open it.",
+      "notIncluded": "The file does not carry the evidence or finding a point is linked to, notes on relations, the order of points, who wrote them, or removed points. It is JSON only; there is no GraphML file.",
+      "project": "Project",
+      "choose": "Choose a project…",
+      "noProjects": "You have no project to export from.",
+      "projectsFailed": "Your projects could not be loaded.",
+      "download": "Download JSON",
+      "saved": "Saved {{file}}: {{points}} points and {{relations}} relations.",
+      "failed": "The file was not saved"
+    },
+    "docx": {
+      "title": "Word document (DOCX)",
+      "unavailable": "Not available yet. The server accepts a request for a Word document but makes the same ZIP of JSON files whatever format is asked for, so no Word file is offered here."
+    },
+    "import": {
+      "title": "Import a package",
+      "unavailable": "Not available yet. The server's import reads the title from a package and makes an empty project: it keeps none of the package's evidence, findings, documents or argument, and it does not check the package. It is not offered here so nothing looks imported that was not.",
+      "blank": "Start a blank project"
+    }
+  },
+  "referenceImport": {
+    "title": "Import references",
+    "back": "Back to My Library",
+    "sub": "Bring in references from your reference manager. Nothing is saved until you have looked at the list.",
+    "refs": {
+      "title": "BibTeX or RIS file",
+      "note": "The file is read in your browser and each reference you keep is saved to My Library, private to you. A reference that is already in your library is left as it is, never overwritten.",
+      "file": "Choose a file",
+      "fileHint": ".bib, .ris or a text file, up to 2 MB.",
+      "paste": "Or paste the references",
+      "pasteHint": "BibTeX entries starting with @book{…} or RIS records starting with TY  -."
+    },
+    "tooBig": "That file is larger than {{max}}. Split it and import the parts.",
+    "readFailed": "The file could not be read.",
+    "unreadable": {
+      "title": "This can’t be read as BibTeX or RIS.",
+      "body": "The first line is “{{line}}”. A BibTeX file starts with @book{… and a RIS file with “TY  -”. Export from your reference manager as BibTeX or RIS and try again."
+    },
+    "noEntries": "The file is BibTeX, but it holds no references to import.",
+    "format": {
+      "bibtex": "BibTeX",
+      "ris": "RIS"
+    },
+    "found_one": "{{count}} reference found in the {{format}} file.",
+    "found_other": "{{count}} references found in the {{format}} file.",
+    "tooMany": "{{count}} references is more than the {{max}} that can be imported at once. Split the file.",
+    "preview": "References found in the file",
+    "col": {
+      "import": "Import",
+      "line": "Line",
+      "entry": "Reference",
+      "check": "Check"
+    },
+    "include": "Import {{title}}",
+    "untitled": "No title",
+    "noAuthor": "Author not given",
+    "ok": "Can be imported",
+    "problems": {
+      "noTitle": "Has no title, so it is left out"
+    },
+    "neverOverwrites": "Entries without a title are left out. A reference you already have is reported and kept as it is.",
+    "import_one": "Import {{count}} reference",
+    "import_other": "Import {{count}} references",
+    "failed": "The import did not finish",
+    "result": {
+      "title": "Import result",
+      "saved_one": "{{count}} reference saved to My Library.",
+      "saved_other": "{{count}} references saved to My Library.",
+      "duplicate_one": "{{count}} was already in your library and was left as it is.",
+      "duplicate_other": "{{count}} were already in your library and were left as they are.",
+      "failed_one": "{{count}} could not be saved.",
+      "failed_other": "{{count}} could not be saved.",
+      "notSaved": "References that were not saved",
+      "line": "line {{line}}",
+      "alreadyThere": "already in your library",
+      "tagged": "Saved references carry the tag “import” and the date, so you can find them together.",
+      "open": "Open My Library"
+    },
+    "uploads": {
+      "title": "Upload a file",
+      "unavailable": "Not available yet. The server has no way to receive files (scans, articles, data) or to check them for malware, so no upload is offered here. Your references can still be imported from BibTeX or RIS above."
+    }
+  },
+  "datasets": {
+    "title": "Datasets",
+    "unavailable": {
+      "title": "Datasets are not available yet",
+      "body": "A dataset here would be a fixed table of records chosen by rules you set, released in versions with a data dictionary and a check of what may be redistributed. The server has no place to keep datasets yet, so nothing can be built, saved or released, and this page shows no example."
+    },
+    "meanwhile": {
+      "title": "What you can do now",
+      "sets": "Save a result set",
+      "setsText": "from a search to keep the records you chose, exactly as they were found.",
+      "zip": "Download your project data",
+      "zipText": "as a ZIP of JSON files."
+    },
+    "public": {
+      "title": "Nothing is published here",
+      "body": "Public dataset and dossier pages are not available yet. Published research can be read in the research listing.",
+      "research": "Published research"
+    }
+  },
+  "richEditor": {
+    "title": "Rich-text editor",
+    "unavailable": {
+      "title": "Rich-text editing is not available yet",
+      "body": "Rich text and Markdown would be two ways to edit the same document. Until the server is confirmed to keep citation markup and the direction of each block exactly as written, moving between the two could quietly change your text, so only one editor is offered.",
+      "markdown": "The Markdown editor does everything the document needs today: headings, lists, quotations and citations to your evidence, with each paragraph shown in its own direction."
+    },
+    "open": "Open the document in the Markdown editor"
+  },
+  "routeError": {
+    "title": "Something went wrong on this page",
+    "body": "What you saved is safe on the server. Anything you were typing in this window may not be. Reload the page to try again. If it keeps happening, tell support what you were doing.",
+    "load": {
+      "title": "This page could not be loaded",
+      "body": "The connection may have dropped, or a new version of the platform was released while this window was open. Reload the page to continue."
+    },
+    "reload": "Reload the page",
+    "home": "Go to Home"
   }
 }

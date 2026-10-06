@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './Button'
+import { useReturnFocus } from './useReturnFocus'
 import styles from './Dialog.module.css'
 
 interface Props {
@@ -35,6 +36,7 @@ export function ConfirmAction({
   // One id per dialog: two can be on a page at once (one closed), and a shared id would name them both by the first.
   const titleId = useId()
 
+  useReturnFocus(open)
   useEffect(() => {
     const el = ref.current
     if (!el) return

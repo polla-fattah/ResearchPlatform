@@ -144,7 +144,7 @@ export function DossierView({ projectId, narratorId, reportIds, onPick, onCompar
   )
 }
 
-function Identity({ narrator }: { narrator: CorpusNarrator }) {
+export function Identity({ narrator }: { narrator: CorpusNarrator }) {
   const { t } = useTranslation()
   const value = (text: string | null | undefined, wrap = true): ReactNode =>
     known(text) ? wrap ? <BidiText>{text!}</BidiText> : text : <NeutralState kind="unknown" />

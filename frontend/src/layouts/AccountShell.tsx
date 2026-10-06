@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Outlet } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { countUnreadNotifications } from '@/api/home'
 import { qk } from '@/api/queryKeys'
@@ -52,7 +52,7 @@ export function AccountShell() {
           </div>
         </aside>
         <main id="main" className={styles.main}>
-          <Outlet />
+          <SuspenseOutlet />
         </main>
       </div>
       <ViewportNotice />

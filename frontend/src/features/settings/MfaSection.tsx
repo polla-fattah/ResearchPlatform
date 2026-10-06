@@ -8,7 +8,7 @@ import { Button } from '@/components/Button'
 import { Field } from '@/components/Field'
 import { Modal } from '@/components/Modal'
 import { MutationNotice } from '@/components/MutationNotice'
-import { groupSecret } from './settingsModel'
+import { groupSecret, isOtpAuthUrl } from './settingsModel'
 import styles from './Settings.module.css'
 
 /**
@@ -77,7 +77,7 @@ export function MfaSection({ me }: { me: Me }) {
             {groupSecret(start.data.secret)}
           </p>
           <p className={styles.hint}>
-            <a href={start.data.otpauth_url}>{t('settings.mfa.openApp')}</a>
+            {isOtpAuthUrl(start.data.otpauth_url) ? <a href={start.data.otpauth_url}>{t('settings.mfa.openApp')}</a> : null}
           </p>
           <Field label={t('settings.mfa.code')} hint={t('settings.mfa.step2')}>
             <input inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} />

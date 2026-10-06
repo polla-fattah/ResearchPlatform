@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { ApiError, normalizeError } from '@/api/errors'
@@ -134,5 +135,64 @@ describe('<ConfirmAction>', () => {
     expect(onCancel).toHaveBeenCalledOnce()
     await userEvent.click(screen.getByRole('button', { name: 'Move', hidden: true }))
     expect(onConfirm).toHaveBeenCalledOnce()
+  })
+})
+
+describe('focus returns to the button that opened a dialog', () => {
+  it('Modal: when it is taken out of the page', async () => {
+    const { Modal } = await import('./Modal')
+    function Page() {
+      const [open, setOpen] = useState(false)
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Open it
+          </button>
+          {open ? (
+            <Modal title="A dialog" onClose={() => setOpen(false)}>
+              <button type="button" onClick={() => setOpen(false)}>
+                Close it
+              </button>
+            </Modal>
+          ) : null}
+        </>
+      )
+    }
+    render(<Page />)
+    const opener = screen.getByRole('button', { name: 'Open it' })
+    opener.focus()
+    await userEvent.click(opener)
+    await userEvent.click(await screen.findByRole('button', { name: 'Close it' }))
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Close it' })).not.toBeInTheDocument())
+    expect(opener).toHaveFocus()
+  })
+
+  it('does not move focus when the button that opened it is gone', async () => {
+    const { Modal } = await import('./Modal')
+    function Page() {
+      const [state, setState] = useState<'closed' | 'open' | 'gone'>('closed')
+      return (
+        <>
+          {state !== 'gone' ? (
+            <button type="button" onClick={() => setState('open')}>
+              Open it
+            </button>
+          ) : null}
+          <button type="button">Elsewhere</button>
+          {state === 'open' ? (
+            <Modal title="A dialog" onClose={() => setState('gone')}>
+              <button type="button" onClick={() => setState('gone')}>
+                Close it
+              </button>
+            </Modal>
+          ) : null}
+        </>
+      )
+    }
+    render(<Page />)
+    await userEvent.click(screen.getByRole('button', { name: 'Open it' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Close it' }))
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Close it' })).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Elsewhere' })).not.toHaveFocus()
   })
 })

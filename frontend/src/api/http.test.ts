@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { server } from '@/test/server'
 import { envelope } from '@/test/helpers'
+import { setErrorReporter } from '@/app/errorReporting'
 import { ApiError } from './errors'
 import { api, session } from './http'
 
@@ -75,10 +76,16 @@ describe('api()', () => {
     await expect(api('/down')).rejects.toMatchObject({ code: 'NETWORK', status: 0 })
   })
 
-  it('fails loudly when the response does not match the schema (tests and dev)', async () => {
-    server.use(http.get('*/api/v1/bad', () => HttpResponse.json(envelope({ id: 'not a number' }))))
+  it('refuses a response that does not match the schema, in every build, and reports it without the data', async () => {
+    const reported: [unknown, string][] = []
+    setErrorReporter((e, where) => reported.push([e, where]))
+    server.use(http.get('*/api/v1/bad', () => HttpResponse.json(envelope({ id: 'a secret value' }))))
     const err = await api('/bad', { schema: z.object({ id: z.number() }) }).catch((e: unknown) => e)
+    setErrorReporter(null)
     expect(err).toBeInstanceOf(ApiError)
     expect((err as ApiError).code).toBe('CONTRACT_MISMATCH')
+    expect(reported).toHaveLength(1)
+    expect(reported[0]![1]).toBe('contract')
+    expect(JSON.stringify(reported[0]![0])).not.toContain('a secret value')
   })
 })

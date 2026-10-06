@@ -91,10 +91,15 @@ export async function downloadFile(path: string, fallbackName: string): Promise<
   const blob = await res.blob()
   const disposition = res.headers.get('Content-Disposition') ?? ''
   const name = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition)?.[1] ?? fallbackName
+  saveBlob(blob, decodeURIComponent(name))
+}
+
+/** Hands a file held in memory to the browser to save under `name`. */
+export function saveBlob(blob: Blob, name: string): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = decodeURIComponent(name)
+  a.download = name
   document.body.appendChild(a)
   a.click()
   a.remove()
