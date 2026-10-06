@@ -2668,5 +2668,151 @@
       "confirm": "Request closure",
       "failed": "The closure wasn't requested"
     }
+  },
+  "members": {
+    "tab": "Members",
+    "title": "Members",
+    "count_one": "{{formattedCount}} person in this project",
+    "count_other": "{{formattedCount}} people in this project",
+    "theOwner": "the owner",
+    "unnamed": "Unnamed researcher",
+    "you": "You",
+    "readOnly": "You are a {{role}} here, so you can see who is in the project but not change membership. Only {{owner}} can invite people, change roles or remove members.",
+    "refreshFailed": "The list could not be refreshed. The people below are as they were when it last loaded.",
+    "joinedUnknown": "Not recorded",
+    "changeRole": "Change role",
+    "changeRoleOf": "Change the role of {{name}}",
+    "remove": "Remove",
+    "removeOf": "Remove {{name}}",
+    "leave": "Leave project",
+    "transferUnavailable": "Handing the project to another owner is not available yet: the server has no way for the person asked to see or accept the request. It will appear here when it does.",
+    "table": {
+      "label": "Project members",
+      "person": "Person",
+      "role": "Role",
+      "joined": "Joined",
+      "added": "Added to the project",
+      "actions": "Actions"
+    },
+    "added": {
+      "summary": "{{evidence}} evidence · {{documents}} document versions · {{comments}} comments · {{tasks}} tasks",
+      "unknown": "Not reported"
+    },
+    "empty": {
+      "title": "Only you so far",
+      "body": "Invite approved researchers to work on this project with you. Each person gets a fixed role. They see the project's shared research only after they accept, and never your private notes or your My Library.",
+      "action": "Invite the first member"
+    },
+    "invite": {
+      "open": "Invite member",
+      "title": "Invite to {{code}}",
+      "email": "E-mail address of their account",
+      "emailHint": "Only approved accounts can be invited. If someone has not applied yet, ask them to apply first.",
+      "emailRequired": "enter an e-mail address",
+      "emailInvalid": "enter a full address such as name@example.org",
+      "role": "Role",
+      "roleHint": {
+        "researcher": "Reads and adds shared research, discusses, creates tasks.",
+        "reviewer": "Reads and comments. Cannot add or edit shared research.",
+        "viewer": "Reads only. Keeps their own private notes."
+      },
+      "shows": "The invitation shows the project title, your name as owner and the role. It shows no evidence, notes, documents or member list until they accept. It expires after {{days}} days.",
+      "send": "Send invitation",
+      "sending": "Sending…",
+      "failed": "The invitation was not sent",
+      "sentTitle": "Invitation created",
+      "sentBody": "An invitation for {{email}} is open for {{days}} days.",
+      "noEmail": "No e-mail is sent by the platform yet. Copy this link and send it to them yourself.",
+      "done": "Done"
+    },
+    "link": {
+      "label": "Invitation link",
+      "copy": "Copy link",
+      "copied": "Copied"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "none": "No invitations are waiting.",
+      "failed": "The invitations could not be loaded.",
+      "state": "State",
+      "link": "Link",
+      "sendAgain": "Send again to get a new link",
+      "expires": "Expires {{date}}",
+      "states": {
+        "waiting": "Waiting for an answer",
+        "expired": "Expired: no access was given",
+        "declined": "Declined",
+        "accepted": "Accepted",
+        "other": "Unknown state"
+      },
+      "resend": "Send again",
+      "resendFailed": "The invitation was not sent again",
+      "withdraw": "Withdraw",
+      "withdrawTitle": "Withdraw the invitation to {{email}}?",
+      "withdrawBody": "The link stops working. Nothing else changes, and you can invite them again.",
+      "withdrawFailed": "The invitation was not withdrawn"
+    },
+    "roleDialog": {
+      "title": "Change the role of {{name}}",
+      "note": "The change applies on their next request. Ownership is not a role: it moves by transfer.",
+      "failed": "The role was not changed"
+    },
+    "removeDialog": {
+      "title": "Remove {{name}} from {{code}}?",
+      "access": "Their access stops at once.",
+      "shared": "Their shared work stays in the project and keeps their name.",
+      "tasks": "Tasks assigned to them are not reassigned for you.",
+      "private": "Their private notes stay private. You cannot see them, before or after.",
+      "instead": "Keep {{name}} as a member and change their role instead",
+      "confirm": "Remove {{name}}",
+      "failed": "The member was not removed"
+    },
+    "leaveDialog": {
+      "title": "Leave {{code}}?",
+      "body": "You lose access to this project at once. What you added stays and keeps your name. Your own library and private notes stay yours. The owner can invite you again.",
+      "confirm": "Leave project",
+      "failed": "You did not leave the project"
+    },
+    "matrix": {
+      "title": "What each role can do",
+      "action": "Action",
+      "can": "Allowed",
+      "cannot": "Not allowed",
+      "actions": {
+        "read": "Read the project's research",
+        "addShared": "Add resources, evidence, analyses and documents",
+        "editShared": "Edit shared research (every change is versioned)",
+        "comment": "Discuss and comment",
+        "manageTasks": "Create and manage tasks",
+        "createPrivateAnnotation": "Keep private notes",
+        "download": "Download",
+        "manageMembers": "Manage members",
+        "manageSettings": "Change project settings",
+        "publishAnnouncement": "Publish announcements",
+        "submitFormal": "Submit for publication",
+        "archiveOrTrash": "Archive or trash the project"
+      }
+    },
+    "invitation": {
+      "expires": "Expires {{date}}",
+      "title": "{{name}} invited you to join a project",
+      "project": "Project",
+      "can": "As a {{role}} you can",
+      "cannot": "You cannot",
+      "shows": "This invitation shows only the title, who invited you and your role. You see the project's research after you accept. Your own My Library stays yours and is not shared.",
+      "accept": "Accept and open project",
+      "decline": "Decline",
+      "declined": "You declined the invitation. Nothing was shared.",
+      "failed": "The invitation was not answered",
+      "unavailableTitle": "This invitation is not available",
+      "unavailableBody": "The link may be wrong, or the invitation may have been withdrawn.",
+      "home": "Go to Home",
+      "closed": {
+        "expired": "This invitation has expired, so no access was given. Ask the owner to send a new one.",
+        "declined": "This invitation was declined.",
+        "accepted": "This invitation was already accepted.",
+        "other": "This invitation can no longer be answered."
+      }
+    }
   }
 }

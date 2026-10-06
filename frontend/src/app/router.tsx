@@ -24,6 +24,8 @@ import { ComparisonPage } from '@/features/comparison/ComparisonPage'
 import { EvidencePage } from '@/features/evidence/EvidencePage'
 import { DownloadsPage } from '@/features/downloads/DownloadsPage'
 import { WritingPage } from '@/features/writing/WritingPage'
+import { InvitationPage } from '@/features/members/InvitationPage'
+import { MembersPage } from '@/features/members/MembersPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -60,6 +62,7 @@ const BUILT: Record<string, ReactElement> = {
   '11': <WritingPage />,
   '12': <DownloadsPage />,
   '14': <SettingsPage />,
+  '15': <MembersPage />,
   '07p': <ResourcePickerPage />,
 }
 
@@ -108,6 +111,7 @@ export const routes: RouteObject[] = [
             element: <AccountShell />,
             children: [
               ...screensIn('account').map(pending),
+              { path: 'invitations/:token', element: <InvitationPage /> },
               ...screensIn('editor').map(pending),
               {
                 path: 'projects/:projectId',

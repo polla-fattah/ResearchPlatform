@@ -61,6 +61,12 @@ export const invalidate = {
   /** A comparison was stored (or a stored one changed): the list of saved analyses and the summary count. */
   analysesChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).analyses.all, qk.project(id).summary),
 
+  /** Members or invitations changed: the lists, the project (its role table) and what lists show of it. */
+  membersChanged: (qc: QueryClient, id: number) =>
+    run(qc, qk.project(id).members.all, qk.project(id).detail, qk.projects.lists),
+  /** An invitation was answered: the project now exists for this person, or does not. */
+  invitationAnswered: (qc: QueryClient, token: string) => run(qc, qk.invitation(token), qk.projects.root),
+
   /** The researcher's own library changed (save, tag, collection, remove). */
   libraryChanged: (qc: QueryClient) => run(qc, qk.library.all),
 

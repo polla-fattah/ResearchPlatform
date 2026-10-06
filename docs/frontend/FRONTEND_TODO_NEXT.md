@@ -64,13 +64,13 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
   - [ ] D0.2 Unread notification count in the shell (query with `staleTime`, refetch on window focus, one place), badge text for screen readers.
   - [ ] D0.3 `UserChip` component (name via `BidiText`, display code, no email unless the API gives one and the viewer may see it) used by members, discussion, activity.
   - [ ] D0.4 `useInfinitePaged` or an extension of `Pagination` for lists the API pages (discussions, tasks, activity); URL holds the page.
-- [ ] **D1 Members and invitations (15)**
-  - [ ] D1.1 Read mockup 15, `CollaborationController`, `ProjectInvitation`, `AuthPolicyService`; list endpoints, role vocabulary (backend `reviewer` shown as "Project reviewer").
-  - [ ] D1.2 Members list: role, contribution summary, joined date, "you" marker; empty/forbidden states.
-  - [ ] D1.3 Invite by user search (`users/search`, debounced via `useDraftParam`), by email when allowed, role chooser, message; pending invitations list with resend and revoke; owner cannot be invited.
-  - [ ] D1.4 Accept/decline for the invited person (from notifications and a direct link); expired and used invitation states.
-  - [ ] D1.5 Change role (confirmation, reason if the API takes one), remove member (dependency warning: their evidence stays attributed), leave project, transfer ownership (type-the-project-name confirmation).
-  - [ ] D1.6 Tests, contract `members-write.test.ts` with a second throwaway account and full cleanup; C-item.
+- [x] **D1 Members and invitations (15)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`)
+  - [x] D1.1 Read mockup 15, `CollaborationController`, `ProjectInvitation`, `AuthPolicyService`; list endpoints, role vocabulary (backend `reviewer` shown as "Project reviewer").
+  - [x] D1.2 Members list: role, contribution summary, joined date, "you" marker; empty/forbidden states.
+  - [x] D1.3 Invite by user search (`users/search`, debounced via `useDraftParam`), by email when allowed, role chooser, message; pending invitations list with resend and revoke; owner cannot be invited.
+  - [x] D1.4 Accept/decline for the invited person (from notifications and a direct link); expired and used invitation states.
+  - [x] D1.5 Change role (confirmation, reason if the API takes one), remove member (dependency warning: their evidence stays attributed), leave project, transfer ownership (type-the-project-name confirmation).
+  - [x] D1.6 Tests, contract `members-write.test.ts` with a second throwaway account and full cleanup; C-item.
 - [ ] **D2 Discussion and tasks (16)**
   - [ ] D2.1 Threads (code `D-nnnn`) with paging; create thread linked to evidence, finding, document or nothing; resolve/reopen.
   - [ ] D2.2 Comments with mentions (member search in the composer), edit and delete rules per role, own-comment markers; no optimistic edits without a rollback test.
@@ -136,7 +136,12 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · List created · docs only.
 
+- 2026-10-07 · D1 Members and invitations (15) in `features/members/` `[live-owed]` · members table (owner first, only accepted rows, member's own counts, never the project-wide findings figure), invite by e-mail with the link handed over because no e-mail is sent, open invitations with expired judged against the load time, resend, withdraw, change role (never owner, read-back), remove with only what the server does, leave, invitation page (title, inviter, role, can/cannot from the permission table; accept, decline, expired, not available) · Members tab added to the project shell · 592 unit tests · contract file `members-write.test.ts` written from the code, not run · transfer not offered (no way to see or answer it) · gaps in C-22.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.
 - 2026-10-07 · In a cloud container without PHP 8.4 the backend cannot run; tasks are built from the backend code (Mode CODE-ONLY) and tagged `[live-owed]` instead of being blocked.
+- 2026-10-07 · Project tabs are enabled per screen as each is built (no `release` prop on the Members tab); the default release stays R1a until the D8 checkpoint.
+- 2026-10-07 · Ownership transfer is not offered: the server has no way to see, cancel or answer a pending transfer, and a button that creates invisible records is worse than a note (C-22).
+- 2026-10-07 · People are invited by e-mail address, not by name search, because the invitation endpoint takes only an e-mail (C-22).

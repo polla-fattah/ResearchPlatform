@@ -97,6 +97,11 @@ export const qk = {
         list: [...root, 'analyses', 'list'] as const,
         detail: (analysisId: number) => [...root, 'analyses', 'detail', analysisId] as const,
       },
+      members: {
+        all: [...root, 'members'] as const,
+        list: [...root, 'members', 'list'] as const,
+        invitations: [...root, 'members', 'invitations'] as const,
+      },
       /** A comparison computed from its inputs and not stored: it only changes when the inputs do. */
       compare: {
         matn: (inputs: unknown) => [...root, 'compare', 'matn', inputs] as const,
@@ -105,6 +110,9 @@ export const qk = {
       },
     }
   },
+
+  /** An invitation seen by the person it was sent to, read by its token. */
+  invitation: (token: string) => ['invitations', token] as const,
 
   library: {
     all: ['library'] as const,
