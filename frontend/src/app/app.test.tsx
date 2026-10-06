@@ -56,14 +56,26 @@ describe('route guards', () => {
 })
 
 describe('shell', () => {
-  it('shows R1b areas disabled with their tag in R1a', async () => {
+  it('shows areas that are not built yet disabled with their release tag', async () => {
     mockMe()
-    mockHomeApis()
+    mockProjectApis()
+    renderApp('/projects/12', { signedIn: true })
+    await screen.findByText('PRJ-0012')
+    const activity = screen.getByText('Activity').closest('[aria-disabled]')
+    expect(activity).toHaveAttribute('aria-disabled', 'true')
+    expect(activity).toHaveTextContent('R1b')
+    const publication = screen.getByText('Review & Publication').closest('[aria-disabled]')
+    expect(publication).toHaveTextContent('R1c')
+  })
+
+  it('shows the number of unread notifications beside Notifications, and nothing when there are none', async () => {
+    mockMe()
+    mockHomeApis({ unread: 3 })
     renderApp('/home', { signedIn: true })
     await screen.findByRole('heading', { name: /welcome back/i })
-    const notifications = screen.getByText('Notifications').closest('[aria-disabled]')
-    expect(notifications).toHaveAttribute('aria-disabled', 'true')
-    expect(notifications).toHaveTextContent('R1b')
+    const link = await screen.findByRole('link', { name: /Notifications/ })
+    expect(link).toHaveAttribute('href', '/notifications')
+    await waitFor(() => expect(link).toHaveTextContent('3'))
   })
 
   it('renders the project tab bar with the display code', async () => {

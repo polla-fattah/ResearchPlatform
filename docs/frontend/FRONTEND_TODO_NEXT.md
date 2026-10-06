@@ -60,10 +60,10 @@ Run `php -v` and `curl -s http://127.0.0.1:8000/up`.
 Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished. Shared prerequisites first.
 
 - [ ] **D0 Shared prerequisites**
-  - [ ] D0.1 `useProject().can(action)` actions needed by D1 to D5 (invite, change role, remove, transfer, comment, task, publish); one table in `domain/roles.ts` with tests per role.
-  - [ ] D0.2 Unread notification count in the shell (query with `staleTime`, refetch on window focus, one place), badge text for screen readers.
-  - [ ] D0.3 `UserChip` component (name via `BidiText`, display code, no email unless the API gives one and the viewer may see it) used by members, discussion, activity.
-  - [ ] D0.4 `useInfinitePaged` or an extension of `Pagination` for lists the API pages (discussions, tasks, activity); URL holds the page.
+  - [x] D0.1 (`resolveDiscussion` added; the rest already existed) `useProject().can(action)` actions needed by D1 to D5 (invite, change role, remove, transfer, comment, task, publish); one table in `domain/roles.ts` with tests per role.
+  - [x] D0.2 Unread notification count in the shell (query with `staleTime`, refetch on window focus, one place), badge text for screen readers.
+  - [x] D0.3 (not needed: the member name is shown inline; no `UserChip` was warranted) `UserChip` component (name via `BidiText`, display code, no email unless the API gives one and the viewer may see it) used by members, discussion, activity.
+  - [x] D0.4 (`Pagination` with the page in the address is enough; discussions, tasks and notifications use it) `useInfinitePaged` or an extension of `Pagination` for lists the API pages (discussions, tasks, activity); URL holds the page.
 - [x] **D1 Members and invitations (15)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`)
   - [x] D1.1 Read mockup 15, `CollaborationController`, `ProjectInvitation`, `AuthPolicyService`; list endpoints, role vocabulary (backend `reviewer` shown as "Project reviewer").
   - [x] D1.2 Members list: role, contribution summary, joined date, "you" marker; empty/forbidden states.
@@ -77,7 +77,7 @@ Flip `src/app/features.ts` R1b flags on one screen at a time as each is finished
   - [x] D2.3 Tasks (code `T-nnnn`): create, assignee, due date, status transitions, filters in the URL, overdue as text plus icon; link to the object.
   - [x] D2.4 "From this object" entry points: a Discussion panel on Evidence and Findings that opens the right thread.
   - [x] D2.5 Tests, contract `discussion-write.test.ts`, C-item.
-- [ ] **D3 Notifications (17)**: list with category and read state filters (URL), mark read/unread, mark all, open target object, unread badge (D0.2), preferences link to settings; category set differs from the design (record in the request file); empty and forbidden states; tests and contract.
+- [x] **D3 Notifications (17)** (7 Oct 2026, Mode CODE-ONLY, `[live-owed]`): list with category and read state filters (URL), mark read/unread, mark all, open target object, unread badge (D0.2), preferences link to settings; category set differs from the design (record in the request file); empty and forbidden states; tests and contract.
 - [ ] **D4 Activity (18)**: project feed with filters (actor, type, date), structured entries rendered from `ProjectActivity` fields only (no guessed sentences), paging; honest note about the 100-item cap if still true; tests and contract.
 - [ ] **D5 Announcement editor (19)**: draft, preview (same renderer as the public page), publish (owner only, confirmation, what becomes public listed), unpublish if the API has it (else note and C-item), history if available; co-author consent note; tests and contract.
 - [ ] **D6 Public announcements list and page (20l, 20)**: public layout without sign-in, no private data (assert the response whitelist in a contract test), slug routes, not-found page, share-safe metadata, RTL.
@@ -138,7 +138,9 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · D1 Members and invitations (15) in `features/members/` `[live-owed]` · members table (owner first, only accepted rows, member's own counts, never the project-wide findings figure), invite by e-mail with the link handed over because no e-mail is sent, open invitations with expired judged against the load time, resend, withdraw, change role (never owner, read-back), remove with only what the server does, leave, invitation page (title, inviter, role, can/cannot from the permission table; accept, decline, expired, not available) · Members tab added to the project shell · 592 unit tests · contract file `members-write.test.ts` written from the code, not run · transfer not offered (no way to see or answer it) · gaps in C-22.
 
-- 2026-10-07 · D2 Discussion and tasks (16) in `features/discussion/` `[live-owed]` · discussions list (open/resolved/all in the address, counts of the page loaded), thread view (replies, who started it from the first reply, link to the object, decision with who and when and "never changes the corpus"), reply with the text kept on failure and read-back, resolve (decision and reason required, alternative kept), new discussion (project, or an item through `?new=1&targetType&targetId`), tasks (state and mine filters on the server, overdue judged at load time, create with assignee from members, edit, done and blocked through their own actions with a reason) · `ItemDiscussions` on the evidence inspector and finding · shared `RefreshNotice` for a failed refresh over kept data · 618 unit tests · `discussion-write.test.ts` written from the code, not run · gaps in C-23.
+- 2026-10-07 · D2 Discussion and tasks (16) in `features/discussion/` `[live-owed]` · discussions list (open/resolved/all in the address, counts of the page loaded), thread view (replies, who started it from the first reply, link to the object, decision with who and when and "never changes the corpus"), reply with the text kept on failure and read-back, resolve (decision and reason required, alternative kept), new discussion (project, or an item through `?new=1&targetType&targetId`), tasks (state and mine filters on the server, overdue judged at load time, create with assignee from members, edit, done and blocked through their own actions with a reason) · `ItemDiscussions` on the evidence inspector and finding · shared `RefreshNotice` for a failed refresh over kept data · 619 unit tests · `discussion-write.test.ts` written from the code, not run · gaps in C-23.
+
+- 2026-10-07 · D3 Notifications (17) in `features/notifications/` `[live-owed]` · list (kind filter on the server, unread-only on the loaded page, both in the address), read one (also when opened) or all, read-back, links only where they can honestly lead (invitation none, task through the assigned-task lookup), unread count beside Notifications in the account rail from the query Home shares, any other kind shown by its own name · test for the rail and the project tabs updated · 637 unit tests · `notifications-write.test.ts` written from the code, not run · gaps in C-24.
 
 ## 6. Decision log (decisions taken without asking)
 
@@ -150,3 +152,4 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 - 2026-10-07 · Tasks are a filtered table, not the mockup's four columns: the server pages tasks and a column view would hide how many there are.
 - 2026-10-07 · Mentions, reopening and the three-way decision outcome are not built: the server stores none of them, and a field that is not kept would be false (C-23).
 - 2026-10-07 · A discussion is opened from the list the screen already loaded (there is no single-thread read); one that is not on the loaded page says so (C-23).
+- 2026-10-07 · The server's notification text is shown as written (it is English and carries the project title); only the kind and the controls are translated, because rebuilding the sentence would need data the row does not carry (C-24).

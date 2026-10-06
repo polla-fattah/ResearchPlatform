@@ -1,6 +1,10 @@
+import { useQuery } from '@tanstack/react-query'
 import { Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { countUnreadNotifications } from '@/api/home'
+import { qk } from '@/api/queryKeys'
 import { useAuth } from '@/app/authContext'
+import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { NavItem } from './NavItem'
@@ -10,6 +14,9 @@ import styles from './Shell.module.css'
 export function AccountShell() {
   const { t } = useTranslation()
   const { user, signOut, isAdmin } = useAuth()
+  const { n } = usePreferences()
+  // The number beside Notifications: one query shared with Home, refreshed when the window is focused again.
+  const unread = useQuery({ queryKey: qk.home.unread, queryFn: ({ signal }) => countUnreadNotifications(signal), staleTime: 60_000, enabled: !!user, retry: false })
 
   return (
     <>
@@ -27,7 +34,7 @@ export function AccountShell() {
             <NavItem to="/library" label={t('nav.library')} />
             <NavItem to="/projects" label={t('nav.projects')} />
             <NavItem to="/searches" label={t('nav.savedSearches')} />
-            <NavItem to="/notifications" label={t('nav.notifications')} release="R1b" />
+            <NavItem to="/notifications" label={t('nav.notifications')} count={unread.data ? n(unread.data) : null} />
             <NavItem to="/downloads" label={t('nav.downloads')} />
             <NavItem to="/settings" label={t('nav.settings')} />
             {isAdmin ? <NavItem to="/admin/applications" label={t('nav.administration')} /> : null}

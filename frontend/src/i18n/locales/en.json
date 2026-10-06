@@ -2957,5 +2957,34 @@
       "more_other": "{{formattedCount}} more discussions about this.",
       "start": "Start a discussion about this"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "new": "New",
+    "unreadCount_one": "{{formattedCount}} unread",
+    "unreadCount_other": "{{formattedCount}} unread",
+    "totalCount_one": "{{formattedCount}} notification",
+    "totalCount_other": "{{formattedCount}} notifications",
+    "markAll": "Mark all as read",
+    "markRead": "Mark as read",
+    "open": "Open",
+    "preferences": "Preferences",
+    "readFailed": "The notification was not marked as read",
+    "invitationHint": "Open the invitation link the owner sent you to answer it.",
+    "emptyTitle": "You're all caught up",
+    "emptyBody": "Invitations, task assignments and role changes will show up here. Choose which ones you want in Preferences.",
+    "noneFiltered": "No notifications match this view.",
+    "unreadPageNote": "Showing the unread ones on this page. Move between pages to see the rest.",
+    "filter": {
+      "label": "Show notifications",
+      "all": "All",
+      "unread": "Unread only"
+    },
+    "kinds": {
+      "invitation": "Invitation",
+      "invitation_accepted": "Joined",
+      "role_updated": "Role changed",
+      "assignment": "Task assigned"
+    }
   }
 }

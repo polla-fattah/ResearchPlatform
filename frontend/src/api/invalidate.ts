@@ -64,6 +64,9 @@ export const invalidate = {
   /** Members or invitations changed: the lists, the project (its role table) and what lists show of it. */
   membersChanged: (qc: QueryClient, id: number) =>
     run(qc, qk.project(id).members.all, qk.project(id).detail, qk.projects.lists),
+  /** A notification was read, or all were: the list and the unread count in the shell and on Home. */
+  notificationsChanged: (qc: QueryClient) => run(qc, qk.notifications.all, qk.home.unread),
+
   /** A thread was opened, answered or resolved. */
   discussionChanged: (qc: QueryClient, id: number) => run(qc, qk.project(id).discussion.all),
   /** A task changed: the task lists, the open-task count on the summary, and the account's own task count on Home. */

@@ -27,6 +27,7 @@ import { DownloadsPage } from '@/features/downloads/DownloadsPage'
 import { WritingPage } from '@/features/writing/WritingPage'
 import { InvitationPage } from '@/features/members/InvitationPage'
 import { MembersPage } from '@/features/members/MembersPage'
+import { NotificationsPage } from '@/features/notifications/NotificationsPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -65,6 +66,7 @@ const BUILT: Record<string, ReactElement> = {
   '14': <SettingsPage />,
   '15': <MembersPage />,
   '16': <DiscussionPage />,
+  '17': <NotificationsPage />,
   '07p': <ResourcePickerPage />,
 }
 

@@ -176,6 +176,13 @@ export const qk = {
     count: (what: string) => ['admin', 'counts', what] as const,
   },
 
+  /** The account's notification list (the unread count the shell and Home show is `home.unread`). */
+  notifications: {
+    all: ['notifications'] as const,
+    list: (query: unknown) => ['notifications', 'list', query] as const,
+    assignedTasks: ['notifications', 'assigned-tasks'] as const,
+  },
+
   savedSearches: {
     /** The account's own saved searches, every page. */
     personal: ['saved-searches'] as const,
