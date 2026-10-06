@@ -4470,5 +4470,24 @@
       "title": "Upload a file",
       "unavailable": "Not available yet. The server has no way to receive files (scans, articles, data) or to check them for malware, so no upload is offered here. Your references can still be imported from BibTeX or RIS above."
     }
+  },
+  "datasets": {
+    "title": "Datasets",
+    "unavailable": {
+      "title": "Datasets are not available yet",
+      "body": "A dataset here would be a fixed table of records chosen by rules you set, released in versions with a data dictionary and a check of what may be redistributed. The server has no place to keep datasets yet, so nothing can be built, saved or released, and this page shows no example."
+    },
+    "meanwhile": {
+      "title": "What you can do now",
+      "sets": "Save a result set",
+      "setsText": "from a search to keep the records you chose, exactly as they were found.",
+      "zip": "Download your project data",
+      "zipText": "as a ZIP of JSON files."
+    },
+    "public": {
+      "title": "Nothing is published here",
+      "body": "Public dataset and dossier pages are not available yet. Published research can be read in the research listing.",
+      "research": "Published research"
+    }
   }
 }

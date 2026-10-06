@@ -51,6 +51,8 @@ import { SearchComparePage } from '@/features/searchCompare/SearchComparePage'
 import { TemplatesPage } from '@/features/templates/TemplatesPage'
 import { ExchangePage } from '@/features/exchange/ExchangePage'
 import { ReferenceImportPage } from '@/features/referenceImport/ReferenceImportPage'
+import { DatasetsPage } from '@/features/datasets/DatasetsPage'
+import { PublicDatasetPage } from '@/features/datasets/PublicDatasetPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
 import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
 import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
@@ -103,10 +105,12 @@ const BUILT: Record<string, ReactElement> = {
   '30': <NarratorPage />,
   '31': <BookPage />,
   '32': <ArgumentPage />,
+  '33': <DatasetsPage />,
   '35': <SearchComparePage />,
   '36': <ReferenceImportPage />,
   '37': <TemplatesPage />,
   '38': <ExchangePage />,
+  '39': <PublicDatasetPage />,
   '25': <ResearchListPage />,
   '40': <InterestPage />,
   '07p': <ResourcePickerPage />,
