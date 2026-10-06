@@ -1,4 +1,5 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { SuspenseOutlet } from '@/components/SuspenseOutlet'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/Button'
 import { BidiText } from '@/components/BidiText'
@@ -92,7 +93,7 @@ export function ProjectShell() {
           </div>
         }
       >
-        <Outlet />
+        <SuspenseOutlet />
       </StateBoundary>
     </>
   )

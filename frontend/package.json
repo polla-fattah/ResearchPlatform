@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:contract": "vitest run --config vitest.contract.config.ts",
     "audit": "node scripts/audit.mjs",
-    "check": "npm run lint && npm run typecheck && npm run audit && npm run test && npm run build",
+    "budget": "node scripts/bundle-budget.mjs",
+    "check": "npm run lint && npm run typecheck && npm run audit && npm run test && npm run build && npm run budget",
     "preview": "vite preview"
   },
   "dependencies": {

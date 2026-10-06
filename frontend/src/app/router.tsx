@@ -4,72 +4,74 @@ import { AccountShell } from '@/layouts/AccountShell'
 import { AdminShell } from '@/layouts/AdminShell'
 import { ProjectShell } from '@/layouts/ProjectShell'
 import { PublicLayout } from '@/layouts/PublicLayout'
-import { HomePage } from '@/features/home/HomePage'
+import { RegistrationLayout } from '@/features/registration/RegistrationLayout'
 import { ApplyPage } from '@/features/registration/ApplyPage'
 import { CheckEmailPage } from '@/features/registration/CheckEmailPage'
 import { RecoverPage } from '@/features/registration/RecoverPage'
-import { RegistrationLayout } from '@/features/registration/RegistrationLayout'
 import { ResetPasswordPage } from '@/features/registration/ResetPasswordPage'
-import { SignInPage } from '@/features/registration/SignInPage'
 import { StatusPage } from '@/features/registration/StatusPage'
 import { VerifyEmailPage } from '@/features/registration/VerifyEmailPage'
-import { AccountsPage } from '@/features/admin/AccountsPage'
-import { ApplicationsPage } from '@/features/admin/ApplicationsPage'
-import { AuditPage } from '@/features/admin/AuditPage'
-import { LimitsPage } from '@/features/admin/LimitsPage'
-import { OperationsPage } from '@/features/admin/OperationsPage'
-import { ProposalsPage } from '@/features/admin/ProposalsPage'
-import { SupportPage } from '@/features/admin/SupportPage'
-import { ComparisonPage } from '@/features/comparison/ComparisonPage'
-import { AnnouncementPage } from '@/features/announcement/AnnouncementPage'
-import { ActivityPage } from '@/features/activity/ActivityPage'
-import { DiscussionPage } from '@/features/discussion/DiscussionPage'
-import { EvidencePage } from '@/features/evidence/EvidencePage'
-import { DownloadsPage } from '@/features/downloads/DownloadsPage'
-import { WritingPage } from '@/features/writing/WritingPage'
-import { InvitationPage } from '@/features/members/InvitationPage'
-import { MembersPage } from '@/features/members/MembersPage'
-import { NotificationsPage } from '@/features/notifications/NotificationsPage'
-import { AnnouncementPublicPage } from '@/features/publicAnnouncements/AnnouncementPublicPage'
-import { AnnouncementsListPage } from '@/features/publicAnnouncements/AnnouncementsListPage'
-import { InterestPage } from '@/features/publicAnnouncements/InterestPage'
-import { SubmissionPage } from '@/features/submission/SubmissionPage'
-import { CasePage } from '@/features/editorial/CasePage'
-import { QueuePage } from '@/features/editorial/QueuePage'
-import { ReviewListPage } from '@/features/review/ReviewListPage'
-import { ReviewPage } from '@/features/review/ReviewPage'
-import { PublicationPage } from '@/features/publications/PublicationPage'
-import { ResearchListPage } from '@/features/publications/ResearchListPage'
-import { AlignmentPage } from '@/features/alignment/AlignmentPage'
-import { IsnadPage } from '@/features/isnad/IsnadPage'
-import { FamiliesPage } from '@/features/families/FamiliesPage'
-import { IlalPage } from '@/features/ilal/IlalPage'
-import { NarratorPage } from '@/features/narrator/NarratorPage'
-import { BookPage } from '@/features/books/BookPage'
-import { ArgumentPage } from '@/features/argument/ArgumentPage'
-import { SearchComparePage } from '@/features/searchCompare/SearchComparePage'
-import { TemplatesPage } from '@/features/templates/TemplatesPage'
-import { ExchangePage } from '@/features/exchange/ExchangePage'
-import { ReferenceImportPage } from '@/features/referenceImport/ReferenceImportPage'
-import { DatasetsPage } from '@/features/datasets/DatasetsPage'
-import { PublicDatasetPage } from '@/features/datasets/PublicDatasetPage'
-import { RichEditorPage } from '@/features/writing/RichEditorPage'
-import { LibraryPage } from '@/features/library/LibraryPage'
-import { ProjectResourcesPage } from '@/features/library/ProjectResourcesPage'
-import { SavedSearchesPage } from '@/features/savedSearches/SavedSearchesPage'
-import { SearchPage } from '@/features/search/SearchPage'
-import { SettingsPage } from '@/features/settings/SettingsPage'
-import { ResourcePickerPage } from '@/features/picker/ResourcePickerPage'
-import { ProjectCopyPage } from '@/features/projects/ProjectCopyPage'
-import { ProjectCreatePage } from '@/features/projects/ProjectCreatePage'
-import { ProjectIndexPage } from '@/features/projects/ProjectIndexPage'
-import { ProjectOverviewPage } from '@/features/projects/ProjectOverviewPage'
-import { ProjectSettingsPage } from '@/features/projects/ProjectSettingsPage'
-import { ComponentKit } from '@/pages/ComponentKit'
-import { NotFoundPage } from '@/pages/NotFoundPage'
-import { PendingScreen } from '@/pages/PendingScreen'
+import { SignInPage } from '@/features/registration/SignInPage'
 import { RequireAdmin, RequireApproved, RequireAuth, RequireEditor } from './guards'
 import { screensIn, type ScreenDef } from './screens'
+import { lazyNamed } from './lazy'
+
+const HomePage = lazyNamed(() => import('@/features/home/HomePage'), 'HomePage')
+const AccountsPage = lazyNamed(() => import('@/features/admin/AccountsPage'), 'AccountsPage')
+const ApplicationsPage = lazyNamed(() => import('@/features/admin/ApplicationsPage'), 'ApplicationsPage')
+const AuditPage = lazyNamed(() => import('@/features/admin/AuditPage'), 'AuditPage')
+const LimitsPage = lazyNamed(() => import('@/features/admin/LimitsPage'), 'LimitsPage')
+const OperationsPage = lazyNamed(() => import('@/features/admin/OperationsPage'), 'OperationsPage')
+const ProposalsPage = lazyNamed(() => import('@/features/admin/ProposalsPage'), 'ProposalsPage')
+const SupportPage = lazyNamed(() => import('@/features/admin/SupportPage'), 'SupportPage')
+const ComparisonPage = lazyNamed(() => import('@/features/comparison/ComparisonPage'), 'ComparisonPage')
+const AnnouncementPage = lazyNamed(() => import('@/features/announcement/AnnouncementPage'), 'AnnouncementPage')
+const ActivityPage = lazyNamed(() => import('@/features/activity/ActivityPage'), 'ActivityPage')
+const DiscussionPage = lazyNamed(() => import('@/features/discussion/DiscussionPage'), 'DiscussionPage')
+const EvidencePage = lazyNamed(() => import('@/features/evidence/EvidencePage'), 'EvidencePage')
+const DownloadsPage = lazyNamed(() => import('@/features/downloads/DownloadsPage'), 'DownloadsPage')
+const WritingPage = lazyNamed(() => import('@/features/writing/WritingPage'), 'WritingPage')
+const InvitationPage = lazyNamed(() => import('@/features/members/InvitationPage'), 'InvitationPage')
+const MembersPage = lazyNamed(() => import('@/features/members/MembersPage'), 'MembersPage')
+const NotificationsPage = lazyNamed(() => import('@/features/notifications/NotificationsPage'), 'NotificationsPage')
+const AnnouncementPublicPage = lazyNamed(() => import('@/features/publicAnnouncements/AnnouncementPublicPage'), 'AnnouncementPublicPage')
+const AnnouncementsListPage = lazyNamed(() => import('@/features/publicAnnouncements/AnnouncementsListPage'), 'AnnouncementsListPage')
+const InterestPage = lazyNamed(() => import('@/features/publicAnnouncements/InterestPage'), 'InterestPage')
+const SubmissionPage = lazyNamed(() => import('@/features/submission/SubmissionPage'), 'SubmissionPage')
+const CasePage = lazyNamed(() => import('@/features/editorial/CasePage'), 'CasePage')
+const QueuePage = lazyNamed(() => import('@/features/editorial/QueuePage'), 'QueuePage')
+const ReviewListPage = lazyNamed(() => import('@/features/review/ReviewListPage'), 'ReviewListPage')
+const ReviewPage = lazyNamed(() => import('@/features/review/ReviewPage'), 'ReviewPage')
+const PublicationPage = lazyNamed(() => import('@/features/publications/PublicationPage'), 'PublicationPage')
+const ResearchListPage = lazyNamed(() => import('@/features/publications/ResearchListPage'), 'ResearchListPage')
+const AlignmentPage = lazyNamed(() => import('@/features/alignment/AlignmentPage'), 'AlignmentPage')
+const IsnadPage = lazyNamed(() => import('@/features/isnad/IsnadPage'), 'IsnadPage')
+const FamiliesPage = lazyNamed(() => import('@/features/families/FamiliesPage'), 'FamiliesPage')
+const IlalPage = lazyNamed(() => import('@/features/ilal/IlalPage'), 'IlalPage')
+const NarratorPage = lazyNamed(() => import('@/features/narrator/NarratorPage'), 'NarratorPage')
+const BookPage = lazyNamed(() => import('@/features/books/BookPage'), 'BookPage')
+const ArgumentPage = lazyNamed(() => import('@/features/argument/ArgumentPage'), 'ArgumentPage')
+const SearchComparePage = lazyNamed(() => import('@/features/searchCompare/SearchComparePage'), 'SearchComparePage')
+const TemplatesPage = lazyNamed(() => import('@/features/templates/TemplatesPage'), 'TemplatesPage')
+const ExchangePage = lazyNamed(() => import('@/features/exchange/ExchangePage'), 'ExchangePage')
+const ReferenceImportPage = lazyNamed(() => import('@/features/referenceImport/ReferenceImportPage'), 'ReferenceImportPage')
+const DatasetsPage = lazyNamed(() => import('@/features/datasets/DatasetsPage'), 'DatasetsPage')
+const PublicDatasetPage = lazyNamed(() => import('@/features/datasets/PublicDatasetPage'), 'PublicDatasetPage')
+const RichEditorPage = lazyNamed(() => import('@/features/writing/RichEditorPage'), 'RichEditorPage')
+const LibraryPage = lazyNamed(() => import('@/features/library/LibraryPage'), 'LibraryPage')
+const ProjectResourcesPage = lazyNamed(() => import('@/features/library/ProjectResourcesPage'), 'ProjectResourcesPage')
+const SavedSearchesPage = lazyNamed(() => import('@/features/savedSearches/SavedSearchesPage'), 'SavedSearchesPage')
+const SearchPage = lazyNamed(() => import('@/features/search/SearchPage'), 'SearchPage')
+const SettingsPage = lazyNamed(() => import('@/features/settings/SettingsPage'), 'SettingsPage')
+const ResourcePickerPage = lazyNamed(() => import('@/features/picker/ResourcePickerPage'), 'ResourcePickerPage')
+const ProjectCopyPage = lazyNamed(() => import('@/features/projects/ProjectCopyPage'), 'ProjectCopyPage')
+const ProjectCreatePage = lazyNamed(() => import('@/features/projects/ProjectCreatePage'), 'ProjectCreatePage')
+const ProjectIndexPage = lazyNamed(() => import('@/features/projects/ProjectIndexPage'), 'ProjectIndexPage')
+const ProjectOverviewPage = lazyNamed(() => import('@/features/projects/ProjectOverviewPage'), 'ProjectOverviewPage')
+const ProjectSettingsPage = lazyNamed(() => import('@/features/projects/ProjectSettingsPage'), 'ProjectSettingsPage')
+const ComponentKit = lazyNamed(() => import('@/pages/ComponentKit'), 'ComponentKit')
+const NotFoundPage = lazyNamed(() => import('@/pages/NotFoundPage'), 'NotFoundPage')
+const PendingScreen = lazyNamed(() => import('@/pages/PendingScreen'), 'PendingScreen')
 
 /** Screens that have a real page; the rest render a placeholder. */
 const BUILT: Record<string, ReactElement> = {
