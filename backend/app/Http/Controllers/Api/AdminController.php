@@ -150,8 +150,17 @@ class AdminController extends ApiController
             'reason' => 'required|string|min:3', // Made required per API-10
         ]);
 
+        if ($user->id === $request->user()->id && in_array($validated['status'], ['suspended', 'rejected'])) {
+            return $this->errorResponse('Administrators cannot suspend or reject their own account.', 'FORBIDDEN', 403);
+        }
+
         $oldStatus = $user->status;
         $user->update(['status' => $validated['status']]);
+
+        // Revoke active sessions/tokens upon suspension (C-20)
+        if ($validated['status'] === 'suspended') {
+            $user->tokens()->delete();
+        }
 
         AuditService::log(
             actorId: $request->user()->id,
@@ -199,6 +208,11 @@ class AdminController extends ApiController
         if ($res = $this->checkAdmin($request)) return $res;
 
         $application = ResearcherApplication::findOrFail($id);
+
+        // A decided application cannot be decided again (C-20)
+        if (!in_array($application->status, ['pending', 'information_requested'])) {
+            return $this->errorResponse('Application has already been decided.', 'CONFLICT', 409);
+        }
 
         $validated = $request->validate([
             'decision' => 'required|string|in:approved,rejected,information_requested',
@@ -344,7 +358,7 @@ class AdminController extends ApiController
     {
         if ($res = $this->checkAdmin($request)) return $res;
 
-        $grants = SupportGrant::with(['researcher:id,display_name', 'admin:id,display_name'])
+        $grants = SupportGrant::with(['grantor:id,display_name', 'admin:id,display_name'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -352,7 +366,20 @@ class AdminController extends ApiController
     }
 
     /**
-     * Grant support access (called by researcher) (API-10).
+     * List support grants issued by current researcher (API-10 / C-21).
+     */
+    public function listResearcherSupportGrants(Request $request): JsonResponse
+    {
+        $grants = SupportGrant::where('granted_by', $request->user()->id)
+            ->with(['admin:id,display_name'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->successResponse($grants);
+    }
+
+    /**
+     * Grant support access (called by researcher) (API-10 / C-20).
      */
     public function createSupportGrant(Request $request): JsonResponse
     {
@@ -360,9 +387,12 @@ class AdminController extends ApiController
             'admin_id' => 'required|integer|exists:users,id',
             'scope' => 'required|string|in:project,document',
             'object_id' => 'required|integer',
-            'expires_at' => 'required|date',
+            'expires_at' => 'nullable|date',
+            'expires_days' => 'nullable|integer|min:1',
             'reason' => 'required|string|min:5',
         ]);
+
+        $expiresAt = $validated['expires_at'] ?? now()->addDays($validated['expires_days'] ?? 7);
 
         $admin = User::find($validated['admin_id']);
         if (!$admin || !$admin->is_admin) {
@@ -384,12 +414,13 @@ class AdminController extends ApiController
         }
 
         $grant = SupportGrant::create([
-            'researcher_id' => $request->user()->id,
+            'granted_by' => $request->user()->id,
             'admin_id' => $validated['admin_id'],
             'scope' => $validated['scope'],
             'object_id' => $validated['object_id'],
-            'expires_at' => $validated['expires_at'],
+            'expires_at' => $expiresAt,
             'reason' => $validated['reason'],
+            'status' => 'active',
             'created_at' => now(),
         ]);
 
@@ -401,7 +432,7 @@ class AdminController extends ApiController
      */
     public function destroySupportGrant(Request $request, int $id): JsonResponse
     {
-        $grant = SupportGrant::where('researcher_id', $request->user()->id)
+        $grant = SupportGrant::where('granted_by', $request->user()->id)
             ->orWhere(fn($q) => $q->where('admin_id', $request->user()->id))
             ->findOrFail($id);
 
@@ -492,6 +523,14 @@ class AdminController extends ApiController
 
         $query = AuditEvent::with('actor:id,display_name');
 
+        if ($request->filled('q')) {
+            $term = $request->input('q');
+            $query->where(function ($q) use ($term) {
+                $q->where('action', 'ILIKE', "%{$term}%")
+                  ->orWhere('object_type', 'ILIKE', "%{$term}%");
+            });
+        }
+
         if ($request->filled('action')) {
             $query->where('action', $request->input('action'));
         }
@@ -516,15 +555,19 @@ class AdminController extends ApiController
         $paginator = $query->latest('created_at')->paginate($perPage);
 
         $enriched = $paginator->getCollection()->map(function ($log) {
+            $isRefused = str_contains($log->action, 'refused');
             return [
                 'id' => $log->id,
                 'code' => 'AUD-' . str_pad($log->id, 5, '0', STR_PAD_LEFT),
                 'actor_id' => $log->actor_id,
-                'actor' => $log->actor,
+                'actor' => $log->actor ? [
+                    'id' => $log->actor->id,
+                    'display_name' => $log->actor->display_name,
+                ] : null,
                 'action' => $log->action,
                 'object_type' => $log->object_type,
                 'object_id' => $log->object_id,
-                'outcome' => 'success',
+                'outcome' => $isRefused ? 'refused' : ($log->details['outcome'] ?? 'success'),
                 'details' => $log->details,
                 'created_at' => $log->created_at?->toIso8601String(),
             ];

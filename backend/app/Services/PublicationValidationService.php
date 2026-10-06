@@ -48,7 +48,7 @@ class PublicationValidationService
                 // If citation points to private evidence item
                 if ($citation->evidence_id) {
                     $evidence = EvidenceItem::find($citation->evidence_id);
-                    if ($evidence && $evidence->status === 'unresolved') {
+                    if ($evidence && ($evidence->state === 'unresolved' || $evidence->status === 'unresolved')) {
                         $issues[] = [
                             'code' => 'UNRESOLVED_EVIDENCE_DEPENDENCY',
                             'severity' => 'error',

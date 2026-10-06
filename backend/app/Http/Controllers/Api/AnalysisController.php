@@ -184,7 +184,7 @@ class AnalysisController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $query = AnalysisRun::where('project_id', $projectId)
-            ->with('creator');
+            ->with(['creator' => fn($q) => $q->select('id', 'display_name')]);
 
         if ($request->filled('type')) {
             $query->where('analysis_type', $request->input('type'));
@@ -223,7 +223,11 @@ class AnalysisController extends ApiController
             'created_at' => now(),
         ]);
 
-        return $this->successResponse($run->load('creator'), 'Analysis run archived.', 201);
+        return $this->successResponse(
+            $run->load(['creator' => fn($q) => $q->select('id', 'display_name')]),
+            'Analysis run archived.',
+            201
+        );
     }
 
     /**
@@ -235,10 +239,27 @@ class AnalysisController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $run = AnalysisRun::where('project_id', $projectId)
-            ->with(['creator', 'project'])
+            ->with([
+                'creator' => fn($q) => $q->select('id', 'display_name'),
+                'project:id,title',
+            ])
             ->findOrFail($analysisId);
 
         return $this->successResponse($run);
+    }
+
+    /**
+     * Delete a saved analysis run (C-19).
+     */
+    public function destroy(Request $request, int $projectId, int $analysisId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
+
+        $run = AnalysisRun::where('project_id', $projectId)->findOrFail($analysisId);
+        $run->delete();
+
+        return $this->successResponse([], 'Analysis run deleted.');
     }
 
     /**
@@ -249,9 +270,16 @@ class AnalysisController extends ApiController
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
+        if (trim($request->input('baseline_text', '')) === '') {
+            return $this->errorResponse('Baseline text cannot be blank or whitespace-only.', 'EMPTY_BASELINE', 422);
+        }
+
         $validated = $request->validate([
-            'baseline_text' => 'required|string',
-            'variants' => 'required|array|min:1',
+            'baseline_text' => 'required|string|max:50000',
+            'variants' => 'required|array|min:1|max:10',
+            'variants.*.text' => 'required|string|max:50000',
+            'variants.*.label' => 'nullable|string|max:255',
+            'variants.*.id' => 'nullable',
             'save_run' => 'nullable|boolean',
         ]);
 
@@ -274,6 +302,12 @@ class AnalysisController extends ApiController
                     'input_params' => [
                         'baseline_text' => $validated['baseline_text'],
                         'variant_count' => count($validated['variants']),
+                        'variants' => array_map(fn($v) => [
+                            'id' => $v['id'] ?? null,
+                            'label' => $v['label'] ?? null,
+                        ], $validated['variants']),
+                        'variant_ids' => array_values(array_filter(array_column($validated['variants'], 'id'))),
+                        'variant_labels' => array_values(array_filter(array_column($validated['variants'], 'label'))),
                     ],
                     'output_data' => $result,
                     'version_number' => $version,
@@ -310,6 +344,23 @@ class AnalysisController extends ApiController
 
         if (empty($validated['sanad_ids']) && empty($validated['custom_chains'])) {
             return $this->errorResponse('Either sanad_ids (min 2) or custom_chains (min 2) must be provided.', 'INVALID_PARAMETERS', 422);
+        }
+
+        if (!empty($validated['custom_chains'])) {
+            foreach ($validated['custom_chains'] as $chain) {
+                $seen = [];
+                foreach ($chain as $n) {
+                    $nid = is_array($n) ? ($n['id'] ?? $n['name'] ?? null) : $n;
+                    if (in_array($nid, $seen, true)) {
+                        return $this->errorResponse(
+                            'Cycle detected in chain. A chain that names the same narrator twice is invalid.',
+                            'CHAIN_CYCLE_DETECTED',
+                            422
+                        );
+                    }
+                    $seen[] = $nid;
+                }
+            }
         }
 
         try {

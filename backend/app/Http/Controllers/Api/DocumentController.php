@@ -18,6 +18,72 @@ class DocumentController extends ApiController
     ) {}
 
     /**
+     * Format a document version ensuring author identity is strictly { id, display_name } (C-18).
+     */
+    protected function formatVersion(?DocumentVersion $version): ?array
+    {
+        if (!$version) {
+            return null;
+        }
+
+        return [
+            'id' => $version->id,
+            'document_id' => $version->document_id,
+            'version_number' => $version->version_number,
+            'content' => $version->content,
+            'change_summary' => $version->change_summary,
+            'created_at' => $version->created_at?->toIso8601String(),
+            'author' => $version->author ? [
+                'id' => $version->author->id,
+                'display_name' => $version->author->display_name,
+            ] : null,
+            'citations' => $version->citations ? $version->citations->map(fn($c) => [
+                'id' => $c->id,
+                'evidence_id' => $c->evidence_id,
+                'resource_id' => $c->resource_id,
+                'locator' => $c->locator,
+                'citation_type' => $c->citation_type,
+                'formatted_citation' => $c->formatted_citation,
+                'resource' => $c->resource ? [
+                    'id' => $c->resource->id,
+                    'title' => $c->resource->title,
+                    'author' => $c->resource->author,
+                ] : null,
+                'evidence' => $c->evidence ? [
+                    'id' => $c->evidence->id,
+                    'captured_text' => $c->evidence->captured_text,
+                    'locator' => $c->evidence->locator,
+                ] : null,
+            ])->values()->all() : [],
+        ];
+    }
+
+    /**
+     * Format a document model for frontend schema compliance without leaks (C-18).
+     */
+    protected function formatDocument(Document $document): array
+    {
+        return [
+            'id' => $document->id,
+            'project_id' => $document->project_id,
+            'title' => $document->title,
+            'document_type' => $document->document_type,
+            'language' => $document->language,
+            'lock_version' => $document->lock_version,
+            'locked_by' => $document->locked_by,
+            'locked_at' => $document->locked_at?->toIso8601String(),
+            'created_at' => $document->created_at?->toIso8601String(),
+            'updated_at' => $document->updated_at?->toIso8601String(),
+            'latest_version' => $this->formatVersion($document->latestVersion),
+            'findings' => $document->findings ? $document->findings->map(fn($f) => [
+                'id' => $f->id,
+                'claim' => $f->claim,
+                'status' => $f->status,
+            ])->values()->all() : [],
+        ];
+    }
+
+    /**
      * List documents in a project workspace (Module 7).
      */
     public function index(Request $request, int $projectId): JsonResponse
@@ -26,7 +92,7 @@ class DocumentController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $query = Document::where('project_id', $projectId)
-            ->with(['latestVersion.author']);
+            ->with(['latestVersion.author', 'findings']);
 
         if ($request->filled('document_type')) {
             $query->where('document_type', $request->input('document_type'));
@@ -38,9 +104,10 @@ class DocumentController extends ApiController
         }
 
         $perPage = min((int) ($request->input('per_page', 20)), 100);
-        $documents = $query->latest('updated_at')->paginate($perPage);
+        $paginator = $query->latest('updated_at')->paginate($perPage);
+        $paginator->getCollection()->transform(fn($doc) => $this->formatDocument($doc));
 
-        return $this->paginatedResponse($documents);
+        return $this->paginatedResponse($paginator);
     }
 
     /**
@@ -80,7 +147,7 @@ class DocumentController extends ApiController
         });
 
         return $this->successResponse(
-            $document->load('latestVersion.author'),
+            $this->formatDocument($document->load(['latestVersion.author', 'findings'])),
             'Document draft created.',
             201
         );
@@ -95,14 +162,14 @@ class DocumentController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $document = Document::where('project_id', $projectId)
-            ->with(['latestVersion.author', 'latestVersion.citations.resource', 'findings'])
+            ->with(['latestVersion.author', 'latestVersion.citations.resource', 'latestVersion.citations.evidence', 'findings'])
             ->find($id);
 
         if (!$document) {
             return $this->errorResponse('Document not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($document);
+        return $this->successResponse($this->formatDocument($document));
     }
 
     /**
@@ -126,11 +193,14 @@ class DocumentController extends ApiController
 
         $document->update($validated);
 
-        return $this->successResponse($document->fresh(['latestVersion', 'findings']), 'Document metadata updated.');
+        return $this->successResponse(
+            $this->formatDocument($document->fresh(['latestVersion.author', 'findings'])),
+            'Document metadata updated.'
+        );
     }
 
     /**
-     * Delete document and all version history.
+     * Delete document and all version history with dependency guard (C-18).
      */
     public function destroy(Request $request, int $projectId, int $id): JsonResponse
     {
@@ -140,6 +210,21 @@ class DocumentController extends ApiController
         $document = Document::where('project_id', $projectId)->find($id);
         if (!$document) {
             return $this->errorResponse('Document not found.', 'NOT_FOUND', 404);
+        }
+
+        $hasFindings = $document->findings()->exists();
+        $hasCitations = Citation::whereIn('document_version_id', $document->versions()->pluck('id'))->exists();
+
+        if (($hasFindings || $hasCitations) && !$request->boolean('confirm')) {
+            return $this->errorResponse(
+                'Document has linked findings or citations. Pass confirm=true to force delete.',
+                'HAS_DEPENDENCIES',
+                409,
+                [
+                    'has_findings' => $hasFindings,
+                    'has_citations' => $hasCitations,
+                ]
+            );
         }
 
         $document->delete();
@@ -183,9 +268,10 @@ class DocumentController extends ApiController
             'draft_saved_at' => now(),
             'draft_author_id' => $userId,
         ]);
+        $document->refresh();
 
         return $this->successResponse([
-            'last_saved_at' => $document->draft_saved_at,
+            'last_saved_at' => $document->draft_saved_at?->toIso8601String(),
             'saved_by' => $request->user()->display_name,
             'draft_base_version' => $document->draft_base_version,
         ], 'Draft autosaved.');
@@ -219,13 +305,13 @@ class DocumentController extends ApiController
         return $this->successResponse([
             'draft_content' => $document->draft_content,
             'draft_base_version' => $document->draft_base_version,
-            'last_saved_at' => $document->draft_saved_at,
+            'last_saved_at' => $document->draft_saved_at?->toIso8601String(),
             'saved_by_id' => $document->draft_author_id,
         ]);
     }
 
     /**
-     * Commit a new revision/version snapshot of the document.
+     * Commit a new revision/version snapshot of the document (C-18).
      */
     public function createVersion(Request $request, int $projectId, int $id): JsonResponse
     {
@@ -240,9 +326,20 @@ class DocumentController extends ApiController
         $latestVersion = $document->latestVersion;
         $currentVersionNumber = $latestVersion ? $latestVersion->version_number : 0;
 
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'change_summary' => 'nullable|string',
+            'expected_version' => 'required|integer',
+            'citations' => 'nullable|array',
+            'citations.*.resource_id' => 'required_with:citations|integer|exists:resources,id',
+            'citations.*.evidence_id' => 'nullable|integer|exists:evidence_items,id',
+            'citations.*.locator' => 'nullable|string|max:255',
+            'citations.*.citation_type' => 'nullable|string|in:direct_quotation,paraphrase,reference',
+            'citations.*.formatted_citation' => 'required_with:citations|string',
+        ]);
+
         // DEF-8 Optimistic Concurrency check
-        $expectedVersion = $request->input('expected_version');
-        if ($expectedVersion !== null && (int)$expectedVersion !== $currentVersionNumber) {
+        if ((int)$validated['expected_version'] !== $currentVersionNumber) {
             return $this->errorResponse(
                 'Save rejected · conflict. Another researcher saved a new revision in the meantime.',
                 'CONFLICT',
@@ -256,17 +353,22 @@ class DocumentController extends ApiController
             );
         }
 
-        $validated = $request->validate([
-            'content' => 'required|string',
-            'change_summary' => 'nullable|string',
-            'expected_version' => 'nullable|integer',
-            'citations' => 'nullable|array',
-            'citations.*.resource_id' => 'required_with:citations|integer|exists:resources,id',
-            'citations.*.evidence_id' => 'nullable|integer|exists:evidence_items,id',
-            'citations.*.locator' => 'nullable|string|max:255',
-            'citations.*.citation_type' => 'nullable|string|in:direct_quotation,paraphrase,reference',
-            'citations.*.formatted_citation' => 'required_with:citations|string',
-        ]);
+        // Scope all evidence citations to the current project (C-18)
+        if (!empty($validated['citations'])) {
+            $evidenceIds = array_filter(array_column($validated['citations'], 'evidence_id'));
+            if (!empty($evidenceIds)) {
+                $count = \App\Models\EvidenceItem::where('project_id', $projectId)
+                    ->whereIn('id', $evidenceIds)
+                    ->count();
+                if ($count !== count(array_unique($evidenceIds))) {
+                    return $this->errorResponse(
+                        'One or more evidence citations do not belong to this project.',
+                        'EVIDENCE_NOT_IN_PROJECT',
+                        422
+                    );
+                }
+            }
+        }
 
         $version = DB::transaction(function () use ($document, $validated, $request) {
             $nextVersionNumber = ($document->versions()->max('version_number') ?? 0) + 1;
@@ -294,11 +396,15 @@ class DocumentController extends ApiController
                 }
             }
 
-            // Clear draft once version is committed
+            // Clear per-person draft cache and document draft columns on commit (C-18)
+            $userId = $request->user()->id;
+            cache()->forget("doc_draft:{$document->id}:{$userId}");
+
             $document->update([
                 'draft_content' => null,
                 'draft_base_version' => null,
                 'draft_saved_at' => null,
+                'draft_author_id' => null,
             ]);
 
             $document->touch();
@@ -307,7 +413,7 @@ class DocumentController extends ApiController
         });
 
         return $this->successResponse(
-            $version->load(['author', 'citations.resource']),
+            $this->formatVersion($version->load(['author', 'citations.resource', 'citations.evidence'])),
             'New document version committed.',
             201
         );
@@ -364,19 +470,24 @@ class DocumentController extends ApiController
         });
 
         return $this->successResponse(
-            $newVersion->load(['author', 'citations.resource']),
+            $this->formatVersion($newVersion->load(['author', 'citations.resource', 'citations.evidence'])),
             "Version {$versionNumber} restored as revision {$newVersion->version_number}.",
             201
         );
     }
 
     /**
-     * Helper to format a citation and flag missing components.
+     * Helper to format a citation and flag missing components (C-18).
      */
     public function cite(Request $request, int $projectId, int $id): JsonResponse
     {
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'view', $project);
+
+        $document = Document::where('project_id', $projectId)->find($id);
+        if (!$document) {
+            return $this->errorResponse('Document not found.', 'NOT_FOUND', 404);
+        }
 
         $validated = $request->validate([
             'evidence_id' => 'required|integer|exists:evidence_items,id',
@@ -384,7 +495,14 @@ class DocumentController extends ApiController
             'style' => 'nullable|string|max:50',
         ]);
 
-        $evidence = \App\Models\EvidenceItem::with('resource')->findOrFail($validated['evidence_id']);
+        $evidence = \App\Models\EvidenceItem::where('project_id', $projectId)
+            ->with('resource')
+            ->find($validated['evidence_id']);
+
+        if (!$evidence) {
+            return $this->errorResponse('Evidence item does not belong to this project.', 'NOT_FOUND', 404);
+        }
+
         $resource = $evidence->resource;
 
         $missing = [];
@@ -394,11 +512,11 @@ class DocumentController extends ApiController
         }
 
         $resTitle = $resource?->title ?? 'Unknown Source';
-        $resAuthor = $resource?->metadata['author'] ?? null;
+        $resAuthor = $resource?->author ?? ($resource?->source_metadata['author'] ?? null);
         if (!$resAuthor) {
             $missing[] = 'author';
         }
-        $resYear = $resource?->metadata['publication_year'] ?? null;
+        $resYear = $resource?->source_metadata['publication_year'] ?? null;
         if (!$resYear) {
             $missing[] = 'year';
         }
@@ -442,7 +560,7 @@ class DocumentController extends ApiController
         $document->findings()->syncWithoutDetaching([$findingId]);
 
         return $this->successResponse(
-            $document->fresh('findings'),
+            $this->formatDocument($document->fresh(['latestVersion.author', 'findings'])),
             'Finding linked to document.'
         );
     }
@@ -463,13 +581,13 @@ class DocumentController extends ApiController
         $document->findings()->detach($findingId);
 
         return $this->successResponse(
-            $document->fresh('findings'),
+            $this->formatDocument($document->fresh(['latestVersion.author', 'findings'])),
             'Finding unlinked from document.'
         );
     }
 
     /**
-     * List version history / changelog.
+     * List version history / changelog scoped to project (C-18).
      */
     public function listVersions(Request $request, int $projectId, int $id): JsonResponse
     {
@@ -482,19 +600,27 @@ class DocumentController extends ApiController
         }
 
         $versions = $document->versions()
-            ->with(['author', 'citations'])
+            ->with(['author', 'citations.resource', 'citations.evidence'])
+            ->orderBy('version_number', 'asc')
             ->get();
 
-        return $this->successResponse($versions);
+        return $this->successResponse(
+            $versions->map(fn($v) => $this->formatVersion($v))->values()->all()
+        );
     }
 
     /**
-     * Get a specific historical revision by version number.
+     * Get a specific historical revision by version number scoped to project (C-18).
      */
     public function getVersion(Request $request, int $projectId, int $id, int $versionNumber): JsonResponse
     {
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'view', $project);
+
+        $document = Document::where('project_id', $projectId)->find($id);
+        if (!$document) {
+            return $this->errorResponse('Document not found.', 'NOT_FOUND', 404);
+        }
 
         $version = DocumentVersion::where('document_id', $id)
             ->where('version_number', $versionNumber)
@@ -505,7 +631,7 @@ class DocumentController extends ApiController
             return $this->errorResponse('Document version not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($version);
+        return $this->successResponse($this->formatVersion($version));
     }
 }
 

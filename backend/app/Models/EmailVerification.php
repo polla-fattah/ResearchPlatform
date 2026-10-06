@@ -27,4 +27,9 @@ class EmailVerification extends Model
             'updated_at' => 'datetime',
         ];
     }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at ? $this->expires_at->isPast() : false;
+    }
 }

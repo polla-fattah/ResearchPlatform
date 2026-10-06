@@ -37,16 +37,30 @@ class PublishingController extends ApiController
     public function saveAnnouncement(Request $request, int $projectId): JsonResponse
     {
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
-        $this->policyService->authorizeProject($request->user(), 'publish_announcement', $project);
+        $existing = Announcement::where('project_id', $projectId)->first();
 
         $validated = $request->validate([
-            'public_slug' => 'required|string|max:255',
+            'public_slug' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                \Illuminate\Validation\Rule::unique('announcements', 'public_slug')->ignore($existing?->id),
+            ],
             'title' => 'required|string|max:500',
             'summary' => 'required|string',
             'research_stage' => 'required|string|max:50',
             'keywords' => 'nullable|array',
             'status' => 'nullable|string|in:draft,published,unpublished,hidden',
         ]);
+
+        $newStatus = $validated['status'] ?? ($existing?->status ?? 'draft');
+        $publishedAt = $existing?->published_at;
+        if ($newStatus === 'published' && !$publishedAt) {
+            $publishedAt = now();
+        } elseif ($newStatus === 'draft' && isset($validated['status'])) {
+            $publishedAt = null;
+        }
 
         $announcement = Announcement::updateOrCreate(
             ['project_id' => $projectId],
@@ -56,8 +70,8 @@ class PublishingController extends ApiController
                 'summary' => $validated['summary'],
                 'research_stage' => $validated['research_stage'],
                 'keywords' => $validated['keywords'] ?? [],
-                'status' => $validated['status'] ?? 'draft',
-                'published_at' => ($validated['status'] ?? 'draft') === 'published' ? now() : null,
+                'status' => $newStatus,
+                'published_at' => $publishedAt,
             ]
         );
 
@@ -137,7 +151,7 @@ class PublishingController extends ApiController
     }
 
     /**
-     * Helper to format public announcement with whitelisted fields only (DEF-5).
+     * Helper to format public announcement with whitelisted fields only (DEF-5 / C-27).
      */
     private function formatPublicAnnouncement(Announcement $a): array
     {
@@ -148,7 +162,6 @@ class PublishingController extends ApiController
         $ownerData = null;
         if ($owner) {
             $ownerData = [
-                'id' => $owner->id,
                 'display_name' => $owner->display_name,
             ];
             if (!empty($publicFields['affiliation']) && !empty($profile->affiliation)) {
@@ -165,7 +178,6 @@ class PublishingController extends ApiController
         $projectData = null;
         if ($a->project) {
             $projectData = [
-                'id' => $a->project->id,
                 'title' => $a->project->title,
                 'scope' => $a->project->scope,
                 'stage' => $a->project->stage,
@@ -175,7 +187,6 @@ class PublishingController extends ApiController
 
         return [
             'id' => $a->id,
-            'project_id' => $a->project_id,
             'public_slug' => $a->public_slug,
             'title' => $a->title,
             'summary' => $a->summary,
@@ -183,6 +194,7 @@ class PublishingController extends ApiController
             'keywords' => $a->keywords ?? [],
             'status' => $a->status,
             'published_at' => $a->published_at?->toIso8601String(),
+            'updated_at' => $a->updated_at?->toIso8601String(),
             'project' => $projectData,
         ];
     }
@@ -200,7 +212,7 @@ class PublishingController extends ApiController
         }
 
         if ($request->filled('q')) {
-            $term = $request->input('q');
+            $term = str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $request->input('q'));
             $query->where(function ($q) use ($term) {
                 $q->where('title', 'ILIKE', "%{$term}%")
                   ->orWhere('summary', 'ILIKE', "%{$term}%");
@@ -249,7 +261,7 @@ class PublishingController extends ApiController
     }
 
     /**
-     * Submit research package for peer review (PUB-01, PUB-02, PUB-06, WRT-07).
+     * Submit research package for peer review (PUB-01, PUB-02, PUB-06, WRT-07, C-29).
      */
     public function createSubmission(Request $request, int $projectId): JsonResponse
     {
@@ -261,15 +273,31 @@ class PublishingController extends ApiController
             'abstract' => 'required|string',
             'document_ids' => 'nullable|array',
             'keywords' => 'nullable|array',
-            'rights_declaration' => 'nullable|string|max:100',
-            'coi_declared' => 'nullable|boolean',
+            'rights_declaration' => 'required|string|max:100',
+            'coi_declared' => 'required|boolean',
             'parent_submission_id' => 'nullable|integer|exists:submissions,id',
             'author_response_notes' => 'nullable|string',
             'bypass_warnings' => 'nullable|boolean',
         ]);
 
+        // Check if an existing package is active/waiting (C-29 concurrency check)
+        $latestSub = Submission::where('project_id', $projectId)->latest('version_number')->first();
+        if ($latestSub && in_array($latestSub->status, ['submitted', 'in_review', 'under_review', 'approved'])) {
+            return $this->errorResponse('Another submission package is currently active or decided. You cannot create a new package until revisions are requested.', 'CONFLICT', 409);
+        }
+
+        if (!empty($validated['parent_submission_id'])) {
+            if (!$latestSub || $latestSub->id !== (int)$validated['parent_submission_id'] || $latestSub->status !== 'revision_requested') {
+                return $this->errorResponse('A new revision can only be submitted when revisions are requested on the latest submission.', 'CONFLICT', 409);
+            }
+        }
+
         [$isValid, $issues] = $this->validationService->validateForSubmission($project, $validated['document_ids'] ?? []);
-        if (!$isValid && empty($validated['bypass_warnings'])) {
+        $hasErrors = count(array_filter($issues, fn($i) => ($i['severity'] ?? 'error') === 'error')) > 0;
+        $hasWarnings = count(array_filter($issues, fn($i) => ($i['severity'] ?? 'error') === 'warning')) > 0;
+
+        // bypass_warnings only bypasses warnings; errors always block submission (C-29 P0)
+        if ($hasErrors || ($hasWarnings && empty($validated['bypass_warnings']))) {
             return $this->errorResponse('Pre-publication validation failed (WRT-07). Resolve dependencies before submission.', 'VALIDATION_FAILED', 422, $issues);
         }
 
@@ -300,7 +328,7 @@ class PublishingController extends ApiController
             $parent = Submission::where('project_id', $projectId)->findOrFail($validated['parent_submission_id']);
             $nextVersion = $parent->version_number + 1;
         } else {
-            $nextVersion = (Submission::where('project_id', $projectId)->max('version_number') ?? 0) + 1;
+            $nextVersion = ($latestSub ? $latestSub->version_number : 0) + 1;
         }
 
         $submission = Submission::create([
@@ -310,8 +338,8 @@ class PublishingController extends ApiController
             'title' => $validated['title'],
             'abstract' => $validated['abstract'],
             'keywords' => $validated['keywords'] ?? [],
-            'rights_declaration' => $validated['rights_declaration'] ?? 'CC-BY-4.0',
-            'coi_declared' => $validated['coi_declared'] ?? true,
+            'rights_declaration' => $validated['rights_declaration'],
+            'coi_declared' => $validated['coi_declared'],
             'author_response_notes' => $validated['author_response_notes'] ?? null,
             'frozen_package' => $package,
             'package_checksum' => $checksum,
@@ -321,14 +349,14 @@ class PublishingController extends ApiController
         ]);
 
         return $this->successResponse(
-            $submission->load(['submitter', 'parentSubmission']),
+            $this->formatAuthorSubmission($submission),
             'Research submission created and submitted for peer review.',
             201
         );
     }
 
     /**
-     * List submissions for project.
+     * List submissions for project (author-blinded view).
      */
     public function listSubmissions(Request $request, int $projectId): JsonResponse
     {
@@ -336,15 +364,16 @@ class PublishingController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $submissions = Submission::where('project_id', $projectId)
-            ->with(['submitter', 'reviews', 'decision'])
+            ->with(['reviews', 'decision'])
             ->latest('submitted_at')
-            ->get();
+            ->get()
+            ->map(fn($s) => $this->formatAuthorSubmission($s));
 
         return $this->successResponse($submissions);
     }
 
     /**
-     * Get single submission details.
+     * Get single submission details (author-blinded view).
      */
     public function getSubmission(Request $request, int $projectId, int $id): JsonResponse
     {
@@ -352,14 +381,44 @@ class PublishingController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $submission = Submission::where('project_id', $projectId)
-            ->with(['submitter', 'reviews.reviewer', 'decision'])
+            ->with(['reviews', 'decision'])
             ->find($id);
 
         if (!$submission) {
             return $this->errorResponse('Submission not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($submission);
+        return $this->successResponse($this->formatAuthorSubmission($submission));
+    }
+
+    /**
+     * Helper to format submission for authors without leaking reviewer identities or notes (C-29 P0).
+     */
+    private function formatAuthorSubmission(Submission $sub): array
+    {
+        return [
+            'id' => $sub->id,
+            'project_id' => $sub->project_id,
+            'parent_submission_id' => $sub->parent_submission_id,
+            'version_number' => $sub->version_number,
+            'title' => $sub->title,
+            'abstract' => $sub->abstract,
+            'keywords' => $sub->keywords ?? [],
+            'rights_declaration' => $sub->rights_declaration,
+            'coi_declared' => (bool)$sub->coi_declared,
+            'author_response_notes' => $sub->author_response_notes,
+            'package_checksum' => $sub->package_checksum,
+            'status' => $sub->status,
+            'submitted_at' => $sub->submitted_at?->toIso8601String(),
+            'reviews' => $sub->reviews ? $sub->reviews->map(fn($r) => [
+                'completed_at' => $r->completed_at?->toIso8601String(),
+            ])->values()->all() : [],
+            'decision' => $sub->decision ? [
+                'decision' => $sub->decision->decision,
+                'decision_notes' => $sub->decision->decision_notes,
+                'decided_at' => $sub->decision->decided_at?->toIso8601String(),
+            ] : null,
+        ];
     }
 
     /**

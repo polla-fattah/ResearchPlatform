@@ -168,6 +168,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/{id}/retry', [ExportController::class, 'retryExport']);
             Route::get('/{id}/manifest', [ExportController::class, 'getManifest']);
             Route::get('/{id}/parts/{partId}/download', [ExportController::class, 'downloadPart']);
+            Route::get('/{id}/parts/{partId}', [ExportController::class, 'downloadPart']);
         });
 
         // PRJ-08: Project Templates
@@ -266,10 +267,13 @@ Route::prefix('v1')->group(function () {
             Route::get('/analyses', [AnalysisController::class, 'index']);
             Route::post('/analyses/save', [AnalysisController::class, 'save']);
             Route::get('/analyses/{analysisId}', [AnalysisController::class, 'show']);
+            Route::delete('/analyses/{analysisId}', [AnalysisController::class, 'destroy']);
 
             // Release 2: Hadith Families & Mutaba'at / Shawahid (ANA-08)
             Route::get('/families', [HadithFamilyController::class, 'index']);
             Route::post('/families', [HadithFamilyController::class, 'store']);
+            Route::match(['put', 'patch'], '/families/{familyId}', [HadithFamilyController::class, 'update']);
+            Route::delete('/families/{familyId}', [HadithFamilyController::class, 'destroy']);
             Route::post('/families/{familyId}/members', [HadithFamilyController::class, 'addMember']);
             Route::delete('/families/{familyId}/members/{memberId}', [HadithFamilyController::class, 'removeMember']);
 
@@ -399,6 +403,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/discussions/{threadId}/comments', [CollaborationController::class, 'listComments']);
         Route::post('/discussions/{threadId}/comments', [CollaborationController::class, 'addComment']);
         Route::post('/discussions/{threadId}/resolve', [CollaborationController::class, 'resolveDiscussion']);
+        Route::post('/discussions/{threadId}/reopen', [CollaborationController::class, 'reopenDiscussion']);
+        Route::post('/threads/{threadId}/reopen', [CollaborationController::class, 'reopenDiscussion']);
 
         // R1b: Notification Center & Preferences (API-12)
         Route::prefix('notifications')->group(function () {
@@ -434,6 +440,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // Researcher Support Grants (API-10)
+        Route::get('/researcher/support-grants', [AdminController::class, 'listResearcherSupportGrants']);
         Route::post('/researcher/support-grants', [AdminController::class, 'createSupportGrant']);
         Route::delete('/researcher/support-grants/{id}', [AdminController::class, 'destroySupportGrant']);
 

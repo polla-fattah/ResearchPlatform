@@ -93,6 +93,19 @@ class EditorialController extends ApiController
         $perPage = min((int) ($request->input('per_page', 20)), 100);
         $submissions = $query->latest('submitted_at')->paginate($perPage);
 
+        // Omit heavy frozen_package from list rows, providing summary instead (C-30)
+        $submissions->getCollection()->transform(function ($sub) {
+            $data = $sub->toArray();
+            unset($data['frozen_package']);
+            $data['package_summary'] = [
+                'document_count' => count($sub->frozen_package['documents'] ?? []),
+                'finding_count' => count($sub->frozen_package['findings'] ?? []),
+                'evidence_count' => count($sub->frozen_package['evidence_items'] ?? []),
+                'package_checksum' => $sub->package_checksum,
+            ];
+            return $data;
+        });
+
         return $this->paginatedResponse($submissions);
     }
 
@@ -168,28 +181,25 @@ class EditorialController extends ApiController
     }
 
     /**
-     * Peer reviewer submits their recommendation, evaluation score & notes (PUB-04, PUB-05).
+     * Peer reviewer submits their recommendation, evaluation score & notes (PUB-04, PUB-05, C-31).
      */
     public function submitReview(Request $request, int $id): JsonResponse
     {
-        $submission = Submission::findOrFail($id);
         $user = $request->user();
 
-        // Check that current user is an assigned reviewer (or admin)
-        $assignment = ReviewAssignment::where('submission_id', $submission->id)
-            ->where('reviewer_id', $user->id)
-            ->first();
+        // Check if $id is an assignment ID or submission ID
+        $assignment = ReviewAssignment::where('id', $id)->where('reviewer_id', $user->id)->first();
+        if (!$assignment) {
+            $assignment = ReviewAssignment::where('submission_id', $id)->where('reviewer_id', $user->id)->first();
+        }
 
-        if (!$assignment && !$user->is_admin) {
+        if (!$assignment) {
             return $this->errorResponse('You are not assigned as a reviewer for this submission.', 'FORBIDDEN', 403);
         }
 
-        if (!$assignment && $user->is_admin) {
-            $assignment = ReviewAssignment::create([
-                'submission_id' => $submission->id,
-                'reviewer_id' => $user->id,
-                'created_at' => now(),
-            ]);
+        // A completed review cannot be submitted again (C-31)
+        if ($assignment->completed_at || $assignment->status === 'completed') {
+            return $this->errorResponse('This peer review assignment has already been completed and submitted.', 'CONFLICT', 409);
         }
 
         $validated = $request->validate([
@@ -200,6 +210,7 @@ class EditorialController extends ApiController
         ]);
 
         $assignment->update([
+            'status' => 'completed',
             'recommendation' => $validated['recommendation'],
             'score' => $validated['score'] ?? null,
             'reviewer_notes' => $validated['reviewer_notes'],
@@ -240,10 +251,15 @@ class EditorialController extends ApiController
             return $this->errorResponse('Conflict of interest: Authors or project team members cannot make editorial decisions on their own submissions.', 'CONFLICT_OF_INTEREST', 403);
         }
 
+        // Submissions can only be decided while in submitted or in_review state (C-30)
+        if (!in_array($submission->status, ['submitted', 'in_review'])) {
+            return $this->errorResponse("Cannot decide on submission with status [{$submission->status}]. Only 'submitted' or 'in_review' submissions can be decided.", 'CONFLICT', 409);
+        }
+
         $validated = $request->validate([
             'decision' => 'required|string|in:approve,request_revisions,reject',
             'decision_notes' => 'required|string|min:10',
-            'coi_confirmed' => 'nullable|boolean',
+            'coi_confirmed' => 'required|boolean|accepted',
             'override_peer_review' => 'nullable|boolean',
         ]);
 
@@ -308,11 +324,12 @@ class EditorialController extends ApiController
         $validated = $request->validate([
             'public_slug' => 'required|string|max:255|unique:publications,public_slug',
             'version_string' => 'nullable|string|max:50',
-            'doi' => 'nullable|string|max:100',
+            'doi' => 'nullable|string|max:100|regex:/^10\.\d{4,9}\/[-._;()\/:A-Za-z0-9]+$/',
             'license' => 'nullable|string|max:100',
         ]);
 
-        $doi = $validated['doi'] ?? ('10.5281/openhadith.' . $submission->id . '.' . time());
+        // Do not invent a DOI; store null unless validly provided (C-30)
+        $doi = !empty($validated['doi']) ? $validated['doi'] : null;
         $license = $validated['license'] ?? ($submission->rights_declaration ?? 'CC-BY-4.0');
 
         $publication = Publication::create([
@@ -421,24 +438,25 @@ class EditorialController extends ApiController
     }
 
     /**
-     * Export formal citation in BibTeX, RIS, or APA format (PUB-08).
+     * Export formal citation in BibTeX, RIS, or APA format (PUB-08, C-32).
      */
-    public function citationExport(string $slug, string $format = 'bibtex'): JsonResponse
+    public function citationExport(Request $request, string $slug): JsonResponse
     {
         $publication = Publication::where('public_slug', $slug)
             ->with(['project.owner'])
             ->firstOrFail();
 
+        $format = strtolower($request->input('format', 'bibtex'));
         $author = $publication->project?->owner?->display_name ?? 'Open Hadith Scholar';
         $year = $publication->released_at ? $publication->released_at->format('Y') : date('Y');
         $title = $publication->title;
-        $doi = $publication->doi ?? "https://hadith.dev/pub/{$publication->public_slug}";
+        $doi = $publication->doi;
+        $doiLine = $doi ? "https://doi.org/{$doi}" : url("/public/research/{$publication->public_slug}");
 
-        $citation = match (strtolower($format)) {
-            'bibtex' => "@article{openhadith_{$publication->public_slug},\n  author = {{$author}},\n  title = {{$title}},\n  journal = {Open Hadith Research Platform},\n  year = {{$year}},\n  doi = {{$doi}},\n  url = {https://hadith.dev/publications/{$publication->public_slug}}\n}",
-            'ris' => "TY  - JOUR\nAU  - {$author}\nTI  - {$title}\nJO  - Open Hadith Research Platform\nPY  - {$year}\nDO  - {$doi}\nUR  - https://hadith.dev/publications/{$publication->public_slug}\nER  -",
-            'apa' => "{$author}. ({$year}). {$title}. Open Hadith Research Platform. https://doi.org/{$doi}",
-            default => "{$author} ({$year}). \"{$title}.\" Open Hadith Research Platform.",
+        $citation = match ($format) {
+            'ris' => "TY  - JOUR\nAU  - {$author}\nTI  - {$title}\nJO  - Open Hadith Research Platform\nPY  - {$year}\n" . ($doi ? "DO  - {$doi}\n" : '') . "UR  - {$doiLine}\nER  -",
+            'apa' => "{$author}. ({$year}). {$title}. Open Hadith Research Platform." . ($doi ? " https://doi.org/{$doi}" : " {$doiLine}"),
+            default => "@article{openhadith_{$publication->public_slug},\n  author = {{$author}},\n  title = {{$title}},\n  journal = {Open Hadith Research Platform},\n  year = {{$year}},\n" . ($doi ? "  doi = {{$doi}},\n" : '') . "  url = {{$doiLine}}\n}",
         };
 
         return $this->successResponse([
@@ -520,7 +538,7 @@ class EditorialController extends ApiController
     }
 
     /**
-     * Reviewer side: get single assignment with frozen research package (API-14).
+     * Reviewer side: get single assignment with blinded frozen research package (API-14 / C-31 P0).
      */
     public function getReviewerAssignment(Request $request, int $id): JsonResponse
     {
@@ -528,7 +546,77 @@ class EditorialController extends ApiController
             ->with(['submission'])
             ->findOrFail($id);
 
-        return $this->successResponse($assignment);
+        $sub = $assignment->submission;
+        $frozen = $sub?->frozen_package ?? [];
+
+        // Blind documents and findings in frozen package
+        $blindedDocs = [];
+        if (!empty($frozen['documents'])) {
+            foreach ($frozen['documents'] as $doc) {
+                $docArray = is_array($doc) ? $doc : (array)$doc;
+                unset($docArray['author_id'], $docArray['author'], $docArray['project_id']);
+                if (isset($docArray['latest_version'])) {
+                    $lv = is_array($docArray['latest_version']) ? $docArray['latest_version'] : (array)$docArray['latest_version'];
+                    unset($lv['author_id'], $lv['author']);
+                    $docArray['latest_version'] = $lv;
+                }
+                $blindedDocs[] = $docArray;
+            }
+        }
+
+        $blindedFindings = [];
+        if (!empty($frozen['findings'])) {
+            foreach ($frozen['findings'] as $f) {
+                $fArray = is_array($f) ? $f : (array)$f;
+                unset($fArray['project_id'], $fArray['created_by']);
+                if (!empty($fArray['evidence_items'])) {
+                    $blindedEv = [];
+                    foreach ($fArray['evidence_items'] as $ev) {
+                        $evArr = is_array($ev) ? $ev : (array)$ev;
+                        unset($evArr['collector_id'], $evArr['collector'], $evArr['project_id']);
+                        $blindedEv[] = $evArr;
+                    }
+                    $fArray['evidence_items'] = $blindedEv;
+                }
+                $blindedFindings[] = $fArray;
+            }
+        }
+
+        $blindedPackage = [
+            'abstract' => $frozen['abstract'] ?? $sub?->abstract,
+            'exported_at' => $frozen['exported_at'] ?? null,
+            'documents' => $blindedDocs,
+            'findings' => $blindedFindings,
+        ];
+
+        $blindedSubmission = $sub ? [
+            'id' => $sub->id,
+            'title' => $sub->title,
+            'abstract' => $sub->abstract,
+            'version_number' => $sub->version_number,
+            'status' => $sub->status,
+            'rights_declaration' => $sub->rights_declaration,
+            'keywords' => $sub->keywords ?? [],
+            'package_checksum' => $sub->package_checksum,
+            'submitted_at' => $sub->submitted_at?->toIso8601String(),
+            'frozen_package' => $blindedPackage,
+        ] : null;
+
+        $responsePayload = [
+            'id' => $assignment->id,
+            'submission_id' => $assignment->submission_id,
+            'reviewer_id' => $assignment->reviewer_id,
+            'status' => $assignment->status ?? 'invited',
+            'due_date' => $assignment->due_date?->toIso8601String(),
+            'coi_confirmed' => (bool)$assignment->coi_confirmed,
+            'completed_at' => $assignment->completed_at?->toIso8601String(),
+            'recommendation' => $assignment->recommendation,
+            'score' => $assignment->score,
+            'reviewer_notes' => $assignment->reviewer_notes,
+            'submission' => $blindedSubmission,
+        ];
+
+        return $this->successResponse($responsePayload);
     }
 
     /**
@@ -551,25 +639,32 @@ class EditorialController extends ApiController
     }
 
     /**
-     * Reviewer side: accept review assignment (API-14).
+     * Reviewer side: accept review assignment (API-14 / C-31).
      */
     public function acceptAssignment(Request $request, int $id): JsonResponse
     {
         $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)->findOrFail($id);
-        $assignment->update(['coi_confirmed' => true]);
+        $assignment->update([
+            'status' => 'accepted',
+            'coi_confirmed' => true,
+        ]);
 
         return $this->successResponse($assignment, 'Review assignment accepted.');
     }
 
     /**
-     * Reviewer side: decline review assignment (API-14).
+     * Reviewer side: decline review assignment (API-14 / C-31).
      */
     public function declineAssignment(Request $request, int $id): JsonResponse
     {
         $assignment = ReviewAssignment::where('reviewer_id', $request->user()->id)->findOrFail($id);
-        $assignment->delete();
+        $assignment->update([
+            'status' => 'declined',
+            'declined_reason' => $request->input('reason'),
+            'declined_at' => now(),
+        ]);
 
-        return $this->successResponse(null, 'Review assignment declined.');
+        return $this->successResponse($assignment, 'Review assignment declined.');
     }
 
     /**
@@ -584,7 +679,6 @@ class EditorialController extends ApiController
         $ownerData = null;
         if ($owner) {
             $ownerData = [
-                'id' => $owner->id,
                 'display_name' => $owner->display_name,
             ];
             if (!empty($publicFields['affiliation']) && !empty($profile->affiliation)) {
@@ -595,38 +689,26 @@ class EditorialController extends ApiController
             }
         }
 
-        $releaserData = null;
-        if ($pub->releaser) {
-            $releaserData = [
-                'id' => $pub->releaser->id,
-                'display_name' => $pub->releaser->display_name,
-            ];
-        }
-
         $submissionData = null;
         if ($pub->submission) {
+            $decision = $pub->submission->decision;
             $submissionData = [
-                'id' => $pub->submission->id,
                 'version_number' => $pub->submission->version_number,
+                'decision' => $decision ? [
+                    'decision' => $decision->decision,
+                    'rationale' => $decision->rationale,
+                    'decided_at' => $decision->decided_at?->toIso8601String() ?? $decision->created_at?->toIso8601String(),
+                ] : null,
                 'reviews' => $pub->submission->reviews ? $pub->submission->reviews->map(function ($r) {
                     return [
-                        'id' => $r->id,
-                        'reviewer_alias' => $r->reviewer_alias ?? ('Reviewer ' . $r->id),
                         'recommendation' => $r->recommendation,
-                        'review_comments' => $r->review_comments,
-                        'submitted_at' => $r->submitted_at?->toIso8601String(),
+                        'submitted_at' => $r->completed_at?->toIso8601String() ?? $r->created_at?->toIso8601String(),
                     ];
-                }) : [],
-                'decision' => $pub->submission->decision ? [
-                    'decision' => $pub->submission->decision->decision,
-                    'editorial_notes' => $pub->submission->decision->editorial_notes,
-                    'decided_at' => $pub->submission->decision->decided_at?->toIso8601String(),
-                ] : null,
+                })->values()->all() : [],
             ];
         }
 
         return [
-            'id' => $pub->id,
             'public_slug' => $pub->public_slug,
             'doi' => $pub->doi,
             'title' => $pub->title,
@@ -639,14 +721,12 @@ class EditorialController extends ApiController
             'corrigenda' => $pub->corrigenda ?? [],
             'released_at' => $pub->released_at?->toIso8601String(),
             'project' => $pub->project ? [
-                'id' => $pub->project->id,
                 'title' => $pub->project->title,
                 'scope' => $pub->project->scope,
                 'stage' => $pub->project->stage,
                 'owner' => $ownerData,
             ] : null,
             'submission' => $submissionData,
-            'releaser' => $releaserData,
             'published_content' => $pub->published_content,
         ];
     }
@@ -659,10 +739,9 @@ class EditorialController extends ApiController
         $query = Publication::where('status', '!=', 'hidden')
             ->with(['project.owner.profile', 'releaser']);
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
-        } else {
-            $query->where('status', 'published');
+        $status = $request->input('status', 'published');
+        if ($status !== 'all') {
+            $query->where('status', $status);
         }
 
         if ($request->filled('q')) {

@@ -22,6 +22,24 @@ class NotificationController extends ApiController
             $query->where('type', $request->query('type'));
         }
 
+        if ($request->has('is_read')) {
+            $isRead = filter_var($request->query('is_read'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($isRead !== null) {
+                $query->where('is_read', $isRead);
+            }
+        }
+
+        if ($request->filled('project_id')) {
+            $projectId = $request->query('project_id');
+            $query->where(function ($q) use ($projectId) {
+                $q->where('project_id', $projectId)
+                    ->orWhere(function ($sub) use ($projectId) {
+                        $sub->where('target_type', 'project')
+                            ->where('target_id', $projectId);
+                    });
+            });
+        }
+
         $perPage = min((int)$request->input('per_page', 20), 100);
         $notifications = $query->orderBy('is_read', 'asc')
             ->orderBy('created_at', 'desc')
@@ -31,12 +49,24 @@ class NotificationController extends ApiController
             ->where('is_read', false)
             ->count();
 
+        $items = collect($notifications->items())->map(function ($notif) {
+            $data = $notif->toArray();
+            if (!isset($data['project_id']) || $data['project_id'] === null) {
+                if ($notif->target_type === 'project' && is_numeric($notif->target_id)) {
+                    $data['project_id'] = (int) $notif->target_id;
+                } else {
+                    $data['project_id'] = null;
+                }
+            }
+            return $data;
+        })->all();
+
         return response()->json([
             'success' => true,
             'message' => 'Success',
             'data' => [
                 'unread_count' => $unreadCount,
-                'notifications' => $notifications->items(),
+                'notifications' => $items,
             ],
             'meta' => [
                 'timestamp' => now()->toIso8601String(),

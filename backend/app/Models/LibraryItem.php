@@ -15,12 +15,25 @@ class LibraryItem extends Model
         'resource_id',
         'is_favourite',
         'personal_notes',
+        'locator',
+        'excerpt_text',
+        'snapshot_data',
+        'snapshot_corpus_version',
+        'source_status',
+        'merged_into',
+        'incomplete_citation_flags',
+        'tags',
+        'notes',
     ];
 
     protected function casts(): array
     {
         return [
             'is_favourite' => 'boolean',
+            'snapshot_data' => 'array',
+            'incomplete_citation_flags' => 'array',
+            'tags' => 'array',
+            'notes' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

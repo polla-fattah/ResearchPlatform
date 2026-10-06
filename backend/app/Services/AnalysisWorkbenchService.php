@@ -323,20 +323,33 @@ class AnalysisWorkbenchService
                     'name' => $criticName,
                 ];
 
-                // Rough categorization for consensus index
-                if (preg_match('/(ثقة|صدوق|حجة|إمام|صالح|مستقيم)/u', $hukmName)) {
+                $quote = $c->qawl ?? $c->qawl_text ?? null;
+
+                // Rough categorization for consensus index (C-19)
+                if (preg_match('/(ثقة|صدوق|حجة|إمام|صالح|مستقيم)/u', $hukmName) || ($hukmName === 'Unspecified' && $quote && preg_match('/(ثقة|صدوق|حجة|إمام|صالح|مستقيم)/u', $quote))) {
                     $taadilCount++;
-                } elseif (preg_match('/(ضعيف|متروك|كذاب|وضاع|منكر|ليس بشيء)/u', $hukmName)) {
+                } elseif (preg_match('/(ضعيف|متروك|كذاب|وضاع|منكر|ليس بشيء)/u', $hukmName) || ($hukmName === 'Unspecified' && $quote && preg_match('/(ضعيف|متروك|كذاب|وضاع|منكر|ليس بشيء)/u', $quote))) {
                     $jarhCount++;
                 }
 
-                $evaluations[$criticId] = [
-                    'scholar_id' => $criticId,
-                    'scholar_name' => $criticName,
+                if (!isset($evaluations[$criticId])) {
+                    $evaluations[$criticId] = [
+                        'scholar_id' => $criticId,
+                        'scholar_name' => $criticName,
+                        'hukm' => $hukmName,
+                        'source_book' => $c->book?->name,
+                        'quote' => $quote,
+                        'statements' => [],
+                    ];
+                }
+
+                $evaluations[$criticId]['statements'][] = [
                     'hukm' => $hukmName,
                     'source_book' => $c->book?->name,
-                    'quote' => $c->qawl_text ?? null,
+                    'quote' => $quote,
                 ];
+                $evaluations[$criticId]['hukm'] = $hukmName;
+                $evaluations[$criticId]['quote'] = $quote;
             }
 
             $matrix[$narrator->id] = [

@@ -270,14 +270,18 @@ class SearchWorkspaceController extends ApiController
     }
 
     /**
-     * Cancel an in-progress search run (API-6).
+     * Cancel an in-progress search run (API-6 / C-15).
      */
     public function cancelSearchRun(Request $request, int $projectId, int $runId): JsonResponse
     {
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'edit', $project);
 
-        $run = SearchRun::findOrFail($runId);
+        $queryIds = SavedQuery::where('owner_type', 'project')
+            ->where('owner_id', $projectId)
+            ->pluck('id');
+
+        $run = SearchRun::whereIn('saved_query_id', $queryIds)->findOrFail($runId);
         $run->update(['status' => 'cancelled']);
 
         return $this->successResponse($run, 'Search run cancelled.');
@@ -336,8 +340,12 @@ class SearchWorkspaceController extends ApiController
             'run_id_2' => 'required|integer|exists:search_runs,id',
         ]);
 
-        $run1 = SearchRun::findOrFail($validated['run_id_1']);
-        $run2 = SearchRun::findOrFail($validated['run_id_2']);
+        $queryIds = SavedQuery::where('owner_type', 'project')
+            ->where('owner_id', $projectId)
+            ->pluck('id');
+
+        $run1 = SearchRun::whereIn('saved_query_id', $queryIds)->findOrFail($validated['run_id_1']);
+        $run2 = SearchRun::whereIn('saved_query_id', $queryIds)->findOrFail($validated['run_id_2']);
 
         $hits1 = collect($run1->hits ?? [])->pluck('hadith_id')->all();
         $hits2 = collect($run2->hits ?? [])->pluck('hadith_id')->all();
@@ -499,23 +507,29 @@ class SearchWorkspaceController extends ApiController
         $items = $validated['items'] ?? [];
 
         // Support select: "all" from search run (API-6)
-        if (($validated['select'] ?? null) === 'all' && !empty($validated['search_run_id'])) {
-            $run = SearchRun::findOrFail($validated['search_run_id']);
-            if ($run->status !== 'completed') {
-                return $this->errorResponse(
-                    'Cannot freeze partial or failed search run results.',
-                    'RUN_PARTIAL',
-                    409
-                );
-            }
+        if (!empty($validated['search_run_id'])) {
+            $queryIds = SavedQuery::where('owner_type', 'project')
+                ->where('owner_id', $projectId)
+                ->pluck('id');
+            $run = SearchRun::whereIn('saved_query_id', $queryIds)->findOrFail($validated['search_run_id']);
 
-            $items = collect($run->hits ?? [])->map(function ($h) {
-                return [
-                    'resource_type' => 'hadith',
-                    'corpus_id' => $h['hadith_id'],
-                    'snapshot_data' => $h,
-                ];
-            })->all();
+            if (($validated['select'] ?? null) === 'all') {
+                if ($run->status !== 'completed') {
+                    return $this->errorResponse(
+                        'Cannot freeze partial or failed search run results.',
+                        'RUN_PARTIAL',
+                        409
+                    );
+                }
+
+                $items = collect($run->hits ?? [])->map(function ($h) {
+                    return [
+                        'resource_type' => 'hadith',
+                        'corpus_id' => $h['hadith_id'],
+                        'snapshot_data' => $h,
+                    ];
+                })->all();
+            }
         }
 
         $resultSet = DB::transaction(function () use ($projectId, $validated, $items) {

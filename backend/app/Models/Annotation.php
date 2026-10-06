@@ -21,6 +21,8 @@ class Annotation extends Model
         'annotation_kind',
         'visibility',
         'body',
+        'attributed_to',
+        'source_locator',
     ];
 
     protected function casts(): array

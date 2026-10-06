@@ -91,14 +91,14 @@ class CollaborationController extends ApiController
             'created_at' => now(),
         ]);
 
-        // Record activity
+        // Record activity without exposing invited email address (C-25)
         ProjectActivity::create([
             'project_id' => $project->id,
             'actor_id' => $request->user()->id,
             'action' => 'invitation_created',
             'object_type' => 'invitation',
             'object_id' => $invitation->id,
-            'summary' => "Invited {$validated['email']} as " . ucfirst($role),
+            'summary' => "An invitation was sent to join as " . ucfirst($role),
             'created_at' => now(),
         ]);
 
@@ -214,6 +214,11 @@ class CollaborationController extends ApiController
 
         $invitation = ProjectInvitation::where('project_id', $project->id)->findOrFail($invitationId);
 
+        // Cannot resend accepted invitation (C-22)
+        if ($invitation->status === 'accepted') {
+            return $this->errorResponse('Cannot resend an invitation that has already been accepted.', 'CONFLICT', 409);
+        }
+
         $invitation->update([
             'token' => Str::random(64),
             'status' => 'pending',
@@ -256,14 +261,10 @@ class CollaborationController extends ApiController
         }
 
         $validated = $request->validate([
-            'role' => 'required|string|in:owner,researcher,reviewer,viewer,co_investigator,contributor,observer',
+            'role' => 'required|string|in:researcher,reviewer,viewer',
         ]);
 
-        $role = match ($validated['role']) {
-            'co_investigator', 'contributor' => 'researcher',
-            'observer' => 'viewer',
-            default => $validated['role'],
-        };
+        $role = $validated['role'];
 
         $membership = ProjectMembership::where('project_id', $project->id)
             ->where('user_id', $userId)
@@ -376,6 +377,31 @@ class CollaborationController extends ApiController
             'initial_comment' => 'required|string',
         ]);
 
+        $targetType = $validated['target_type'];
+        $targetId = (int) $validated['target_id'];
+
+        if ($targetType === 'evidence') {
+            if (!\App\Models\EvidenceItem::where('project_id', $project->id)->where('id', $targetId)->exists()) {
+                return $this->errorResponse('Target evidence does not belong to this project.', 'INVALID_TARGET', 422);
+            }
+        } elseif ($targetType === 'document') {
+            if (!\App\Models\Document::where('project_id', $project->id)->where('id', $targetId)->exists()) {
+                return $this->errorResponse('Target document does not belong to this project.', 'INVALID_TARGET', 422);
+            }
+        } elseif ($targetType === 'finding') {
+            if (!\App\Models\Finding::where('project_id', $project->id)->where('id', $targetId)->exists()) {
+                return $this->errorResponse('Target finding does not belong to this project.', 'INVALID_TARGET', 422);
+            }
+        } elseif ($targetType === 'analysis') {
+            if (!\App\Models\AnalysisRun::where('project_id', $project->id)->where('id', $targetId)->exists()) {
+                return $this->errorResponse('Target analysis does not belong to this project.', 'INVALID_TARGET', 422);
+            }
+        } elseif ($targetType === 'project') {
+            if ($targetId !== $project->id) {
+                return $this->errorResponse('Target project ID does not match project.', 'INVALID_TARGET', 422);
+            }
+        }
+
         $thread = DiscussionThread::create([
             'project_id' => $project->id,
             'thread_type' => $validated['thread_type'] ?? 'discussion',
@@ -472,6 +498,35 @@ class CollaborationController extends ApiController
         return $this->success($thread->fresh('resolver:id,display_name'), 'Thread resolved with recorded scholarly rationale.');
     }
 
+    /**
+     * Reopen a resolved discussion thread (C-23).
+     */
+    public function reopenDiscussion(Request $request, int $threadId): JsonResponse
+    {
+        $thread = DiscussionThread::with('project')->findOrFail($threadId);
+        $this->policy->authorizeProject($request->user(), 'edit', $thread->project);
+
+        $thread->update([
+            'is_resolved' => false,
+            'resolved_by' => null,
+            'resolved_at' => null,
+            'resolution_notes' => null,
+            'alternative_interpretation' => null,
+        ]);
+
+        ProjectActivity::create([
+            'project_id' => $thread->project_id,
+            'actor_id' => $request->user()->id,
+            'action' => 'discussion_reopened',
+            'object_type' => 'discussion_thread',
+            'object_id' => $thread->id,
+            'summary' => "Reopened discussion '{$thread->title}'",
+            'created_at' => now(),
+        ]);
+
+        return $this->success($thread->fresh('resolver:id,display_name'), 'Thread reopened.');
+    }
+
     // ------------------------------------------------------------------------
     // 3. RESEARCH TASK MANAGEMENT (COL-04)
     // ------------------------------------------------------------------------
@@ -546,7 +601,7 @@ class CollaborationController extends ApiController
     public function updateTask(Request $request, int $projectId, int $taskId): JsonResponse
     {
         $project = ResearchProject::findOrFail($projectId);
-        $this->policy->authorizeProject($request->user(), 'view', $project);
+        $this->policy->authorizeProject($request->user(), 'manage_tasks', $project);
 
         $task = Task::where('project_id', $project->id)->findOrFail($taskId);
 
@@ -565,7 +620,7 @@ class CollaborationController extends ApiController
     public function completeTask(Request $request, int $projectId, int $taskId): JsonResponse
     {
         $project = ResearchProject::findOrFail($projectId);
-        $this->policy->authorizeProject($request->user(), 'view', $project);
+        $this->policy->authorizeProject($request->user(), 'manage_tasks', $project);
 
         $task = Task::where('project_id', $project->id)->findOrFail($taskId);
         $task->update([
@@ -590,7 +645,7 @@ class CollaborationController extends ApiController
     public function blockTask(Request $request, int $projectId, int $taskId): JsonResponse
     {
         $project = ResearchProject::findOrFail($projectId);
-        $this->policy->authorizeProject($request->user(), 'view', $project);
+        $this->policy->authorizeProject($request->user(), 'manage_tasks', $project);
 
         $validated = $request->validate([
             'blocking_reason' => 'required|string|min:3',
@@ -639,49 +694,6 @@ class CollaborationController extends ApiController
 
         $perPage = min((int)$request->input('per_page', 20), 100);
         $activities = $query->orderBy('created_at', 'desc')->paginate($perPage);
-
-        if ($activities->total() === 0) {
-            $auditLogs = \App\Models\AuditEvent::where(function ($q) use ($project) {
-                $q->where(fn($sub) => $sub->where('object_type', 'project')->where('object_id', $project->id))
-                  ->orWhereRaw("details->>'project_id' = ?", [(string) $project->id]);
-            })->with('actor:id,display_name')->latest('created_at')->paginate($perPage);
-
-            if ($auditLogs->total() > 0) {
-                $mapped = $auditLogs->getCollection()->map(function ($log) {
-                    return [
-                        'id' => $log->id,
-                        'project_id' => $log->object_id,
-                        'actor_id' => $log->actor_id,
-                        'action' => $log->action,
-                        'object_type' => $log->object_type,
-                        'object_id' => $log->object_id,
-                        'summary' => $log->details['summary'] ?? "Action: {$log->action}",
-                        'created_at' => $log->created_at?->toIso8601String(),
-                        'actor' => $log->actor ? [
-                            'id' => $log->actor->id,
-                            'display_name' => $log->actor->display_name,
-                        ] : null,
-                    ];
-                });
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Success',
-                    'data' => $mapped,
-                    'meta' => [
-                        'timestamp' => now()->toIso8601String(),
-                        'version' => 'v1',
-                        'pagination' => [
-                            'current_page' => $auditLogs->currentPage(),
-                            'per_page' => $auditLogs->perPage(),
-                            'total_items' => $auditLogs->total(),
-                            'total_pages' => $auditLogs->lastPage(),
-                            'has_more' => $auditLogs->hasMorePages(),
-                        ],
-                    ],
-                ]);
-            }
-        }
 
         return $this->paginatedResponse($activities);
     }

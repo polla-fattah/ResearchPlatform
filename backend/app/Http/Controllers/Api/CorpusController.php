@@ -471,9 +471,22 @@ class CorpusController extends ApiController
     {
         $perPage = min((int) ($request->input('per_page', 20)), 100);
 
-        $books = CorpusBook::with('author')
-            ->withCount('references')
-            ->paginate($perPage);
+        $query = CorpusBook::with('author')
+            ->withCount('references');
+
+        if ($request->filled('q')) {
+            $term = $request->input('q');
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'ILIKE', "%{$term}%")
+                  ->orWhereHas('author', fn($aq) => $aq->where('name', 'ILIKE', "%{$term}%"));
+            });
+        }
+
+        if ($request->filled('author_id')) {
+            $query->where('author_id', $request->input('author_id'));
+        }
+
+        $books = $query->paginate($perPage);
 
         return $this->paginatedResponse($books);
     }

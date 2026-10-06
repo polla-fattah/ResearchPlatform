@@ -17,9 +17,12 @@ class ReviewAssignment extends Model
     protected $fillable = [
         'submission_id',
         'reviewer_id',
+        'status',
         'recommendation',
         'score',
         'reviewer_notes',
+        'declined_reason',
+        'declined_at',
         'coi_confirmed',
         'due_date',
         'completed_at',
@@ -33,6 +36,7 @@ class ReviewAssignment extends Model
             'coi_confirmed' => 'boolean',
             'due_date' => 'datetime',
             'completed_at' => 'datetime',
+            'declined_at' => 'datetime',
             'created_at' => 'datetime',
         ];
     }

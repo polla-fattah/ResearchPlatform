@@ -86,6 +86,9 @@ class PublishingApiTest extends TestCase
         $subRes = $this->postJson("/api/v1/projects/{$projectId}/submissions", [
             'title' => 'Wasit Transmission Networks: Empirical Findings',
             'abstract' => 'This paper presents reconstructed transmission matrices demonstrating Wasit as an intermediary hub.',
+            'rights_declaration' => 'open_access',
+            'coi_declared' => true,
+            'bypass_warnings' => true,
         ]);
 
         $subRes->assertStatus(201)

@@ -24,7 +24,10 @@ class HadithFamilyController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $families = HadithFamily::where('project_id', $projectId)
-            ->with(['members.evidence', 'creator'])
+            ->with([
+                'members.evidence',
+                'creator' => fn ($q) => $q->select('id', 'display_name'),
+            ])
             ->latest('created_at')
             ->get();
 
@@ -53,7 +56,50 @@ class HadithFamilyController extends ApiController
             'created_by' => $request->user()->id,
         ]);
 
-        return $this->successResponse($family->load('creator'), 'Hadith family cluster created.', 201);
+        return $this->successResponse(
+            $family->load(['creator' => fn ($q) => $q->select('id', 'display_name')]),
+            'Hadith family cluster created.',
+            201
+        );
+    }
+
+    /**
+     * Update an existing Hadith family.
+     */
+    public function update(Request $request, int $projectId, int $familyId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
+
+        $family = HadithFamily::where('project_id', $projectId)->findOrFail($familyId);
+
+        $validated = $request->validate([
+            'canonical_title' => 'sometimes|required|string|max:255',
+            'root_companion' => 'nullable|string|max:255',
+            'core_theme' => 'nullable|string',
+        ]);
+
+        $family->update($validated);
+
+        return $this->successResponse(
+            $family->load(['creator' => fn ($q) => $q->select('id', 'display_name')]),
+            'Hadith family updated.'
+        );
+    }
+
+    /**
+     * Delete an existing Hadith family.
+     */
+    public function destroy(Request $request, int $projectId, int $familyId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
+
+        $family = HadithFamily::where('project_id', $projectId)->findOrFail($familyId);
+        $family->members()->delete();
+        $family->delete();
+
+        return $this->successResponse([], 'Hadith family deleted.');
     }
 
     /**
@@ -68,13 +114,31 @@ class HadithFamilyController extends ApiController
 
         $validated = $request->validate([
             'evidence_id' => 'nullable|integer|exists:evidence_items,id',
-            'corpus_hadith_id' => 'nullable|integer',
+            'corpus_hadith_id' => 'nullable|integer|exists:pgsql_corpus.hadiths,id',
             'corpus_sanad_id' => 'nullable|integer',
-            'relationship_type' => 'required|string|in:mutabaah_tammah,mutabaah_qasirah,shahid,candidate',
+            'relationship_type' => 'required|string|max:64',
             'convergence_narrator' => 'nullable|string|max:255',
             'convergence_depth' => 'nullable|integer',
             'scholarly_notes' => 'nullable|string',
         ]);
+
+        if (empty($validated['evidence_id']) && empty($validated['corpus_hadith_id']) && empty($validated['corpus_sanad_id'])) {
+            return $this->errorResponse('At least one source (evidence_id, corpus_hadith_id, or corpus_sanad_id) must be specified.', 'NO_SOURCE_SPECIFIED', 422);
+        }
+
+        // Prevent duplicate member in the same family
+        $existsQuery = HadithFamilyMember::where('family_id', $family->id);
+        if (!empty($validated['evidence_id'])) {
+            $existsQuery->where('evidence_id', $validated['evidence_id']);
+        } elseif (!empty($validated['corpus_hadith_id'])) {
+            $existsQuery->where('corpus_hadith_id', $validated['corpus_hadith_id']);
+        } elseif (!empty($validated['corpus_sanad_id'])) {
+            $existsQuery->where('corpus_sanad_id', $validated['corpus_sanad_id']);
+        }
+
+        if ($existsQuery->exists()) {
+            return $this->errorResponse('A member with this source already exists in this family.', 'DUPLICATE_FAMILY_MEMBER', 422);
+        }
 
         $member = HadithFamilyMember::create([
             'family_id' => $family->id,

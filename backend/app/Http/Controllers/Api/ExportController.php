@@ -240,12 +240,16 @@ class ExportController extends ApiController
     }
 
     /**
-     * Cancel an in-progress export job (API-9).
+     * Cancel an in-progress export job (API-9 / C-17).
      */
     public function cancelExport(Request $request, int $id): JsonResponse
     {
         $user = $request->user();
         $job = ExportJob::where('requester_id', $user->id)->findOrFail($id);
+
+        if (!in_array($job->status, ['queued', 'running'])) {
+            return $this->errorResponse('Only queued or running export jobs can be cancelled.', 'CONFLICT', 409);
+        }
 
         $job->update([
             'status' => 'cancelled',
@@ -291,9 +295,9 @@ class ExportController extends ApiController
     }
 
     /**
-     * Download an export package part with permission check (API-9).
+     * Download an export package part with permission check (API-9 / C-17).
      */
-    public function downloadPart(Request $request, int $id, int $partId): Response
+    public function downloadPart(Request $request, int $id, int $partId)
     {
         $user = $request->user();
         $job = ExportJob::where('requester_id', $user->id)->findOrFail($id);
@@ -307,6 +311,28 @@ class ExportController extends ApiController
                     'message' => 'Your researcher account access has been revoked or suspended.',
                 ],
             ], 403);
+        }
+
+        // Enforce expiry check
+        if ($job->expires_at && $job->expires_at->isPast()) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'EXPORT_EXPIRED',
+                    'message' => 'This export package has expired.',
+                ],
+            ], 410);
+        }
+
+        // Single-archive packaging currently has 1 part (partId: 1)
+        if ($partId !== 1) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'NOT_FOUND',
+                    'message' => "Part {$partId} does not exist for this export.",
+                ],
+            ], 404);
         }
 
         $filePath = storage_path("app/exports/export_{$job->id}.zip");

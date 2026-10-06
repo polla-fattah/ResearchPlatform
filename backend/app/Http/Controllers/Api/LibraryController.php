@@ -204,7 +204,26 @@ class LibraryController extends ApiController
             return $this->errorResponse('Library item not found.', 'NOT_FOUND', 404);
         }
 
-        return $this->successResponse($item);
+        $projects = ResearchProject::where('is_deleted', false)
+            ->where(function ($q) use ($user) {
+                $q->where('owner_id', $user->id)
+                  ->orWhereHas('memberships', fn($m) => $m->where('user_id', $user->id)->where('status', 'accepted'));
+            })
+            ->whereHas('resources', fn($r) => $r->where('resource_id', $item->resource_id))
+            ->with(['resources' => fn($r) => $r->where('resource_id', $item->resource_id)])
+            ->get(['research_projects.id', 'research_projects.title']);
+
+        $itemData = $item->toArray();
+        $itemData['projects'] = $projects->map(function ($p) {
+            $pivot = $p->resources->first()?->pivot;
+            return [
+                'id' => $p->id,
+                'title' => $p->title,
+                'added_at' => $pivot?->created_at?->toIso8601String() ?? $p->created_at?->toIso8601String(),
+            ];
+        })->values()->all();
+
+        return $this->successResponse($itemData);
     }
 
     /**
@@ -369,7 +388,7 @@ class LibraryController extends ApiController
             }
 
             try {
-                $this->policyService->authorizeProject($user, 'add_resource', $project);
+                $this->policyService->authorizeProject($user, 'edit', $project);
             } catch (\Exception $e) {
                 $results[] = ['project_id' => $projectId, 'status' => 'forbidden'];
                 continue;

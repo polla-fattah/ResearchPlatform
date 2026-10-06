@@ -144,7 +144,7 @@ class IsnadTopologyService
 
             $score = ($data['out_degree'] * 2.0) + ($chainCoverage * 3.0);
 
-            if ($data['out_degree'] >= 2 || ($chainCoverage >= 0.7 && $totalChains >= 2)) {
+            if ($data['in_degree'] >= 1 && ($data['out_degree'] >= 2 || ($chainCoverage >= 0.7 && $totalChains >= 2))) {
                 $candidates[$nid] = [
                     'narrator_id' => $nid,
                     'name' => $data['name'],
@@ -212,17 +212,15 @@ class IsnadTopologyService
             'total_transmission_edges' => count($edges),
             'madar_al_isnad' => $primaryMadar,
             'partial_common_links' => $partialMadars,
+            'chains' => array_map(fn($c) => [
+                'path' => $c['path'],
+                'narrators' => array_map(fn($id) => $nodes[$id]['name'] ?? (string)$id, $c['path']),
+            ], $chains),
             'graph_topology' => [
                 'nodes' => array_values($nodes),
                 'edges' => array_values($edges),
                 'cytoscape' => $cyElements,
             ],
-            'formal_proof' => $primaryMadar ? [
-                'theorem' => 'Topological Convergence Theorem (Madār al-Isnād)',
-                'pivot_narrator' => $primaryMadar['name'],
-                'evidence' => "All {$totalChains} transmission lines coalesce upon narrator #{$primaryMadar['narrator_id']} with {$primaryMadar['out_degree']} independent outgoing transmission arcs (Coverage: {$primaryMadar['chain_coverage']}%).",
-                'status' => 'verified_common_link',
-            ] : null,
         ];
     }
 }

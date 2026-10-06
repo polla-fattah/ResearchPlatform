@@ -190,6 +190,7 @@ class AuthController extends ApiController
                 'memberships_count' => $user->memberships()->count(),
                 'library_items_count' => $user->libraryItems()->count(),
             ],
+            'recovery_code_count' => count($user->profile?->recovery_codes ?? []),
         ]);
     }
 
@@ -371,6 +372,14 @@ class AuthController extends ApiController
         }
 
         $user->update(['password' => Hash::make($validated['password'])]);
+
+        // Revoke other active sessions upon password change (C-21)
+        $currentTokenId = $user->currentAccessToken()?->id;
+        if ($currentTokenId) {
+            $user->tokens()->where('id', '!=', $currentTokenId)->delete();
+        } else {
+            $user->tokens()->delete();
+        }
 
         return $this->successResponse(null, 'Password changed successfully.');
     }

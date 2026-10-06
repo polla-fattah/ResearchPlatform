@@ -25,7 +25,7 @@ class EvidenceController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $query = EvidenceItem::where('project_id', $projectId)
-            ->with(['resource', 'collector']);
+            ->with(['resource', 'collector:id,display_name']);
 
         if ($request->filled('state')) {
             $query->where('state', $request->input('state'));
@@ -148,6 +148,16 @@ class EvidenceController extends ApiController
             'exclusion_reason' => 'nullable|string',
             'state_reason' => 'nullable|string',
         ]);
+
+        if (isset($validated['state']) && in_array($validated['state'], ['excluded', 'unresolved'])) {
+            if (empty($validated['state_reason']) && empty($validated['exclusion_reason'])) {
+                return $this->errorResponse(
+                    'A reason is required when transitioning evidence to excluded or unresolved state.',
+                    'STATE_REASON_REQUIRED',
+                    422
+                );
+            }
+        }
 
         if (isset($validated['captured_text'])) {
             $validated['content_hash'] = hash('sha256', trim($validated['captured_text']));
@@ -420,6 +430,7 @@ class EvidenceController extends ApiController
         foreach ($validated['items'] as $it) {
             $contentHash = hash('sha256', trim($it['captured_text']));
             $existing = EvidenceItem::where('project_id', $projectId)
+                ->where('resource_id', $it['resource_id'])
                 ->where('content_hash', $contentHash)
                 ->first();
 
@@ -484,6 +495,14 @@ class EvidenceController extends ApiController
             'tags' => 'nullable|array',
         ]);
 
+        $isAttached = $project->resources()->where('resources.id', $validated['resource_id'])->exists();
+        if ($isAttached) {
+            return $this->successResponse([
+                'already_attached' => true,
+                'resource_id' => $validated['resource_id'],
+            ], 'Resource is already attached to this project.', 200);
+        }
+
         $project->resources()->syncWithoutDetaching([
             $validated['resource_id'] => [
                 'added_by' => $request->user()->id,
@@ -492,7 +511,10 @@ class EvidenceController extends ApiController
             ]
         ]);
 
-        return $this->successResponse(null, 'Resource attached to project workspace.', 201);
+        return $this->successResponse([
+            'already_attached' => false,
+            'resource_id' => $validated['resource_id'],
+        ], 'Resource attached to project workspace.', 201);
     }
 
     /**

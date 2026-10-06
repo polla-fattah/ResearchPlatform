@@ -22,9 +22,22 @@ class EvidenceItem extends Model
         'source_version',
         'content_hash',
         'state',
+        'state_reason',
         'exclusion_reason',
         'collector_id',
     ];
+
+    protected $appends = ['state_reason'];
+
+    public function getStateReasonAttribute(): ?string
+    {
+        return $this->attributes['exclusion_reason'] ?? null;
+    }
+
+    public function setStateReasonAttribute(?string $val): void
+    {
+        $this->attributes['exclusion_reason'] = $val;
+    }
 
     protected function casts(): array
     {

@@ -93,9 +93,17 @@ class ProjectController extends ApiController
 
         $perPage = min((int) ($request->input('per_page', 20)), 100);
 
+        $sort = $request->query('sort', 'recent');
+        if ($sort === 'title') {
+            $query->orderBy('title', 'asc');
+        } elseif ($sort === 'created') {
+            $query->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
+
         $projects = $query->with(['owner', 'memberships.user'])
             ->withCount(['evidenceItems', 'resources', 'findings'])
-            ->latest('updated_at')
             ->paginate($perPage);
 
         $enrichedItems = $projects->getCollection()->map(function ($proj) use ($userId) {
@@ -190,7 +198,13 @@ class ProjectController extends ApiController
         }
 
         $validated = $request->validate([
-            'title' => 'required|string|max:500',
+            'title' => [
+                'required',
+                'string',
+                'max:500',
+                \Illuminate\Validation\Rule::unique('research_projects', 'title')
+                    ->where(fn($q) => $q->where('owner_id', $user->id)->where('is_deleted', false)),
+            ],
             'question' => 'nullable|string',
             'scope' => 'nullable|string',
             'primary_language' => 'nullable|string|max:10',
@@ -238,12 +252,19 @@ class ProjectController extends ApiController
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        $project = ResearchProject::where('is_deleted', false)->find($id);
+        $project = ResearchProject::find($id);
         if (!$project) {
             return $this->errorResponse('Project not found.', 'NOT_FOUND', 404);
         }
 
-        $this->policyService->authorizeProject($request->user(), 'view', $project);
+        if ($project->is_deleted) {
+            if ($project->owner_id !== $request->user()->id && !$request->user()->is_admin) {
+                return $this->errorResponse('Project not found.', 'NOT_FOUND', 404);
+            }
+            $project->recovery_deadline = $project->deleted_at ? $project->deleted_at->addDays(30)->toIso8601String() : null;
+        } else {
+            $this->policyService->authorizeProject($request->user(), 'view', $project);
+        }
 
         $project->load(['owner:id,display_name', 'memberships.user:id,display_name']);
 
@@ -263,7 +284,15 @@ class ProjectController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'edit', $project);
 
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:500',
+            'title' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:500',
+                \Illuminate\Validation\Rule::unique('research_projects', 'title')
+                    ->where(fn($q) => $q->where('owner_id', $project->owner_id)->where('is_deleted', false))
+                    ->ignore($project->id),
+            ],
             'question' => 'sometimes|nullable|string',
             'scope' => 'nullable|string',
             'primary_language' => 'nullable|string|max:10',
@@ -336,7 +365,12 @@ class ProjectController extends ApiController
 
         $this->policyService->authorizeProject($request->user(), 'archive', $project);
 
-        $isArchived = !$project->is_archived;
+        if ($request->has('archived')) {
+            $isArchived = $request->boolean('archived');
+        } else {
+            $isArchived = !$project->is_archived;
+        }
+
         $project->update([
             'is_archived' => $isArchived,
             'archived_at' => $isArchived ? now() : null,
@@ -465,9 +499,13 @@ class ProjectController extends ApiController
 
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
-        $members = ProjectMembership::where('project_id', $project->id)
-            ->with(['user.profile'])
-            ->get();
+        $status = $request->input('status', 'accepted');
+        $query = ProjectMembership::where('project_id', $project->id);
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $members = $query->with(['user.profile'])->get();
 
         $enriched = $members->map(function ($m) use ($project) {
             $uId = $m->user_id;
@@ -485,7 +523,6 @@ class ProjectController extends ApiController
                 ],
                 'contribution_summary' => [
                     'evidence_items' => EvidenceItem::where('project_id', $project->id)->where('collector_id', $uId)->count(),
-                    'findings' => Finding::where('project_id', $project->id)->count(),
                     'documents' => DocumentVersion::whereIn('document_id', Document::where('project_id', $project->id)->select('id'))->where('author_id', $uId)->count(),
                     'comments' => Comment::where('author_id', $uId)->whereIn('thread_id', \App\Models\DiscussionThread::where('project_id', $project->id)->select('id'))->count(),
                     'tasks' => Task::where('project_id', $project->id)->where('assignee_id', $uId)->count(),

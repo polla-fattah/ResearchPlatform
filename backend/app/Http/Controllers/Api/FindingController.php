@@ -59,12 +59,25 @@ class FindingController extends ApiController
             'claim' => 'required|string',
             'reasoning' => 'required|string',
             'limitations' => 'nullable|string',
-            'status' => 'nullable|string|in:provisional,supported,inconclusive,disputed',
+            'status' => 'nullable|string|in:provisional,supported,inconclusive,disputed,withdrawn',
+            'contributors' => 'nullable|array',
             'evidence_links' => 'nullable|array',
             'evidence_links.*.evidence_id' => 'required_with:evidence_links|integer|exists:evidence_items,id',
             'evidence_links.*.relation_type' => 'required_with:evidence_links|string|in:supporting,opposing,contextual,unresolved',
             'evidence_links.*.interpretation' => 'nullable|string',
         ]);
+
+        if (!empty($validated['evidence_links'])) {
+            $evIds = array_column($validated['evidence_links'], 'evidence_id');
+            $evCount = EvidenceItem::where('project_id', $projectId)->whereIn('id', $evIds)->count();
+            if ($evCount !== count(array_unique($evIds))) {
+                return $this->errorResponse(
+                    'One or more evidence items do not belong to this project.',
+                    'EVIDENCE_NOT_IN_PROJECT',
+                    422
+                );
+            }
+        }
 
         $finding = DB::transaction(function () use ($projectId, $validated) {
             $finding = Finding::create([
@@ -74,6 +87,8 @@ class FindingController extends ApiController
                 'reasoning' => $validated['reasoning'],
                 'limitations' => $validated['limitations'] ?? null,
                 'status' => $validated['status'] ?? 'provisional',
+                'version' => 1,
+                'contributors' => $validated['contributors'] ?? [],
             ]);
 
             if (!empty($validated['evidence_links'])) {
@@ -105,7 +120,7 @@ class FindingController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
         $finding = Finding::where('project_id', $projectId)
-            ->with(['evidenceItems.resource', 'evidenceItems.collector', 'documents'])
+            ->with(['evidenceItems.resource', 'documents'])
             ->find($id);
 
         if (!$finding) {
@@ -129,16 +144,17 @@ class FindingController extends ApiController
         }
 
         // DEF-8 Optimistic concurrency check
+        $currentVersion = (int)($finding->version ?? 1);
         $expectedVersion = $request->input('expected_version') ?? $request->header('If-Match');
         if ($expectedVersion !== null) {
             $expectedVersionClean = trim($expectedVersion, '"');
-            if (is_numeric($expectedVersionClean) && (int)$expectedVersionClean !== (int)$finding->version) {
+            if (is_numeric($expectedVersionClean) && (int)$expectedVersionClean !== $currentVersion) {
                 return $this->errorResponse(
                     'Finding version conflict. Finding has been updated by another action.',
                     'CONFLICT',
                     409,
                     [
-                        'current_version' => $finding->version,
+                        'current_version' => $currentVersion,
                         'updated_at' => $finding->updated_at?->toIso8601String(),
                     ]
                 );
@@ -150,13 +166,13 @@ class FindingController extends ApiController
             'claim' => 'sometimes|required|string',
             'reasoning' => 'sometimes|required|string',
             'limitations' => 'nullable|string',
-            'status' => 'nullable|string|in:provisional,supported,inconclusive,disputed',
+            'status' => 'nullable|string|in:provisional,supported,inconclusive,disputed,withdrawn',
             'contributors' => 'nullable|array',
             'expected_version' => 'nullable|integer',
         ]);
 
         unset($validated['expected_version']);
-        $validated['version'] = ($finding->version ?? 1) + 1;
+        $validated['version'] = $currentVersion + 1;
 
         $finding->update($validated);
 
@@ -199,6 +215,11 @@ class FindingController extends ApiController
             'relation_type' => 'required|string|in:supporting,opposing,contextual,unresolved',
             'interpretation' => 'nullable|string',
         ]);
+
+        $evidence = EvidenceItem::where('project_id', $projectId)->find($validated['evidence_id']);
+        if (!$evidence) {
+            return $this->errorResponse('Evidence item does not belong to this project.', 'NOT_FOUND', 404);
+        }
 
         $finding->evidenceItems()->syncWithoutDetaching([
             $validated['evidence_id'] => [

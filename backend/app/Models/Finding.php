@@ -20,11 +20,15 @@ class Finding extends Model
         'reasoning',
         'limitations',
         'status',
+        'version',
+        'contributors',
     ];
 
     protected function casts(): array
     {
         return [
+            'version' => 'integer',
+            'contributors' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
