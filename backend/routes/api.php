@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\GeospatialController;
 use App\Http\Controllers\Api\ReferenceImportController;
 use App\Http\Controllers\Api\SearchSubscriptionController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\LibraryUploadController;
 
 Route::prefix('v1')->group(function () {
 
@@ -147,6 +148,12 @@ Route::prefix('v1')->group(function () {
             // BibTeX / RIS Ingestion (LIB-10)
             Route::post('/bibtex/preview', [ReferenceImportController::class, 'previewBibTeX']);
             Route::post('/bibtex/import', [ReferenceImportController::class, 'importBibTeX']);
+            Route::post('/ris/preview', [ReferenceImportController::class, 'previewRis']);
+            Route::post('/ris/import', [ReferenceImportController::class, 'importRis']);
+
+            // Uploads of scans and files (LIB-04)
+            Route::get('/uploads', [LibraryUploadController::class, 'index']);
+            Route::post('/uploads', [LibraryUploadController::class, 'store']);
         });
 
         // Personal Saved Searches (API-6)
@@ -154,6 +161,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [SearchWorkspaceController::class, 'listPersonalSavedSearches']);
             Route::post('/', [SearchWorkspaceController::class, 'storePersonalSavedSearch']);
             Route::match(['put', 'patch'], '/{id}', [SearchWorkspaceController::class, 'updatePersonalSavedSearch']);
+            Route::post('/{id}/run', [SearchWorkspaceController::class, 'runPersonalSavedSearch']);
             Route::delete('/{id}', [SearchWorkspaceController::class, 'destroyPersonalSavedSearch']);
         });
 
@@ -256,6 +264,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/search-subscriptions', [SearchSubscriptionController::class, 'index']);
             Route::post('/search-subscriptions', [SearchSubscriptionController::class, 'store']);
             Route::patch('/search-subscriptions/{id}/toggle', [SearchSubscriptionController::class, 'toggle']);
+            Route::delete('/search-subscriptions/{id}', [SearchSubscriptionController::class, 'destroy']);
 
             // Module 7 (Analysis Workbench & R2a Algorithmic Engines)
             Route::post('/analyses/matn-compare', [AnalysisController::class, 'matnCompare']);
@@ -282,6 +291,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/ilal-cases', [IlalCaseController::class, 'store']);
             Route::get('/ilal-cases/{caseId}', [IlalCaseController::class, 'show']);
             Route::match(['put', 'patch'], '/ilal-cases/{caseId}', [IlalCaseController::class, 'update']);
+            Route::delete('/ilal-cases/{caseId}', [IlalCaseController::class, 'destroy']);
 
             // Release 2: Teacher-Specific Narrator Assessments (ANA-11)
             Route::get('/narrator-assessments', [TeacherAssessmentController::class, 'index']);
@@ -400,6 +410,7 @@ Route::prefix('v1')->group(function () {
         // R1b: Global Invitation Responses & Discussion Comments
         Route::post('/invitations/{token}/accept', [CollaborationController::class, 'acceptInvitation']);
         Route::post('/invitations/{token}/decline', [CollaborationController::class, 'declineInvitation']);
+        Route::get('/discussions/{threadId}', [CollaborationController::class, 'showDiscussion']);
         Route::get('/discussions/{threadId}/comments', [CollaborationController::class, 'listComments']);
         Route::post('/discussions/{threadId}/comments', [CollaborationController::class, 'addComment']);
         Route::post('/discussions/{threadId}/resolve', [CollaborationController::class, 'resolveDiscussion']);
