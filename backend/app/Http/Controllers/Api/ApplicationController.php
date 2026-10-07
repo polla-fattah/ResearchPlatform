@@ -87,7 +87,7 @@ class ApplicationController extends ApiController
                 'expires_at' => now()->addHours(24),
             ]);
 
-            $token = $user->createToken('auth-token')->plainTextToken;
+            $token = $this->issueToken($user, $request);
 
             $responseData = [
                 'user' => [

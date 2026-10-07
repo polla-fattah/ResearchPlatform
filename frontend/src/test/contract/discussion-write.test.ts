@@ -158,13 +158,13 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`discussions and ta
     expect((await call('PATCH', `/projects/${projectId}/tasks/${taskId}`, { title: 'Hijacked' }, guest)).status).toBe(403)
   })
 
-  it.fails('C-23: a discussion says who opened it', async () => {
+  it('C-23: a discussion says who opened it', async () => {
     const rows = z.array(threadSchema.passthrough()).parse((await asOwner('GET', '/discussions')).body.data)
     const row = rows.find((t) => t.id === threadId) as Record<string, unknown> | undefined
     expect(row?.author ?? row?.created_by).toBeTruthy()
   })
 
-  it.fails('C-23: a single discussion can be read by id', async () => {
+  it('C-23: a single discussion can be read by id', async () => {
     expect((await call('GET', `/discussions/${threadId}`, undefined, owner)).status).toBe(200)
   })
 
@@ -177,7 +177,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`discussions and ta
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-23: setting a task to done through the update records when it was finished', async () => {
+  it('C-23: setting a task to done through the update records when it was finished', async () => {
     const fresh = taskSchema.parse((await asOwner('POST', '/tasks', { title: 'Done by patch' })).body.data)
     const patched = taskSchema.parse((await asOwner('PATCH', `/tasks/${fresh.id}`, { status: 'done' })).body.data)
     expect(patched.completed_at).toBeTruthy()

@@ -24,6 +24,22 @@ class ProjectActivity extends Model
         'created_at',
     ];
 
+    /**
+     * Put one entry in a project's activity feed.
+     */
+    public static function record(int $projectId, int $actorId, string $action, string $objectType, int $objectId, string $summary): self
+    {
+        return self::create([
+            'project_id' => $projectId,
+            'actor_id' => $actorId,
+            'action' => $action,
+            'object_type' => $objectType,
+            'object_id' => $objectId,
+            'summary' => $summary,
+            'created_at' => now(),
+        ]);
+    }
+
     protected function casts(): array
     {
         return [

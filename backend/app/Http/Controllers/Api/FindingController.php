@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\ResearchProject;
 use App\Models\Finding;
+use App\Models\ProjectActivity;
 use App\Models\EvidenceItem;
 use App\Services\AuthPolicyService;
 use Illuminate\Http\Request;
@@ -104,6 +105,8 @@ class FindingController extends ApiController
             return $finding;
         });
 
+        ProjectActivity::record($projectId, $request->user()->id, 'finding_created', 'finding', $finding->id, 'Recorded a finding');
+
         return $this->successResponse(
             $finding->load('evidenceItems.resource'),
             'Research finding recorded.',
@@ -176,6 +179,8 @@ class FindingController extends ApiController
 
         $finding->update($validated);
 
+        ProjectActivity::record($projectId, $request->user()->id, 'finding_updated', 'finding', $finding->id, 'Changed a finding');
+
         return $this->successResponse($finding->fresh(['evidenceItems.resource', 'documents']), 'Finding updated.');
     }
 
@@ -193,6 +198,8 @@ class FindingController extends ApiController
         }
 
         $finding->delete();
+
+        ProjectActivity::record($projectId, $request->user()->id, 'finding_deleted', 'finding', $id, 'Deleted a finding');
 
         return $this->successResponse(null, 'Finding deleted.');
     }

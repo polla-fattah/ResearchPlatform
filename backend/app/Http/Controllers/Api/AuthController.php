@@ -65,7 +65,7 @@ class AuthController extends ApiController
             'expires_at' => now()->addHours(24),
         ]);
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = $this->issueToken($user, $request);
 
         $responseData = [
             'user' => [
@@ -135,7 +135,7 @@ class AuthController extends ApiController
             ], 'MFA verification required.');
         }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = $this->issueToken($user, $request);
 
         return $this->successResponse([
             'user' => [
@@ -191,6 +191,7 @@ class AuthController extends ApiController
                 'library_items_count' => $user->libraryItems()->count(),
             ],
             'recovery_code_count' => count($user->profile?->recovery_codes ?? []),
+            'recovery_codes_remaining' => count($user->profile?->recovery_codes ?? []),
         ]);
     }
 
@@ -397,7 +398,8 @@ class AuthController extends ApiController
             return [
                 'id' => $t->id,
                 'name' => $t->name,
-                'device' => 'Web Browser',
+                'device' => $this->describeDevice($t->user_agent),
+                'ip_address' => $t->ip_address,
                 'last_used_at' => $t->last_used_at?->toIso8601String(),
                 'created_at' => $t->created_at?->toIso8601String(),
                 'current' => $t->id === $currentTokenId,
@@ -569,7 +571,7 @@ class AuthController extends ApiController
 
         cache()->forget("mfa_challenge:{$validated['challenge_token']}");
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = $this->issueToken($user, $request);
 
         return $this->successResponse([
             'user' => [

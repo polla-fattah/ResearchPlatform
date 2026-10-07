@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DiscussionThread extends Model
 {
@@ -46,6 +47,14 @@ class DiscussionThread extends Model
     public function resolver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    /**
+     * The comment that opened the thread; its author is who opened the discussion.
+     */
+    public function firstComment(): HasOne
+    {
+        return $this->hasOne(Comment::class, 'thread_id')->oldestOfMany();
     }
 
     public function comments(): HasMany

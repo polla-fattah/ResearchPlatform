@@ -9,6 +9,51 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ApiController extends Controller
 {
     /**
+     * Make a sign-in token and remember which device asked for it, so the person can tell their sessions apart.
+     */
+    protected function issueToken(\App\Models\User $user, \Illuminate\Http\Request $request): string
+    {
+        $newToken = $user->createToken('auth-token');
+        $newToken->accessToken->forceFill([
+            'user_agent' => $request->userAgent() ? mb_substr($request->userAgent(), 0, 255) : null,
+            'ip_address' => $request->ip(),
+        ])->save();
+
+        return $newToken->plainTextToken;
+    }
+
+    /**
+     * A short description of a device from its user agent, such as "Chrome on Windows".
+     */
+    protected function describeDevice(?string $userAgent): string
+    {
+        if (!$userAgent) {
+            return 'Unknown device';
+        }
+
+        $browser = match (true) {
+            str_contains($userAgent, 'Edg/') => 'Edge',
+            str_contains($userAgent, 'OPR/') => 'Opera',
+            str_contains($userAgent, 'Firefox/') => 'Firefox',
+            str_contains($userAgent, 'Chrome/') => 'Chrome',
+            str_contains($userAgent, 'Safari/') => 'Safari',
+            default => null,
+        };
+        $system = match (true) {
+            str_contains($userAgent, 'Windows') => 'Windows',
+            str_contains($userAgent, 'Android') => 'Android',
+            str_contains($userAgent, 'iPhone'), str_contains($userAgent, 'iPad') => 'iOS',
+            str_contains($userAgent, 'Mac OS X') => 'macOS',
+            str_contains($userAgent, 'Linux') => 'Linux',
+            default => null,
+        };
+
+        $label = implode(' on ', array_filter([$browser, $system]));
+
+        return $label !== '' ? $label : mb_substr(trim(explode('/', $userAgent)[0]), 0, 60);
+    }
+
+    /**
      * Return a standardized JSON success response.
      */
     protected function successResponse($data = null, string $message = 'Success', int $statusCode = 200, array $meta = []): JsonResponse

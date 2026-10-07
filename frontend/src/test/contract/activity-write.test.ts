@@ -85,13 +85,13 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`project activity (
     expect(row?.summary ?? '').not.toContain('@')
   })
 
-  it.fails('C-25: a change to a finding or a document is recorded', async () => {
-    expect((await asOwner('POST', '/findings', { claim: 'A claim', reasoning: 'x', status: 'provisional' })).status).toBe(201)
+  it('C-25: a change to a finding or a document is recorded', async () => {
+    expect((await asOwner('POST', '/findings', { question: 'A question?', claim: 'A claim', reasoning: 'x', status: 'provisional' })).status).toBe(201)
     expect((await feed('?object_type=finding')).length).toBeGreaterThan(0)
   })
 
-  it.fails('C-25: an entry names its object by its title', async () => {
-    const row = (await feed('?action=task_created'))[0] as Record<string, unknown> | undefined
+  it('C-25: an entry names its object by its title', async () => {
+    const row = ((await asOwner('GET', '/activity?action=task_created')).body.data as Record<string, unknown>[])[0]
     expect(row?.object_title ?? row?.object_label).toBeTruthy()
   })
 

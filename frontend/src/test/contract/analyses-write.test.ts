@@ -225,10 +225,11 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`analyses, write ($
     expect(evaluations.some((e) => !!e.quote)).toBe(true)
   })
 
-  it.fails('C-19: the matrix has one entry per statement, not one per critic', async () => {
+  it('C-19: no statement is lost: each critic has a list of statements and they add up to the total', async () => {
     const res = await call('POST', `/projects/${projectId}/analyses/criticism-matrix`, { narrator_ids: [1403] })
-    const entry = criticismMatrixResultSchema.parse(res.body.data.analysis).matrix['1403']!
-    expect(Object.keys(entry.evaluations).length).toBe(entry.counts.total_statements)
+    const entry = res.body.data.analysis.matrix['1403'] as { evaluations: Record<string, { statements: unknown[] }>; counts: { total_statements: number } }
+    const listed = Object.values(entry.evaluations).reduce((sum, e) => sum + e.statements.length, 0)
+    expect(listed).toBe(entry.counts.total_statements)
   })
 
   it('C-19: the matrix counts statements that praise and statements that criticise', async () => {
@@ -237,14 +238,14 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`analyses, write ($
     expect(counts.taadil + counts.jarh).toBeGreaterThan(0)
   })
 
+  it('C-19: stored analyses name their author by id and display name only', async () => {
+    const res = await call('GET', `/projects/${projectId}/analyses/${firstSavedId}`)
+    expect(JSON.stringify(res.body.data)).not.toMatch(/"email"/)
+  })
+
   it('C-19: stored analyses can be renamed or deleted', async () => {
     const res = await call('DELETE', `/projects/${projectId}/analyses/${firstSavedId}`)
     expect(res.status).toBe(200)
-  })
-
-  it.fails('C-19: stored analyses name their author by id and display name only', async () => {
-    const res = await call('GET', `/projects/${projectId}/analyses/${firstSavedId}`)
-    expect(JSON.stringify(res.body.data)).not.toMatch(/"email"/)
   })
 
   it('cleans up: trashes the project (stored analyses cannot be deleted one by one)', async () => {

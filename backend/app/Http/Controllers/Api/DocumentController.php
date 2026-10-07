@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\ResearchProject;
 use App\Models\Document;
+use App\Models\ProjectActivity;
 use App\Models\DocumentVersion;
 use App\Models\Citation;
 use App\Services\AuthPolicyService;
@@ -146,6 +147,8 @@ class DocumentController extends ApiController
             return $doc;
         });
 
+        ProjectActivity::record($projectId, $request->user()->id, 'document_created', 'document', $document->id, "Started the document '{$document->title}'");
+
         return $this->successResponse(
             $this->formatDocument($document->load(['latestVersion.author', 'findings'])),
             'Document draft created.',
@@ -193,6 +196,8 @@ class DocumentController extends ApiController
 
         $document->update($validated);
 
+        ProjectActivity::record($projectId, $request->user()->id, 'document_updated', 'document', $document->id, "Changed the details of the document '{$document->title}'");
+
         return $this->successResponse(
             $this->formatDocument($document->fresh(['latestVersion.author', 'findings'])),
             'Document metadata updated.'
@@ -228,6 +233,8 @@ class DocumentController extends ApiController
         }
 
         $document->delete();
+
+        ProjectActivity::record($projectId, $request->user()->id, 'document_deleted', 'document', $id, "Deleted the document '{$document->title}'");
 
         return $this->successResponse(null, 'Document deleted.');
     }
@@ -412,6 +419,8 @@ class DocumentController extends ApiController
             return $version;
         });
 
+        ProjectActivity::record($projectId, $request->user()->id, 'document_version_saved', 'document', $id, "Saved version {$version->version_number} of the document '{$document->title}'");
+
         return $this->successResponse(
             $this->formatVersion($version->load(['author', 'citations.resource', 'citations.evidence'])),
             'New document version committed.',
@@ -468,6 +477,8 @@ class DocumentController extends ApiController
             $document->touch();
             return $version;
         });
+
+        ProjectActivity::record($projectId, $request->user()->id, 'document_version_restored', 'document', $id, "Restored version {$versionNumber} of the document '{$document->title}'");
 
         return $this->successResponse(
             $this->formatVersion($newVersion->load(['author', 'citations.resource', 'citations.evidence'])),

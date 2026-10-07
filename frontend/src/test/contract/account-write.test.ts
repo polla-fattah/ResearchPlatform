@@ -246,7 +246,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`account, write (${
     expect(res.status).toBe(200)
     expect(closeAccountSchema.parse(res.body.data).status).toBe('closure_requested')
     expect(meSchema.parse((await as('GET', '/auth/me')).body.data).status).toBe('closure_requested')
-    const queue = (await call('GET', '/admin/closures', undefined, admin)).body.data as { id: number }[]
+    const queue = (await call('GET', '/admin/closures?per_page=100', undefined, admin)).body.data as { id: number }[]
     expect(queue.some((c) => c.id === userId)).toBe(true)
     expect((await call('POST', `/admin/closures/${userId}/decide`, { decision: 'rejected' }, admin)).status).toBe(200)
     expect(meSchema.parse((await as('GET', '/auth/me')).body.data).status).toBe('approved')
@@ -259,19 +259,19 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`account, write (${
     expect((await call('GET', '/auth/me', undefined, other)).status).toBe(401)
   })
 
-  it.fails('C-21: a session says which device it is', async () => {
+  it('C-21: a session says which device it is', async () => {
     const sessions = z.array(sessionSchema).parse((await as('GET', '/auth/sessions')).body.data)
     expect(sessions.every((s) => s.device && s.device !== 'Web Browser')).toBe(true)
   })
 
-  it.fails('C-21: the account answers how many recovery codes are left', async () => {
+  it('C-21: the account answers how many recovery codes are left', async () => {
     const me = (await as('GET', '/auth/me')).body.data
     expect(me).toHaveProperty('recovery_codes_remaining')
   })
 
-  it.fails('C-21: the closure request keeps the reason the researcher gave and when it was made', async () => {
+  it('C-21: the closure request keeps the reason the researcher gave and when it was made', async () => {
     expect((await as('POST', '/auth/account/close', { password, reason: 'Second contract reason' })).status).toBe(200)
-    const queue = (await call('GET', '/admin/closures', undefined, admin)).body.data as { id: number; closure_reason: string | null; closure_requested_at: string | null }[]
+    const queue = (await call('GET', '/admin/closures?per_page=100', undefined, admin)).body.data as { id: number; closure_reason: string | null; closure_requested_at: string | null }[]
     const mine = queue.find((c) => c.id === userId)!
     await call('POST', `/admin/closures/${userId}/decide`, { decision: 'rejected' }, admin)
     expect(mine.closure_reason).toBe('Second contract reason')

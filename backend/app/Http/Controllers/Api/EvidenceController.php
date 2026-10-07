@@ -252,6 +252,8 @@ class EvidenceController extends ApiController
             'span_start' => $validated['span_start'] ?? null,
             'span_end' => $validated['span_end'] ?? null,
             'visibility' => $validated['visibility'] ?? 'project_shared',
+            'attributed_to' => $validated['attributed_to'] ?? null,
+            'source_locator' => $validated['source_locator'] ?? null,
         ]);
 
         return $this->successResponse($annotation->load('author:id,display_name'), 'Annotation created.', 201);
@@ -309,6 +311,8 @@ class EvidenceController extends ApiController
             'body' => 'sometimes|required|string',
             'visibility' => 'nullable|string|in:private,project_shared',
             'annotation_kind' => 'nullable|string|in:source_quotation,interpretation,scholarly_judgment,machine_suggestion',
+            'attributed_to' => 'nullable|string|max:255',
+            'source_locator' => 'nullable|string|max:255',
         ]);
 
         $annotation->update($validated);

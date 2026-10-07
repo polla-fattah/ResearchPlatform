@@ -115,14 +115,14 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`project announceme
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-26: publishing and saving are recorded in the history', async () => {
+  it('C-26: publishing and saving are recorded in the history', async () => {
     await asOwner('POST', a, '/announcement/publish')
     const history = announcementHistorySchema.parse((await asOwner('GET', a, '/announcement/history')).body.data).history
     await asOwner('POST', a, '/announcement/unpublish')
     expect(history.some((h) => h.action === 'announcement_published')).toBe(true)
   })
 
-  it.fails('C-26: publishing needs a saved announcement with a title and a summary, and says what is missing', async () => {
+  it('C-26: publishing needs a saved announcement with a title and a summary, and says what is missing', async () => {
     const res = await asOwner('POST', b, '/announcement/publish')
     expect(res.status).toBe(422)
   })

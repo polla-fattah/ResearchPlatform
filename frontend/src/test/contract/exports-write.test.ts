@@ -107,7 +107,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`downloads (${BASE}
   })
 
   // C-17: a repeat answers with a different shape, so the client has to accept both.
-  it.fails('C-17: a repeated request with the same Idempotency-Key answers in the same shape as the first', async () => {
+  it('C-17: a repeated request with the same Idempotency-Key answers in the same shape as the first', async () => {
     const again = await call('POST', '/exports', { scope: 'project', project_ids: [projectId], formats: ['zip'] }, { 'Idempotency-Key': key })
     expect(again.body.data.job_id).toBe(jobId)
   })
@@ -124,7 +124,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`downloads (${BASE}
   })
 
   // C-17: the manifest does not say what is in the package or what was left out.
-  it.fails('C-17: the manifest lists object counts and exclusions', async () => {
+  it('C-17: the manifest lists object counts and exclusions', async () => {
     const m = (await call('GET', `/exports/${jobId}/manifest`)).body.data
     expect(m.counts).toBeTruthy()
     expect(Array.isArray(m.exclusions)).toBe(true)

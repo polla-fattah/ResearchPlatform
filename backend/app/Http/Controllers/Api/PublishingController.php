@@ -37,6 +37,7 @@ class PublishingController extends ApiController
     public function saveAnnouncement(Request $request, int $projectId): JsonResponse
     {
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
         $existing = Announcement::where('project_id', $projectId)->first();
 
         $validated = $request->validate([
@@ -75,6 +76,8 @@ class PublishingController extends ApiController
             ]
         );
 
+        \App\Models\ProjectActivity::record($projectId, $request->user()->id, 'announcement_saved', 'announcement', $announcement->id, "Saved the research announcement '{$announcement->title}'");
+
         return $this->successResponse($announcement, 'Announcement saved.', 200);
     }
 
@@ -86,11 +89,25 @@ class PublishingController extends ApiController
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'publish_announcement', $project);
 
-        $announcement = Announcement::where('project_id', $projectId)->firstOrFail();
+        $announcement = Announcement::where('project_id', $projectId)->first();
+
+        // Publishing needs a saved announcement with an address, a title and a summary, and says which are missing.
+        $missing = array_values(array_filter(['public_slug', 'title', 'summary'], fn ($field) => trim((string) ($announcement?->{$field} ?? '')) === ''));
+        if ($missing) {
+            return $this->errorResponse(
+                'The announcement is not ready to publish: ' . implode(', ', $missing) . ' missing.',
+                'ANNOUNCEMENT_INCOMPLETE',
+                422,
+                ['missing' => $missing]
+            );
+        }
+
         $announcement->update([
             'status' => 'published',
             'published_at' => now(),
         ]);
+
+        \App\Models\ProjectActivity::record($projectId, $request->user()->id, 'announcement_published', 'announcement', $announcement->id, "Published the research announcement '{$announcement->title}'");
 
         return $this->successResponse($announcement, 'Announcement published to the public portal.');
     }

@@ -49,8 +49,18 @@ class NotificationController extends ApiController
             ->where('is_read', false)
             ->count();
 
-        $items = collect($notifications->items())->map(function ($notif) {
+        $items = collect($notifications->items())->map(function ($notif) use ($userId) {
             $data = $notif->toArray();
+
+            // An invitation notification carries what is needed to answer it: the token of the still-pending invitation.
+            if ($notif->type === 'invitation' && $notif->project_id) {
+                $data['invitation_token'] = \App\Models\ProjectInvitation::where('project_id', $notif->project_id)
+                    ->where('invited_user_id', $userId)
+                    ->where('status', 'pending')
+                    ->latest('id')
+                    ->value('token');
+            }
+
             if (!isset($data['project_id']) || $data['project_id'] === null) {
                 if ($notif->target_type === 'project' && is_numeric($notif->target_id)) {
                     $data['project_id'] = (int) $notif->target_id;

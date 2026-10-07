@@ -109,6 +109,7 @@ class CollaborationController extends ApiController
                 'type' => 'invitation',
                 'title' => 'Project Invitation Received',
                 'message' => "You have been invited to join '{$project->title}' as {$role}.",
+                'project_id' => $project->id,
                 'target_type' => 'project',
                 'target_id' => $project->id,
                 'created_at' => now(),
@@ -176,6 +177,7 @@ class CollaborationController extends ApiController
                 'type' => 'invitation_accepted',
                 'title' => 'Researcher Joined Project',
                 'message' => "{$user->display_name} accepted the invitation to join '{$project->title}'.",
+                'project_id' => $project->id,
                 'target_type' => 'project',
                 'target_id' => $project->id,
                 'created_at' => now(),
@@ -292,6 +294,7 @@ class CollaborationController extends ApiController
             'type' => 'role_updated',
             'title' => 'Project Role Updated',
             'message' => "Your role in '{$project->title}' was changed to {$role}.",
+            'project_id' => $project->id,
             'target_type' => 'project',
             'target_id' => $project->id,
             'created_at' => now(),
@@ -341,7 +344,7 @@ class CollaborationController extends ApiController
         $this->policy->authorizeProject($request->user(), 'view', $project);
 
         $query = DiscussionThread::where('project_id', $project->id)
-            ->with(['resolver:id,display_name'])
+            ->with(['resolver:id,display_name', 'firstComment.author:id,display_name'])
             ->withCount('comments');
 
         if ($request->has('target_type') && $request->has('target_id')) {
@@ -358,8 +361,34 @@ class CollaborationController extends ApiController
         }
 
         $perPage = min((int)$request->input('per_page', 20), 100);
-        $threads = $query->orderBy('updated_at', 'desc')->paginate($perPage);
+        $threads = $query->orderBy('updated_at', 'desc')->paginate($perPage)
+            ->through(fn (DiscussionThread $thread) => $this->threadWithAuthor($thread));
         return $this->paginatedResponse($threads);
+    }
+
+    public function showDiscussion(Request $request, int $threadId): JsonResponse
+    {
+        $thread = DiscussionThread::with(['project', 'resolver:id,display_name', 'firstComment.author:id,display_name'])
+            ->withCount('comments')
+            ->findOrFail($threadId);
+        $this->policy->authorizeProject($request->user(), 'view', $thread->project);
+
+        return $this->success($this->threadWithAuthor($thread));
+    }
+
+    /**
+     * A thread as an array, with who opened it (the author of its first comment) and without the comment itself.
+     *
+     * @return array<string, mixed>
+     */
+    private function threadWithAuthor(DiscussionThread $thread): array
+    {
+        $author = $thread->firstComment?->author;
+        $data = $thread->toArray();
+        unset($data['first_comment'], $data['project']);
+        $data['author'] = $author ? ['id' => $author->id, 'display_name' => $author->display_name] : null;
+
+        return $data;
     }
 
     public function createDiscussion(Request $request, int $projectId): JsonResponse
@@ -589,6 +618,7 @@ class CollaborationController extends ApiController
                 'type' => 'assignment',
                 'title' => 'New Task Assigned',
                 'message' => "You were assigned to '{$task->title}' in '{$project->title}'.",
+                'project_id' => $project->id,
                 'target_type' => 'task',
                 'target_id' => $task->id,
                 'created_at' => now(),
@@ -612,6 +642,14 @@ class CollaborationController extends ApiController
             'due_date' => 'nullable|date',
             'status' => 'sometimes|required|string|in:open,in_progress,blocked,done',
         ]);
+
+        // Finishing a task through an update records when, the same as the complete action; reopening clears it.
+        if (($validated['status'] ?? null) === 'done' && $task->status !== 'done') {
+            $validated['completed_at'] = now();
+            $validated['blocking_reason'] = null;
+        } elseif (isset($validated['status']) && $validated['status'] !== 'done') {
+            $validated['completed_at'] = null;
+        }
 
         $task->update($validated);
         return $this->success($task->load('assignee:id,display_name'), 'Task updated.');
@@ -694,6 +732,33 @@ class CollaborationController extends ApiController
 
         $perPage = min((int)$request->input('per_page', 20), 100);
         $activities = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        // Name each entry's object by its title, looked up in one query per kind of object.
+        $titles = [];
+        $lookups = [
+            'task' => [Task::class, 'title'],
+            'discussion_thread' => [DiscussionThread::class, 'title'],
+            'finding' => [\App\Models\Finding::class, 'claim'],
+            'document' => [\App\Models\Document::class, 'title'],
+            'resource' => [\App\Models\Resource::class, 'title'],
+        ];
+        foreach ($lookups as $type => [$model, $column]) {
+            $ids = $activities->getCollection()->where('object_type', $type)->pluck('object_id')->filter()->unique()->all();
+            if ($ids) {
+                $titles[$type] = $model::whereIn('id', $ids)->pluck($column, 'id')->all();
+            }
+        }
+        $activities->through(function (ProjectActivity $activity) use ($titles, $project) {
+            $title = match ($activity->object_type) {
+                'project' => $project->title,
+                'evidence' => $activity->object_id ? "EV-{$activity->object_id}" : null,
+                default => $titles[$activity->object_type][$activity->object_id] ?? null,
+            };
+            $data = $activity->toArray();
+            $data['object_title'] = $title !== null ? mb_strimwidth((string) $title, 0, 120, '…') : null;
+
+            return $data;
+        });
 
         return $this->paginatedResponse($activities);
     }

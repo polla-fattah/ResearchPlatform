@@ -114,15 +114,15 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`notifications, wri
     expect(notificationPageSchema.parse((await call('GET', '/notifications', undefined, guest)).body.data).unread_count).toBe(0)
   })
 
-  it.fails('C-24: a notification says which project it is about, whatever it is about', async () => {
-    const page = notificationPageSchema.passthrough().parse((await call('GET', '/notifications', undefined, guest)).body.data)
-    const row = page.notifications[0] as Record<string, unknown>
-    expect(row.project_id).toBeTruthy()
+  it('C-24: a notification says which project it is about, whatever it is about', async () => {
+    const rows = (await call('GET', '/notifications', undefined, guest)).body.data.notifications as Record<string, unknown>[]
+    expect(rows.length).toBeGreaterThan(0)
+    expect(rows.every((row) => row.project_id)).toBe(true)
   })
 
-  it.fails('C-24: an invitation notification carries what is needed to answer it', async () => {
-    const page = notificationPageSchema.passthrough().parse((await call('GET', '/notifications', undefined, guest)).body.data)
-    const row = page.notifications.find((n) => n.type === 'invitation') as Record<string, unknown> | undefined
+  it('C-24: an invitation notification carries what is needed to answer it', async () => {
+    const rows = (await call('GET', '/notifications', undefined, guest)).body.data.notifications as Record<string, unknown>[]
+    const row = rows.find((n) => n.type === 'invitation')
     expect(row?.invitation_token ?? row?.action_url).toBeTruthy()
   })
 

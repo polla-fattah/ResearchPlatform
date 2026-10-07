@@ -112,7 +112,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`evidence inspector
   })
 
   // C-16: the attribution fields are validated, then dropped (not fillable on Annotation).
-  it.fails('C-16: a scholarly judgment keeps who it is attributed to and where', async () => {
+  it('C-16: a scholarly judgment keeps who it is attributed to and where', async () => {
     const res = await call('POST', `${base()}/annotations`, {
       annotation_kind: 'scholarly_judgment',
       body: 'Judged weak',
