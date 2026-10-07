@@ -10,17 +10,21 @@ use Illuminate\Support\Facades\DB;
 
 class BookStructureService
 {
+    /** The most places the concordance counts; above this it says "at least". */
+    private const COUNT_CAP = 10000;
+
     /**
      * Retrieve the hierarchical table of contents and scoped occurrence counts.
      */
     public function getCollectionStructure(int $bookId): array
     {
-        $book = CorpusBook::find($bookId);
-        $bookTitle = $book ? ($book->title ?? "Book #{$bookId}") : "Book #{$bookId}";
-        $author = $book ? ($book->author ?? null) : null;
+        $book = CorpusBook::findOrFail($bookId);
+        $bookTitle = $book->title ?? "Book #{$bookId}";
+        $author = $book->author ?? null;
 
         // Fetch chapters belonging to this book
         $chapters = CorpusChapter::where('book_id', $bookId)
+            ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
 
@@ -33,8 +37,8 @@ class BookStructureService
 
             $structure[] = [
                 'chapter_id' => $chapter->id,
-                'chapter_title' => $chapter->title ?? "Chapter #{$chapter->id}",
-                'chapter_number' => $chapter->number ?? $chapter->id,
+                'chapter_title' => $chapter->name ?? "Chapter #{$chapter->id}",
+                'chapter_number' => $chapter->sort_order,
                 'occurrence_count' => $occurrenceCount,
             ];
         }
@@ -55,6 +59,8 @@ class BookStructureService
     public function lexicalConcordance(string $queryTerm, ?int $bookId = null, int $limit = 50): array
     {
         $normalizedTerm = $this->normalizeArabic($queryTerm);
+        // The term is searched as written: a % or _ in it is the character, not a wildcard.
+        $pattern = '%' . addcslashes($normalizedTerm, '\\%_') . '%';
 
         $query = CorpusHadithReference::query()
             ->with(['book', 'chapter', 'hadith']);
@@ -64,12 +70,29 @@ class BookStructureService
         }
 
         // Search text occurrences via related hadith
-        $query->whereHas('hadith', function ($q) use ($normalizedTerm) {
-            $q->where('clean_matn', 'ILIKE', "%{$normalizedTerm}%")
-              ->orWhere('matn', 'ILIKE', "%{$normalizedTerm}%");
-        })->limit($limit);
+        $query->whereHas('hadith', function ($q) use ($pattern) {
+            $q->where('clean_matn', 'ILIKE', $pattern)
+              ->orWhere('matn', 'ILIKE', $pattern);
+        });
 
-        $references = $query->get();
+        // A term the text indexes cannot serve (under three characters, or one that matches almost nothing) can mean a
+        // scan of the whole corpus, so the search is cut off after a few seconds and says so.
+        $connection = DB::connection('pgsql_corpus');
+        $incomplete = false;
+        try {
+            [$totalAvailable, $references] = $connection->transaction(function () use ($connection, $query, $limit) {
+                $connection->statement('SET LOCAL statement_timeout = 5000');
+                $capped = (clone $query)->select('hadith_references.id')->limit(self::COUNT_CAP + 1)->toBase();
+                $total = min($connection->query()->fromSub($capped, 'capped')->count(), self::COUNT_CAP + 1);
+
+                return [$total, $query->limit($limit)->get()];
+            });
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() !== '57014') {
+                throw $e;
+            }
+            [$totalAvailable, $references, $incomplete] = [0, collect(), true];
+        }
 
         $results = [];
         $bookDistribution = [];
@@ -94,7 +117,10 @@ class BookStructureService
         return [
             'search_term' => $queryTerm,
             'total_matches' => count($results),
-            'book_distribution' => $bookDistribution,
+            'total_available' => min($totalAvailable, self::COUNT_CAP),
+            'total_available_is_capped' => $totalAvailable > self::COUNT_CAP,
+            'incomplete' => $incomplete,
+            'book_distribution' => (object) $bookDistribution,
             'concordance_samples' => $results,
         ];
     }

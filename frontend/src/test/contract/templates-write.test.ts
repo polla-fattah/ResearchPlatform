@@ -83,9 +83,8 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD)(`project templates (${BASE})`
       expect((project.languages ?? []).length).toBeGreaterThan(0)
     })
 
-    it.fails('C-41: the new project starts at the template’s first recommended stage', async () => {
-      const t = templates.find((x) => typeof x.recommended_stages[0] === 'string' && x.recommended_stages[0] !== 'scoping')
-      if (!t || !projectId) throw new Error('no template with another first stage')
+    it('C-41: the new project starts at the template’s first recommended stage', async () => {
+      const t = templates[0]!
       const project = projectDetailSchema.parse((await call('GET', `/projects/${projectId}`, undefined, token)).body.data)
       expect(project.stage).toBe(t.recommended_stages[0])
     })

@@ -94,10 +94,49 @@ class IlalCaseController extends ApiController
             'resolution_notes' => 'nullable|string',
             'competing_variants' => 'nullable|array',
             'critics_judgments' => 'nullable|array',
+            'expected_updated_at' => 'nullable|date',
         ]);
+
+        // A write made from an older copy than the one stored is refused, so a teammate's change is not overwritten.
+        if (!empty($validated['expected_updated_at']) && $case->updated_at
+            && \Illuminate\Support\Carbon::parse($validated['expected_updated_at'])->timestamp !== $case->updated_at->timestamp) {
+            return $this->errorResponse(
+                'This case was changed by someone else since you opened it.',
+                'CONFLICT',
+                409,
+                ['current' => $case->load('creator')]
+            );
+        }
+        unset($validated['expected_updated_at']);
+
+        $variants = $validated['competing_variants'] ?? $case->competing_variants ?? [];
+        $variantNames = array_map(fn ($v) => trim((string) ($v['name'] ?? '')), $variants);
+        $status = $validated['status'] ?? $case->status;
+
+        if (str_starts_with($status, 'resolved') && count(array_filter($variantNames)) < 2) {
+            return $this->errorResponse('A case needs at least two versions before it can be concluded.', 'NEEDS_TWO_VERSIONS', 422);
+        }
+
+        $preferred = trim((string) ($validated['preferred_version'] ?? ''));
+        if (array_key_exists('preferred_version', $validated) && $preferred !== '' && !in_array($preferred, $variantNames, true)) {
+            return $this->errorResponse("The preferred version must be one of the case's versions.", 'UNKNOWN_VERSION', 422);
+        }
 
         $case->update($validated);
 
         return $this->successResponse($case->load('creator'), "'Ilal case updated.");
+    }
+
+    /**
+     * Delete a case.
+     */
+    public function destroy(Request $request, int $projectId, int $caseId): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
+
+        IlalCase::where('project_id', $projectId)->findOrFail($caseId)->delete();
+
+        return $this->successResponse(null, "'Ilal case deleted.");
     }
 }

@@ -39,7 +39,7 @@ class ProjectTemplateController extends ApiController
             'question' => $validated['custom_question'] ?? $template->default_question,
             'scope' => "Instantiated from {$template->title} template.",
             'primary_language' => $validated['primary_language'] ?? 'ar',
-            'stage' => 'scoping',
+            'stage' => $this->startingStage($template),
             'is_deleted' => false,
         ]);
 
@@ -65,5 +65,15 @@ class ProjectTemplateController extends ApiController
         }
 
         return $this->successResponse($project->load('owner'), 'Project instantiated from scholarly template.', 201);
+    }
+
+    /**
+     * The template's first recommended stage, when it is one a project can be in; otherwise scoping.
+     */
+    private function startingStage(ProjectTemplate $template): string
+    {
+        $first = $template->recommended_stages[0] ?? null;
+
+        return in_array($first, ['scoping', 'collecting', 'analysing', 'writing', 'reviewing', 'completed'], true) ? $first : 'scoping';
     }
 }

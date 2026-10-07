@@ -67,16 +67,16 @@ describe.skipIf(!reachable)(`book structure and word forms (${BASE})`, () => {
     expect(res.body.data.length).toBeGreaterThan(0)
   })
 
-  it.fails('C-38: a book that is not in the corpus answers 404, not 200 with a made-up title', async () => {
+  it('C-38: a book that is not in the corpus answers 404, not 200 with a made-up title', async () => {
     expect((await get('/corpus/books/999999999/structure')).status).toBe(404)
   })
 
-  it.fails('C-38: a % in the term is searched as the character, not as a wildcard that matches everything', async () => {
+  it('C-38: a % in the term is searched as the character, not as a wildcard that matches everything', async () => {
     const c = concordanceSchema.parse((await get('/corpus/concordance?q=%25%25&limit=5')).body.data)
     expect(c.total_matches).toBe(0)
   })
 
-  it.fails('C-38: the concordance says how many places there are in all, beside the sample it returns', async () => {
+  it('C-38: the concordance says how many places there are in all, beside the sample it returns', async () => {
     const body = (await get('/corpus/concordance?q=%D9%85%D9%86&limit=5')).body.data
     expect(body).toHaveProperty('total_available')
   })
@@ -86,8 +86,10 @@ describe.skipIf(!reachable)(`book structure and word forms (${BASE})`, () => {
     expect(c.concordance_samples.every((s) => !s.snippet.endsWith('...') || s.snippet.includes('ثلاث'))).toBe(true)
   })
 
-  it.fails('C-38: the structure carries the printed chapter number, apart from the internal id', async () => {
-    const s = structureSchema.parse((await get(`/corpus/books/${bookId}/structure`)).body.data)
-    expect(s.chapters[0]).toHaveProperty('chapter_number')
+  it('C-38: the structure carries the printed chapter number, apart from the internal id', async () => {
+    const raw = (await get(`/corpus/books/${bookId}/structure`)).body.data
+    structureSchema.parse(raw)
+    expect(raw.chapters[0]).toHaveProperty('chapter_number')
+    expect(typeof raw.chapters[0].chapter_title).toBe('string')
   })
 })

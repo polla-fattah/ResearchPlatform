@@ -78,23 +78,23 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`ilal cases (${BASE
     expect((await asOwner('PATCH', `/ilal-cases/${caseId}`, { status: 'made_up' })).status).toBe(422)
   })
 
-  it.fails('C-36: a case with fewer than two versions cannot be concluded', async () => {
+  it('C-36: a case with fewer than two versions cannot be concluded', async () => {
     const made = ilalCaseSchema.parse((await asOwner('POST', '/ilal-cases', { title: 'Empty', discrepancy_category: 'qalb' })).body.data)
     expect((await asOwner('PATCH', `/ilal-cases/${made.id}`, { status: 'resolved_authentic' })).status).toBe(422)
   })
 
-  it.fails('C-36: the preferred version must be one of the case’s versions', async () => {
+  it('C-36: the preferred version must be one of the case’s versions', async () => {
     expect((await asOwner('PATCH', `/ilal-cases/${caseId}`, { preferred_version: 'Not a version' })).status).toBe(422)
   })
 
-  it.fails('C-36: a stale write is refused instead of overwriting a teammate’s change', async () => {
+  it('C-36: a stale write is refused instead of overwriting a teammate’s change', async () => {
     const before = ilalCaseSchema.parse((await asOwner('GET', `/ilal-cases/${caseId}`)).body.data)
     await asOwner('PATCH', `/ilal-cases/${caseId}`, { resolution_notes: 'Teammate wrote this.' })
     const stale = await asOwner('PATCH', `/ilal-cases/${caseId}`, { resolution_notes: 'Overwrite', expected_updated_at: before.updated_at })
     expect(stale.status).toBe(409)
   })
 
-  it.fails('C-36: a case can be deleted', async () => {
+  it('C-36: a case can be deleted', async () => {
     expect((await asOwner('DELETE', `/ilal-cases/${caseId}`)).status).toBe(200)
   })
 
