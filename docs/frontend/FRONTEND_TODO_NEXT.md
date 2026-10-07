@@ -184,6 +184,8 @@ Scholarly wording is for specialist review: keep every label in i18n (English no
 
 - 2026-10-07 · G7 handover summary at the top of the plan; priority index at the top of the request file (G6); narrow windows no longer blocked (notice for phone-sized screens only, sideways scroll otherwise, `ACCESSIBILITY.md`).
 
+- 2026-10-07 · Backend fixes made from the frontend side at the owner's request (see "Priority index" in the request file): C-13, 15, 16, 17, 19, 20, 21, 23 to 26, 28, 29, 36 to 43 fixed in `backend/` (new migrations 2026_10_07_000001 to 000006, Laravel Boost installed), every matching `it.fails` flipped. Full contract suite against the local backend: **398 pass, 0 expected failures**; `npm run check` green. Nothing deployed (owner: not yet). Follow-ups: send `expected_updated_at` from the ʿilal screen, show `object_title` in the activity feed, use `recovery_codes_remaining` and the device label in the account screen, use `statements` and `incomplete` from the concordance.
+
 ## 6. Decision log (decisions taken without asking)
 
 - 2026-10-07 · Work is pushed to `main` as the user asked; the session branch is kept equal to it.

@@ -12,29 +12,32 @@
 - Priority: **P1** blocks R1a screens · **P2** blocks R1b/R1c · **P3** R2+. R1a scope is defined by `docs/requirements/milestones/R1a_MVP.md`.
 - The frontend works mock-first: it implements each requested contract in MSW so it is not blocked. **If you change a requested shape, say so here** and the mock follows.
 
-## Priority index (6 Oct 2026, after the first live run at backend `678ed8c`)
+## Priority index (7 Oct 2026, after the backend fixes made from the frontend side)
 
-Read this first. It says what is still open, in the order to fix it. Each line names the item (the full text is below, newest first)
-and the contract tests that still fail as expected for it (`src/test/contract/*`, `it.fails`). An item with no failing test
-left has been fixed by the backend and is kept below only for its history. **The 52 remaining expected failures are the
-exact list of what is open.**
+Read this first. On 7 Oct the owner asked the frontend agent to fix the open items in `backend/` itself (the backend agent is not
+working on it), so **every item that had an expected-failure contract test is now fixed and its test is an ordinary test**. The
+only item with nothing behind it is C-44 (datasets). The item texts below are kept as history; where a point was fixed, the
+"Fixed 7 Oct" list here says how. Nothing is deployed: all of this was checked against the local backend only.
 
-**Verified fixed in the live run** (so not to be re-opened): C-4 (a six-digit code is checked and cannot be used twice, a recovery code works once, a
-wrong code is refused: `account-write.test.ts`), C-8 on the endpoints tried (`/auth/me`, login, projects, evidence, documents, findings,
-members, analyses, activity, admin lists, public pages, notifications, library: none carries a secret), C-30 and C-31 (all their points),
-and most of C-18, C-22, C-26, C-29, C-32 to C-35 (see the table in "Live re-check").
+**Fixed 7 Oct 2026 (what changed in `backend/`, so the backend agent can review it):**
+- **C-37** `POST /geospatial/trajectories` needs the corpus-editor role (403 otherwise) and a narrator that exists in the corpus; narrator assessments check both narrators against the corpus (422); assertions carry `year_hijri` and `source` (new columns) and an empty value clears `adjudication_notes`.
+- **C-39** argument map: evidence and finding links must belong to the project, a relation to a point of another project is refused, duplicate and looping relations are refused (422 `DUPLICATE_RELATION`, `CYCLE_ERROR`), removed points are kept (soft delete, `?include_removed`).
+- **C-42** package import brings in findings, documents (their text as version 1) and the argument map, reads uploaded JSON or ZIP files, and says what it did not import (`imported`, `not_imported`); a DOCX request makes a real DOCX; a project export is stored when it is made, so its checksum matches the file downloaded later; the graph export carries `evidence_id` and `finding_id`.
+- **C-20** a decided correction answers 409 `ALREADY_DECIDED`; corrections carry only the id and name of who proposed or decided them; the operations view counts waiting corrections; the closures list shows the reason and time again.
+- **C-28** a signed-in or anonymous visitor can send interest from a public announcement (the requester column may be empty). **C-29** was already right; its test was a placeholder and is now real. `saveAnnouncement` now checks the caller may edit the project (it checked nobody).
+- **C-40** a subscription can only name a query of its own project; it runs once when made, and `php artisan searches:run-subscriptions` (scheduled hourly) runs the due ones; a subscription can be deleted.
+- **C-43** BibTeX import saves into the person's library (one item each, tagged `import YYYY-MM-DD`), the reader handles nested braces and an `@` inside a value and no longer invents titles or authors; RIS preview and import exist; `GET/POST /library/uploads` take a scan with its rights statement and keep it as `pending` (there is no scanner yet).
+- **C-41** a new project starts at the template's first recommended stage.
+- **C-36** a case needs two versions before it can be concluded, the preferred version must be one of them, a write with a stale `expected_updated_at` answers 409, a case can be deleted.
+- **C-38** an unknown book answers 404; `%` and `_` in a search term are searched as characters; the concordance says `total_available` (capped at 10 000) and `incomplete` when the search was cut off after five seconds; chapters carry their real name and printed number (`sort_order`).
+- **C-23** discussions say who opened them and can be read one by one; setting a task to done through an update records `completed_at`.
+- **C-21** a session says which device it is (browser on system, from the user agent kept at sign-in); `/auth/me` has `recovery_codes_remaining`; the closure reason is kept and shown to the administrator.
+- **C-24** every notification carries its project; an invitation notification carries the token to answer it. **C-25** findings and documents are recorded in the activity feed and each entry names its object (`object_title`). **C-26** saving and publishing are recorded in the history and publishing needs an address, title and summary (422 `ANNOUNCEMENT_INCOMPLETE`, `missing`).
+- **C-17** a repeated `Idempotency-Key` answers in the same shape; the manifest has `counts` and `exclusions`. **C-19** each critic already had a list of statements (the test now checks they add up to the total). **C-13** a different excerpt of a source already in the library is a separate item (the unique key is now user + source + excerpt). **C-15** a personal saved search can be run. **C-16** a judgment keeps `attributed_to` and `source_locator`.
 
-**P0, security or data**
-1. **C-37** narrator places: any approved researcher can write shared data (4 tests open).
-2. **C-39** argument map: links and relations read other projects' private evidence and points (4 open).
-3. **C-42** package import imports nothing but looks as if it did (4 open).
-4. **C-20** administration: three points open (a decided application can be decided again and changes the account, the audit log says "success" for a refused attempt, support access has no list on the researcher's side).
-5. **C-28** the public collaboration endpoint accepts a request without consent (1 open) and **C-29** one point open (1).
+**Not done on the server (still honest gaps):** C-43 uploads have no virus or file scan (status stays `pending`), no quota and no download; C-42 does not import evidence items or resources (they point at the exporter's library); the ʿilal and narrator screens do not yet send `expected_updated_at`; C-44 datasets.
 
-**P1, wrong or missing behaviour the screens work around**
-6. **C-40** cross-project runs and subscriptions, and nothing runs scheduled searches (3 open).
-7. **C-43** BibTeX import saves to a shared catalogue (4 open). **C-41** one template point (1 open).
-8. **C-36** ʿIlal cases (4 open), **C-38** book structure (4 open), **C-23** discussion (3), **C-21** account (3), **C-24** notifications (2), **C-25** activity (2), **C-26** announcement (2), **C-17** downloads (2), **C-19** comparison (2), **C-13**, **C-15**, **C-16** (1 each).
+**Verified fixed in the live run on 6 Oct** (so not to be re-opened): C-4, C-8 on the endpoints tried, C-30, C-31, and most of C-18, C-22, C-26, C-29, C-32 to C-35 (see "Live re-check").
 
 **P3 (release R2):** **C-44** datasets and public dossiers: there is nothing on the server yet.
 

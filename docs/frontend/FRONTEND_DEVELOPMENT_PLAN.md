@@ -17,9 +17,9 @@ contract mismatch. 72 backend defects that were only known from reading its code
 is the interactive browser checks (typing, saving, two-account flows, signed-out views): see `LIVE_CHECKS.md`. The phase
 checkpoints D8, E6 and F15 and P0.1, P0.4, P0.5 stay unticked until those are done.
 
-**What depends on the backend.** The open list, in priority order, is the "Priority index" at the top of
-`../api/API_REQUESTS_FROM_FRONTEND.md`; the 52 remaining `it.fails` tests are its exact content. The first to fix are the security
-ones (C-37, C-39, C-42 and the three open points of C-20).
+**What depends on the backend.** Update 7 Oct: the 52 open items were fixed in `backend/` at the owner's request, and the contract suite now
+has 398 passing tests and no expected failures (see the "Priority index" in `../api/API_REQUESTS_FROM_FRONTEND.md` for what changed and what is
+still an honest gap: uploads are not scanned, package import skips evidence, datasets C-44). Nothing is deployed yet.
 
 **What needs people.** Sorani and Arabic strings need human translators (every screen falls back to English until then). Scholars
 should review the labels in `docs/design/terminology.md`. An error-reporting service has to be chosen (the app calls one hook,
