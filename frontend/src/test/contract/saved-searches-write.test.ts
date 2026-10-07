@@ -93,7 +93,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`personal saved sea
     expect((await call('DELETE', '/saved-searches/99999999')).status).toBe(404)
   })
 
-  it.fails('C-15: a personal search can be run, without any project', async () => {
+  it('C-15: a personal search can be run, without any project', async () => {
     const res = await call('POST', `/saved-searches/${id}/run`)
     expect(res.status).toBe(200)
   })

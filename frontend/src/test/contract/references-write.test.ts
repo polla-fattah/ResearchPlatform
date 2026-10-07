@@ -66,7 +66,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`reference import (
     expect(res.body.error?.code ?? res.body.code).toBe('DUPLICATE')
   })
 
-  it.fails('C-43: the server’s BibTeX import puts the references in the person’s library', async () => {
+  it('C-43: the server’s BibTeX import puts the references in the person’s library', async () => {
     const title = `[contract-test] bibtex ${stamp}`
     const res = await as('POST', '/library/bibtex/import', { bibtex: `@book{k${stamp}, title={${title}}, author={A}}` })
     expect(res.status).toBe(201)
@@ -74,16 +74,16 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`reference import (
     expect(found.body.data.length).toBeGreaterThan(0)
   })
 
-  it.fails('C-43: the server’s BibTeX reader keeps a title with braces inside it', async () => {
+  it('C-43: the server’s BibTeX reader keeps a title with braces inside it', async () => {
     const res = await as('POST', '/library/bibtex/preview', { bibtex: '@book{k, title={A {B} C}, author={x@y.org}}' })
     expect(res.body.data.entries[0].title).toBe('A B C')
   })
 
-  it.fails('C-43: there is a RIS preview', async () => {
+  it('C-43: there is a RIS preview', async () => {
     expect((await as('POST', '/library/ris/preview', { ris: 'TY  - BOOK\nTI  - T\nER  - ' })).status).toBe(200)
   })
 
-  it.fails('C-43: there is an upload endpoint that answers with a scan status', async () => {
+  it('C-43: there is an upload endpoint that answers with a scan status', async () => {
     const res = await as('GET', '/library/uploads')
     expect(res.status).toBe(200)
   })

@@ -157,7 +157,18 @@ class LibraryController extends ApiController
             ->where('resource_id', $resource->id)
             ->first();
 
-        if ($existingItem && !$request->boolean('allow_duplicate_excerpt')) {
+        // With allow_duplicate_excerpt a different excerpt of the same source is a separate item; the same excerpt is still a duplicate.
+        if ($existingItem && $request->boolean('allow_duplicate_excerpt')) {
+            $sameExcerpt = LibraryItem::where('user_id', $user->id)
+                ->where('resource_id', $resource->id)
+                ->where(fn ($q) => ($validated['excerpt_text'] ?? '') === ''
+                    ? $q->whereNull('excerpt_text')->orWhere('excerpt_text', '')
+                    : $q->where('excerpt_text', $validated['excerpt_text']))
+                ->first();
+            $existingItem = $sameExcerpt;
+        }
+
+        if ($existingItem) {
             return $this->errorResponse(
                 'This resource is already saved in your library.',
                 'DUPLICATE',

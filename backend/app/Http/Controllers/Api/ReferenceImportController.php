@@ -18,23 +18,60 @@ class ReferenceImportController extends ApiController
             'bibtex' => 'required|string',
         ]);
 
-        $parsed = $this->importService->parseBibTeX($validated['bibtex']);
-
-        return $this->successResponse([
-            'total_parsed' => count($parsed),
-            'entries' => $parsed,
-        ], 'BibTeX parsed successfully.');
+        return $this->previewResponse($this->importService->parseBibTeX($validated['bibtex']), 'BibTeX parsed successfully.');
     }
 
     public function importBibTeX(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'bibtex' => 'required|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:50',
         ]);
 
         $parsed = $this->importService->parseBibTeX($validated['bibtex']);
-        $result = $this->importService->importReferences($parsed);
 
-        return $this->successResponse($result, 'Bibliographical references imported.', 201);
+        return $this->successResponse(
+            $this->importService->importReferences($parsed, $request->user(), $validated['tags'] ?? []),
+            'Bibliographical references imported into your library.',
+            201
+        );
+    }
+
+    public function previewRis(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ris' => 'required|string',
+        ]);
+
+        return $this->previewResponse($this->importService->parseRis($validated['ris']), 'RIS parsed successfully.');
+    }
+
+    public function importRis(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ris' => 'required|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:50',
+        ]);
+
+        $parsed = $this->importService->parseRis($validated['ris']);
+
+        return $this->successResponse(
+            $this->importService->importReferences($parsed, $request->user(), $validated['tags'] ?? []),
+            'Bibliographical references imported into your library.',
+            201
+        );
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $entries
+     */
+    private function previewResponse(array $entries, string $message): JsonResponse
+    {
+        return $this->successResponse([
+            'total_parsed' => count($entries),
+            'entries' => $entries,
+        ], $message);
     }
 }

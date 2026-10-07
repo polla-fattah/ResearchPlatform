@@ -91,14 +91,14 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`search comparison 
     expect(res.status).toBe(404)
   })
 
-  it.fails('C-40: a subscription to a query of ANOTHER project is refused', async () => {
-    const q = (await inB('POST', '/searches', { name: '[contract-test] secret', query_text: 'x', search_mode: 'normalized', filter_criteria: {} })).body.data.id
+  it('C-40: a subscription to a query of ANOTHER project is refused', async () => {
+    const q = (await inB('POST', '/searches', { name: '[contract-test] secret', query_text: 'xx', search_mode: 'normalized', filter_criteria: {} })).body.data.id
     const res = await inA('POST', '/search-subscriptions', { saved_query_id: q, frequency: 'weekly' })
     expect(res.status).toBe(422)
     expect(JSON.stringify(res.body)).not.toContain('secret')
   })
 
-  it.fails('C-40: a subscription says when it last ran once its schedule is due', async () => {
+  it('C-40: a subscription says when it last ran once its schedule is due', async () => {
     const list = z.array(subscriptionSchema).parse((await inA('GET', '/search-subscriptions')).body.data)
     expect(list.find((x) => x.id === subId)?.last_run_at).toBeTruthy()
   })
@@ -108,7 +108,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`search comparison 
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-40: a subscription can be removed', async () => {
+  it('C-40: a subscription can be removed', async () => {
     expect((await inA('DELETE', `/search-subscriptions/${subId}`)).status).toBe(200)
   })
 

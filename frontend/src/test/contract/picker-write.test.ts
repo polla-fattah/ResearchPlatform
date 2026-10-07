@@ -121,7 +121,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`resource picker ($
 
   // C-13 (b): saving a second excerpt of the same source answers HTTP 500 because library_items has a
   // unique (user_id, resource_id) constraint (uq_user_resource), so LIB-07 cannot work yet.
-  it.fails('C-13: a distinct excerpt of an already-saved source can be saved', async () => {
+  it('C-13: a distinct excerpt of an already-saved source can be saved', async () => {
     const distinct = await call('POST', '/library/items', {
       ...pickedPayload,
       excerpt_text: 'selected passage',

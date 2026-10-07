@@ -8,7 +8,9 @@ use App\Models\SearchRun;
 use App\Models\SearchSubscription;
 use App\Services\AuthPolicyService;
 use Illuminate\Http\JsonResponse;
+use App\Services\SavedQueryRunner;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SearchSubscriptionController extends ApiController
 {
@@ -34,7 +36,11 @@ class SearchSubscriptionController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'edit', $project);
 
         $validated = $request->validate([
-            'saved_query_id' => 'required|integer|exists:saved_queries,id',
+            'saved_query_id' => [
+                'required',
+                'integer',
+                Rule::exists('saved_queries', 'id')->where('owner_type', 'project')->where('owner_id', $projectId),
+            ],
             'frequency' => 'nullable|string|in:daily,weekly,monthly',
         ]);
 
@@ -50,7 +56,39 @@ class SearchSubscriptionController extends ApiController
             ]
         );
 
-        return $this->successResponse($sub->load('savedQuery'), 'Subscribed to scheduled search alerts.', 201);
+        // The first run is made now, so the subscription has a baseline to compare later runs with.
+        if (!$sub->last_run_at) {
+            $this->runSubscription($sub);
+        }
+
+        return $this->successResponse($sub->fresh('savedQuery'), 'Subscribed to scheduled search alerts.', 201);
+    }
+
+    public function destroy(Request $request, int $projectId, int $id): JsonResponse
+    {
+        $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
+        $this->policyService->authorizeProject($request->user(), 'edit', $project);
+
+        SearchSubscription::where('project_id', $projectId)->findOrFail($id)->delete();
+
+        return $this->successResponse(null, 'Subscription removed.');
+    }
+
+    /**
+     * Run a subscription's saved query now and record when it ran and how many results it had.
+     */
+    public function runSubscription(SearchSubscription $sub): void
+    {
+        $query = SavedQuery::where('owner_type', 'project')->where('owner_id', $sub->project_id)->find($sub->saved_query_id);
+        if (!$query) {
+            return;
+        }
+
+        $result = app(SavedQueryRunner::class)->run($query);
+        $sub->forceFill([
+            'last_run_at' => now(),
+            'last_result_count' => $result['search_run']->match_count,
+        ])->save();
     }
 
     public function toggle(Request $request, int $projectId, int $id): JsonResponse
