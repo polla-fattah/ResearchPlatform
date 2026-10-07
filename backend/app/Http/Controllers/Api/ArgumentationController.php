@@ -8,6 +8,7 @@ use App\Models\ResearchProject;
 use App\Services\AuthPolicyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ArgumentationController extends ApiController
 {
@@ -20,12 +21,21 @@ class ArgumentationController extends ApiController
         $project = ResearchProject::where('is_deleted', false)->findOrFail($projectId);
         $this->policyService->authorizeProject($request->user(), 'view', $project);
 
-        $nodes = ArgumentNode::where('project_id', $projectId)
+        // A removed point is kept (soft-deleted); it is listed only when asked for, so its history can be read.
+        $nodeQuery = ArgumentNode::where('project_id', $projectId)
             ->with(['evidence', 'finding', 'creator'])
-            ->orderBy('order_index')
-            ->get();
+            ->orderBy('order_index');
+        if ($request->boolean('include_removed')) {
+            $nodeQuery->withTrashed();
+        }
+        $nodes = $nodeQuery->get();
 
-        $edges = ArgumentEdge::where('project_id', $projectId)->get();
+        // A relation is shown only while both its points are.
+        $liveIds = $nodes->whereNull('deleted_at')->pluck('id')->all();
+        $edges = ArgumentEdge::where('project_id', $projectId)
+            ->whereIn('source_node_id', $liveIds)
+            ->whereIn('target_node_id', $liveIds)
+            ->get();
 
         // Build Cytoscape compatible structure
         $cyElements = [
@@ -78,8 +88,8 @@ class ArgumentationController extends ApiController
             'node_type' => 'required|string|in:premise,claim,objection,reply,qualification,alternative_conclusion',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'evidence_id' => 'nullable|integer|exists:evidence_items,id',
-            'finding_id' => 'nullable|integer|exists:findings,id',
+            'evidence_id' => ['nullable', 'integer', Rule::exists('evidence_items', 'id')->where('project_id', $projectId)],
+            'finding_id' => ['nullable', 'integer', Rule::exists('findings', 'id')->where('project_id', $projectId)],
             'order_index' => 'nullable|integer',
         ]);
 
@@ -108,12 +118,19 @@ class ArgumentationController extends ApiController
             'node_type' => 'nullable|string|in:premise,claim,objection,reply,qualification,alternative_conclusion',
             'title' => 'nullable|string|max:255',
             'content' => 'nullable|string',
-            'evidence_id' => 'nullable|integer|exists:evidence_items,id',
-            'finding_id' => 'nullable|integer|exists:findings,id',
+            'evidence_id' => ['nullable', 'integer', Rule::exists('evidence_items', 'id')->where('project_id', $projectId)],
+            'finding_id' => ['nullable', 'integer', Rule::exists('findings', 'id')->where('project_id', $projectId)],
             'order_index' => 'nullable|integer',
         ]);
 
-        $node->update(array_filter($validated, fn($val) => !is_null($val)));
+        // A link to evidence or a finding can be removed again by sending null for it; the text fields cannot be emptied.
+        $changes = array_filter($validated, fn($val) => !is_null($val));
+        foreach (['evidence_id', 'finding_id'] as $link) {
+            if ($request->exists($link) && $request->input($link) === null) {
+                $changes[$link] = null;
+            }
+        }
+        $node->update($changes);
 
         return $this->successResponse($node->fresh(['evidence', 'finding']), 'Argument node updated.');
     }
@@ -135,14 +152,29 @@ class ArgumentationController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'edit', $project);
 
         $validated = $request->validate([
-            'source_node_id' => 'required|integer|exists:argument_nodes,id',
-            'target_node_id' => 'required|integer|exists:argument_nodes,id',
+            // Both points must be points of THIS project (and not removed): a number from another project is "not found".
+            'source_node_id' => ['required', 'integer', Rule::exists('argument_nodes', 'id')->where('project_id', $projectId)->whereNull('deleted_at')],
+            'target_node_id' => ['required', 'integer', Rule::exists('argument_nodes', 'id')->where('project_id', $projectId)->whereNull('deleted_at')],
             'relation_type' => 'required|string|in:supports,refutes,qualifies,replies_to,alternative_to',
             'notes' => 'nullable|string',
         ]);
 
         if ($validated['source_node_id'] === $validated['target_node_id']) {
             return $this->errorResponse('Self-referencing argument relations are invalid.', 'CYCLE_ERROR', 422);
+        }
+
+        $duplicate = ArgumentEdge::where('project_id', $projectId)
+            ->where('source_node_id', $validated['source_node_id'])
+            ->where('target_node_id', $validated['target_node_id'])
+            ->where('relation_type', $validated['relation_type'])
+            ->exists();
+        if ($duplicate) {
+            return $this->errorResponse('This relation already exists.', 'DUPLICATE_RELATION', 422);
+        }
+
+        // A new relation source -> target closes a loop when the source can already be reached from the target.
+        if ($this->reaches($projectId, (int) $validated['target_node_id'], (int) $validated['source_node_id'])) {
+            return $this->errorResponse('This relation would close a loop in the argument.', 'CYCLE_ERROR', 422);
         }
 
         $edge = ArgumentEdge::create([
@@ -166,5 +198,30 @@ class ArgumentationController extends ApiController
         $edge->delete();
 
         return $this->successResponse(null, 'Argument relation removed.');
+    }
+
+    /** Whether `$to` can be reached from `$from` by following relations (source -> target) within the project. */
+    private function reaches(int $projectId, int $from, int $to): bool
+    {
+        $next = ArgumentEdge::where('project_id', $projectId)->get(['source_node_id', 'target_node_id'])
+            ->groupBy('source_node_id')
+            ->map(fn($edges) => $edges->pluck('target_node_id')->all());
+
+        $seen = [];
+        $stack = [$from];
+        while ($stack) {
+            $node = array_pop($stack);
+            if ($node === $to) {
+                return true;
+            }
+            if (isset($seen[$node])) {
+                continue;
+            }
+            $seen[$node] = true;
+            foreach ($next[$node] ?? [] as $target) {
+                $stack[] = (int) $target;
+            }
+        }
+        return false;
     }
 }

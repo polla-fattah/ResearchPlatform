@@ -45,8 +45,8 @@ class TeacherAssessmentController extends ApiController
         $this->policyService->authorizeProject($request->user(), 'edit', $project);
 
         $validated = $request->validate([
-            'narrator_id' => 'required|integer',
-            'teacher_id' => 'required|integer',
+            'narrator_id' => ['required', 'integer', 'exists:pgsql_corpus.narrators,id'],
+            'teacher_id' => ['required', 'integer', 'exists:pgsql_corpus.narrators,id'],
             'assessment_category' => 'required|string|in:sound,weakened_specifically,mudallis_from_him,unsubstantiated',
             'critic_name' => 'nullable|string|max:255',
             'qawl_text' => 'required|string',

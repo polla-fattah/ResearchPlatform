@@ -70,7 +70,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`export and import 
     expect((await asUser('POST', '/projects/import-package', { package_data: { project: {} } })).status).toBe(422)
   })
 
-  it.fails('C-42: importing a package brings its findings into the new project', async () => {
+  it('C-42: importing a package brings its findings into the new project', async () => {
     const res = await asUser('POST', '/projects/import-package', { new_title: `[contract-test] imported ${stamp}`, package_data: { project: { title: 'Imported study' }, findings: [{ question: 'q', claim: 'A claim', reasoning: 'r' }] } })
     expect(res.status).toBe(201)
     const id = res.body.data.project.id as number
@@ -79,14 +79,14 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`export and import 
     expect(findings.body.data).toHaveLength(1)
   })
 
-  it.fails('C-42: a request for a DOCX export produces a DOCX file, not the same JSON archive', async () => {
+  it('C-42: a request for a DOCX export produces a DOCX file, not the same JSON archive', async () => {
     const res = await asUser('POST', '/exports', { scope: 'project', project_ids: [projectId], formats: ['docx'] })
     expect(res.status).toBe(201)
     const job = res.body.data.export_job
     expect(String(job.parts?.[0]?.name ?? '')).toMatch(/\.docx$/)
   })
 
-  it.fails('C-42: the checksum of a project export matches the file that is downloaded later', async () => {
+  it('C-42: the checksum of a project export matches the file that is downloaded later', async () => {
     const job = (await asUser('POST', `/projects/${projectId}/exports`, { format: 'json' })).body.data
     await asUser('POST', `/projects/${projectId}/argument-nodes`, { node_type: 'premise', title: 'Added later', content: 'x' })
     const res = await fetch(`${BASE}/api/v1/projects/${projectId}/exports/${job.id}/download`, { headers: { Authorization: `Bearer ${token}` } })
@@ -95,7 +95,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`export and import 
     expect(digest).toBe(job.checksum)
   })
 
-  it.fails('C-42: the graph export can carry the evidence link of a point', async () => {
+  it('C-42: the graph export can carry the evidence link of a point', async () => {
     const g = graphExportSchema.parse((await asUser('GET', `/projects/${projectId}/exports/graph`)).body.data)
     expect(JSON.stringify(g.graph.nodes[0])).toContain('evidence_id')
   })

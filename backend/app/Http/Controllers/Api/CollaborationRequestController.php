@@ -162,17 +162,20 @@ class CollaborationRequestController extends ApiController
             'consent' => 'required|accepted',
         ]);
 
+        // The public route has no auth middleware, so a bearer token, if one was sent, is read here.
+        $requester = auth('sanctum')->user();
+
         $collabRequest = CollaborationRequest::create([
             'project_id' => $announcement->project_id,
-            'requester_id' => $request->user()?->id,
+            'requester_id' => $requester?->id,
             'message' => $validated['message'] . " [From: {$validated['name']} ({$validated['email']})]",
             'contact_email' => $validated['email'],
             'status' => 'pending',
         ]);
 
-        $requesterData = $request->user() ? [
-            'id' => $request->user()->id,
-            'display_name' => $request->user()->display_name,
+        $requesterData = $requester ? [
+            'id' => $requester->id,
+            'display_name' => $requester->display_name,
         ] : null;
 
         $responsePayload = [

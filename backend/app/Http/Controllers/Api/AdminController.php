@@ -281,7 +281,8 @@ class AdminController extends ApiController
         $perPage = min((int)$request->input('per_page', 20), 100);
         $closures = User::where('status', 'closure_requested')
             ->select(['id', 'display_name', 'email', 'closure_requested_at', 'closure_reason'])
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->through(fn (User $user) => $user->makeVisible(['closure_requested_at', 'closure_reason']));
 
         return $this->paginatedResponse($closures);
     }
@@ -498,7 +499,7 @@ class AdminController extends ApiController
             ];
         }
 
-        $pendingProposals = CorpusCorrectionProposal::where('status', 'pending')->count();
+        $pendingProposals = CorpusCorrectionProposal::whereIn('status', ['submitted', 'pending'])->count();
         if ($pendingProposals > 0) {
             $alerts[] = [
                 'severity' => 'info',
@@ -673,7 +674,8 @@ class AdminController extends ApiController
         }
 
         $perPage = min((int) ($request->input('per_page', 20)), 100);
-        $proposals = $query->latest('created_at')->paginate($perPage);
+        $proposals = $query->latest('created_at')->paginate($perPage)
+            ->through(fn (CorpusCorrectionProposal $p) => $this->formatProposal($p));
 
         return $this->paginatedResponse($proposals);
     }
@@ -690,6 +692,10 @@ class AdminController extends ApiController
         $validated = $request->validate([
             'status' => 'required|string|in:accepted,rejected',
         ]);
+
+        if (!in_array($proposal->status, ['submitted', 'pending'], true)) {
+            return $this->errorResponse('This correction has already been decided.', 'ALREADY_DECIDED', 409);
+        }
 
         $proposal->update([
             'status' => $validated['status'],
@@ -710,6 +716,30 @@ class AdminController extends ApiController
             ipAddress: $request->ip()
         );
 
-        return $this->successResponse($proposal->fresh(['researcher', 'decider']), "Proposal {$validated['status']}.");
+        return $this->successResponse($this->formatProposal($proposal->fresh(['researcher', 'decider'])), "Proposal {$validated['status']}.");
+    }
+
+    /**
+     * A correction with only the names of who proposed and decided it, not their whole accounts.
+     *
+     * @return array<string, mixed>
+     */
+    private function formatProposal(CorpusCorrectionProposal $proposal): array
+    {
+        return [
+            'id' => $proposal->id,
+            'researcher_id' => $proposal->researcher_id,
+            'corpus_table' => $proposal->corpus_table,
+            'corpus_id' => $proposal->corpus_id,
+            'current_value' => $proposal->current_value,
+            'proposed_value' => $proposal->proposed_value,
+            'evidence_notes' => $proposal->evidence_notes,
+            'status' => $proposal->status,
+            'decided_by' => $proposal->decided_by,
+            'decided_at' => $proposal->decided_at?->toIso8601String(),
+            'created_at' => $proposal->created_at?->toIso8601String(),
+            'researcher' => $proposal->researcher ? ['id' => $proposal->researcher->id, 'display_name' => $proposal->researcher->display_name] : null,
+            'decider' => $proposal->decider ? ['id' => $proposal->decider->id, 'display_name' => $proposal->decider->display_name] : null,
+        ];
     }
 }

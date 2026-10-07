@@ -80,17 +80,17 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`argument map (${BA
     expect((await inA('POST', '/argument-edges', { source_node_id: ids[0], target_node_id: ids[0], relation_type: 'supports' })).status).toBe(422)
   })
 
-  it.fails('C-39: a relation cannot close a loop through other points', async () => {
+  it('C-39: a relation cannot close a loop through other points', async () => {
     const res = await inA('POST', '/argument-edges', { source_node_id: ids[0], target_node_id: ids[1], relation_type: 'replies_to' })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-39: the same relation is not stored twice', async () => {
+  it('C-39: the same relation is not stored twice', async () => {
     const res = await inA('POST', '/argument-edges', { source_node_id: ids[1], target_node_id: ids[0], relation_type: 'refutes' })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-39: a relation cannot name a point of ANOTHER project (and its answer must not contain that point)', async () => {
+  it('C-39: a relation cannot name a point of ANOTHER project (and its answer must not contain that point)', async () => {
     const other = argumentNodeSchema.parse((await inB('POST', '/argument-nodes', { node_type: 'claim', title: 'Secret of B', content: 'private' })).body.data)
     const res = await inA('POST', '/argument-edges', { source_node_id: ids[0], target_node_id: other.id, relation_type: 'supports' })
     expect(res.status).toBe(422)
@@ -102,7 +102,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`argument map (${BA
     expect(argumentNodeSchema.parse(res.body.data).evidence_id ?? null).toBeNull()
   })
 
-  it.fails('C-39: a removed point is kept in a history that can be read', async () => {
+  it('C-39: a removed point is kept in a history that can be read', async () => {
     const extra = argumentNodeSchema.parse((await inA('POST', '/argument-nodes', { node_type: 'claim', title: 'Short-lived', content: 'x' })).body.data).id
     await inA('DELETE', `/argument-nodes/${extra}`)
     const res = await inA('GET', '/argument-graph?include_removed=1')

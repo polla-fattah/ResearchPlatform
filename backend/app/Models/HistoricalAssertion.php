@@ -18,6 +18,8 @@ class HistoricalAssertion extends Model
         'uncertainty_level',
         'competing_alternatives',
         'adjudication_notes',
+        'year_hijri',
+        'source',
         'created_by',
     ];
 

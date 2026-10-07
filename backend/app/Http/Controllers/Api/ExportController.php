@@ -11,6 +11,7 @@ use App\Models\ExportJob;
 use App\Services\AuthPolicyService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,7 +84,10 @@ class ExportController extends ApiController
             if ($cachedJobId) {
                 $existing = ExportJob::find($cachedJobId);
                 if ($existing) {
-                    return $this->successResponse($existing, 'Existing export job retrieved.', 200);
+                    return $this->successResponse([
+                        'job_id' => $existing->id,
+                        'export_job' => $existing,
+                    ], 'Existing export job retrieved.', 200);
                 }
             }
         }
@@ -106,6 +110,68 @@ class ExportController extends ApiController
 
         if ($idempotencyKey) {
             cache()->put("export_idempotency:{$user->id}:{$idempotencyKey}", $job->id, now()->addHours(12));
+        }
+
+        // A DOCX request produces a real Word document (C-42), not the JSON archive.
+        if ($format === 'docx') {
+            $exportDir = storage_path('app/exports');
+            if (!file_exists($exportDir)) {
+                mkdir($exportDir, 0755, true);
+            }
+            $docxPath = $exportDir . DIRECTORY_SEPARATOR . "export_{$job->id}.docx";
+            $lines = [];
+            foreach ($projectIds as $pId) {
+                $proj = ResearchProject::find($pId);
+                if (!$proj) continue;
+                $lines[] = ['heading', (string) $proj->title];
+                if ($proj->question) $lines[] = ['text', (string) $proj->question];
+                if ($proj->scope) $lines[] = ['text', (string) $proj->scope];
+                foreach ($proj->findings()->get() as $f) {
+                    $lines[] = ['heading2', (string) $f->claim];
+                    if ($f->reasoning) $lines[] = ['text', (string) $f->reasoning];
+                }
+                foreach (Document::where('project_id', $pId)->with('latestVersion')->get() as $d) {
+                    $lines[] = ['heading2', (string) $d->title];
+                    $plain = trim(html_entity_decode(strip_tags((string) ($d->latestVersion?->content ?? ''))));
+                    foreach (preg_split('/\R+/u', $plain) ?: [] as $para) {
+                        if (trim($para) !== '') $lines[] = ['text', $para];
+                    }
+                }
+            }
+            $this->writeDocx($docxPath, $lines);
+            $fileSize = filesize($docxPath);
+            $checksum = hash_file('sha256', $docxPath);
+            $manifest = [
+                'job_id' => $job->id,
+                'scope' => $scope,
+                'format' => 'docx',
+                'created_at' => now()->toIso8601String(),
+                'requester' => ['id' => $user->id, 'display_name' => $user->display_name],
+                'files' => ["export_{$job->id}_part_1.docx"],
+                'rights_checked' => true,
+            ];
+            $job->update([
+                'status' => 'completed',
+                'progress' => 'Packaging completed',
+                'file_size' => $fileSize,
+                'checksum' => $checksum,
+                'parts' => [[
+                    'id' => 1,
+                    'part_number' => 1,
+                    'name' => "export_{$job->id}_part_1.docx",
+                    'size' => $fileSize,
+                    'size_bytes' => $fileSize,
+                    'checksum' => $checksum,
+                    'checksum_sha256' => $checksum,
+                    'status' => 'ready',
+                ]],
+                'manifest' => $manifest,
+            ]);
+
+            return $this->successResponse([
+                'job_id' => $job->id,
+                'export_job' => $job->fresh(),
+            ], 'Export job packaged successfully.', 201);
         }
 
         // Generate real ZIP archive on disk (C-7)
@@ -284,14 +350,24 @@ class ExportController extends ApiController
         $user = $request->user();
         $job = ExportJob::where('requester_id', $user->id)->findOrFail($id);
 
-        return $this->successResponse($job->manifest ?? [
+        $manifest = $job->manifest ?? [
             'job_id' => $job->id,
             'scope' => $job->scope,
             'format' => $job->format,
             'files' => ["archive.{$job->format}", 'metadata.json'],
             'checksums' => ['archive' => $job->checksum ?? 'pending'],
-            'exclusions' => $job->exclusions ?? [],
-        ]);
+        ];
+
+        // What the export holds and what it left out, counted from the project it was made from.
+        $projectId = $job->target_id;
+        $manifest['counts'] = $manifest['counts'] ?? [
+            'resources' => $projectId ? ProjectResource::where('project_id', $projectId)->count() : 0,
+            'evidence_items' => $projectId ? EvidenceItem::where('project_id', $projectId)->count() : 0,
+            'documents' => $projectId ? Document::where('project_id', $projectId)->count() : 0,
+        ];
+        $manifest['exclusions'] = $job->exclusions ?? [];
+
+        return $this->successResponse($manifest);
     }
 
     /**
@@ -335,7 +411,9 @@ class ExportController extends ApiController
             ], 404);
         }
 
-        $filePath = storage_path("app/exports/export_{$job->id}.zip");
+        $isDocx = $job->format === 'docx';
+        $extension = $isDocx ? 'docx' : 'zip';
+        $filePath = storage_path("app/exports/export_{$job->id}.{$extension}");
 
         if (!file_exists($filePath)) {
             return response()->json([
@@ -349,8 +427,8 @@ class ExportController extends ApiController
 
         return response()->download(
             $filePath,
-            "export_{$job->id}_part_{$partId}.zip",
-            ['Content-Type' => 'application/zip']
+            "export_{$job->id}_part_{$partId}.{$extension}",
+            ['Content-Type' => $isDocx ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'application/zip']
         );
     }
 
@@ -453,6 +531,11 @@ class ExportController extends ApiController
         $checksum = hash('sha256', $payload);
         $fileSize = strlen($payload);
 
+        $exportDir = storage_path('app/exports');
+        if (!file_exists($exportDir)) {
+            mkdir($exportDir, 0755, true);
+        }
+
         $job = ExportJob::create([
             'requester_id' => $request->user()->id,
             'scope' => 'project',
@@ -465,6 +548,9 @@ class ExportController extends ApiController
             'completed_at' => now(),
             'created_at' => now(),
         ]);
+
+        // The file that is downloaded later is this one, so the checksum above always matches it.
+        file_put_contents($exportDir . DIRECTORY_SEPARATOR . "project_export_{$job->id}.json", $payload);
 
         $job->update([
             'download_url' => url("/api/v1/projects/{$projectId}/exports/{$job->id}/download"),
@@ -505,8 +591,12 @@ class ExportController extends ApiController
             return response()->json(['success' => false, 'error' => ['message' => 'Export job not found']], 404);
         }
 
-        $data = $this->compileProjectData($project, $request->user()?->id);
-        $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $storedPath = storage_path("app/exports/project_export_{$job->id}.json");
+        if (file_exists($storedPath)) {
+            $content = file_get_contents($storedPath);
+        } else {
+            $content = json_encode($this->compileProjectData($project, $request->user()?->id), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
 
         return response($content, 200, [
             'Content-Type' => 'application/json; charset=utf-8',
@@ -575,6 +665,8 @@ class ExportController extends ApiController
                     'label' => $n->title,
                     'type' => $n->node_type,
                     'content' => $n->content,
+                    'evidence_id' => $n->evidence_id,
+                    'finding_id' => $n->finding_id,
                 ],
             ];
         }
@@ -612,18 +704,7 @@ class ExportController extends ApiController
         $data = null;
 
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $data = [
-                'project' => [
-                    'title' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-                    'question' => 'Imported from uploaded archive',
-                ],
-                'resources' => [],
-                'evidence_items' => [],
-                'findings' => [],
-                'documents' => [],
-                'argument_nodes' => [],
-            ];
+            $data = $this->readPackageFile($request->file('file'));
         } elseif ($request->has('package_data')) {
             $data = $request->input('package_data');
         }
@@ -652,28 +733,172 @@ class ExportController extends ApiController
             return $this->successResponse($preview, 'Research package preview generated.');
         }
 
-        // Create new private project for current user
-        $newProject = ResearchProject::create([
-            'title' => $request->input('new_title', ("Imported: " . ($projMeta['title'] ?? 'Research Project'))),
-            'owner_id' => $request->user()->id,
-            'question' => $projMeta['question'] ?? 'Imported research question',
-            'scope' => $projMeta['scope'] ?? 'Imported project',
-            'stage' => 'collecting',
-            'is_deleted' => false,
-        ]);
+        // Create new private project for current user, with what the package carries
+        $newProject = DB::transaction(function () use ($request, $projMeta, $data) {
+            $newProject = ResearchProject::create([
+                'title' => $request->input('new_title', ("Imported: " . ($projMeta['title'] ?? 'Research Project'))),
+                'owner_id' => $request->user()->id,
+                'question' => $projMeta['question'] ?? 'Imported research question',
+                'scope' => $projMeta['scope'] ?? 'Imported project',
+                'stage' => 'collecting',
+                'is_deleted' => false,
+            ]);
 
-        // Add owner membership
-        \App\Models\ProjectMembership::create([
-            'project_id' => $newProject->id,
-            'user_id' => $request->user()->id,
-            'role' => 'owner',
-            'status' => 'accepted',
-            'accepted_at' => now(),
-        ]);
+            \App\Models\ProjectMembership::create([
+                'project_id' => $newProject->id,
+                'user_id' => $request->user()->id,
+                'role' => 'owner',
+                'status' => 'accepted',
+                'accepted_at' => now(),
+            ]);
+
+            $this->importPackageContents($newProject, $data, $request->user()->id);
+
+            return $newProject;
+        });
+
+        $preview['imported'] = [
+            'findings' => $newProject->findings()->count(),
+            'documents' => $newProject->documents()->count(),
+            'arguments' => \App\Models\ArgumentNode::where('project_id', $newProject->id)->count(),
+        ];
+        // Evidence and resources point at the exporter's library and at corpus entries, so they are not carried over.
+        $preview['not_imported'] = ['resources', 'evidence_items'];
 
         return $this->successResponse([
             'project' => $newProject->load('owner'),
             'imported_summary' => $preview,
         ], 'Research package successfully imported into new project.', 201);
+    }
+
+    /**
+     * Read an uploaded package: a JSON file, or a ZIP made by this platform (its first projects/project_*.json).
+     */
+    private function readPackageFile(\Illuminate\Http\UploadedFile $file): ?array
+    {
+        $raw = file_get_contents($file->getRealPath());
+        if ($raw === false) {
+            return null;
+        }
+        if (str_starts_with($raw, 'PK')) {
+            $zip = new \ZipArchive();
+            if ($zip->open($file->getRealPath()) !== true) {
+                return null;
+            }
+            $raw = null;
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $name = $zip->getNameIndex($i);
+                if (preg_match('#^projects/project_\d+\.json$#', $name)) {
+                    $raw = $zip->getFromIndex($i);
+                    break;
+                }
+            }
+            $zip->close();
+            if ($raw === null) {
+                return null;
+            }
+        }
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : null;
+    }
+
+    /**
+     * Create the findings, documents (their latest text as version 1) and argument map that a package carries.
+     */
+    private function importPackageContents(ResearchProject $project, array $data, int $userId): void
+    {
+        foreach (($data['findings'] ?? []) as $f) {
+            if (!is_array($f) || empty($f['claim'])) {
+                continue;
+            }
+            \App\Models\Finding::create([
+                'project_id' => $project->id,
+                'question' => $f['question'] ?? 'Imported question',
+                'claim' => $f['claim'],
+                'reasoning' => $f['reasoning'] ?? '',
+                'limitations' => $f['limitations'] ?? null,
+                'status' => in_array($f['status'] ?? null, ['provisional', 'supported', 'inconclusive', 'disputed', 'withdrawn'], true) ? $f['status'] : 'provisional',
+            ]);
+        }
+
+        foreach (($data['documents'] ?? []) as $d) {
+            if (!is_array($d) || empty($d['title'])) {
+                continue;
+            }
+            $doc = Document::create([
+                'project_id' => $project->id,
+                'title' => $d['title'],
+                'document_type' => in_array($d['document_type'] ?? null, ['article', 'dossier', 'dataset_note'], true) ? $d['document_type'] : 'article',
+                'language' => $d['language'] ?? 'ar',
+            ]);
+            \App\Models\DocumentVersion::create([
+                'document_id' => $doc->id,
+                'version_number' => 1,
+                'content' => (string) ($d['latest_version']['content'] ?? $d['content'] ?? ''),
+                'author_id' => $userId,
+                'change_summary' => 'Imported from a research package',
+                'created_at' => now(),
+            ]);
+        }
+
+        $nodeMap = [];
+        foreach (($data['argument_nodes'] ?? []) as $n) {
+            if (!is_array($n) || empty($n['title'])) {
+                continue;
+            }
+            $node = \App\Models\ArgumentNode::create([
+                'project_id' => $project->id,
+                'node_type' => $n['node_type'] ?? 'premise',
+                'title' => $n['title'],
+                'content' => $n['content'] ?? null,
+                'order_index' => $n['order_index'] ?? 0,
+                'created_by' => $userId,
+            ]);
+            if (isset($n['id'])) {
+                $nodeMap[$n['id']] = $node->id;
+            }
+        }
+        foreach (($data['argument_edges'] ?? []) as $e) {
+            $from = $e['source_node_id'] ?? null;
+            $to = $e['target_node_id'] ?? null;
+            if (!is_array($e) || !isset($nodeMap[$from], $nodeMap[$to])) {
+                continue;
+            }
+            \App\Models\ArgumentEdge::create([
+                'project_id' => $project->id,
+                'source_node_id' => $nodeMap[$from],
+                'target_node_id' => $nodeMap[$to],
+                'relation_type' => $e['relation_type'] ?? 'supports',
+                'notes' => $e['notes'] ?? null,
+                'created_at' => now(),
+            ]);
+        }
+    }
+
+    /**
+     * Write a minimal Word document: ['heading'|'heading2'|'text', string] lines become paragraphs.
+     */
+    private function writeDocx(string $path, array $lines): void
+    {
+        $esc = fn(string $t) => htmlspecialchars($t, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        $body = '';
+        foreach ($lines as [$kind, $text]) {
+            $style = match ($kind) {
+                'heading' => '<w:pPr><w:pStyle w:val="Heading1"/></w:pPr>',
+                'heading2' => '<w:pPr><w:pStyle w:val="Heading2"/></w:pPr>',
+                default => '',
+            };
+            $body .= '<w:p>' . $style . '<w:r><w:t xml:space="preserve">' . $esc($text) . '</w:t></w:r></w:p>';
+        }
+        if ($body === '') {
+            $body = '<w:p/>';
+        }
+
+        $zip = new \ZipArchive();
+        $zip->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $zip->addFromString('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+        $zip->addFromString('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+        $zip->addFromString('word/document.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' . $body . '</w:body></w:document>');
+        $zip->close();
     }
 }

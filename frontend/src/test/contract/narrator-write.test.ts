@@ -84,25 +84,42 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`narrator dossier (
     expect(list.every((a) => a.subject_id === narratorId + 1000)).toBe(true)
   })
 
-  it.fails('C-37: an assessment for a narrator or teacher that is not in the corpus is refused', async () => {
+  it('C-37: an assessment for a narrator or teacher that is not in the corpus is refused', async () => {
     const res = await asOwner('POST', '/narrator-assessments', { narrator_id: 999999999, teacher_id: 999999998, assessment_category: 'sound', qawl_text: 'x' })
     expect(res.status).toBe(422)
   })
 
-  it.fails('C-37: an assertion can carry a year and a source as fields', async () => {
+  it('C-37: an assertion can carry a year and a source as fields', async () => {
     const res = await asOwner('POST', '/assertions', { subject_type: 'narrator', subject_id: narratorId, subject_name: 'N', assertion_claim: 'Died', year_hijri: 197, source: 'Taqrib' })
-    expect(assertionSchema.parse(res.body.data)).toHaveProperty('year_hijri', 197)
+    expect(res.body.data).toMatchObject({ year_hijri: 197, source: 'Taqrib' })
   })
 
-  it.fails('C-37: a stored empty value can clear an adjudication note', async () => {
+  it('C-37: a stored empty value can clear an adjudication note', async () => {
     const made = assertionSchema.parse((await asOwner('POST', '/assertions', { subject_type: 'narrator', subject_id: narratorId, subject_name: 'N', assertion_claim: 'c', adjudication_notes: 'n' })).body.data)
     const res = await asOwner('PATCH', `/assertions/${made.id}`, { adjudication_notes: '' })
     expect(assertionSchema.parse(res.body.data).adjudication_notes ?? '').toBe('')
   })
 
-  it.fails('C-37: a trajectory cannot be written by any approved researcher into data shared by every project', async () => {
-    const res = await call('POST', '/geospatial/trajectories', { narrator_id: 999999999, place_id: 1, trajectory_type: 'birth' }, owner)
+  it('C-37: a trajectory cannot be written by an ordinary researcher into data shared by every project', async () => {
+    const applied = await call('POST', '/applications', {
+      display_name: `[contract-test] narrator researcher ${stamp}`,
+      email: `contract-narrator-${stamp}@example.test`,
+      password: 'password123',
+      password_confirmation: 'password123',
+      research_interests: 'Contract testing',
+      preferred_language: 'en',
+    })
+    const id = applied.body.data.user.id
+    await call('PATCH', `/admin/users/${id}/status`, { status: 'pending', reason: 'Contract test: stand in for email verification' }, owner)
+    await call('POST', `/admin/applications/${applied.body.data.application.id}/decide`, { decision: 'approved', decision_reason: 'Contract test account' }, owner)
+    const researcher = (await call('POST', '/auth/login', { email: `contract-narrator-${stamp}@example.test`, password: 'password123' })).body.data.token
+    const res = await call('POST', '/geospatial/trajectories', { narrator_id: narratorId, place_id: 1, trajectory_type: 'birth' }, researcher)
     expect(res.status).toBe(403)
+  })
+
+  it('C-37: a trajectory for a narrator that is not in the corpus is refused', async () => {
+    const res = await call('POST', '/geospatial/trajectories', { narrator_id: 999999999, place_id: 1, trajectory_type: 'birth' }, owner)
+    expect(res.status).toBe(422)
   })
 
   it('cleans up: trashes the project', async () => {

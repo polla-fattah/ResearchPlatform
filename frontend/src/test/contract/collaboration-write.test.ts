@@ -57,7 +57,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`collaboration requ
     expect((await asOwner('POST', '/announcement/publish')).status).toBe(200)
   })
 
-  it.fails('C-28 (P0): a signed-in researcher can send a request from the public announcement', async () => {
+  it('C-28 (P0): a signed-in researcher can send a request from the public announcement', async () => {
     const res = await call('POST', `/public/announcements/${slug}/collaboration-requests`, interest(), owner)
     expect(res.status).toBe(202)
   })

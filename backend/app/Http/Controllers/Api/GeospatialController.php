@@ -28,8 +28,13 @@ class GeospatialController extends ApiController
 
     public function recordTrajectory(Request $request): JsonResponse
     {
+        // Trajectories are shared by every project, so only corpus editors may write them.
+        if (!in_array('corpus_editor', $request->user()->roles, true)) {
+            return $this->errorResponse('Only corpus editors can record trajectory points shared by all projects.', 'FORBIDDEN', 403);
+        }
+
         $validated = $request->validate([
-            'narrator_id' => 'required|integer',
+            'narrator_id' => ['required', 'integer', 'exists:pgsql_corpus.narrators,id'],
             'place_id' => 'required|integer|exists:geographical_places,id',
             'trajectory_type' => 'required|string|in:birth,death,residence,rihlah,audition',
             'year_hijri_start' => 'nullable|integer',

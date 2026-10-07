@@ -254,7 +254,7 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(again.status).toBeGreaterThanOrEqual(400)
   })
 
-  it.fails('C-20: a decided corpus correction cannot be decided again', async () => {
+  it('C-20: a decided corpus correction cannot be decided again', async () => {
     const again = await asAdmin('POST', `/admin/corpus/proposals/${proposalId}/decide`, { status: 'rejected' })
     expect(again.status).toBeGreaterThanOrEqual(400)
   })
@@ -264,14 +264,20 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`administration, wr
     expect(refused[0]!.outcome).not.toBe('success')
   })
 
-  it.fails('C-20: the operations view counts corrections that are waiting for review', async () => {
+  it('C-20: the operations view counts corrections that are waiting for review', async () => {
+    const waitingOne = await call(
+      'POST',
+      '/corpus/proposals',
+      { corpus_table: 'hadiths', corpus_id: 1, current_value: 'Unknown', proposed_value: 'p. 65', evidence_notes: '[contract-test] waiting correction ' + stamp },
+      applicantToken,
+    )
+    expect(waitingOne.status).toBe(201)
     const ops = opsSchema.parse((await asAdmin('GET', '/admin/ops')).body.data)
-    const waiting = (await asAdmin('GET', '/admin/corpus/proposals?status=submitted&per_page=1')).body.meta.pagination.total_items
-    expect(waiting).toBeGreaterThan(0)
     expect(ops.active_alerts.some((a) => /correction/i.test(a.message))).toBe(true)
+    expect((await asAdmin('POST', `/admin/corpus/proposals/${waitingOne.body.data.id}/decide`, { status: 'rejected' })).status).toBe(200)
   })
 
-  it.fails('C-20: corrections do not carry the whole account of who proposed or decided them', async () => {
+  it('C-20: corrections do not carry the whole account of who proposed or decided them', async () => {
     const res = await asAdmin('GET', '/admin/corpus/proposals?per_page=1')
     expect(JSON.stringify(res.body.data)).not.toMatch(/"mfa_enabled"/)
   })

@@ -96,9 +96,20 @@ describe.skipIf(!reachable || !EMAIL || !PASSWORD || !WRITE)(`submission (${BASE
     expect(submissionSchema.parse((await asOwner('GET', `/submissions/${submissionId}`)).body.data).title).toBe(`[contract-test] ${stamp}`)
   })
 
-  it.fails('C-29: the check flags a citation to unresolved evidence', async () => {
-    // Needs an unresolved evidence item cited in the document; the check reads `status` where evidence has `state`.
-    throw new Error('requires a cited unresolved evidence item; the check cannot see it today')
+  it('C-29: the check flags a citation to unresolved evidence', async () => {
+    const lib = await call('POST', '/library/items', { resource_type: 'external', title: `[contract-test] cited source ${stamp}`, author: 'Author A' }, owner)
+    const evidenceId = (await asOwner('POST', '/evidence', { resource_id: lib.body.data.resource_id, captured_text: 'Cited text', locator: 'p. 1' })).body.data.id
+    const doc = await asOwner('POST', '/documents', { title: 'Cites it', document_type: 'article', language: 'en', content: 'Draft.' })
+    const saved = await asOwner('POST', `/documents/${doc.body.data.id}/versions`, {
+      content: 'Cites it.',
+      expected_version: 1,
+      citations: [{ resource_id: lib.body.data.resource_id, evidence_id: evidenceId, locator: 'p. 1', citation_type: 'direct_quotation', formatted_citation: 'Author A, p. 1' }],
+    })
+    expect(saved.status).toBe(201)
+    expect((await asOwner('PATCH', `/evidence/${evidenceId}`, { state: 'unresolved', state_reason: 'Contract test: not yet settled' })).status).toBe(200)
+    const res = validationSchema.parse((await asOwner('POST', '/validate-pre-publication', { document_ids: [doc.body.data.id] })).body.data)
+    expect(res.is_valid).toBe(false)
+    expect(res.issues.map((i) => i.code)).toContain('UNRESOLVED_EVIDENCE_DEPENDENCY')
   })
 
   it('C-29: the author’s view of a package does not carry reviewer identities or their notes', async () => {

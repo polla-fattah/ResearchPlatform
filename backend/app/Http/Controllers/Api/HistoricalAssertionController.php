@@ -48,6 +48,8 @@ class HistoricalAssertionController extends ApiController
             'uncertainty_level' => 'nullable|string|in:certain,highly_probable,probable,contested,speculative',
             'competing_alternatives' => 'nullable|array',
             'adjudication_notes' => 'nullable|string',
+            'year_hijri' => 'nullable|integer|min:-1000|max:2000',
+            'source' => 'nullable|string|max:500',
         ]);
 
         $assertion = HistoricalAssertion::create([
@@ -59,6 +61,8 @@ class HistoricalAssertionController extends ApiController
             'uncertainty_level' => $validated['uncertainty_level'] ?? 'probable',
             'competing_alternatives' => $validated['competing_alternatives'] ?? [],
             'adjudication_notes' => $validated['adjudication_notes'] ?? null,
+            'year_hijri' => $validated['year_hijri'] ?? null,
+            'source' => $validated['source'] ?? null,
             'created_by' => $request->user()->id,
         ]);
 
@@ -89,9 +93,22 @@ class HistoricalAssertionController extends ApiController
             'uncertainty_level' => 'nullable|string|in:certain,highly_probable,probable,contested,speculative',
             'competing_alternatives' => 'nullable|array',
             'adjudication_notes' => 'nullable|string',
+            'year_hijri' => 'nullable|integer|min:-1000|max:2000',
+            'source' => 'nullable|string|max:500',
         ]);
 
-        $assertion->update(array_filter($validated, fn($val) => !is_null($val)));
+        // A field that was sent as null or '' is cleared; a field that was not sent is left alone. The claim cannot be emptied.
+        $changes = array_intersect_key($validated, $request->all());
+        if (array_key_exists('assertion_claim', $changes) && ($changes['assertion_claim'] === null || $changes['assertion_claim'] === '')) {
+            unset($changes['assertion_claim']);
+        }
+        if (array_key_exists('uncertainty_level', $changes) && $changes['uncertainty_level'] === null) {
+            unset($changes['uncertainty_level']);
+        }
+        if (array_key_exists('competing_alternatives', $changes) && $changes['competing_alternatives'] === null) {
+            $changes['competing_alternatives'] = [];
+        }
+        $assertion->update($changes);
 
         return $this->successResponse($assertion->fresh('creator'), 'Historical assertion updated.');
     }
