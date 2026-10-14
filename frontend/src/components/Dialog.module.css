@@ -7,7 +7,7 @@
   color: var(--ink);
 }
 .dialog::backdrop {
-  background: rgb(29 26 21 / 45%);
+  background: rgb(20 24 21 / 45%);
 }
 .actions {
   display: flex;

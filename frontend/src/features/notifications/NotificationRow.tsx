@@ -33,7 +33,7 @@ export function NotificationRow({ item, href, busy, onRead }: Props) {
         <p className={styles.text}>
           <BidiText>{item.message ?? item.title ?? ''}</BidiText>
         </p>
-        {item.type === 'invitation' ? <p className={styles.meta}>{t('notifications.invitationHint')}</p> : null}
+        {item.type === 'invitation' && !item.invitation_token ? <p className={styles.meta}>{t('notifications.invitationHint')}</p> : null}
       </div>
       <div className={styles.actions}>
         {href ? (

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { confirmMfa, disableMfa, startMfa } from '@/api/account'
 import { invalidate } from '@/api/invalidate'
 import type { Me } from '@/api/schemas/auth'
+import { usePreferences } from '@/app/preferencesContext'
 import { Button } from '@/components/Button'
 import { Field } from '@/components/Field'
 import { Modal } from '@/components/Modal'
@@ -18,6 +19,7 @@ import styles from './Settings.module.css'
  */
 export function MfaSection({ me }: { me: Me }) {
   const { t } = useTranslation()
+  const { n } = usePreferences()
   const qc = useQueryClient()
   const [code, setCode] = useState('')
   const [kept, setKept] = useState(false)
@@ -60,6 +62,11 @@ export function MfaSection({ me }: { me: Me }) {
     <section className={styles.section} aria-label={t('settings.mfa.title')}>
       <h2>{t('settings.mfa.title')}</h2>
       <p>{on ? t('settings.mfa.on') : t('settings.mfa.off')}</p>
+      {on && me.recovery_codes_remaining != null ? (
+        <p className={styles.hint} role="status">
+          {t('settings.mfa.codesLeft', { count: me.recovery_codes_remaining, formattedCount: n(me.recovery_codes_remaining) })}
+        </p>
+      ) : null}
       <p className={styles.hint}>{t('settings.mfa.about')}</p>
 
       {on ? (

@@ -1,45 +1,49 @@
 /* Visual system from docs/design/HadithResearch/CLAUDE.md. Do not add colours elsewhere. */
 :root {
-  --paper: #f5f1e8;
-  --surface: #fffdf8;
+  /* Warm paper, emerald that carries meaning, and gold for decoration only: the palette of the platform site. */
+  --paper: #fbf9f4;
+  --surface: #ffffff;
   --surface-white: #ffffff;
-  --ink: #1d1a15;
-  --ink-2: #4a443b;
-  --muted: #6a6257;
-  --neutral: #8a8276; /* dashed neutral states, never red */
-  --rule: #e3dbcb;
-  --rule-strong: #cfc6b4;
+  --ink: #141815;
+  --ink-2: #343c37;
+  --muted: #565f5a;
+  --neutral: #7c857f; /* dashed neutral states, never red */
+  --rule: #e6e4dc;
+  --rule-strong: #d3d1c7;
 
-  --accent: #1f5a57;
-  --accent-dark: #123b39;
-  --accent-soft: #e3eeec;
-  --accent-mid: #8fc2bc;
+  --accent: #0f6b4f;
+  --accent-dark: #073b2c;
+  --accent-soft: #e8f1ed;
+  --accent-mid: #9fcfbd;
 
-  --warn: #9a3b24; /* real errors only */
-  --warn-soft: #f6e5df;
+  --warn: #8f3a1c; /* real errors only */
+  --warn-soft: #f7e6df;
   --warn-rule: #d9a898;
   --warn-ink: #5c2a1c; /* text on the warn background */
 
   --on-accent: #ffffff; /* text on the accent colour */
-  --accent-darker: #174744; /* pressed accent */
-  --surface-sunk: #ede6d8; /* chips and wells */
-  --surface-warm: #fbf8f1;
-  --faint: #b1a898; /* disabled and placeholder text */
-  --bar-included: #6e9c97; /* evidence state bars */
-  --bar-excluded: #b9b0a0;
+  --accent-darker: #0a523c; /* pressed accent */
+  --surface-sunk: #f3f0e8; /* chips and wells */
+  --surface-warm: #f7f4ec;
+  --faint: #aab1ac; /* disabled and placeholder text */
+  --bar-included: #5aa088; /* evidence state bars */
+  --bar-excluded: #c3c2b9;
+  --gold: #c9a227; /* rules and glow only: it is 2.3:1 on paper, never text */
+  --gold-soft: #f7f0da;
 
   /* Provenance (always text + icon, never colour alone) */
   --note: #2f4e7a;
   --note-soft: #e8edf5;
-  --attributed: #7a5413;
-  --attributed-soft: #f5ecd9;
+  --attributed: #6b4a0f;
+  --attributed-soft: #f7f0da;
 
-  --font-serif: 'Newsreader', serif;
-  --font-sans: 'IBM Plex Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
-  --font-arabic: 'Noto Naskh Arabic', serif;
+  --font-sans: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', system-ui, sans-serif;
+  --font-serif: var(--font-sans); /* one family, one voice: hierarchy comes from size and weight */
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-arabic: var(--font-sans);
 
-  --radius: 6px;
+  --radius: 10px;
+  --shadow-raise: 0 1px 2px rgb(20 24 21 / 0.04), 0 8px 24px -12px rgb(20 24 21 / 0.12);
   --rail-width: 232px;
   --min-desktop: 1024px;
 }

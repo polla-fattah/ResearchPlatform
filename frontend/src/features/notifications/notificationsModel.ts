@@ -7,22 +7,26 @@ export const isKnownType = (t: string): t is KnownType => (KNOWN_TYPES as readon
 
 /**
  * Where a notification leads, or null when it cannot lead anywhere honestly.
- *  - an invitation leads nowhere: the notification does not carry the link, and the invited person cannot open the
- *    project before accepting (request file C-24);
- *  - a task has no project in the notification, so the project comes from the person's assigned tasks;
+ *  - an invitation leads to the page that answers it, when the notification carries the token of the pending invitation;
+ *    without one (answered, withdrawn or expired) it leads nowhere, because the project cannot be opened before accepting;
+ *  - a task leads to the project the notification names, or, for an older notification without one, the project found in
+ *    the person's assigned tasks;
  *  - a project the person was removed from is "not available" when opened, which the project shell says itself.
  */
-export function notificationHref(n: Pick<AppNotification, 'type' | 'target_type' | 'target_id'>, projectOfTask: (taskId: number) => number | null): string | null {
-  if (n.type === 'invitation') return null
+export function notificationHref(
+  n: Pick<AppNotification, 'type' | 'target_type' | 'target_id'> & Partial<Pick<AppNotification, 'project_id' | 'invitation_token'>>,
+  projectOfTask: (taskId: number) => number | null,
+): string | null {
+  if (n.type === 'invitation') return n.invitation_token ? `/invitations/${encodeURIComponent(n.invitation_token)}` : null
   if (n.target_type === 'project' && n.target_id) return n.type === 'invitation_accepted' ? `/projects/${n.target_id}/members` : `/projects/${n.target_id}/overview`
   if (n.target_type === 'task' && n.target_id) {
-    const project = projectOfTask(n.target_id)
+    const project = n.project_id ?? projectOfTask(n.target_id)
     return project ? `/projects/${project}/discussion?view=tasks&mine=1` : null
   }
   return null
 }
 
-/** Whether the page holds a notification that needs the assigned-task lookup. */
-export const needsTaskLookup = (items: readonly AppNotification[]) => items.some((n) => n.target_type === 'task' && n.target_id)
+/** Whether the page holds a task notification that does not name its project, so it needs the assigned-task lookup. */
+export const needsTaskLookup = (items: readonly AppNotification[]) => items.some((n) => n.target_type === 'task' && n.target_id && !n.project_id)
 
 export const unreadOn = (items: readonly AppNotification[]) => items.filter((n) => !n.is_read).length

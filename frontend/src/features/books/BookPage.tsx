@@ -127,6 +127,7 @@ function ChapterList({ matches, all, selected, onPick }: { matches: BookStructur
           <li key={c.chapter_id}>
             <button type="button" className={styles.item} aria-current={c.chapter_id === selected} onClick={() => onPick(c.chapter_id)}>
               <span className={styles.itemTitle}>
+                {c.chapter_number != null ? <span className={styles.meta}>{n(c.chapter_number)}. </span> : null}
                 <BidiText>{chapterLabel(c, all.indexOf(c) + 1)}</BidiText>
               </span>
               <span className={styles.meta}>{t('books.contents.occurrences', { count: c.occurrence_count, n: n(c.occurrence_count) })}</span>

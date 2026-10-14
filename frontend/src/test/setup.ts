@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { session } from '@/api/http'
-import { initI18n } from '@/i18n'
+import { initI18n, setLanguage } from '@/i18n'
 import { server } from './server'
 
 // jsdom does not implement <dialog> modal methods.
@@ -21,10 +21,12 @@ initI18n('en')
 configure({ asyncUtilTimeout: 5000 })
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
-afterEach(() => {
+afterEach(async () => {
   cleanup()
   server.resetHandlers()
   session.set(null)
+  // A test that chose Sorani or Arabic must not leave the next one in that language (the interface now has real Sorani strings).
+  await setLanguage('en')
   localStorage.clear()
 })
 afterAll(() => server.close())

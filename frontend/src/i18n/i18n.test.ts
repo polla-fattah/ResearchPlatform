@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import ckb from './locales/ckb.json'
+import en from './locales/en.json'
 import { applyDocumentLanguage } from './index'
 import { DEFAULT_PREFERENCES, formatDate, formatNumber } from './format'
 
@@ -34,5 +36,41 @@ describe('numerals and dates', () => {
 
   it('returns an empty string for an invalid date instead of throwing', () => {
     expect(formatDate('not a date', 'en', DEFAULT_PREFERENCES)).toBe('')
+  })
+})
+
+describe('Arabic translations and terminology', () => {
+  it('loads core scholarly Hadith terms in Arabic', async () => {
+    const { default: i18n, initI18n, loadLanguage } = await import('./index')
+    initI18n('ar')
+    await loadLanguage('ar')
+    expect(i18n.t('app.name', { lng: 'ar' })).toBe('منصة أبحاث الحديث الشريف')
+    expect(i18n.t('nav.library', { lng: 'ar' })).toBe('مكتبتي')
+    expect(i18n.t('nav.projects', { lng: 'ar' })).toBe('المشاريع البحثية')
+    expect(i18n.t('analysisTools.isnad', { lng: 'ar' })).toBe('رسم شجرة الإسناد')
+    expect(i18n.t('analysisTools.ilal', { lng: 'ar' })).toBe('دراسة العلل الحديثية')
+    expect(i18n.t('analysisTools.matn', { lng: 'ar' })).toBe('محاذاة المتون')
+  })
+})
+
+/** Every string of a nested locale file, by its dotted key. */
+function leaves(node: unknown, path = ''): [string, string][] {
+  if (node && typeof node === 'object') return Object.entries(node).flatMap(([k, v]) => leaves(v, path ? `${path}.${k}` : k))
+  return [[path, String(node)]]
+}
+const placeholders = (text: string) => (text.match(/\{\{[^}]+\}\}/g) ?? []).sort()
+
+describe('Sorani translation', () => {
+  const english = new Map(leaves(en))
+  const sorani = new Map(leaves(ckb))
+
+  it('has every string the English file has, and no others', () => {
+    expect([...english.keys()].filter((k) => !sorani.has(k))).toEqual([])
+    expect([...sorani.keys()].filter((k) => !english.has(k))).toEqual([])
+  })
+
+  it('keeps every {{placeholder}} of the English string, and leaves none empty', () => {
+    const wrong = [...sorani].filter(([k, v]) => v.trim() === '' || placeholders(v).join() !== placeholders(english.get(k) ?? '').join()).map(([k]) => k)
+    expect(wrong).toEqual([])
   })
 })

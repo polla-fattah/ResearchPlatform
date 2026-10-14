@@ -18,23 +18,37 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Sorani and Arabic UI use the Naskh face for running text. */
+/* Arabic-script text needs more leading than Latin at the same size, and letter-spacing would cut its joined letters. */
 html[lang='ar'] body,
 html[lang='ckb'] body {
-  font-family: var(--font-arabic), var(--font-sans);
+  font-family: var(--font-arabic);
+  line-height: 1.75;
+  letter-spacing: normal;
+}
+html[lang='ar'] :is(h1, h2, h3),
+html[lang='ckb'] :is(h1, h2, h3) {
+  line-height: 1.5;
+  letter-spacing: normal;
 }
 
 h1,
 h2,
 h3 {
   font-family: var(--font-serif);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.25;
+  letter-spacing: -0.015em;
   margin-block: 0 0.5em;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
 }
 
 a {
   color: var(--accent);
+  text-underline-offset: 0.18em;
 }
 a:hover {
   color: var(--accent-dark);

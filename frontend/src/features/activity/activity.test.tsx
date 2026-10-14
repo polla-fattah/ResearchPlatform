@@ -148,10 +148,34 @@ describe('Activity', () => {
 
   it('shows an entry of a kind it does not know by its own name', async () => {
     mockMe()
-    mockActivity({ items: [entry(9, { action: 'finding_created', object_type: 'finding', summary: 'Created a finding' })] })
+    mockActivity({ items: [entry(9, { action: 'something_new', object_type: 'finding', summary: 'Created a finding' })] })
     renderApp('/projects/12/activity', { signedIn: true })
-    expect(await screen.findByText('finding_created')).toBeInTheDocument()
+    expect(await screen.findByText('something_new')).toBeInTheDocument()
     expect(screen.getByText('Created a finding')).toBeInTheDocument()
+  })
+
+  it('names the object an entry is about when the sentence does not, and opens a document or finding', async () => {
+    mockMe()
+    mockActivity({
+      items: [
+        entry(10, { action: 'document_version_saved', object_type: 'document', object_id: 7, object_title: 'The wuḍūʾ chains', summary: 'Saved version 3' }),
+        entry(11, { action: 'finding_created', object_type: 'finding', object_id: 4, object_title: 'Two chains converge', summary: 'Recorded a finding' }),
+        entry(12, { action: 'document_deleted', object_type: 'document', object_id: 8, object_title: null, summary: "Deleted the document 'Old'" }),
+        entry(13, { action: 'task_created', object_title: 'Collect the links', summary: "Created task: 'Collect the links'" }),
+      ],
+    })
+    renderApp('/projects/12/activity', { signedIn: true })
+    expect(await screen.findByText('The wuḍūʾ chains')).toBeInTheDocument()
+    expect(screen.getByText('Two chains converge')).toBeInTheDocument()
+    const list = within(screen.getAllByRole('list').find((l) => l.tagName === 'OL')!)
+    expect(list.getByText('Version saved')).toBeInTheDocument()
+    expect(list.getByText('Finding recorded')).toBeInTheDocument()
+    const links = screen.getAllByRole('link', { name: 'Open' }).map((a) => a.getAttribute('href'))
+    expect(links).toContain('/projects/12/findings?doc=7')
+    expect(links).toContain('/projects/12/findings?finding=4')
+    expect(links).not.toContain('/projects/12/findings?doc=8')
+    // the task's sentence already quotes its title, so no second line repeats it
+    expect(screen.getAllByText(/^About:/)).toHaveLength(2)
   })
 
   it('looks the same for a project that cannot be opened', async () => {

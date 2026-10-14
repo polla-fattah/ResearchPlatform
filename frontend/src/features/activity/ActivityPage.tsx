@@ -15,7 +15,7 @@ import { viewStateOf } from '@/components/viewState'
 import { useProject } from '@/features/projects/useProject'
 import { useNow } from '@/hooks/useNow'
 import { useQueryParams } from '@/hooks/useQueryParams'
-import { activityHref, groupByDay, isKnownAction, KNOWN_ACTIONS, KNOWN_OBJECTS, RANGES, rangeStart, visibleSummary } from './activityModel'
+import { activityHref, groupByDay, isKnownAction, KNOWN_ACTIONS, KNOWN_OBJECTS, objectTitleLine, RANGES, rangeStart, visibleSummary } from './activityModel'
 import styles from './Activity.module.css'
 
 /**
@@ -127,6 +127,7 @@ export function ActivityPage() {
               {group.items.map((a) => {
                 const text = visibleSummary(a, owner)
                 const href = activityHref(id, a)
+                const title = objectTitleLine(a)
                 return (
                   <li key={a.id} className={styles.row}>
                     <span className={styles.time}>{a.created_at ? date(a.created_at, { time: true }) : ''}</span>
@@ -135,6 +136,11 @@ export function ActivityPage() {
                         <BidiText>{a.actor?.display_name ?? t('activity.unknownActor')}</BidiText>
                       </span>
                       <p className={styles.text}>{text ? <BidiText>{text}</BidiText> : <NeutralState kind="limitation">{t(`activity.hidden.${a.action}`, { defaultValue: t('activity.hidden.other') })}</NeutralState>}</p>
+                      {title ? (
+                        <p className={styles.text}>
+                          {t('activity.about')} <BidiText>{title}</BidiText>
+                        </p>
+                      ) : null}
                       {href ? <Link to={href}>{t('activity.open')}</Link> : null}
                     </div>
                     <span className={styles.kind}>{isKnownAction(a.action) ? t(`activity.actions.${a.action}`) : a.action}</span>

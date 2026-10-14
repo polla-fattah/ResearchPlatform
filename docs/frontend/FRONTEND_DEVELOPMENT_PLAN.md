@@ -87,7 +87,7 @@ While Phase 0 was being built the backend agent added about 120 endpoints (309 r
 | Graphs | React Flow (+ d3 layout); Cytoscape elements come from the API as-is | Screens 27, 32 |
 | API types | **Hand-written TS types + Zod schemas**, checked by contract tests against a running backend | Replaces draft 1's openapi codegen |
 | Tests | Vitest + Testing Library; MSW for mocks and the six states; Playwright for journeys | |
-| Fonts | Newsreader, IBM Plex Sans, IBM Plex Mono, Noto Naskh Arabic, self-hosted | |
+| Fonts | IBM Plex Sans Arabic (one family for Arabic, Sorani and Latin, self-hosted in `src/assets/fonts`, as on the platform site) and IBM Plex Mono | Restyled 8 Oct 2026 to match `../platform`: warm paper, emerald accent, gold for decoration only |
 
 Visual rules (from the design): desktop only ≥1024px with a "use a larger screen" notice below; paper `#F5F1E8`, surface `#FFFDF8`, ink `#1D1A15`, accent `#1F5A57`, warn `#9A3B24` for real errors only; provenance always text + icon; neutral states dashed, never red; counts always carry units; six states on every screen.
 
@@ -110,7 +110,7 @@ Visual rules (from the design): desktop only ≥1024px with a "use a larger scre
 
 1. **HTTP client**: token handling, envelope unwrap, the three-shape normaliser, 401 → sign-in with "You were signed out" (design 01), request cancellation, idempotency keys for exports/submissions.
 2. **`<StateBoundary>`**: one component rendering normal / empty / loading / error / forbidden / conflict consistently; error keeps input; forbidden = not-available; partial runs never labelled complete.
-3. **Direction + language**: `<html dir>` and `lang` follow the UI language; `<BidiText>` isolates source text (`dir="rtl"`, Noto Naskh Arabic); per-block direction in the editor.
+3. **Direction + language**: `<html dir>` and `lang` follow the UI language; `<BidiText>` isolates source text (`dir="rtl"`, IBM Plex Sans Arabic); per-block direction in the editor.
 4. **Display codes**: the mockups show `PRJ-0012`, `EV-0004`, `OCC-ABD-000106`, `REP-000318`, `NAR-004417`. The API only has numeric ids. Plan: `formatCode(prefix, id)` zero-pads (`PRJ-0012`, `EV-0004`, `F-02`, `D-0014`, `SUB-0007`). For corpus objects we show **`OCC-{referenceId}` plus book, volume/page and source number as separate fields** instead of the book abbreviation embedded in the mockup codes. *Needs your confirmation (§9).*
 5. **Roles & permissions** from `domain/roles.ts` + `usePermission(action, project)` implementing SRS §3.2; buttons are hidden or disabled with a reason, never silently missing.
 6. **Release flags** (`features.ts`): `R1a` default; R1b/R1c/R2 areas render disabled with their tag, as in the mockups.

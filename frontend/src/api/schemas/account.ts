@@ -17,11 +17,12 @@ export const displayPreferencesSchema = z.object({
 })
 export type AccountDisplayPreferences = z.infer<typeof displayPreferencesSchema>
 
-/** A sign-in on some device. The server names every device "Web Browser", so only the dates tell them apart. */
+/** A sign-in on some device. `device` is the server's own description from the browser ("Chrome on Windows"; request file C-21). */
 export const sessionSchema = z.object({
   id: z.number(),
   name: z.string().nullable().optional(),
   device: z.string().nullable().optional(),
+  ip_address: z.string().nullable().optional(),
   last_used_at: z.string().nullable().optional(),
   created_at: z.string().nullable().optional(),
   current: z.boolean(),

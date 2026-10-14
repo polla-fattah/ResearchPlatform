@@ -37,8 +37,8 @@ function mockAccount(o: Apis = {}) {
     ...o.me,
   }
   const sessions = o.sessions ?? [
-    { id: 1, name: 'auth-token', device: 'Web Browser', last_used_at: '2026-10-06T09:00:00Z', created_at: '2026-10-05T09:05:00Z', current: true },
-    { id: 2, name: 'auth-token', device: 'Web Browser', last_used_at: '2026-10-04T11:38:00Z', created_at: '2026-10-04T11:00:00Z', current: false },
+    { id: 1, name: 'auth-token', device: 'Chrome on Windows', ip_address: '127.0.0.1', last_used_at: '2026-10-06T09:00:00Z', created_at: '2026-10-05T09:05:00Z', current: true },
+    { id: 2, name: 'auth-token', device: 'Safari on iOS', ip_address: '10.0.0.8', last_used_at: '2026-10-04T11:38:00Z', created_at: '2026-10-04T11:00:00Z', current: false },
   ]
   const notifications: Record<string, unknown> = {
     notify_exports: true,
@@ -374,6 +374,28 @@ describe('Security', () => {
     await waitFor(() => expect(calls.revoked).toEqual(['2']))
     await waitFor(() => expect(within(region).getAllByRole('listitem')).toHaveLength(1))
     expect(within(region).queryByRole('button', { name: 'Sign out all other sessions' })).not.toBeInTheDocument()
+  })
+
+  it('names each session by its device, and shows an old one without a device as unknown', async () => {
+    mockAccount({ sessions: [{ id: 1, name: 'auth-token', device: 'Chrome on Windows', ip_address: '127.0.0.1', created_at: '2026-10-05T09:05:00Z', current: true }, { id: 2, name: 'auth-token', device: 'Unknown device', created_at: '2026-09-01T09:00:00Z', current: false }] })
+    open('security')
+    const region = await screen.findByRole('region', { name: /Active sessions/ })
+    expect(await within(region).findByText('Chrome on Windows')).toBeInTheDocument()
+    expect(within(region).getByText(/from 127\.0\.0\.1/)).toBeInTheDocument()
+    expect(within(region).getByText('Unknown device')).toBeInTheDocument()
+  })
+
+  it('says how many recovery codes are left while two-step sign-in is on', async () => {
+    mockAccount({ me: { mfa_enabled: true, recovery_codes_remaining: 3 } })
+    open('security')
+    expect(await screen.findByText('3 recovery codes left.')).toBeInTheDocument()
+  })
+
+  it('says nothing about recovery codes when two-step sign-in is off', async () => {
+    mockAccount({ me: { mfa_enabled: false, recovery_codes_remaining: 0 } })
+    open('security')
+    await screen.findByRole('button', { name: 'Turn on' })
+    expect(screen.queryByText(/recovery code(s)? left/)).not.toBeInTheDocument()
   })
 
   it('ends all other sessions after confirmation, and keeps this one', async () => {

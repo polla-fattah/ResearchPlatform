@@ -8,14 +8,25 @@ export const KNOWN_ACTIONS = [
   'member_removed',
   'discussion_opened',
   'discussion_resolved',
+  'discussion_reopened',
   'task_created',
   'task_completed',
   'stage_changed',
   'resource_added',
   'evidence_state_changed',
+  'finding_created',
+  'finding_updated',
+  'finding_deleted',
+  'document_created',
+  'document_updated',
+  'document_deleted',
+  'document_version_saved',
+  'document_version_restored',
+  'announcement_saved',
+  'announcement_published',
   'announcement_unpublished',
 ] as const
-export const KNOWN_OBJECTS = ['project', 'membership', 'invitation', 'discussion_thread', 'task', 'evidence', 'resource', 'announcement'] as const
+export const KNOWN_OBJECTS = ['project', 'membership', 'invitation', 'discussion_thread', 'task', 'evidence', 'resource', 'finding', 'document', 'announcement'] as const
 export const RANGES = ['all', '7', '30'] as const
 export type Range = (typeof RANGES)[number]
 
@@ -32,8 +43,10 @@ export function rangeStart(range: Range, now: number): string | undefined {
 }
 
 /** Where the object an entry is about is shown, or null when it has no screen of its own. */
-export function activityHref(projectId: number, a: Pick<Activity, 'object_type' | 'object_id'>): string | null {
+export function activityHref(projectId: number, a: Pick<Activity, 'object_type' | 'object_id'> & Partial<Pick<Activity, 'action'>>): string | null {
   const base = `/projects/${projectId}`
+  // A deleted finding or document has nothing to open.
+  if (a.action === 'finding_deleted' || a.action === 'document_deleted') return null
   switch (a.object_type) {
     case 'project':
       return `${base}/overview`
@@ -48,6 +61,12 @@ export function activityHref(projectId: number, a: Pick<Activity, 'object_type' 
       return a.object_id ? `${base}/evidence?item=${a.object_id}` : `${base}/evidence`
     case 'resource':
       return `${base}/resources`
+    case 'finding':
+      return a.object_id ? `${base}/findings?finding=${a.object_id}` : `${base}/findings`
+    case 'document':
+      return a.object_id ? `${base}/findings?doc=${a.object_id}` : `${base}/findings`
+    case 'announcement':
+      return `${base}/announcement`
     default:
       return null
   }
@@ -61,6 +80,16 @@ export function activityHref(projectId: number, a: Pick<Activity, 'object_type' 
 export function visibleSummary(a: Pick<Activity, 'action' | 'summary'>, canSeeInvitees: boolean): string | null {
   if (a.action === 'invitation_created' && !canSeeInvitees) return null
   return a.summary ?? null
+}
+
+/**
+ * The title of the object an entry is about, for a line under the sentence. Left out when there is none, or when the
+ * sentence already says it (the server's sentences often quote the title).
+ */
+export function objectTitleLine(a: Pick<Activity, 'object_title' | 'summary'>): string | null {
+  const title = (a.object_title ?? '').trim()
+  if (!title) return null
+  return (a.summary ?? '').includes(title) ? null : title
 }
 
 /** Entries grouped by the day they happened (in the person's own day), newest day first, in the order given. */

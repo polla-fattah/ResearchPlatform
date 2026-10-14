@@ -263,8 +263,11 @@ function ConclusionForm({ projectId, kase }: { projectId: number; kase: IlalCase
     defaultValues: { status: isCaseStatus(kase.status) ? kase.status : 'under_investigation', preferred: kase.preferred_version ?? '', notes: kase.resolution_notes ?? '' },
   })
   const save = useMutation({
-    mutationFn: (v: ConclusionValues) => updateCase(projectId, kase.id, { status: v.status, preferred_version: v.preferred, resolution_notes: v.notes.trim() }),
+    mutationFn: (v: ConclusionValues) =>
+      updateCase(projectId, kase.id, { status: v.status, preferred_version: v.preferred, resolution_notes: v.notes.trim(), ...(kase.updated_at ? { expected_updated_at: kase.updated_at } : {}) }),
+    // After a refused stale write (409) the case is read again, so what a teammate changed is what the page shows.
     onSuccess: () => invalidate.ilalChanged(qc, projectId),
+    onError: () => invalidate.ilalChanged(qc, projectId),
   })
   return (
     <form noValidate className={styles.conclusion} onSubmit={handleSubmit((v) => save.mutate(v))}>

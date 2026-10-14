@@ -73,8 +73,13 @@ export function ConcordancePanel({ bookId, bookTitle }: { bookId: number; bookTi
       {!active ? <p className={styles.empty}>{t('books.words.start')}</p> : null}
       <StateBoundary state={view} errorValue={result.error} onRetry={() => void result.refetch()}>
         <RefreshNotice query={result} what={t('books.words.title')} />
+        {data?.incomplete ? (
+          <p role="status" className={styles.meta}>
+            {t('books.words.incomplete')}
+          </p>
+        ) : null}
         {data ? (
-          data.total_matches === 0 ? (
+          data.total_matches === 0 && data.incomplete ? null : data.total_matches === 0 ? (
             <div className={styles.empty}>
               <h2>{t('books.words.noneTitle')}</h2>
               <p>{t('books.words.noneBody', { term })}</p>
@@ -82,7 +87,11 @@ export function ConcordancePanel({ bookId, bookTitle }: { bookId: number; bookTi
           ) : (
             <>
               <p role="status">
-                {maybeMore(data.total_matches, Number(limit)) ? t('books.words.atLeast', { count: data.total_matches, n: n(data.total_matches) }) : t('books.words.found', { count: data.total_matches, n: n(data.total_matches) })}
+                {data.total_available != null && data.total_available > data.total_matches
+                  ? t(data.total_available_is_capped ? 'books.words.shownOfAtLeast' : 'books.words.shownOf', { shown: n(data.total_matches), total: n(data.total_available) })
+                  : maybeMore(data.total_matches, Number(limit)) && data.total_available == null
+                    ? t('books.words.atLeast', { count: data.total_matches, n: n(data.total_matches) })
+                    : t('books.words.found', { count: data.total_matches, n: n(data.total_matches) })}
               </p>
               <h2>{t('books.words.byBook')}</h2>
               <ul className={styles.dist} aria-label={t('books.words.byBook')}>

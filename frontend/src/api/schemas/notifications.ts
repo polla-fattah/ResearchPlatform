@@ -1,6 +1,10 @@
 import { z } from 'zod'
 
-/** One notification. `type` is free text on the server; the screen knows four and shows any other as it is. */
+/**
+ * One notification. `type` is free text on the server; the screen knows four and shows any other as it is. Every
+ * notification now carries its `project_id`, and an invitation carries the `invitation_token` that answers it while the
+ * invitation is still pending (request file C-24, fixed 7 Oct 2026).
+ */
 export const notificationSchema = z.object({
   id: z.number(),
   type: z.string(),
@@ -8,6 +12,8 @@ export const notificationSchema = z.object({
   message: z.string().nullable().optional(),
   target_type: z.string().nullable().optional(),
   target_id: z.number().nullable().optional(),
+  project_id: z.number().nullable().optional(),
+  invitation_token: z.string().nullable().optional(),
   is_read: z.boolean().optional().default(false),
   read_at: z.string().nullable().optional(),
   created_at: z.string().nullable().optional(),

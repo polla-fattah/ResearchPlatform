@@ -37,6 +37,8 @@ export interface CasePatch {
   resolution_notes?: string
   competing_variants?: Variant[]
   critics_judgments?: Critic[]
+  /** The `updated_at` of the copy the change was made from. The server answers 409 if the case has changed since (request file C-36). */
+  expected_updated_at?: string
 }
 
 /** The server replaces whole lists, so a list is always sent from a fresh read (see `appendToCase`). */
@@ -53,13 +55,17 @@ export async function updateCase(projectId: number, caseId: number, patch: CaseP
 /**
  * Adds one version or one critic statement. The server has no "append": it replaces the list. So the case is read again
  * just before writing and the new entry goes on the end of what is there NOW, which keeps what a teammate added a moment
- * ago. A tiny window remains between the read and the write (no version check on the server, request file C-36).
+ * ago. The read's `updated_at` goes with the write, so if someone changes the case in the short gap between the two the
+ * server refuses the write (409) instead of overwriting their change.
  */
 export async function appendToCase(projectId: number, caseId: number, entry: { variant: Variant } | { critic: Critic }) {
   const fresh = await getCase(projectId, caseId)
   return updateCase(
     projectId,
     caseId,
-    'variant' in entry ? { competing_variants: [...fresh.competing_variants, entry.variant] } : { critics_judgments: [...fresh.critics_judgments, entry.critic] },
+    {
+      ...('variant' in entry ? { competing_variants: [...fresh.competing_variants, entry.variant] } : { critics_judgments: [...fresh.critics_judgments, entry.critic] }),
+      ...(fresh.updated_at ? { expected_updated_at: fresh.updated_at } : {}),
+    },
   )
 }

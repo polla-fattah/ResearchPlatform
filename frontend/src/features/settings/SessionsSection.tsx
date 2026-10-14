@@ -12,7 +12,7 @@ import { StateBoundary } from '@/components/StateBoundary'
 import { viewStateOf } from '@/components/viewState'
 import styles from './Settings.module.css'
 
-/** Where the account is signed in. The server names every device the same, so the dates are what tell them apart. */
+/** Where the account is signed in: the device the server recorded at sign-in, and the dates. */
 export function SessionsSection() {
   const { t } = useTranslation()
   const { n, date, relative } = usePreferences()
@@ -42,15 +42,16 @@ export function SessionsSection() {
           {items.map((s) => (
             <li key={s.id} className={styles.row}>
               <span>
-                <strong>{s.name || t('settings.sessions.unnamed')}</strong>
+                <strong>{s.device || t('settings.sessions.unnamed')}</strong>
                 {s.current ? <span className={styles.tag}>{t('settings.sessions.current')}</span> : null}
                 <span className={styles.hint}>
+                  {s.ip_address ? `${t('settings.sessions.from', { address: s.ip_address })} · ` : ''}
                   {s.created_at ? t('settings.sessions.signedIn', { when: date(s.created_at, { time: true }) }) : ''}
                   {s.last_used_at ? ` · ${t('settings.sessions.lastUsed', { when: relative(s.last_used_at) })}` : ''}
                 </span>
               </span>
               {!s.current ? (
-                <Button variant="ghost" disabled={end.isPending} onClick={() => end.mutate(s.id)} aria-label={`${t('settings.sessions.signOut')} ${date(s.created_at ?? '')}`}>
+                <Button variant="ghost" disabled={end.isPending} onClick={() => end.mutate(s.id)} aria-label={`${t('settings.sessions.signOut')} ${s.device ?? ''} ${date(s.created_at ?? '')}`.replace(/\s+/g, ' ')}>
                   {t('settings.sessions.signOut')}
                 </Button>
               ) : null}

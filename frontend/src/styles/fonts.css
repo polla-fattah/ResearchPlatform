@@ -1,10 +1,25 @@
-@import '@fontsource/newsreader/400.css';
-@import '@fontsource/newsreader/500.css';
-@import '@fontsource/newsreader/600.css';
-@import '@fontsource/ibm-plex-sans/400.css';
-@import '@fontsource/ibm-plex-sans/500.css';
-@import '@fontsource/ibm-plex-sans/600.css';
+/* One family for every language, as on the platform site: IBM Plex Sans Arabic (SIL OFL, see src/assets/fonts/OFL.txt). It
+   carries Arabic, Sorani and Latin letters, so a line that mixes scripts keeps one voice. */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexSansArabic-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexSansArabic-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexSansArabic-SemiBold.woff2') format('woff2');
+}
 @import '@fontsource/ibm-plex-mono/400.css';
 @import '@fontsource/ibm-plex-mono/500.css';
-@import '@fontsource/noto-naskh-arabic/400.css';
-@import '@fontsource/noto-naskh-arabic/500.css';

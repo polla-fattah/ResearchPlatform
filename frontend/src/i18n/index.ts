@@ -1,11 +1,26 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import ar from './locales/ar.json'
-import ckb from './locales/ckb.json'
 import en from './locales/en.json'
 import { DEFAULT_LANGUAGE, directionOf, isLanguage, type LanguageCode } from './languages'
 
 const STORAGE_KEY = 'oh.lang'
+
+/**
+ * English is always in the bundle (it is the fallback for every missing string). Sorani and Arabic are fetched only when
+ * a person uses them, so a visitor who reads English does not download them.
+ */
+const LOADERS: Partial<Record<LanguageCode, () => Promise<{ default: Record<string, unknown> }>>> = {
+  ckb: () => import('./locales/ckb.json'),
+  ar: () => import('./locales/ar.json'),
+}
+
+/** Makes sure the strings of a language are in memory. Resolves at once for English and for a language already loaded. */
+export async function loadLanguage(lang: LanguageCode): Promise<void> {
+  const load = LOADERS[lang]
+  if (!load || i18n.hasResourceBundle(lang, 'translation')) return
+  const bundle = await load()
+  i18n.addResourceBundle(lang, 'translation', bundle.default, true, true)
+}
 
 export function storedLanguage(): LanguageCode {
   try {
@@ -24,6 +39,7 @@ export function applyDocumentLanguage(lang: LanguageCode, root: HTMLElement = do
 }
 
 export async function setLanguage(lang: LanguageCode) {
+  await loadLanguage(lang)
   await i18n.changeLanguage(lang)
   applyDocumentLanguage(lang)
   try {
@@ -35,19 +51,17 @@ export async function setLanguage(lang: LanguageCode) {
 
 export function initI18n(lang: LanguageCode = storedLanguage()) {
   void i18n.use(initReactI18next).init({
-    resources: {
-      en: { translation: en },
-      // ckb and ar are filled after specialist review of docs/design/terminology.md;
-      // missing keys fall back to English.
-      ckb: { translation: ckb },
-      ar: { translation: ar },
-    },
+    // ckb is a first full draft (machine-assisted, 7 Oct 2026) that still needs a native speaker's review against
+    // docs/design/terminology.md. ar is partly filled. Missing keys fall back to English.
+    resources: { en: { translation: en } },
     lng: lang,
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
     returnNull: false,
   })
   applyDocumentLanguage(lang)
+  // A stored language other than English shows English for a moment, then switches when its strings have arrived.
+  if (lang !== 'en') void loadLanguage(lang).then(() => i18n.changeLanguage(lang))
   return i18n
 }
 

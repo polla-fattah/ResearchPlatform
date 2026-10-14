@@ -49,6 +49,8 @@ export const loginResultSchema = z.union([sessionResultSchema, mfaChallengeSchem
 export const registerResultSchema = sessionResultSchema
 
 export const meSchema = userSchema.extend({
+  /** How many single-use recovery codes are left; only meaningful while two-step sign-in is on (request file C-21). */
+  recovery_codes_remaining: z.number().nullable().optional(),
   profile: z
     .object({
       affiliation: z.string().nullable().optional(),

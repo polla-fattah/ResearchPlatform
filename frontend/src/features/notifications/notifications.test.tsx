@@ -75,7 +75,16 @@ describe('Notifications', () => {
     expect(within(rows[1]!).getByRole('link', { name: 'Open' })).toHaveAttribute('href', '/projects/12/overview')
     await waitFor(() => expect(within(rows[2]!).getByRole('link', { name: 'Open' })).toHaveAttribute('href', '/projects/12/discussion?view=tasks&mine=1'))
     expect(within(rows[3]!).queryByRole('link')).not.toBeInTheDocument()
-    expect(within(rows[3]!).getByText(/Open the invitation link the owner sent you/)).toBeInTheDocument()
+    expect(within(rows[3]!).getByText(/can no longer be answered here/)).toBeInTheDocument()
+  })
+
+  it('opens the page that answers a pending invitation, from the token the notification carries', async () => {
+    mockMe()
+    mockNotifications({ items: [note({ id: 5, type: 'invitation', message: "You have been invited to join 'Sorani guide' as researcher.", target_id: 99, project_id: 99, invitation_token: 'tok-1' })] })
+    renderApp('/notifications', { signedIn: true })
+    const row = within(await screen.findByRole('list', { name: 'Notifications' })).getAllByRole('listitem')[0]!
+    expect(within(row).getByRole('link', { name: 'Open' })).toHaveAttribute('href', '/invitations/tok-1')
+    expect(within(row).queryByText(/can no longer be answered here/)).not.toBeInTheDocument()
   })
 
   it('gives a task notification no link when its project cannot be found', async () => {

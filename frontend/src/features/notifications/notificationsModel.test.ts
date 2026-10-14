@@ -8,8 +8,13 @@ describe('notificationHref', () => {
     expect(notificationHref({ type: 'invitation_accepted', target_type: 'project', target_id: 12 }, () => null)).toBe('/projects/12/members')
     expect(notificationHref({ type: 'role_updated', target_type: 'project', target_id: 12 }, () => null)).toBe('/projects/12/overview')
   })
-  it('leads an invitation nowhere, because the project cannot be opened before accepting', () => {
+  it('leads a pending invitation to the page that answers it, and an answered one nowhere', () => {
+    expect(notificationHref({ type: 'invitation', target_type: 'project', target_id: 12, invitation_token: 'a b' }, () => null)).toBe('/invitations/a%20b')
     expect(notificationHref({ type: 'invitation', target_type: 'project', target_id: 12 }, () => null)).toBeNull()
+    expect(notificationHref({ type: 'invitation', target_type: 'project', target_id: 12, invitation_token: null }, () => null)).toBeNull()
+  })
+  it('uses the project a task notification names, without the assigned-task lookup', () => {
+    expect(notificationHref({ type: 'assignment', target_type: 'task', target_id: 5, project_id: 14 }, () => null)).toBe('/projects/14/discussion?view=tasks&mine=1')
   })
   it('finds the project of a task from the assigned tasks, or gives no link', () => {
     expect(notificationHref({ type: 'assignment', target_type: 'task', target_id: 5 }, task(5))).toBe('/projects/12/discussion?view=tasks&mine=1')

@@ -121,6 +121,28 @@ describe('Book structure and terms', () => {
     expect(await screen.findByText(/50 places returned, the most the server was asked for/)).toBeInTheDocument()
   })
 
+  it('says how many places there are in all when the server counts them, and when it stopped counting', async () => {
+    mockMe()
+    mockBooks({ concordance: { search_term: 'ab', total_matches: 50, total_available: 1234, total_available_is_capped: false, book_distribution: { A: 50 }, concordance_samples: [] } })
+    renderApp('/projects/12/analysis/books/3?view=words&term=ab', { signedIn: true })
+    expect(await screen.findByText('50 of 1,234 places shown.')).toBeInTheDocument()
+  })
+
+  it('says "at least" for a capped total', async () => {
+    mockMe()
+    mockBooks({ concordance: { search_term: 'ab', total_matches: 50, total_available: 10000, total_available_is_capped: true, book_distribution: { A: 50 }, concordance_samples: [] } })
+    renderApp('/projects/12/analysis/books/3?view=words&term=ab', { signedIn: true })
+    expect(await screen.findByText(/50 of at least 10,000 places shown/)).toBeInTheDocument()
+  })
+
+  it('warns that a search the server cut off may be missing places, and does not call it "none found"', async () => {
+    mockMe()
+    mockBooks({ concordance: { search_term: 'zz', total_matches: 0, total_available: 0, incomplete: true, book_distribution: {}, concordance_samples: [] } })
+    renderApp('/projects/12/analysis/books/3?view=words&term=zz', { signedIn: true })
+    expect(await screen.findByText(/took too long and was stopped/)).toBeInTheDocument()
+    expect(screen.queryByText('No places found')).not.toBeInTheDocument()
+  })
+
   it('does not call no result a confirmed absence', async () => {
     mockMe()
     mockBooks({ concordance: { search_term: 'zz', total_matches: 0, book_distribution: {}, concordance_samples: [] } })

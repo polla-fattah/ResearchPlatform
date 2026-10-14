@@ -25,7 +25,7 @@ const kase = (over: Record<string, unknown> = {}) => ({
   ...over,
 })
 
-function mockCases(cases: Record<string, unknown>[] = [kase()], viewer = false) {
+function mockCases(cases: Record<string, unknown>[] = [kase()], viewer = false, o: { conflict?: boolean } = {}) {
   const calls = { created: [] as Record<string, unknown>[], patched: [] as Record<string, unknown>[] }
   let current = cases
   mockProjectApis(12, {
@@ -42,6 +42,7 @@ function mockCases(cases: Record<string, unknown>[] = [kase()], viewer = false) 
     http.patch('*/api/v1/projects/12/ilal-cases/:id', async ({ request, params }) => {
       const body = (await request.json()) as Record<string, unknown>
       calls.patched.push(body)
+      if (o.conflict) return HttpResponse.json({ success: false, error: { code: 'CONFLICT', message: 'This case was changed by someone else since you opened it.' } }, { status: 409 })
       const next = { ...current.find((c) => String(c.id) === params.id)!, ...body }
       current = current.map((c) => (String(c.id) === params.id ? next : c))
       return HttpResponse.json(envelope(next))
@@ -137,7 +138,33 @@ describe('ʿIlal cases', () => {
     await user.selectOptions(screen.getByLabelText(/^Preferred version/), 'Version A')
     await user.type(screen.getByLabelText(/^Reasons/), 'Stronger chain.')
     await user.click(save)
-    await waitFor(() => expect(calls.patched).toEqual([{ status: 'resolved_defective', preferred_version: 'Version A', resolution_notes: 'Stronger chain.' }]))
+    await waitFor(() => expect(calls.patched).toEqual([{ status: 'resolved_defective', preferred_version: 'Version A', resolution_notes: 'Stronger chain.', expected_updated_at: '2026-10-01T09:00:00Z' }]))
+  })
+
+  it('shows the refusal when a teammate changed the case in the meantime, and reads it again', async () => {
+    mockMe()
+    const calls = mockCases([kase()], false, { conflict: true })
+    const user = userEvent.setup()
+    renderApp('/projects/12/analysis/ilal?case=3', { signedIn: true })
+    await screen.findByRole('article', { name: /Wakīʿ route/ })
+    await user.type(screen.getByLabelText(/^Reasons/), 'Mine.')
+    await user.click(screen.getByRole('button', { name: 'Save conclusion' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('changed by someone else')
+    expect(calls.patched).toHaveLength(1)
+  })
+
+  it('sends the time of the copy it read with a new version, so a change made in between is refused', async () => {
+    mockMe()
+    const calls = mockCases()
+    const user = userEvent.setup()
+    renderApp('/projects/12/analysis/ilal?case=3', { signedIn: true })
+    await screen.findByRole('article', { name: /Wakīʿ route/ })
+    await user.click(screen.getByRole('button', { name: 'Add a version' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.type(within(dialog).getByLabelText(/^Name/), 'Version C')
+    await user.click(within(dialog).getByRole('button', { name: /^Add/ }))
+    await waitFor(() => expect(calls.patched).toHaveLength(1))
+    expect(calls.patched[0]).toMatchObject({ expected_updated_at: '2026-10-01T09:00:00Z' })
   })
 
   it('does not let a case with one version be concluded', async () => {

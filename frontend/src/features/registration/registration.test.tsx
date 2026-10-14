@@ -70,7 +70,8 @@ describe('Apply (01)', () => {
     await user.click(screen.getByRole('button', { name: /submit application/i }))
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/apply/check-email'))
-    expect(await screen.findByRole('heading', { name: /check your email/i })).toBeInTheDocument()
+    // The applicant chose Sorani, so the interface now answers in Sorani.
+    expect(await screen.findByRole('heading', { name: 'ئیمەیڵەکەت بپشکنە' })).toBeInTheDocument()
     expect(screen.getByText(/shilan@example\.org/)).toBeInTheDocument()
     expect(session.get()).toBe('new-token')
     expect(body).toMatchObject({
